@@ -218,7 +218,7 @@ const LV = {
   mid:  {name:'中級・平行轉彎', v:25, slope:15, skiOff:-12, R:13, cap:42*D, ang:1.1, skid:10*D, wedge:0, Rbase:9, psiB:6, h0:.82, stance:.14, pr:.75, tr:.7, tp:.4, tyaw:.25, pyaw:.65, knee:.6, minDrive:.45, plant:1, lead:.06},
   mogul:{name:'蘑菇 Mogul', v:15, slope:25, skiOff:-12, R:13, cap:40*D, ang:1.0, skid:15*D, wedge:0, Rbase:3, psiB:0, psiFix:30*D, h0:.82, stance:.12, pr:.6, tr:.5, tp:.45, tyaw:.1, pyaw:.6, knee:.4, minDrive:.45, plant:1, lead:.04},
   short:{name:'短彎 小回り', kind:'turn', v:22, slope:18, skiOff:-12, R:12, cap:45*D, ang:1.1, skid:8*D, wedge:0, Rbase:5, psiB:0, psiFix:26*D, h0:.8, stance:.13, pr:.7, tr:.55, tp:.4, tyaw:.05, pyaw:.75, knee:.7, minDrive:.5, plant:1, lead:.05},
-  pivot:{name:'Pivot slip', kind:'pivot', v:10, slope:15, skiOff:-12, R:13, cap:20*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.6, tr:.3, tp:.38, tyaw:0, pyaw:.45, knee:.3, minDrive:.45, plant:0, lead:0},
+  pivot:{name:'Pivot slip', kind:'pivot', v:10, slope:15, skiOff:-12, R:13, cap:20*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.6, tr:.3, tp:.38, tyaw:.15, pyaw:.6, knee:.3, minDrive:.45, plant:0, lead:0},
   trav: {name:'斜滑降＋Garland', kind:'trav', v:15, slope:15, skiOff:-12, R:13, cap:35*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:.4, tyaw:.45, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.12},
   lift: {name:'提內腳 drill', kind:'turn', v:25, slope:15, skiOff:-10, R:14, cap:50*D, ang:1.15, skid:0, wedge:0, Rbase:10, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:.42, tyaw:.35, pyaw:.75, knee:1, minDrive:.3, plant:0, lead:.1, lift:true},
   carve:{name:'進階・Carving', v:30, slope:18, skiOff:-6, R:15, cap:65*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:.42, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1}
@@ -939,10 +939,12 @@ function updateUI(p, act, md, now){
   const ph = phaseOf(p), lv = LV[cfg.level];
   const turn = p.nsh < .05 ? '' : (p.sg > 0 ? '右彎' : '左彎');
   const outer = p.nsh < .05 ? '—' : (p.sg > 0 ? '左腳' : '右腳');
+  const skiY = (p.yawR + p.yawL)/2, pelY = p.psi*lv.pyaw, torY = p.psi*lv.tyaw;
+  const sep = `髖轉 ${Math.abs((skiY-pelY)/D).toFixed(0)}°・腰轉 ${Math.abs((pelY-torY)/D).toFixed(0)}°`;
   if (lv.kind === 'pivot' || lv.kind === 'trav'){
-    hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>坡度 ${cfg.slope}°・板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = fall line）<br>Uphill edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°`;
+    hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>坡度 ${cfg.slope}°・板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = fall line）<br>Uphill edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>${sep}`;
   } else
-  hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b> ${turn}<br>${cfg.v} km/h・彎半徑 ${C.Rt.toFixed(1)} m<br>傾斜 ${(p.phiMag/D).toFixed(0)}°・外腳 edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>外腳 ${outer}・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× 體重`;
+  hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b> ${turn}<br>${cfg.v} km/h・彎半徑 ${C.Rt.toFixed(1)} m<br>傾斜 ${(p.phiMag/D).toFixed(0)}°・外腳 edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>外腳 ${outer}・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× 體重<br>${sep}`;
   gLean.setAttribute('transform', `translate(55,94) rotate(${(p.phi/D).toFixed(1)})`);
   gSki.setAttribute('transform', `translate(55,94) rotate(${(p.edgeOuter/D).toFixed(1)})`);
   gTxt.textContent = `Edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°`;
