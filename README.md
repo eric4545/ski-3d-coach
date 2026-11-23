@@ -1,6 +1,6 @@
 # 3D 滑雪／單板教學
 
-單一 HTML 檔案嘅互動 3D 教學工具（Three.js r128），用嚟理解滑雪同單板動作背後嘅生物力學。
+互動 3D 教學工具（Three.js r128＋glTF 骨架人體模型），用嚟理解滑雪同單板動作背後嘅生物力學。
 
 | 頁面 | 內容 |
 |---|---|
@@ -27,6 +27,10 @@ npx serve .
 ## 部署（GitHub Pages）
 
 Settings → Pages → Source 揀 **Deploy from a branch** → `main` / `(root)`。
+
+## 第三方素材
+
+人體模型 `xbot.json` 由 [three.js examples](https://github.com/mrdoob/three.js/tree/r128/examples/models/gltf) 嘅 `Xbot.glb`（Mixamo 角色）轉換而成，已移除動畫。
 
 ## 免責
 

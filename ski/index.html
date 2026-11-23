@@ -200,6 +200,8 @@ tr.click{cursor:pointer}tr.focus td{background:#1f2a35}
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="rig.js"></script>
 <script>
 (() => {
 const V = THREE.Vector3, Q = THREE.Quaternion, D = Math.PI/180, G = 9.81, W = Math.PI*2;
@@ -214,14 +216,14 @@ function qYZX(yaw, roll, pitch){
 
 /* ---------- levels & config ---------- */
 const LV = {
-  beg:  {name:'入門・犁式 Wedge', v:12, slope:10, skiOff:-18, R:11, cap:22*D, ang:1.0, skid:0, wedge:14*D, Rbase:6, psiB:12, h0:.8, stance:.2, pr:.7, tr:.85, tp:.35, tyaw:.45, pyaw:.85, knee:0, minDrive:.55, plant:0, lead:0},
-  mid:  {name:'中級・平行轉彎', v:25, slope:15, skiOff:-12, R:13, cap:42*D, ang:1.1, skid:10*D, wedge:0, Rbase:9, psiB:6, h0:.82, stance:.14, pr:.75, tr:.7, tp:.4, tyaw:.25, pyaw:.65, knee:.6, minDrive:.45, plant:1, lead:.06},
-  mogul:{name:'蘑菇 Mogul', v:15, slope:25, skiOff:-12, R:13, cap:40*D, ang:1.0, skid:15*D, wedge:0, Rbase:3, psiB:0, psiFix:30*D, h0:.82, stance:.12, pr:.6, tr:.5, tp:.45, tyaw:.1, pyaw:.6, knee:.4, minDrive:.45, plant:1, lead:.04},
-  short:{name:'短彎 小回り', kind:'turn', v:22, slope:18, skiOff:-12, R:12, cap:45*D, ang:1.1, skid:8*D, wedge:0, Rbase:5, psiB:0, psiFix:26*D, h0:.8, stance:.13, pr:.7, tr:.55, tp:.4, tyaw:.05, pyaw:.75, knee:.7, minDrive:.5, plant:1, lead:.05},
-  pivot:{name:'Pivot slip', kind:'pivot', v:10, slope:15, skiOff:-12, R:13, cap:20*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.6, tr:.3, tp:.38, tyaw:.15, pyaw:.6, knee:.3, minDrive:.45, plant:0, lead:0},
-  trav: {name:'斜滑降＋Garland', kind:'trav', v:15, slope:15, skiOff:-12, R:13, cap:35*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:.4, tyaw:.45, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.12},
-  lift: {name:'提內腳 drill', kind:'turn', v:25, slope:15, skiOff:-10, R:14, cap:50*D, ang:1.15, skid:0, wedge:0, Rbase:10, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:.42, tyaw:.35, pyaw:.75, knee:1, minDrive:.3, plant:0, lead:.1, lift:true},
-  carve:{name:'進階・Carving', v:30, slope:18, skiOff:-6, R:15, cap:65*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:.42, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1}
+  beg:  {name:'入門・犁式 Wedge', v:12, slope:10, skiOff:-18, R:11, cap:22*D, ang:1.0, skid:0, wedge:14*D, Rbase:6, psiB:12, h0:.8, stance:.2, pr:.7, tr:.85, tp:0.41, tyaw:.45, pyaw:.85, knee:0, minDrive:.55, plant:0, lead:0},
+  mid:  {name:'中級・平行轉彎', v:25, slope:15, skiOff:-12, R:13, cap:42*D, ang:1.1, skid:10*D, wedge:0, Rbase:9, psiB:6, h0:.82, stance:.14, pr:.75, tr:.7, tp:0.46, tyaw:.25, pyaw:.65, knee:.6, minDrive:.45, plant:1, lead:.06},
+  mogul:{name:'蘑菇 Mogul', v:15, slope:25, skiOff:-12, R:13, cap:40*D, ang:1.0, skid:15*D, wedge:0, Rbase:3, psiB:0, psiFix:30*D, h0:.82, stance:.12, pr:.6, tr:.5, tp:0.51, tyaw:.1, pyaw:.6, knee:.4, minDrive:.45, plant:1, lead:.04},
+  short:{name:'短彎 小回り', kind:'turn', v:22, slope:18, skiOff:-12, R:12, cap:45*D, ang:1.1, skid:8*D, wedge:0, Rbase:5, psiB:0, psiFix:26*D, h0:.8, stance:.13, pr:.7, tr:.55, tp:0.46, tyaw:.05, pyaw:.75, knee:.7, minDrive:.5, plant:1, lead:.05},
+  pivot:{name:'Pivot slip', kind:'pivot', v:10, slope:15, skiOff:-12, R:13, cap:20*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.6, tr:.3, tp:0.44, tyaw:.15, pyaw:.6, knee:.3, minDrive:.45, plant:0, lead:0},
+  trav: {name:'斜滑降＋Garland', kind:'trav', v:15, slope:15, skiOff:-12, R:13, cap:35*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:0.46, tyaw:.45, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.12},
+  lift: {name:'提內腳 drill', kind:'turn', v:25, slope:15, skiOff:-10, R:14, cap:50*D, ang:1.15, skid:0, wedge:0, Rbase:10, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:.3, plant:0, lead:.1, lift:true},
+  carve:{name:'進階・Carving', v:30, slope:18, skiOff:-6, R:15, cap:65*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1}
 };
 const REC = {
   beg:  {ski:[-20,-10], R:[9,13],  slope:[6,12],  v:[8,18]},
@@ -332,7 +334,7 @@ function finish(b){
   const st = STANCE[cfg.stance];
   const hP = (lv.h0 - .08*phiMag/(60*D) + st.dh)*k;
   const gm = hf(mid.x, mid.z), lift = new V(0, .35*gm, 0);
-  const P = mid.clone().addScaledVector(upLean, hP).addScaledVector(f, (-.04 + st.dz)*k).add(lift);
+  const P = mid.clone().addScaledVector(upLean, hP).addScaledVector(f, (-.12 + st.dz)*k).add(lift);
   const com = mid.clone().addScaledVector(upLean, hP + .1*k).addScaledVector(f, (-.04 + st.dz*1.1)*k).add(lift);
   const inner = right.clone().multiplyScalar(sg);
   const footR = mid.clone().addScaledVector(right, lv.stance*k);
@@ -691,7 +693,7 @@ addMuscle(torso,'abs','C',[0,.2,.13],[.065,.16,.035]);
 addMuscle(torso,'erec','C',[0,.22,-.12],[.07,.18,.035]);
 for (const [side,sx] of [['R',-1],['L',1]]) addMuscle(torso,'obl',side,[sx*.14,.16,.03],[.035,.13,.075]);
 
-const ARM_U = new V(-.07,-.24,.1), ARM_F = new V(-.03,-.03,.26);
+const ARM_U = new V(-.08,-.26,.04), ARM_F = new V(-.04,-.02,.22);
 function makeArm(){
   const pole = new THREE.Group();
   const pmsh = new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,1,6), new THREE.MeshStandardMaterial({color:0x222222})); pmsh.position.y = .5; pole.add(pmsh);
@@ -719,6 +721,7 @@ function rescale(){
   const k = C.k;
   limbs.forEach(g => g.scale.setScalar(k));
   pelvis.scale.setScalar(k); torso.scale.setScalar(k);
+  if (Rig.ready) Rig.setHeight(cfg.H/100);
   for (const s of [skiR, skiL]){ s.board.scale.set(1, 1, cfg.ski/100); s.bootG.scale.setScalar(k); }
 }
 
@@ -736,6 +739,11 @@ function placeArm(arm, shoulder, qA, mirror, f, plant){
   const elbow = shoulder.clone().add(u.applyQuaternion(qA)), hand = elbow.clone().add(fo.applyQuaternion(qA));
   orient(arm.up, shoulder, elbow, f); orient(arm.fo, elbow, hand, UP);
   const out = new V(-mirror,0,0).applyQuaternion(qA);
+  placePole(arm, hand, f, out, plant);
+  return {hand, pole: out.clone().multiplyScalar(.6).addScaledVector(f, -.5).add(new V(0,-.4,0)).normalize(), f, out, plant};
+}
+function placePole(arm, hand, f, out, plant){
+  const k = C.k;
   const dir = new V(0,-1,0).addScaledVector(f, -.32 + .8*plant).addScaledVector(out, .12).normalize();
   const len = Math.min(1.2*k, Math.max(.2, hand.y/(-dir.y)));
   orient(arm.pole, hand, hand.clone().addScaledVector(dir, len), f);
@@ -755,9 +763,18 @@ function applyPose(p){
   torso.position.copy(J.tBase); torso.quaternion.copy(J.qT);
   const qA = qYZX(p.psi*lv.tyaw, p.phi*lv.tr, 0);
   const pl = plantAmt(p.s)*lv.plant, newSg = -p.sg;
-  placeArm(armR, J.tBase.clone().add(new V(-.2*k,.45*k,0).applyQuaternion(J.qT)), qA, 1, p.f, newSg > 0 ? pl : 0);
-  placeArm(armL, J.tBase.clone().add(new V(.2*k,.45*k,0).applyQuaternion(J.qT)), qA, -1, p.f, newSg < 0 ? pl : 0);
+  const aR = placeArm(armR, J.tBase.clone().add(new V(-.2*k,.45*k,0).applyQuaternion(J.qT)), qA, 1, p.f, newSg > 0 ? pl : 0);
+  const aL = placeArm(armL, J.tBase.clone().add(new V(.2*k,.45*k,0).applyQuaternion(J.qT)), qA, -1, p.f, newSg < 0 ? pl : 0);
   placeSki(skiR, p.footR, p.yawR, p.edgeR, J.qSkiR); placeSki(skiL, p.footL, p.yawL, p.edgeL, J.qSkiL);
+  if (Rig.ready){
+    const qH = qYZX(p.psi*lv.tyaw, p.phi*lv.tr*.4, .05);
+    const o = Rig.drive({pelvis: p.P, qP: J.qP, qT: J.qT, qH,
+      legs: {R: {ankle: p.footR, pole: J.legR.nrm, qFoot: J.qSkiR}, L: {ankle: p.footL, pole: J.legL.nrm, qFoot: J.qSkiL}},
+      arms: {R: {hand: aR.hand, pole: aR.pole}, L: {hand: aL.hand, pole: aL.pole}}});
+    orient(legR.thigh, o.hipR, o.kneeR, o.poleR); orient(legR.shin, o.kneeR, o.ankleR, p.f);
+    orient(legL.thigh, o.hipL, o.kneeL, o.poleL); orient(legL.shin, o.kneeL, o.ankleL, p.f);
+    placePole(armR, o.handR, p.f, aR.out, aR.plant); placePole(armL, o.handL, p.f, aL.out, aL.plant);
+  }
 
   comBall.position.copy(p.com);
   const outer = (p.sg > 0 ? p.footL : p.footR).clone(); outer.y -= .08*k;
@@ -793,6 +810,7 @@ function applyVis(){
   comBall.visible = show.com; if (comTrail) comTrail.visible = show.com;
   grf.visible = grav.visible = show.force;
   for (const m of [jacket, pants]){ m.opacity = show.xray ? .32 : 1; m.depthWrite = !show.xray; m.needsUpdate = true; }
+  if (Rig.ready) Rig.setOpacity(show.xray ? .42 : 1);
 }
 document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
   const k = b.dataset.t; show[k] = !show[k]; b.classList.toggle('on', show[k]); applyVis();
@@ -988,6 +1006,16 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 setLevel('carve'); setStance('ok'); applyVis();
+Rig.load('xbot.json', slopeG, {color:0x7fa6cf, jointColor:0x2b3442}).then(() => {
+  limbs.forEach(g => { g.children[0].visible = g.children[1].visible = false; });
+  [armR, armL].forEach(a => { a.up.visible = a.fo.visible = false; });
+  [pm, tm, shm, head, gog].forEach(m => m.visible = false);
+  const helmet = new THREE.Mesh(new THREE.SphereGeometry(11.5, 20, 14, 0, Math.PI*2, 0, Math.PI*.55), new THREE.MeshStandardMaterial({color:0x1f2937, roughness:.35}));
+  helmet.position.set(0, 9, 0); Rig.attachToHead(helmet);
+  const gg = new THREE.Mesh(new THREE.BoxGeometry(15, 5, 4), new THREE.MeshStandardMaterial({color:0xff8c1a, roughness:.2, metalness:.3}));
+  gg.position.set(0, 7, 9); Rig.attachToHead(gg);
+  Rig.setHeight(cfg.H/100); applyVis();
+}).catch(e => console.warn('rig load failed', e));
 let last = performance.now();
 function frame(now){
   const dt = Math.min(.05, (now-last)/1000); last = now;

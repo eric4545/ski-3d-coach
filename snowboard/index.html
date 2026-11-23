@@ -209,6 +209,8 @@ tr.click{cursor:pointer}tr.focus td{background:#1f2a35}
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="rig.js"></script>
 <script>
 (() => {
 const V = THREE.Vector3, Q = THREE.Quaternion, D = Math.PI/180, G = 9.81, W = Math.PI*2;
@@ -776,6 +778,7 @@ slopeG.traverse(o => { if (o.isMesh && o !== snow && o !== comBall) o.castShadow
 function rescale(){
   limbs.forEach(g => g.scale.setScalar(C.k));
   pelvis.scale.setScalar(C.k); torso.scale.setScalar(C.k);
+  if (Rig.ready) Rig.setHeight(cfg.H/100);
   placeBoots();
 }
 
@@ -785,6 +788,7 @@ function placeArm(arm, sh, face, along, down, k){
   const elbow = sh.clone().addScaledVector(down, .24*k).addScaledVector(along, .06*k).addScaledVector(face, .05*k);
   const hand = elbow.clone().addScaledVector(along, .2*k).addScaledVector(face, .12*k).addScaledVector(down, .02*k);
   orient(arm.up, sh, elbow, face); orient(arm.fo, elbow, hand, UP);
+  return hand;
 }
 function reachArm(arm, sh, target, face, along, down, k, w){
   const elbow0 = sh.clone().addScaledVector(down, .24*k).addScaledVector(along, .06*k).addScaledVector(face, .05*k);
@@ -792,6 +796,7 @@ function reachArm(arm, sh, target, face, along, down, k, w){
   const hand = hand0.lerp(target, w);
   const sol = twoBone(sh, hand, down.clone().add(along).normalize(), .27*k, .26*k);
   orient(arm.up, sh, sol.K, face); orient(arm.fo, sol.K, sol.E, UP);
+  return hand;
 }
 function applyPose(p){
   const k = C.k, dir = DIR(), J = solve(p);
@@ -807,9 +812,24 @@ function applyPose(p){
   const shB = J.tBase.clone().add(new V(-dir*.2*k, .45*k, 0).applyQuaternion(J.qT));
   const drag = clamp((p.phiMag - 55*D)/(15*D), 0, 1);
   const snowPt = (along, side) => { const q = p.mid.clone().addScaledVector(p.fB, along).addScaledVector(p.t, side); q.y = .03; return q; };
-  if (drag > 0 && p.toeLean > 0){ reachArm(armF, shF, snowPt(.35*k, .45*k), face, p.fB, down, k, drag); placeArm(armB, shB, face, p.fB.clone().multiplyScalar(-.6), down, k); }
-  else if (drag > 0){ placeArm(armF, shF, face, p.fB, down, k); reachArm(armB, shB, snowPt(-.45*k, -.5*k), face, p.fB.clone().negate(), down, k, drag); }
-  else { placeArm(armF, shF, face, p.fB, down, k); placeArm(armB, shB, face, p.fB.clone().multiplyScalar(-.6), down, k); }
+  let hF, hB;
+  if (drag > 0 && p.toeLean > 0){ hF = reachArm(armF, shF, snowPt(.35*k, .45*k), face, p.fB, down, k, drag); hB = placeArm(armB, shB, face, p.fB.clone().multiplyScalar(-.6), down, k); }
+  else if (drag > 0){ hF = placeArm(armF, shF, face, p.fB, down, k); hB = reachArm(armB, shB, snowPt(-.45*k, -.5*k), face, p.fB.clone().negate(), down, k, drag); }
+  else { hF = placeArm(armF, shF, face, p.fB, down, k); hB = placeArm(armB, shB, face, p.fB.clone().multiplyScalar(-.6), down, k); }
+  if (Rig.ready){
+    const Fs = dir > 0 ? 'L' : 'R', Bs = dir > 0 ? 'R' : 'L';
+    const qF = p.qB.clone().multiply(new Q().setFromAxisAngle(UP, bootF.rotation.y));
+    const qBk = p.qB.clone().multiply(new Q().setFromAxisAngle(UP, bootB.rotation.y));
+    const outF = shF.clone().sub(J.tBase).setY(0).normalize(), outB = shB.clone().sub(J.tBase).setY(0).normalize();
+    const qH = qYZX(p.yawB - dir*10*D + (p.tx || 0)*.5, 0, .08);
+    const legs = {}, arms = {};
+    legs[Fs] = {ankle: p.footF, pole: J.legF.nrm, qFoot: qF}; legs[Bs] = {ankle: p.footB, pole: J.legB.nrm, qFoot: qBk};
+    arms[Fs] = {hand: hF, pole: outF.clone().add(down).addScaledVector(face, -.4).normalize()};
+    arms[Bs] = {hand: hB, pole: outB.clone().add(down).addScaledVector(face, -.4).normalize()};
+    const o = Rig.drive({pelvis: p.P, qP: J.qP, qT: J.qT, qH, legs, arms});
+    orient(legF.thigh, o['hip'+Fs], o['knee'+Fs], o['pole'+Fs]); orient(legF.shin, o['knee'+Fs], o['ankle'+Fs], o['pole'+Fs]);
+    orient(legB.thigh, o['hip'+Bs], o['knee'+Bs], o['pole'+Bs]); orient(legB.shin, o['knee'+Bs], o['ankle'+Bs], o['pole'+Bs]);
+  }
 
   comBall.position.copy(p.com);
   const base = p.mid.clone(); base.y = .02;
@@ -850,6 +870,7 @@ function applyVis(){
   comBall.visible = show.com; if (comTrail) comTrail.visible = show.com;
   grf.visible = grav.visible = arcLine.visible = normLine.visible = show.force;
   for (const m of [jacket, pants]){ m.opacity = show.xray ? .5 : 1; m.depthWrite = !show.xray; m.needsUpdate = true; }
+  if (Rig.ready) Rig.setOpacity(show.xray ? .42 : 1);
 }
 document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
   const k = b.dataset.t; show[k] = !show[k]; b.classList.toggle('on', show[k]); applyVis();
@@ -1106,6 +1127,16 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 setStance('ok'); setLevel('carve'); applyVis();
+Rig.load('xbot.json', slopeG, {color:0x5fb38c, jointColor:0x263238}).then(() => {
+  limbs.forEach(g => { g.children[0].visible = g.children[1].visible = false; });
+  [armF, armB].forEach(a => { a.up.visible = a.fo.visible = false; });
+  [pm, tm, shm, head, gog].forEach(m => m.visible = false);
+  const helmet = new THREE.Mesh(new THREE.SphereGeometry(11.5, 20, 14, 0, Math.PI*2, 0, Math.PI*.55), new THREE.MeshStandardMaterial({color:0x1f2937, roughness:.35}));
+  helmet.position.set(0, 9, 0); Rig.attachToHead(helmet);
+  const gg = new THREE.Mesh(new THREE.BoxGeometry(15, 5, 4), new THREE.MeshStandardMaterial({color:0xff8c1a, roughness:.2, metalness:.3}));
+  gg.position.set(0, 7, 9); Rig.attachToHead(gg);
+  Rig.setHeight(cfg.H/100); applyVis();
+}).catch(e => console.warn('rig load failed', e));
 let last = performance.now();
 function frame(now){
   const dt = Math.min(.05, (now-last)/1000); last = now;
