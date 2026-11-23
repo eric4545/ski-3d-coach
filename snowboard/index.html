@@ -54,6 +54,18 @@ tr.click{cursor:pointer}tr.focus td{background:#1f2a35}
 .note{font-size:12px;color:var(--muted)}
 .sw{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
 .modes td:first-child{white-space:nowrap}
+body.simple .adv{display:none!important}
+.cmpLbl{position:absolute;top:8px;display:none;background:rgba(15,20,25,.88);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-size:13px;font-weight:600;max-width:46%;pointer-events:none}
+.cmpLbl small{display:block;font-weight:400;font-size:11px;color:#c9d3dc;line-height:1.35}
+#cmpDiv{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;opacity:.85;display:none;pointer-events:none}
+body.cmp .cmpLbl,body.cmp #cmpDiv{display:block}
+body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,body.cmp #arcLbl{display:none!important}
+#toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%);background:#ffd23f;color:#0f1419;font-weight:600;font-size:13px;padding:8px 12px;border-radius:10px;max-width:86%;text-align:center;opacity:0;transition:opacity .4s;pointer-events:none}
+#toast.show{opacity:1}
+.qa{margin:6px 0;padding:8px 10px;background:#1f2a35;border-radius:8px}
+.qa button{margin-left:6px;padding:3px 8px;font-size:12px}
+.qa .ans{margin-top:4px;color:#3ddc84}
+.key{font-weight:600;color:#ffd23f !important;margin-top:10px !important}
 </style>
 </head>
 <body>
@@ -85,11 +97,20 @@ tr.click{cursor:pointer}tr.focus td{background:#1f2a35}
   </svg>
   <div id="arcLbl" style="position:absolute;pointer-events:none;transform:translate(-50%,-50%);background:rgba(15,20,25,.85);color:#fff;font-size:12px;font-weight:700;padding:1px 6px;border-radius:6px;border:1px solid #fff"></div>
   <div id="badges"></div>
+  <div class="cmpLbl" id="cmpL" style="left:8px">✅ 正確</div>
+  <div class="cmpLbl" id="cmpR" style="right:8px"></div>
+  <div id="cmpDiv"></div>
+  <div id="toast"></div>
   <div id="top3"></div>
   <div class="hint">拖動旋轉・雙指縮放</div>
 </div>
 
 <main>
+  <div class="row">
+    <button data-mode="simple" class="on">👀 簡易</button>
+    <button data-mode="detail">🔬 詳細</button>
+    <button id="cmpBtn">⇆ 正確 vs 錯誤</button>
+  </div>
   <div class="row seg">
     <button data-l="slip">Side slip</button>
     <button data-l="trav">斜滑降＋Garland</button>
@@ -139,6 +160,13 @@ tr.click{cursor:pointer}tr.focus td{background:#1f2a35}
     <button data-v="back">後面</button>
     <button data-v="top">俯視</button>
     <button data-t="follow" class="on">跟方向</button>
+  </div>
+
+  <div class="card" id="guide">
+    <h2>🎯 睇之前諗一諗</h2>
+    <div id="gQs"></div>
+    <p class="key" id="gSum"></p>
+    <p id="gSnow"></p>
   </div>
 
   <div class="card">
@@ -1029,6 +1057,7 @@ function setLevel(l){
   Object.assign(cfg, {v:lv.v, slope:lv.slope, R:lv.R, board:cfg.H + lv.boardOff});
   document.querySelectorAll('[data-l]').forEach(b => b.classList.toggle('on', b.dataset.l === l));
   syncSliders(); build(); lastPhase = '';
+  renderGuide();
 }
 document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => setLevel(b.dataset.l));
 document.querySelectorAll('[data-dir]').forEach(b => b.onclick = () => {
@@ -1046,6 +1075,7 @@ function setStance(k){
   document.querySelectorAll('[data-st]').forEach(b => b.classList.toggle('on', b.dataset.st === k));
   document.getElementById('stName').textContent = STANCE[k].name;
   document.getElementById('stTxt').textContent = STANCE[k].txt;
+  if (typeof cmpOn !== 'undefined') updCmpLbl();
   if (C.L) rebuildTrails(Math.floor(sT));
 }
 document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => setStance(b.dataset.st));
@@ -1205,7 +1235,51 @@ function updateUI(p, act, md, now){
   else al.style.display = 'none';
   drawFeet(p);
   if (now - tableT > 150){ updateTable(act, md); tableT = now; }
+  if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
 }
+
+/* ---------- learning: simple mode, compare, guide ---------- */
+const GUIDE = {"slip": {"q": [["想停，edge 要加大定放細？", "加大，接近坡度就會停。"], ["眼應該望邊？", "望前面（下坡方向），唔好望塊板。"]], "sum": "用腳踝控制 edge 角度：大就停，細就滑。", "snow": "Heel slip：拉起腳趾停、放低腳趾滑，重複 5 次；之後再試 toe slip。"}, "trav": {"q": [["想由斜滑降轉向 fall line，要點做？", "放平少少 edge，前腳輕輕加壓。"], ["轉返上坡靠乜？", "重新加 edge：heel 拉腳趾，toe 推膝頭。"]], "sum": "放刃落、入刃上，係連續轉彎之前嘅一步。", "snow": "一條雪道做 3–4 個 garland 先停，heel 同 toe 兩邊都要練。"}, "beg": {"q": [["入彎時重心應該放前腳定後腳？", "前腳多少少（大約 55–60%）。"], ["眼應該望邊？", "望住要去嘅方向，頭同肩膀帶身體。"]], "sum": "望去邊，前腳帶，後腳跟住。", "snow": "每個彎之前先轉頭望去下一個方向，再輕輕壓前腳。"}, "mid": {"q": [["Heelside 主要靠邊組肌肉？", "脛前肌拉起腳趾，股四頭肌同腹肌撐住。"], ["上身應該帶轉塊板嗎？", "唔應該，靠腳踝同膝頭控制。"]], "sum": "伸展換刃、屈曲加壓、上身穩定。", "snow": "每個彎講「起、壓」；試吓手放喺膝頭上面做幾個彎，感覺下半身帶轉。"}, "carve": {"q": [["單板 edge 角度同身體傾斜比較係點？", "差唔多一樣。"], ["Toeside 時髖應該向後頂嗎？", "唔應該，身體成條直線向彎內傾。"]], "sum": "早啲傾斜，畀塊板自己轉，雪上只留一條幼線。", "snow": "喺緩坡做 carve traverse：只用一邊 edge 橫過雪道，再回頭睇雪上係咪一條幼線。"}, "euro": {"q": [["手掃雪係用嚟撐住身體嗎？", "唔係。重心仍然喺 edge 上面，手只係輕輕掂。"], ["想倒得低，最需要乜？", "夠速度同埋 edge 咬實；太慢就倒唔落。"]], "sum": "靠速度同 edge 撐住身體，唔係靠隻手。", "snow": "揀壓雪好嘅闊雪道，先練 heelside，逐步加大傾斜；記得保護膝頭同手腕。"}, "ollie": {"q": [["Pop 之前身體要做乜？", "蹲低，重心移去板尾，好似壓彈弓。"], ["喺空中點樣令塊板跟住起？", "膝頭向胸口收，前腳拉平塊板。"]], "sum": "壓尾、彈起、收腳、屈膝著地。", "snow": "先喺平地原地練，再喺緩坡慢速做；著地時雙腳要同時落。"}, "butter": {"q": [["Nose butter 重心放邊？", "前腳，大約 80–90%。"], ["轉嘅力量由邊度嚟？", "上身先預扭，再帶頭轉，下半身跟住。"]], "sum": "壓板頭、預扭、上身帶轉。", "snow": "先喺平地練 nose press 企定 3 秒，再加 180，最後先試 360。"}};
+const STANCE_SHORT = {"back": "後腳太重：板頭飄，要靠上身扭先轉到。", "waist": "屈腰／坐馬桶：重心離開 edge，容易跌。", "rot": "上身帶轉：板尾甩出，上下身唔同步。"};
+for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
+const CMP_DEFAULT = 'back';
+let cmpOn = false, lastCyc = null;
+const toastDone = {};
+function renderGuide(){
+  const g = GUIDE[cfg.level]; if (!g) return;
+  document.getElementById('gQs').innerHTML = g.q.map(([q, a]) => `<div class="qa">❓ ${q}<button>睇答案</button><div class="ans" hidden>✅ ${a}</div></div>`).join('');
+  document.querySelectorAll('#gQs .qa button').forEach(b => b.onclick = () => { const a = b.nextElementSibling; a.hidden = !a.hidden; b.textContent = a.hidden ? '睇答案' : '收埋'; });
+  document.getElementById('gSum').textContent = '💡 重點：' + g.sum;
+  document.getElementById('gSnow').textContent = '❄️ 雪上點練：' + g.snow;
+}
+function showToast(t){
+  const el = document.getElementById('toast'); el.textContent = '💡 ' + t; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 4500);
+}
+function setMode(m){
+  document.body.classList.toggle('simple', m === 'simple');
+  document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  if (m === 'simple') Object.assign(show, {muscle:false, force:false, xray:false, com:true, edge:true});
+  else Object.assign(show, {muscle:true, force:true, xray:true});
+  document.querySelectorAll('[data-t]').forEach(b => b.classList.toggle('on', !!show[b.dataset.t]));
+  applyVis();
+}
+function updCmpLbl(){
+  const st = STANCE[cfg.stance];
+  document.getElementById('cmpR').innerHTML = (cfg.stance === 'ok' ? '✅ ' : '❌ ') + st.name + (st.short ? '<small>' + st.short + '</small>' : '');
+}
+function setCmp(on){
+  cmpOn = on; document.body.classList.toggle('cmp', on);
+  document.getElementById('cmpBtn').classList.toggle('on', on);
+  if (on && cfg.stance === 'ok') setStance(CMP_DEFAULT);
+  if (on) setView('heelV');
+  updCmpLbl();
+}
+document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+document.getElementById('cmpBtn').onclick = () => setCmp(!cmpOn);
+['gauge','feet','top3','badges','arcLbl'].forEach(id => { const e = document.getElementById(id); if (e) e.classList.add('adv'); });
+['mBody','spec','watch'].forEach(id => { const e = document.getElementById(id); if (e) e.closest('.card').classList.add('adv'); });
+document.querySelector('[data-t="muscle"]').closest('.row').classList.add('adv');
 
 /* ---------- orbit ---------- */
 const cv = renderer.domElement, ptrs = new Map(); let pinch0 = 0, rad0 = rad;
@@ -1225,7 +1299,7 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
-setStance('ok'); setLevel('carve'); applyVis();
+setStance('ok'); setLevel('carve'); setMode('simple');
 Rig.load('xbot.json', slopeG, {color:0x5fb38c, jointColor:0x263238}).then(() => {
   limbs.forEach(g => { g.children[0].visible = g.children[1].visible = false; });
   [armF, armB].forEach(a => { a.up.visible = a.fo.visible = false; });
@@ -1243,18 +1317,32 @@ function frame(now){
   scrub.value = Math.round((((sT%1)+1)%1)*1000);
   if (Math.floor(sT) !== trailCycle) rebuildTrails(Math.floor(sT));
   const p = pose(sT);
-  const {act, md} = applyPose(p);
+  let {act, md} = applyPose(p);
   snow.position.set(Math.round(p.mid.x/2)*2, 0, Math.round(p.mid.z/2)*2);
   grid.position.set(snow.position.x, .003, snow.position.z);
   slopeG.updateMatrixWorld(true);
-  const tl = p.com.clone(); tl.y = Math.max(tl.y - .2*C.k, .35*C.k);
-  const t = th + (show.follow && !LV[cfg.level].slip ? p.psi : 0);
-  const cl = tl.clone().add(new V(rad*Math.sin(ph)*Math.sin(t), rad*Math.cos(ph), rad*Math.sin(ph)*Math.cos(t)));
-  const target = slopeG.localToWorld(tl);
-  camera.position.copy(slopeG.localToWorld(cl));
-  camera.lookAt(target);
-  sun.position.copy(target).add(new V(5,6,-1)); sun.target.position.copy(target);
-  renderer.render(scene, camera);
+  const placeCam = (pp, aspect, rr) => {
+    const tl = (() => { const v = pp.com.clone(); v.y = Math.max(v.y - .2*C.k, .35*C.k); return v; })();
+    const t = th + (show.follow && !LV[cfg.level].slip ? pp.psi : 0);
+    const cl = tl.clone().add(new V(rr*Math.sin(ph)*Math.sin(t), rr*Math.cos(ph), rr*Math.sin(ph)*Math.cos(t)));
+    const target = slopeG.localToWorld(tl);
+    camera.aspect = aspect; camera.updateProjectionMatrix();
+    camera.position.copy(slopeG.localToWorld(cl)); camera.lookAt(target);
+    sun.position.copy(target).add(new V(5,6,-1)); sun.target.position.copy(target);
+  };
+  const Wd = stage.clientWidth, Hd = stage.clientHeight;
+  if (cmpOn){
+    const W2 = Wd/2, sel = cfg.stance;
+    renderer.setScissorTest(true);
+    cfg.stance = 'ok'; const p0 = pose(sT); applyPose(p0); slopeG.updateMatrixWorld(true);
+    placeCam(p0, W2/Hd, rad*1.3); renderer.setViewport(0, 0, W2, Hd); renderer.setScissor(0, 0, W2, Hd); renderer.render(scene, camera);
+    cfg.stance = sel; const r1 = applyPose(p); act = r1.act; md = r1.md; slopeG.updateMatrixWorld(true);
+    placeCam(p, W2/Hd, rad*1.3); renderer.setViewport(W2, 0, W2, Hd); renderer.setScissor(W2, 0, W2, Hd); renderer.render(scene, camera);
+    renderer.setScissorTest(false); renderer.setViewport(0, 0, Wd, Hd);
+  } else { placeCam(p, Wd/Hd, rad); renderer.render(scene, camera); }
+  const cyc = Math.floor(sT);
+  if (playing && lastCyc !== null && cyc !== lastCyc && !toastDone[cfg.level] && GUIDE[cfg.level]){ showToast('重點：' + GUIDE[cfg.level].sum); toastDone[cfg.level] = 1; }
+  lastCyc = cyc;
   updateUI(p, act, md, now);
   requestAnimationFrame(frame);
 }
