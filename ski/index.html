@@ -138,6 +138,14 @@ tr.click{cursor:pointer}tr.focus td{background:#1f2a35}
   </div>
 
   <div class="card">
+    <h2>鳥瞰圖：成個動作由開始到完</h2>
+    <canvas id="birdMap" style="width:100%;height:300px;display:block;border-radius:8px;touch-action:manipulation;cursor:pointer"></canvas>
+    <div class="legend" id="mapLegend" style="margin-top:8px"></div>
+    <p class="note" id="mapInfo" style="margin-top:4px"></p>
+    <p class="note">粗線 = CoM 路線（顏色 = 階段，虛線 = 離地），灰線 = 板痕，短灰線 = 板嘅方向，黃點 = 而家位置，綠色「起」→ 紅色「完」。㩒地圖任何一點可以跳去嗰個時刻。</p>
+  </div>
+
+  <div class="card">
     <h2 id="phTitle"></h2>
     <p id="phCue"></p>
     <div class="legend" style="margin-top:8px">
@@ -301,6 +309,94 @@ function skiPitch(foot, yaw){
   const dx = Math.sin(yaw)*.3, dz = Math.cos(yaw)*.3;
   return -Math.atan((hf(foot.x+dx, foot.z+dz) - hf(foot.x-dx, foot.z-dz))/.6);
 }
+
+/* ---------- bird's-eye track map ---------- */
+let mapS = [], mapBox = null, mapPh = [], mapT = 0;
+const PHC = ['#4cc9f0','#3ddc84','#ff1946','#ffb020','#a855f7','#eb6e46','#9aa5b1'];
+function buildMap(c){
+  mapS = []; mapPh = [];
+  for (let i = 0; i <= 240; i++){
+    const m = mapSample(pose(c + i/240)); m.s = i/240;
+    if (!mapPh.includes(m.ph)) mapPh.push(m.ph);
+    m.pi = mapPh.indexOf(m.ph); mapS.push(m);
+  }
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (const m of mapS) for (const [x, z] of [m.c, ...m.tr]){ x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z); }
+  mapBox = {x0, x1, z0, z1};
+  let dist = 0; for (let i = 1; i < mapS.length; i++) dist += Math.hypot(mapS[i].at[0]-mapS[i-1].at[0], mapS[i].at[1]-mapS[i-1].at[1]);
+  const lg = document.getElementById('mapLegend');
+  if (lg) lg.innerHTML = mapPh.map((ph, i) => `<span><span class="sw" style="background:${PHC[i % PHC.length]}"></span>${mapName(ph)}</span>`).join('')
+    + `<span><span class="sw" style="background:#7f93a8"></span>${mapTrackName()}</span>`;
+  const inf = document.getElementById('mapInfo');
+  if (inf) inf.textContent = `一個循環：下坡 ${(z1-z0).toFixed(1)} m・橫向 ${(x1-x0).toFixed(1)} m・行走距離 ${dist.toFixed(1)} m・時間 ${C.period.toFixed(1)} s`;
+}
+function drawMap(p){
+  const cv = document.getElementById('birdMap'); if (!cv || !mapBox) return;
+  const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (cv.width !== Math.round(w*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.fillStyle = '#0f1620'; g.fillRect(0, 0, w, h);
+  const {x0, x1, z0, z1} = mapBox, pad = 22;
+  const sc = Math.min((w-2*pad)/Math.max(x1-x0, .5), (h-2*pad)/Math.max(z1-z0, .5), 90);
+  const cx = (x0+x1)/2, cz = (z0+z1)/2;
+  const X = x => w/2 + (x-cx)*sc, Y = z => h/2 + (z-cz)*sc;
+  cv._map = {X, Y};
+  if (typeof hf === 'function' && C.mogul){
+    g.strokeStyle = 'rgba(160,185,210,.25)'; g.lineWidth = 1;
+    for (let zz = Math.floor((z0-2)/C.P)*C.P; zz <= z1+2; zz += C.P) for (let xx = Math.floor((x0-3)/C.Sx)*C.Sx; xx <= x1+3; xx += C.Sx){
+      g.beginPath(); g.arc(X(xx), Y(zz), C.Rb*sc, 0, Math.PI*2); g.stroke();
+    }
+  }
+  // fall line arrow + scale bar
+  g.fillStyle = '#5b6b7a'; g.font = '11px sans-serif'; g.textAlign = 'right'; g.fillText('↓ 下坡', w-6, 14);
+  const bar = sc*5 > 40 && sc*5 < w*.5 ? 5 : sc*1 > 40 ? 1 : 10;
+  g.strokeStyle = '#5b6b7a'; g.lineWidth = 2; g.beginPath(); g.moveTo(8, h-8); g.lineTo(8 + bar*sc, h-8); g.stroke();
+  g.textAlign = 'left'; g.fillText(bar + ' m', 10 + bar*sc, h-5);
+  // heading ticks (ski / board direction)
+  g.strokeStyle = 'rgba(127,147,168,.55)'; g.lineWidth = 1.5;
+  for (let i = 0; i < mapS.length; i += 10){
+    const m = mapS[i], dx = Math.sin(m.yaw)*m.len/2, dz = Math.cos(m.yaw)*m.len/2;
+    g.beginPath(); g.moveTo(X(m.at[0]-dx), Y(m.at[1]-dz)); g.lineTo(X(m.at[0]+dx), Y(m.at[1]+dz)); g.stroke();
+  }
+  // tracks
+  g.strokeStyle = '#7f93a8'; g.lineWidth = 1.2;
+  for (let t = 0; t < mapS[0].tr.length; t++){
+    g.beginPath(); mapS.forEach((m, i) => { const [x, z] = m.tr[t]; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); }); g.stroke();
+  }
+  // CoM coloured by phase
+  g.lineWidth = 3; g.lineCap = 'round';
+  for (let i = 1; i < mapS.length; i++){
+    const a = mapS[i-1], b = mapS[i];
+    g.strokeStyle = PHC[b.pi % PHC.length]; g.setLineDash(b.air > .02 ? [4, 4] : []);
+    g.beginPath(); g.moveTo(X(a.c[0]), Y(a.c[1])); g.lineTo(X(b.c[0]), Y(b.c[1])); g.stroke();
+  }
+  g.setLineDash([]);
+  // start / end
+  const st = mapS[0].c, en = mapS[mapS.length-1].c;
+  g.fillStyle = '#3ddc84'; g.beginPath(); g.arc(X(st[0]), Y(st[1]), 7, 0, Math.PI*2); g.fill();
+  g.fillStyle = '#0f1419'; g.font = 'bold 9px sans-serif'; g.textAlign = 'center'; g.fillText('起', X(st[0]), Y(st[1])+3);
+  g.fillStyle = '#ff4d6d'; g.fillRect(X(en[0])-7, Y(en[1])-7, 14, 14);
+  g.fillStyle = '#fff'; g.fillText('完', X(en[0]), Y(en[1])+3);
+  // current position
+  const u = ((p.s % 1) + 1) % 1, cur = mapS[Math.min(mapS.length-1, Math.round(u*240))];
+  const m = mapSample(p);
+  const ox = m.at[0] - cur.at[0], oz = m.at[1] - cur.at[1];
+  const px = X(m.c[0]-ox), pz = Y(m.c[1]-oz), dx = Math.sin(m.yaw)*m.len/2*sc, dz = Math.cos(m.yaw)*m.len/2*sc;
+  g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.moveTo(X(m.at[0]-ox)-dx, Y(m.at[1]-oz)-dz); g.lineTo(X(m.at[0]-ox)+dx, Y(m.at[1]-oz)+dz); g.stroke();
+  g.fillStyle = '#ffd23f'; g.strokeStyle = '#0f1419'; g.lineWidth = 2;
+  g.beginPath(); g.arc(px, pz, 6, 0, Math.PI*2); g.fill(); g.stroke();
+}
+function mapClick(e){
+  const cv = e.currentTarget, r = cv.getBoundingClientRect(); if (!cv._map) return;
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  let best = null, bd = Infinity;
+  for (const m of mapS){ const d = Math.hypot(cv._map.X(m.c[0]) - mx, cv._map.Y(m.c[1]) - my); if (d < bd){ bd = d; best = m; } }
+  if (best) jump(Math.min(best.s, .999));
+}
+
+function mapSample(p){ return {ph: phaseOf(p), c: [p.com.x, p.com.z], tr: [[p.footR.x, p.footR.z], [p.footL.x, p.footL.z]], at: [(p.footR.x+p.footL.x)/2, (p.footR.z+p.footL.z)/2], yaw: (p.yawR+p.yawL)/2, len: cfg.ski/100, air: 0}; }
+const mapName = ph => (PH[cfg.level][ph] || [ph])[0].split('（')[0];
+const mapTrackName = () => '雪板痕';
 
 /* ---------- pose ---------- */
 function pose(s){
@@ -642,6 +738,7 @@ function rebuildTrails(c){
   trails.forEach(t => slopeG.add(t));
   comTrail.visible = show.com;
   trailCycle = c;
+  buildMap(c);
 }
 let comTrail, trailCycle = null;
 
@@ -954,6 +1051,7 @@ function sideName(side, p){
   return outer ? '外腳' : '內腳';
 }
 function updateUI(p, act, md, now){
+  if (now - mapT > 60){ drawMap(p); mapT = now; }
   const ph = phaseOf(p), lv = LV[cfg.level];
   const turn = p.nsh < .05 ? '' : (p.sg > 0 ? '右彎' : '左彎');
   const outer = p.nsh < .05 ? '—' : (p.sg > 0 ? '左腳' : '右腳');
@@ -1005,6 +1103,7 @@ function resize(){ const w = stage.clientWidth, h = stage.clientHeight; renderer
 new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
+document.getElementById('birdMap').onclick = mapClick;
 setLevel('carve'); setStance('ok'); applyVis();
 Rig.load('xbot.json', slopeG, {color:0x7fa6cf, jointColor:0x2b3442}).then(() => {
   limbs.forEach(g => { g.children[0].visible = g.children[1].visible = false; });
