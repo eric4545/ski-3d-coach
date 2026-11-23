@@ -144,6 +144,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button class="on" data-t="com">CoM</button>
     <button class="on" data-t="force">力線</button>
     <button class="on" data-t="edge">Edge</button>
+    <button class="on" data-t="bp">板壓力</button>
   </div>
   <div class="row">
     <span class="label">站位</span>
@@ -870,6 +871,28 @@ let boardParts = [], edgeL, edgeR;
 const bootMat = new THREE.MeshStandardMaterial({color:0x2b2b2b, roughness:.6});
 const bootF = new THREE.Mesh(new THREE.BoxGeometry(.12,.16,.3), bootMat), bootB = bootF.clone();
 boardG.add(bootF, bootB);
+/* ---------- board pressure strip ---------- */
+const PNS = 32;
+function makeStrip(){
+  const g = new THREE.PlaneGeometry(1, 1, 1, PNS); g.rotateX(-Math.PI/2);
+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count*3), 3));
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({vertexColors:true, transparent:true, opacity:.95, depthWrite:false}));
+  m.renderOrder = 5; return m;
+}
+const BP0 = new THREE.Color(0xf4f7fb), BP1 = new THREE.Color(0xffb020), BP2 = new THREE.Color(0xff1946);
+function bpRamp(v){ return v < .5 ? BP0.clone().lerp(BP1, v/.5) : BP1.clone().lerp(BP2, (v-.5)/.5); }
+function paintStrip(m, fn){
+  const pos = m.geometry.attributes.position, col = m.geometry.attributes.color;
+  for (let i = 0; i < pos.count; i++){ const c = bpRamp(Math.min(1, fn(pos.getZ(i)))); col.setXYZ(i, c.r, c.g, c.b); }
+  col.needsUpdate = true;
+}
+function makeMarker(){
+  const m = new THREE.Mesh(new THREE.ConeGeometry(.03, .09, 12), new THREE.MeshBasicMaterial({color:0xff1946, depthTest:false, transparent:true}));
+  m.rotation.x = Math.PI; m.renderOrder = 6; return m;
+}
+const bpLabel = f => f > .06 ? '前段（板頭）' : f < -.06 ? '後段（板尾）' : '中段';
+let bpText = '';
+let bStrip = null; const bMk = makeMarker(); boardG.add(bMk);
 function buildBoard(){
   boardParts.forEach(m => { boardG.remove(m); m.geometry.dispose(); });
   const Lb = cfg.board/100;
@@ -878,7 +901,8 @@ function buildBoard(){
   const tl = new THREE.Mesh(new THREE.CylinderGeometry(BW/2, BW/2, .02, 24, 1, false, Math.PI/2, Math.PI), boardMat); tl.position.set(0,.01,-(Lb-BW)/2);
   edgeL = new THREE.Mesh(new THREE.BoxGeometry(.012,.012,Lb-BW), new THREE.MeshBasicMaterial({color:0x4cc9f0})); edgeL.position.x = BW/2;
   edgeR = edgeL.clone(); edgeR.position.x = -BW/2;
-  boardParts = [mid, n, tl, edgeL, edgeR];
+  bStrip = makeStrip(); bStrip.scale.set(.08, 1, Lb); bStrip.position.y = .0215;
+  boardParts = [mid, n, tl, edgeL, edgeR, bStrip];
   boardParts.forEach(m => { m.castShadow = true; boardG.add(m); });
 }
 function placeBoots(){
@@ -928,6 +952,24 @@ function applyPose(p){
   boardG.quaternion.copy(p.qB); boardG.position.copy(p.gpos);
   const sgE = p.edge >= 0 ? 1 : -1, on = show.edge && Math.abs(p.edge) > .05;
   edgeR.visible = on && sgE > 0; edgeL.visible = on && sgE < 0;
+  if (bStrip){
+    const Lb = cfg.board/100, wF = weightF(p), lift = p.lift || 0, pit = p.pitch || 0;
+    const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
+    let fn, cm;
+    if (lift > .02){ fn = () => 0; cm = 0; }
+    else if (Math.abs(pit) > 2*D){ cm = Math.sign(pit)*(Lb/2 - .1); fn = zm => 1.1*Math.exp(-(((zm - cm)/.09)**2)); }
+    else {
+      const sh = .12*(init - comp), a = C.S/2 + sh, b = -C.S/2 + sh, sg = .13 + .1*(1 - Math.min(1, Math.abs(p.edge)/(20*D)));
+      cm = wF*a + (1-wF)*b;
+      fn = zm => 1.25*(wF*Math.exp(-(((zm - a)/sg)**2)) + (1-wF)*Math.exp(-(((zm - b)/sg)**2)));
+    }
+    const x = Math.abs(p.edge) > .05 ? -(BW/2 - .045)*sgE : 0;
+    bStrip.visible = bMk.visible = show.bp && lift <= .02;
+    bStrip.position.x = x;
+    paintStrip(bStrip, z => fn(z*Lb));
+    bMk.position.set(x, .08, cm);
+    bpText = lift > .02 ? '板壓力：離地' : `板壓力：${bpLabel(cm/Lb)}・前腳 ${Math.round(wF*100)}%`;
+  }
   pelvis.position.copy(p.P); pelvis.quaternion.copy(J.qP);
   orient(legF.thigh, J.hipF, J.legF.K, J.legF.nrm); orient(legF.shin, J.legF.K, J.legF.E, J.legF.nrm);
   orient(legB.thigh, J.hipB, J.legB.K, J.legB.nrm); orient(legB.shin, J.legB.K, J.legB.E, J.legB.nrm);
@@ -990,7 +1032,7 @@ function heat(a){
 }
 
 /* ---------- UI ---------- */
-const show = {muscle:true, com:true, force:true, edge:true, xray:true, follow:true};
+const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:true};
 function applyVis(){
   comBall.visible = show.com; if (comTrail) comTrail.visible = show.com;
   grf.visible = grav.visible = arcLine.visible = normLine.visible = show.force;
@@ -1236,6 +1278,7 @@ function updateUI(p, act, md, now){
   drawFeet(p);
   if (now - tableT > 150){ updateTable(act, md); tableT = now; }
   if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
+  if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */

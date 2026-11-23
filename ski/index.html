@@ -141,6 +141,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button class="on" data-t="com">CoM</button>
     <button class="on" data-t="force">力線</button>
     <button class="on" data-t="edge">Edge</button>
+    <button class="on" data-t="bp">板壓力</button>
   </div>
   <div class="row">
     <span class="label">站位</span>
@@ -826,13 +827,36 @@ function makeArm(){
   return {up: limb(ARM_U.length(), .05, .042, jacket), fo: limb(ARM_F.length(), .042, .035, jacket), pole};
 }
 const armR = makeArm(), armL = makeArm();
+/* ---------- board pressure strip ---------- */
+const PNS = 32;
+function makeStrip(){
+  const g = new THREE.PlaneGeometry(1, 1, 1, PNS); g.rotateX(-Math.PI/2);
+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count*3), 3));
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({vertexColors:true, transparent:true, opacity:.95, depthWrite:false}));
+  m.renderOrder = 5; return m;
+}
+const BP0 = new THREE.Color(0xf4f7fb), BP1 = new THREE.Color(0xffb020), BP2 = new THREE.Color(0xff1946);
+function bpRamp(v){ return v < .5 ? BP0.clone().lerp(BP1, v/.5) : BP1.clone().lerp(BP2, (v-.5)/.5); }
+function paintStrip(m, fn){
+  const pos = m.geometry.attributes.position, col = m.geometry.attributes.color;
+  for (let i = 0; i < pos.count; i++){ const c = bpRamp(Math.min(1, fn(pos.getZ(i)))); col.setXYZ(i, c.r, c.g, c.b); }
+  col.needsUpdate = true;
+}
+function makeMarker(){
+  const m = new THREE.Mesh(new THREE.ConeGeometry(.03, .09, 12), new THREE.MeshBasicMaterial({color:0xff1946, depthTest:false, transparent:true}));
+  m.rotation.x = Math.PI; m.renderOrder = 6; return m;
+}
+const bpLabel = f => f > .06 ? '前段（板頭）' : f < -.06 ? '後段（板尾）' : '中段';
+let bpText = '';
 function makeSki(){
   const g = new THREE.Group(), board = new THREE.Group(); g.add(board);
-  const ski = new THREE.Mesh(new THREE.BoxGeometry(.09,.015,1), new THREE.MeshStandardMaterial({color:0xd63c3c, roughness:.4})); ski.position.y = .0075; board.add(ski);
+  const ski = new THREE.Mesh(new THREE.BoxGeometry(.09,.015,1), new THREE.MeshStandardMaterial({color:0x2b3442, roughness:.4})); ski.position.y = .0075; board.add(ski);
   const edge = new THREE.Mesh(new THREE.BoxGeometry(.012,.012,.98), new THREE.MeshBasicMaterial({color:0x4cc9f0})); board.add(edge);
   const boot = new THREE.Mesh(new THREE.BoxGeometry(.11,.2,.3), new THREE.MeshStandardMaterial({color:0xe5e7eb, roughness:.5})); boot.position.set(0,.1,.02);
   const bootG = new THREE.Group(); bootG.add(boot); g.add(bootG);
-  slopeG.add(g); return {g, board, edge, bootG};
+  const strip = makeStrip(); strip.scale.set(.05, 1, 1); strip.position.y = .0165; board.add(strip);
+  const mk = makeMarker(); g.add(mk);
+  slopeG.add(g); return {g, board, edge, bootG, strip, mk};
 }
 const skiR = makeSki(), skiL = makeSki();
 const comBall = new THREE.Mesh(new THREE.SphereGeometry(.085,18,12), new THREE.MeshBasicMaterial({color:0xffd23f, depthTest:false, transparent:true}));
@@ -876,7 +900,7 @@ function placePole(arm, hand, f, out, plant){
 }
 function plantAmt(s){
   const u = ((s*2)%1+1)%1, d = Math.min(Math.abs(u-.95), Math.abs(u+1-.95));
-  return Math.exp(-((d/.045)**2));
+  return Math.exp(-(((d)/.045)**2));
 }
 
 let focus = null;
@@ -891,6 +915,16 @@ function applyPose(p){
   const aR = placeArm(armR, J.tBase.clone().add(new V(-.2*k,.45*k,0).applyQuaternion(J.qT)), qA, 1, p.f, newSg > 0 ? pl : 0);
   const aL = placeArm(armL, J.tBase.clone().add(new V(.2*k,.45*k,0).applyQuaternion(J.qT)), qA, -1, p.f, newSg < 0 ? pl : 0);
   placeSki(skiR, p.footR, p.yawR, p.edgeR, J.qSkiR); placeSki(skiL, p.footL, p.yawL, p.edgeL, J.qSkiL);
+  { const pr = pressure(p), L = cfg.ski/100;
+    for (const [S, sk] of [['R', skiR], ['L', skiL]]){
+      const d = pr[S], e = p['edge'+S], c = d.fa*.25, sig = .14 + .1*(1 - Math.min(1, Math.abs(e)/(20*D)));
+      const x = Math.abs(e) > .05 ? -.018*Math.sign(e) : 0;
+      sk.strip.visible = sk.mk.visible = show.bp && d.share > .02;
+      sk.strip.position.x = x;
+      paintStrip(sk.strip, z => d.share*1.15*Math.exp(-(((z - c)/sig)**2)));
+      sk.mk.position.set(x, .07 + .05*d.share, c*L); sk.mk.scale.setScalar(.6 + .8*d.share);
+    }
+    const S = p.sg > 0 ? 'L' : 'R'; bpText = `板壓力：${p.nsh < .05 ? '兩板平均・' : '外板'}${bpLabel(pr[S].fa*.25)}`; }
   if (Rig.ready){
     const qH = qYZX(p.psi*lv.tyaw, p.phi*lv.tr*.4, .05);
     const o = Rig.drive({pelvis: p.P, qP: J.qP, qT: J.qT, qH,
@@ -930,7 +964,7 @@ function heat(a){
 }
 
 /* ---------- UI ---------- */
-const show = {muscle:true, com:true, force:true, edge:true, xray:true, follow:false};
+const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:false};
 function applyVis(){
   comBall.visible = show.com; if (comTrail) comTrail.visible = show.com;
   grf.visible = grav.visible = show.force;
@@ -1115,6 +1149,7 @@ function updateUI(p, act, md, now){
   drawFeet(p);
   if (now - tableT > 150){ updateTable(act, md); tableT = now; }
   if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
+  if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
