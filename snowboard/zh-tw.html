@@ -185,6 +185,12 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button class="on" data-t="bp">板子壓力</button>
     <button class="on" id="bendBtn">板子彎曲：真實</button>
   </div>
+  <div class="card" id="loopCard">
+    <h3 style="margin:0 0 6px">🔁 第一原理：一個閉環，沒有主動被動</h3>
+    <div id="lpRows" style="display:grid;gap:6px;font-size:13px;line-height:1.5"></div>
+    <p class="note" id="lpWhy" style="margin:8px 0 4px;font-size:13px;color:var(--text)"></p>
+    <p class="note">簡化：把整個人當成沿著板的路線走。轉彎需要的向心力，腳生不出來，只能來自雪：F·Δt = Δp。人只是給輸入（傾、壓、扭），板的 sidecut 決定弧線，雪推回來的力改變動量，身體再對位去承受這股力，而身體位置又變成下一個輸入。3D 裡：<b style="color:#22c3ee">青 = p 動量</b>、<b style="color:#22c55e">綠 = Δp（¼ 秒）</b>、<b style="color:#ff8a3d">橙 = 物理要求的雪力</b>、<b style="color:#a855f7">紫 = 身體排列</b>；橙紫重疊 = 平衡。</p>
+  </div>
   <div class="row">
     <span class="label">站姿</span>
     <button class="on" data-st="ok">正常</button>
@@ -225,7 +231,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <p id="phCue"></p>
     <div class="legend" style="margin-top:8px">
       <span><span class="sw" style="background:#ffd23f"></span>CoM</span>
-      <span><span class="sw" style="background:#a855f7"></span>GRF（edge→CoM）</span>
+      <span><span class="sw" style="background:#a855f7"></span>GRF（edge→CoM）</span><span><span class="sw" style="background:#22c3ee"></span>p 動量</span><span><span class="sw" style="background:#22c55e"></span>Δp</span><span><span class="sw" style="background:#ff8a3d"></span>所需雪力</span>
       <span><span class="sw" style="background:#3a7bd5"></span>重力</span>
       <span><span class="sw" style="background:#4cc9f0"></span>受力的刃</span>
     </div>
@@ -1326,6 +1332,7 @@ function applyPose(p){
   const gv = p.com.clone().sub(base);
   grf.position.copy(base); grf.setDirection(gv.clone().normalize()); grf.setLength(gv.length(), .14, .08);
   grav.position.copy(p.com); grav.setDirection(new V(0, -Math.cos(cfg.slope*D), Math.sin(cfg.slope*D)));
+  updatePhys(p);
   { const r0 = .55*k, u = gv.clone().normalize(), pts = arcLine.geometry.attributes.position;
     const ang = Math.acos(clamp(u.y, -1, 1)), side = u.clone().setY(0).normalize();
     for (let i = 0; i <= 20; i++){ const a = ang*i/20; const q = base.clone().addScaledVector(UP, r0*Math.cos(a)).addScaledVector(side, r0*Math.sin(a)); pts.setXYZ(i, q.x, q.y, q.z); }
@@ -1354,6 +1361,67 @@ function heat(a){
   return new THREE.Color((c0[0]+(c1[0]-c0[0])*t)/255, (c0[1]+(c1[1]-c0[1])*t)/255, (c0[2]+(c1[2]-c0[2])*t)/255);
 }
 
+
+/* ---------- first principles: momentum loop (derived from the CoM path itself) ---------- */
+const MASS = 75, GVEC = () => new V(0, -Math.cos(cfg.slope*D), Math.sin(cfg.slope*D)).multiplyScalar(9.81);
+const mkArr = c => { const a = new THREE.ArrowHelper(UP, new V(), 1, c, .13, .08); a.traverse(o => { if (o.material){ o.material.depthTest = false; o.material.transparent = true; o.renderOrder = 12; } }); slopeG.add(a); return a; };
+const pArr = mkArr(0x22c3ee), dpArr = mkArr(0x22c55e), needArr = mkArr(0xff8a3d);
+let physTick = 0;
+function physAt(s, sk){
+  // simplification: the whole body rides the board's line. Curvature comes from the path's geometry; for linked turns the speed is the
+  // set speed (the model's assumption), for drills it is measured from the path timing.
+  const h = .006, dt = h*(C.period || 4), g = GVEC();
+  const a = pose(s - h).mid, b = pose(s).mid, c = pose(s + h).mid;
+  const t = c.clone().sub(a), tl = t.length(), tn = tl > 1e-6 ? t.clone().multiplyScalar(1/tl) : new V(0, 0, 1);
+  const sp = LV[cfg.level].kind ? tl/(2*dt) : cfg.v/3.6;
+  const d1 = b.clone().sub(a), d2 = c.clone().sub(b), cr = d1.clone().cross(d2).length();
+  const kap = (d1.length()*d2.length()*c.clone().sub(a).length()) > 1e-9 ? 2*cr/(d1.length()*d2.length()*c.clone().sub(a).length()) : 0;
+  const n = a.clone().add(c).multiplyScalar(.5).sub(b); n.addScaledVector(tn, -n.dot(tn)); if (n.length() > 1e-9) n.normalize();
+  const gAlong = g.dot(tn), aAlong = sk > 12 ? Math.min(0, gAlong) - .6 : gAlong;   // carving: gravity along the line is unresisted; skidding: friction eats it
+  const acc = n.clone().multiplyScalar(sp*sp*kap).addScaledVector(tn, aAlong);
+  return {v: tn.clone().multiplyScalar(sp), acc, R: kap > 1e-4 ? 1/kap : Infinity};
+}
+function setArr(A, from, vec, len){ if (len < .03){ A.visible = false; return; } A.visible = show.force; A.position.copy(from); A.setDirection(vec.clone().normalize()); A.setLength(len, Math.min(.13, len*.4), .08); }
+function updatePhys(p){
+  if (!Number.isFinite(p.s)) return;
+  const tv = pose(p.s + .004).mid.clone().sub(pose(p.s - .004).mid);
+  let sk = Math.abs((p.yawB) - Math.atan2(tv.x, tv.z)) % Math.PI; sk = Math.min(sk, Math.PI - sk)/D;
+  const {v, acc, R: Rk} = physAt(p.s, sk), g = GVEC(), N = new V(0, 1, 0);
+  const sp = v.length(), F = acc.clone().sub(g);                       // what the snow must push: m(a - g)
+  const vh = new V(v.x, 0, v.z), vhn = vh.length() > .05 ? vh.clone().normalize() : new V(0, 0, 1);
+  const aLat = acc.clone().projectOnPlane(N).projectOnPlane(vhn), aL = aLat.length();
+  const inward = aL > .3 ? aLat.clone().normalize() : p.right.clone().normalize();
+  setArr(pArr, p.com, v, .1*sp);
+  setArr(dpArr, p.com.clone().addScaledVector(v, .1), acc, .1*acc.length()*.25);
+  const foot = grf.position.clone(), body = p.com.clone().sub(foot);
+  setArr(needArr, foot, F, body.length()*F.length()/9.81);
+  if (++physTick % 6) return;
+  const ang = (u) => Math.atan2(u.dot(inward), u.dot(N))/D;
+  const tiltBody = ang(p.upLean), tiltNeed = F.length() > .5 ? ang(F) : tiltBody, dl = tiltBody - tiltNeed;
+  const R = aL > .3 ? Rk : Infinity, edge = Math.abs(p.edge)/D, bw = F.length()/9.81;
+  const slow = !!LV[cfg.level].kind;
+  const along = acc.dot(vhn), turnRate = aL > .3 ? (aL/Math.max(sp, .1))/D : 0;
+  const row = (n, t, b) => `<div style="display:flex;gap:8px"><b style="min-width:22px">${n}</b><div><b>${t}</b><br><span style="color:var(--muted)">${b}</span></div></div>`;
+  document.getElementById('lpRows').innerHTML =
+    row('①', '人給輸入', `Edge ${edge.toFixed(0)}°・板與行進方向夾角 ${sk.toFixed(0)}°`) +
+    row('②', '板＋雪生力', `雪推回 ${bw.toFixed(2)}× 體重・弧線半徑 ${Number.isFinite(R) ? R.toFixed(1) + ' m' : '直行'}`) +
+    row('③', '動量改變', `p = ${(MASS*sp).toFixed(0)} kg·m/s（${(sp*3.6).toFixed(0)} km/h）・方向每秒轉 ${turnRate.toFixed(0)}°・${along < -.4 ? '減速中' : along > .4 ? '加速中' : '速度穩定'}`) +
+    (slow ? row('④', '身體對位', `所需力線傾 ${Math.abs(tiltNeed).toFixed(0)}°：身體大致站在板上方，edge 靠腳踝膝蓋`)
+          : row('④', '身體對位', `身體線與所需力線差 ${Math.abs(dl).toFixed(0)}°${Math.abs(dl) < 4 ? '（平衡）' : dl > 0 ? '（傾太多）' : '（傾不夠）'}`));
+  let why;
+  if (bw < .25) why = '雪幾乎沒推你（離地或自由落下）：p 只會隨重力變，什麼都控制不了，所以落地前要對好位。';
+  else if (sk > 12) why = `板與 p 方向差 ${sk.toFixed(0)}°：板打橫刮雪，雪力有一部分向後，正在吃掉速度（skid）。這是控速的工具，不是轉彎失敗。`;
+  else if (slow) why = `這類練習速度慢，向心力小（所需力線只傾 ${Math.abs(tiltNeed).toFixed(0)}°），身體大致站在板上方；edge 是靠腳踝和膝蓋（angulation）做出來，不是傾整個人。（3D 為了看清楚 edge，身體跟著板傾，實際應該站直一點。）`;
+  else if (!Number.isFinite(R) || R > 60) why = '沒有側向力：p 直行，身體不用傾。要轉，就要先給輸入（傾板），讓雪生出側向力。';
+  else if (Math.abs(dl) < 4) why = `身體線疊在所需力線上：雪推回來的力穿過 CoM，不會倒進彎內也不會被拋出。傾 ${tiltNeed.toFixed(0)}° 是由速度和半徑決定（tan = v²/gR），不是你選的。`;
+  else if (dl > 0) why = ['init','trans'].includes(phaseOf(p))
+      ? `身體傾得比所需多 ${dl.toFixed(0)}°：重力會讓你往彎內倒，這是刻意的入彎輸入。倒的同時板上 edge、生出雪力，剛好接住你；所以才有「入彎時先傾」這個動作。`
+      : `身體傾得比所需多 ${dl.toFixed(0)}°：快過板，雪力撐不住，會倒進彎內（moving inside）。要等板生到力，身體才跟著進。`;
+  else why = ['comp','trans'].includes(phaseOf(p))
+      ? `身體傾得比所需少 ${(-dl).toFixed(0)}°：雪力把你推向彎外，CoM 越過板上方到下一個彎。出彎的放鬆、換刃，就是利用這股推力，不用自己出力。`
+      : `身體傾得比所需少 ${(-dl).toFixed(0)}°：力線在 CoM 內側，會被拋出彎外。要再往彎內對位，或減 edge 讓彎變大。`;
+  document.getElementById('lpWhy').textContent = '為什麼要這樣做：' + why;
+}
 /* ---------- UI ---------- */
 const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:true};
 function applyVis(){

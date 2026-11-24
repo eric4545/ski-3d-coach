@@ -185,6 +185,12 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button class="on" data-t="bp">Board pressure</button>
     <button class="on" id="bendBtn">Flex: real</button>
   </div>
+  <div class="card" id="loopCard">
+    <h3 style="margin:0 0 6px">🔁 First principles: one closed loop, nobody in charge</h3>
+    <div id="lpRows" style="display:grid;gap:6px;font-size:13px;line-height:1.5"></div>
+    <p class="note" id="lpWhy" style="margin:8px 0 4px;font-size:13px;color:var(--text)"></p>
+    <p class="note">Simplification: the whole body is treated as riding the board’s line. The centripetal force a turn needs can’t come from your legs — only from the snow: F·Δt = Δp. You only give inputs (tilt, pressure, twist); the sidecut sets the arc, the snow’s push changes your momentum, the body aligns to bear that force, and that body position becomes the next input. In 3D: <b style="color:#22c3ee">cyan = momentum p</b>、<b style="color:#22c55e">green = Δp (¼ s)</b>、<b style="color:#ff8a3d">orange = the snow force physics requires</b>、<b style="color:#a855f7">purple = body alignment</b>; orange on purple = balanced.</p>
+  </div>
   <div class="row">
     <span class="label">Stance</span>
     <button class="on" data-st="ok">Normal</button>
@@ -225,7 +231,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <p id="phCue"></p>
     <div class="legend" style="margin-top:8px">
       <span><span class="sw" style="background:#ffd23f"></span>CoM</span>
-      <span><span class="sw" style="background:#a855f7"></span>GRF（edge→CoM）</span>
+      <span><span class="sw" style="background:#a855f7"></span>GRF（edge→CoM）</span><span><span class="sw" style="background:#22c3ee"></span>Momentum p</span><span><span class="sw" style="background:#22c55e"></span>Δp</span><span><span class="sw" style="background:#ff8a3d"></span>Required snow force</span>
       <span><span class="sw" style="background:#3a7bd5"></span>Gravity</span>
       <span><span class="sw" style="background:#4cc9f0"></span>Loaded edge</span>
     </div>
@@ -1326,6 +1332,7 @@ function applyPose(p){
   const gv = p.com.clone().sub(base);
   grf.position.copy(base); grf.setDirection(gv.clone().normalize()); grf.setLength(gv.length(), .14, .08);
   grav.position.copy(p.com); grav.setDirection(new V(0, -Math.cos(cfg.slope*D), Math.sin(cfg.slope*D)));
+  updatePhys(p);
   { const r0 = .55*k, u = gv.clone().normalize(), pts = arcLine.geometry.attributes.position;
     const ang = Math.acos(clamp(u.y, -1, 1)), side = u.clone().setY(0).normalize();
     for (let i = 0; i <= 20; i++){ const a = ang*i/20; const q = base.clone().addScaledVector(UP, r0*Math.cos(a)).addScaledVector(side, r0*Math.sin(a)); pts.setXYZ(i, q.x, q.y, q.z); }
@@ -1354,6 +1361,67 @@ function heat(a){
   return new THREE.Color((c0[0]+(c1[0]-c0[0])*t)/255, (c0[1]+(c1[1]-c0[1])*t)/255, (c0[2]+(c1[2]-c0[2])*t)/255);
 }
 
+
+/* ---------- first principles: momentum loop (derived from the CoM path itself) ---------- */
+const MASS = 75, GVEC = () => new V(0, -Math.cos(cfg.slope*D), Math.sin(cfg.slope*D)).multiplyScalar(9.81);
+const mkArr = c => { const a = new THREE.ArrowHelper(UP, new V(), 1, c, .13, .08); a.traverse(o => { if (o.material){ o.material.depthTest = false; o.material.transparent = true; o.renderOrder = 12; } }); slopeG.add(a); return a; };
+const pArr = mkArr(0x22c3ee), dpArr = mkArr(0x22c55e), needArr = mkArr(0xff8a3d);
+let physTick = 0;
+function physAt(s, sk){
+  // simplification: the whole body rides the board's line. Curvature comes from the path's geometry; for linked turns the speed is the
+  // set speed (the model's assumption), for drills it is measured from the path timing.
+  const h = .006, dt = h*(C.period || 4), g = GVEC();
+  const a = pose(s - h).mid, b = pose(s).mid, c = pose(s + h).mid;
+  const t = c.clone().sub(a), tl = t.length(), tn = tl > 1e-6 ? t.clone().multiplyScalar(1/tl) : new V(0, 0, 1);
+  const sp = LV[cfg.level].kind ? tl/(2*dt) : cfg.v/3.6;
+  const d1 = b.clone().sub(a), d2 = c.clone().sub(b), cr = d1.clone().cross(d2).length();
+  const kap = (d1.length()*d2.length()*c.clone().sub(a).length()) > 1e-9 ? 2*cr/(d1.length()*d2.length()*c.clone().sub(a).length()) : 0;
+  const n = a.clone().add(c).multiplyScalar(.5).sub(b); n.addScaledVector(tn, -n.dot(tn)); if (n.length() > 1e-9) n.normalize();
+  const gAlong = g.dot(tn), aAlong = sk > 12 ? Math.min(0, gAlong) - .6 : gAlong;   // carving: gravity along the line is unresisted; skidding: friction eats it
+  const acc = n.clone().multiplyScalar(sp*sp*kap).addScaledVector(tn, aAlong);
+  return {v: tn.clone().multiplyScalar(sp), acc, R: kap > 1e-4 ? 1/kap : Infinity};
+}
+function setArr(A, from, vec, len){ if (len < .03){ A.visible = false; return; } A.visible = show.force; A.position.copy(from); A.setDirection(vec.clone().normalize()); A.setLength(len, Math.min(.13, len*.4), .08); }
+function updatePhys(p){
+  if (!Number.isFinite(p.s)) return;
+  const tv = pose(p.s + .004).mid.clone().sub(pose(p.s - .004).mid);
+  let sk = Math.abs((p.yawB) - Math.atan2(tv.x, tv.z)) % Math.PI; sk = Math.min(sk, Math.PI - sk)/D;
+  const {v, acc, R: Rk} = physAt(p.s, sk), g = GVEC(), N = new V(0, 1, 0);
+  const sp = v.length(), F = acc.clone().sub(g);                       // what the snow must push: m(a - g)
+  const vh = new V(v.x, 0, v.z), vhn = vh.length() > .05 ? vh.clone().normalize() : new V(0, 0, 1);
+  const aLat = acc.clone().projectOnPlane(N).projectOnPlane(vhn), aL = aLat.length();
+  const inward = aL > .3 ? aLat.clone().normalize() : p.right.clone().normalize();
+  setArr(pArr, p.com, v, .1*sp);
+  setArr(dpArr, p.com.clone().addScaledVector(v, .1), acc, .1*acc.length()*.25);
+  const foot = grf.position.clone(), body = p.com.clone().sub(foot);
+  setArr(needArr, foot, F, body.length()*F.length()/9.81);
+  if (++physTick % 6) return;
+  const ang = (u) => Math.atan2(u.dot(inward), u.dot(N))/D;
+  const tiltBody = ang(p.upLean), tiltNeed = F.length() > .5 ? ang(F) : tiltBody, dl = tiltBody - tiltNeed;
+  const R = aL > .3 ? Rk : Infinity, edge = Math.abs(p.edge)/D, bw = F.length()/9.81;
+  const slow = !!LV[cfg.level].kind;
+  const along = acc.dot(vhn), turnRate = aL > .3 ? (aL/Math.max(sp, .1))/D : 0;
+  const row = (n, t, b) => `<div style="display:flex;gap:8px"><b style="min-width:22px">${n}</b><div><b>${t}</b><br><span style="color:var(--muted)">${b}</span></div></div>`;
+  document.getElementById('lpRows').innerHTML =
+    row('①', 'Rider’s input', `Edge ${edge.toFixed(0)}° · board vs travel direction ${sk.toFixed(0)}°`) +
+    row('②', 'Board + snow make force', `Snow pushes ${bw.toFixed(2)}× body weight · arc radius ${Number.isFinite(R) ? R.toFixed(1) + ' m' : 'straight'}`) +
+    row('③', 'Momentum changes', `p = ${(MASS*sp).toFixed(0)} kg·m/s (${(sp*3.6).toFixed(0)} km/h) · turning ${turnRate.toFixed(0)}°/s · ${along < -.4 ? 'slowing' : along > .4 ? 'speeding up' : 'steady speed'}`) +
+    (slow ? row('④', 'Body aligns', `Required force line tilts ${Math.abs(tiltNeed).toFixed(0)}°: body stays roughly over the board, edge comes from ankles and knees`)
+          : row('④', 'Body aligns', `Body line vs required force line: ${Math.abs(dl).toFixed(0)}°${Math.abs(dl) < 4 ? ' (balanced)' : dl > 0 ? ' (leaning too much)' : ' (not leaning enough)'}`));
+  let why;
+  if (bw < .25) why = 'The snow is barely pushing you (airborne or free-falling): p changes only with gravity and you control nothing, so line up before you land.';
+  else if (sk > 12) why = `Board and p differ by ${sk.toFixed(0)}°: the board scrapes sideways, part of the snow force points backward and eats speed (skid). It’s a speed-control tool, not a failed turn.`;
+  else if (slow) why = `These drills are slow, so the centripetal force is small (the required force line tilts only ${Math.abs(tiltNeed).toFixed(0)}°): the body stays roughly over the board, and the edge comes from ankles and knees (angulation), not from leaning the whole body. (In 3D the body tilts with the board so the edge is easy to see; in reality stand taller.)`;
+  else if (!Number.isFinite(R) || R > 60) why = 'No sideways force: p goes straight and the body needn’t lean. To turn, give an input first (tilt the board) so the snow produces a sideways force.';
+  else if (Math.abs(dl) < 4) why = `Body line sits on the required force line: the snow’s push passes through the CoM, so you neither fall in nor get thrown out. The ${tiltNeed.toFixed(0)}° lean is set by speed and radius (tan = v²/gR), not chosen by you.`;
+  else if (dl > 0) why = ['init','trans'].includes(phaseOf(p))
+      ? `Leaning ${dl.toFixed(0)}° more than needed: gravity tips you into the turn — this is the deliberate entry input. While you fall, the board engages its edge and the snow force builds to catch you; that’s why you lean before the turn.`
+      : `Leaning ${dl.toFixed(0)}° more than needed: ahead of the board, the snow can’t hold you and you fall inside (moving inside). Let the board build force, then follow with the body.`;
+  else why = ['comp','trans'].includes(phaseOf(p))
+      ? `Leaning ${(-dl).toFixed(0)}° less than needed: the snow pushes you outward and the CoM crosses over the board into the next turn. Releasing and changing edges at the end of the turn uses this push — no effort of your own.`
+      : `Leaning ${(-dl).toFixed(0)}° less than needed: the force line passes inside the CoM and you’ll be thrown out of the turn. Align further inside, or reduce edge to widen the turn.`;
+  document.getElementById('lpWhy').textContent = 'Why: ' + why;
+}
 /* ---------- UI ---------- */
 const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:true};
 function applyVis(){
