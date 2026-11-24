@@ -935,7 +935,8 @@ function applyPose(p){
       sk.strip.visible = sk.mk.visible = show.bp && d.share > .02;
       sk.strip.position.x = x;
       paintStrip(sk.strip, z => d.share*1.15*Math.exp(-(((z - c)/sig)**2)));
-      const kap = bendMul*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
+      const carveF = {carve:1, lift:1, mid:.5, short:.5, mogul:.5, trav:.5, beg:.25, pivot:.15}[cfg.level] ?? 0;
+      const kap = bendMul*carveF*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
       bendGeo(sk.ski.geometry, kap, L); bendGeo(sk.edge.geometry, kap, L); bendGeo(sk.strip.geometry, kap, L);
       sk.kap = kap;
       sk.mk.position.set(x, .07 + .05*d.share + kap*(c*L)**2/2, c*L); sk.mk.scale.setScalar(.6 + .8*d.share);
@@ -1249,10 +1250,11 @@ Rig.load('xbot.json', slopeG, {color:0x7fa6cf, jointColor:0x2b3442}).then(() => 
   gg.position.set(0, 7, 9); Rig.attachToHead(gg);
   Rig.setHeight(cfg.H/100); applyVis();
 }).catch(e => console.warn('rig load failed', e));
-let last = performance.now();
+let last = performance.now(), camPsi = 0;
 function frame(now){
   const dt = Math.min(.05, (now-last)/1000); last = now;
   if (playing) sT += dt*mul/C.period;
+  { const want = show.follow ? pose(sT).psi*.7 : 0; camPsi += (want - camPsi)*Math.min(1, dt*2); }
   scrub.value = Math.round((((sT%1)+1)%1)*1000);
   if (Math.floor(sT) !== trailCycle) rebuildTrails(Math.floor(sT));
   const p = pose(sT);
@@ -1263,7 +1265,7 @@ function frame(now){
   slopeG.updateMatrixWorld(true);
   const placeCam = (pp, aspect, rr) => {
     const tl = (() => { const v = pp.com.clone(); v.y -= .2*C.k; return v; })();
-    const t = th + (show.follow ? pp.psi : 0);
+    const t = th + camPsi;
     const cl = tl.clone().add(new V(rr*Math.sin(ph)*Math.sin(t), rr*Math.cos(ph), rr*Math.sin(ph)*Math.cos(t)));
     const target = slopeG.localToWorld(tl);
     camera.aspect = aspect; camera.updateProjectionMatrix();

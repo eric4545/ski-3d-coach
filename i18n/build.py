@@ -145,5 +145,5 @@ for d in ('ski', 'snowboard'):
     os.makedirs(f'{OUT}/{d}', exist_ok=True)
 build_page(f'{ROOT}/ski3d/index.html', f'{OUT}/ski')
 build_page(f'{ROOT}/board3d/index.html', f'{OUT}/snowboard')
-build_page(f'{ROOT}/ski-3d-coach/index.html', OUT, is_landing=True)
+build_page(f'{ROOT}/i18n/landing_src.html', OUT, is_landing=True)
 print('built', OUT)

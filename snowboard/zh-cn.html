@@ -241,7 +241,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
       <tbody id="spec"></tbody>
     </table>
     <div id="warn"></div>
-    <p class="note" style="margin-top:6px">雪板 R = 侧切半径。刻滑时转弯半径 ≈ R × cos(立刃角度)，倾倒角由 tan θ = v² / (g·r) 计算。单板的立刃差不多等于身体倾倒，所以刻滑的平衡条件可以简化成 sin θ ≈ v² / (g·R)。固定器角度用 +15° / −6°（八字站姿），站距 ≈ 身高 × 0.31。建议范围是一般经验值。</p>
+    <p class="note" style="margin-top:6px">雪板 R = 侧切半径。刻滑时转弯半径 ≈ R × cos(立刃角度)，倾倒角由 tan θ = v² / (g·r) 计算。单板的立刃差不多等于身体倾倒，所以刻滑的平衡条件可以简化成 sin θ ≈ v² / (g·R)。真实的雪板不会无限弯曲，所以模型把转弯半径限制在 0.6 R 以上。固定器角度用 +15° / −6°（八字站姿），站距 ≈ 身高 × 0.31。建议范围是一般经验值。</p>
   </div>
 
   <p class="note">⚠️ 肌肉发力是依照生物力学原理做的示意模型（相对值），不是实测 EMG。动作是程序产生的理想化示范，用来理解因果关系，不是角度标准。</p>
@@ -273,7 +273,7 @@ const LV = {
   beg:  {name:'入门・搓雪转弯', v:15, slope:10, boardOff:-20, R:7.5, cap:25*D, skid:25*D, Rbase:6, psiB:10, h0:.8, minDrive:.5},
   mid:  {name:'中级・动态转弯', v:25, slope:15, boardOff:-17, R:7.8, cap:45*D, skid:10*D, Rbase:8, psiB:5, h0:.8, minDrive:.4},
   carve:{name:'Carving', v:25, slope:18, boardOff:-14, R:8, cap:65*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:0, carve:true},
-  euro: {name:'低姿态刻滑（Euro carve）', v:31, slope:20, boardOff:-12, R:8, cap:80*D, skid:0, Rbase:0, psiB:0, h0:.78, minDrive:0, carve:true}
+  euro: {name:'低姿态刻滑（Euro carve）', v:40, slope:22, boardOff:-12, R:8, cap:80*D, skid:0, Rbase:0, psiB:0, h0:.78, minDrive:0, carve:true}
 };
 const REC = {
   trav: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[8,20]},
@@ -283,7 +283,7 @@ const REC = {
   beg:  {b:[-25,-15], R:[6.5,8],  slope:[6,12],  v:[8,20]},
   mid:  {b:[-22,-12], R:[7,8.5],  slope:[12,20], v:[15,35]},
   carve:{b:[-20,-8],  R:[7.5,10], slope:[15,28], v:[18,40]},
-  euro: {b:[-18,-6],  R:[7,10],   slope:[15,25], v:[25,40]}
+  euro: {b:[-18,-6],  R:[7,10],   slope:[15,25], v:[32,50]}
 };
 const STANCE = {
   ok:   {name:'正常', dw:0, dz:0, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'理想：入弯前脚稍重（约 55–60%），出弯移到后脚。前刃压力在前脚掌，后刃在脚跟。上半身跟着雪板，眼睛看行进方向，用脚踝和膝盖控制立刃。'},
@@ -318,8 +318,11 @@ function build(){
     return;
   }
   if (lv.carve){
-    const c = v*v/(G*cfg.R);
-    if (c >= Math.sin(lv.cap)){
+    const c = v*v/(G*cfg.R), rMin = .6*cfg.R;
+    const phiFloor = Math.atan(v*v/(G*rMin));
+    if (phiFloor <= lv.cap && (c >= 1 || cfg.R*Math.cos(Math.asin(c)) < rMin)){
+      phiApex = phiFloor; Rt = rMin;
+    } else if (c >= Math.sin(lv.cap) || c >= 1){
       phiApex = lv.cap; Rt = v*v/(G*Math.tan(lv.cap));
       warn = `⚠️ ${cfg.v} km/h 配 R${cfg.R}：雪板立刃越多弯就越小，找不到平衡点。实际上会打滑变搓雪（这里用 ${Rt.toFixed(1)} m 半径示范），或是要减速、换 R 比较大的板。`;
     } else {
@@ -511,7 +514,7 @@ function finish(b){
   const fB = yawVec(b.yawB);
   const edge = clamp(b.phi, -85*D, 85*D);
   const qB = qYZX(b.yawB, edge, b.pitch || 0);
-  const xEdge = -(BW/2)*clamp(edge/(8*D), -1, 1);
+  const xEdge = -(BW/2)*Math.sin(clamp(edge/(25*D), -1, 1)*Math.PI/2);
   const gpos = b.mid.clone().sub(new V(xEdge, 0, 0).applyQuaternion(qB));
   if (b.pitch !== undefined){
     const Lb = cfg.board/100, e1 = new V(0,0,Lb/2).applyQuaternion(qB).y, e2 = new V(0,0,-Lb/2).applyQuaternion(qB).y;
@@ -981,7 +984,8 @@ function applyPose(p){
     bStrip.position.x = x;
     paintStrip(bStrip, z => fn(z*Lb));
     const press = Math.max(p.press || 0, Math.min(1, Math.abs(pit)/(12*D)));
-    const kRaw = lift > .02 ? 0 : Math.tan(Math.min(Math.abs(p.edge), 80*D))/cfg.R + press/3;
+    const carveF = {euro:1, carve:1, mid:.6, beg:.3, trav:.4, slip:.1}[cfg.level] ?? 0;
+    const kRaw = lift > .02 ? 0 : carveF*Math.tan(Math.min(Math.abs(p.edge), 80*D))/cfg.R + press/3;
     const kap = bendMul*kRaw;
     if (bParts){
       bendGeo(bParts.mid.geometry, kap, 1); bendGeo(edgeL.geometry, kap, 1); bendGeo(edgeR.geometry, kap, 1); bendGeo(bStrip.geometry, kap, Lb);
@@ -1384,10 +1388,11 @@ Rig.load('xbot.json', slopeG, {color:0x5fb38c, jointColor:0x263238}).then(() => 
   gg.position.set(0, 7, 9); Rig.attachToHead(gg);
   Rig.setHeight(cfg.H/100); applyVis();
 }).catch(e => console.warn('rig load failed', e));
-let last = performance.now();
+let last = performance.now(), camPsi = 0;
 function frame(now){
   const dt = Math.min(.05, (now-last)/1000); last = now;
   if (playing) sT += dt*mul/C.period;
+  { const want = show.follow && !LV[cfg.level].slip ? pose(sT).psi*.7 : 0; camPsi += (want - camPsi)*Math.min(1, dt*2); }
   scrub.value = Math.round((((sT%1)+1)%1)*1000);
   if (Math.floor(sT) !== trailCycle) rebuildTrails(Math.floor(sT));
   const p = pose(sT);
@@ -1397,7 +1402,7 @@ function frame(now){
   slopeG.updateMatrixWorld(true);
   const placeCam = (pp, aspect, rr) => {
     const tl = (() => { const v = pp.com.clone(); v.y = Math.max(v.y - .2*C.k, .35*C.k); return v; })();
-    const t = th + (show.follow && !LV[cfg.level].slip ? pp.psi : 0);
+    const t = th + camPsi;
     const cl = tl.clone().add(new V(rr*Math.sin(ph)*Math.sin(t), rr*Math.cos(ph), rr*Math.sin(ph)*Math.cos(t)));
     const target = slopeG.localToWorld(tl);
     camera.aspect = aspect; camera.updateProjectionMatrix();
