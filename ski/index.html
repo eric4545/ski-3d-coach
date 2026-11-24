@@ -116,7 +116,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
 <main>
   <div class="card" id="path">
     <details id="pathD"><summary>🔰 新手由呢度開始（按次序學）</summary>
-      <ol><li data-k="bal"><button data-go="beg" data-k="bal"><b>1</b><span>搵重心<small>你應該感覺到：成個腳掌踩實，脛骨輕輕貼住鞋舌：前後搖，搵最穩嗰點。</small></span></button></li><li data-k="beg"><button data-go="beg" data-k="beg"><b>2</b><span>入門・犁式<small>你應該感覺到：想轉右，就踩實左腳（彎外面嗰隻）：轉彎時嗰隻腳鞋底中間有明顯壓力。</small></span></button></li><li data-k="slip"><button data-go="slip" data-k="slip"><b>3</b><span>Side slip 橫滑<small>你應該感覺到：膝頭同腳踝推向山就停，放鬆少少就滑。</small></span></button></li><li data-k="mid"><button data-go="mid" data-k="mid"><b>4</b><span>中級・平行<small>你應該感覺到：換方向嗰下身體輕輕企高少少，入彎再慢慢屈低。</small></span></button></li></ol>
+      <ol><li data-k="bal"><button data-go="beg" data-k="bal"><b>1</b><span>搵重心<small>你應該感覺到：成個腳掌踩實，脛骨輕輕貼住鞋舌：前後搖，搵最穩嗰點。</small></span></button></li><li data-k="beg"><button data-go="beg" data-k="beg"><b>2</b><span>入門・犁式<small>你應該感覺到：想轉右，就踩實左腳（彎外面嗰隻）：轉彎時嗰隻腳鞋底中間有明顯壓力。</small></span></button></li><li data-k="slip"><button data-go="slip" data-k="slip"><b>3</b><span>Side slip 橫滑<small>你應該感覺到：膝頭同腳踝推向山就停，放鬆少少就滑。</small></span></button></li><li data-k="mid"><button data-go="mid" data-k="mid"><b>4</b><span>中級・平行<small>你應該感覺到：新外腳喺彎一開始已經有壓力，彎轉到夠橫速度自然慢。</small></span></button></li></ol>
       <p class="note">之後：Carving、短彎、蘑菇、Pivot slip。</p>
     </details>
     <p id="feel1"></p>
@@ -170,6 +170,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-st="fwd">太前</button>
     <button data-st="even">雙腳平均</button>
     <button data-st="look">望住對腳</button>
+    <button data-st="late">重量轉得太遲</button>
   </div>
   <div class="row">
     <span class="label">鏡頭</span>
@@ -184,6 +185,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <h2>🎯 睇之前諗一諗</h2>
     <div id="gQs"></div>
     <p class="key" id="gSum"></p>
+    <p id="gFeel" class="key" hidden></p>
     <p id="gSnow"></p>
   </div>
 
@@ -313,6 +315,7 @@ const STANCE = {
   back: {fx:{skid:6, ph:'comp', edge:.85, r:1.25, bend:.5}, name:'坐後（壓腳跟）', fa:-.75, dz:-.13, dh:-.05, kk:1, add:{quad:.25, tib:-.15, calf:-.1, abs:.1}, txt:'板頭冇壓力，入彎慢、板頭咬唔到雪；彎尾會被板尾推出去，愈滑愈快。股四頭肌要長時間拉長對抗撐住，大腿好快燒。喺蘑菇入面會被彈飛。'},
   fwd:  {fx:{skid:8, ph:'comp', edge:.9, r:.9, bend:.6}, name:'太前（壓腳尖）', fa:.8, dz:.1, dh:0, kk:1, add:{calf:.25, erec:.15, quad:-.05}, txt:'板頭壓力太大、板尾冇壓，板尾會打滑（skid 出去），carve 唔到乾淨嘅弧線；出彎放唔到，換刃時容易被板頭絆住。'},
   look: {fx:{skid:6, ph:'all', edge:.85, r:1.15, bend:.6}, name:'望住對腳', fa:-.15, dz:-.05, dh:-.05, kk:1, tp:.3, look:.75, add:{erec:.2, quad:.1}, txt:'頭一低，上身就跟住向前彎、屁股向後頂，其實即係變相坐後；睇唔到前面，入彎會遲，彎形走樣，愈滑愈驚。眼望前面 2–3 個彎嘅位置，對腳會自己跟。'},
+  late: {fx:{skid:7, ph:'init', edge:.85, r:1.2, bend:.7}, name:'重量轉得太遲', lag:.12, fa:-.1, dz:-.03, dh:0, kk:1, add:{quad:.1}, txt:'等轉完彎先轉重量：彎頂冇外腳壓力，雙板打滑或者要用犁式煞先轉到；彎形變長變直，速度控制唔到，成日要靠煞。喺彎一開始就將重量移去新嘅外腳。'},
   even: {fx:{skid:5, ph:'all', edge:.8, inner:.3, r:1.15, bend:.7}, name:'雙腳平均', fa:0, dz:0, dh:0, kk:.25, add:{}, txt:'內腳搶咗外腳嘅壓力，外腳 edge 咬唔實、容易滑；內腳容易入錯邊刃，變成 A-frame 或者兩隻板分開（剪刀腳）。'}
 };
 const SHARE = {slip:.5, beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
@@ -649,7 +652,7 @@ function activations(p){
     : C.mogul ? {quad:.1+.35*c, glmax:.25*c, ham:.15*c, tib:.2}
     : cfg.level === 'short' ? {obl:.2, add:.08} : cfg.level === 'pivot' ? {obl:.3, add:.15, glmed:.15} : cfg.level === 'trav' ? {obl:.15} : {};
   const st = STANCE[cfg.stance];
-  const kk = clamp(p.nsh*p.sg*3, -1, 1)*st.kk, oR = .5 - .5*kk, oL = .5 + .5*kk;
+  const kk = clamp(wSplit(p)*3, -1, 1)*st.kk, oR = .5 - .5*kk, oL = .5 + .5*kk;
   const r = {};
   for (const key in o){
     const b = (baseAdd[key] || 0) + (st.add[key] || 0);
@@ -666,10 +669,17 @@ function activations(p){
   return r;
 }
 
+// weight split sign/size between the skis; a 'late' stance shifts weight a fraction of a cycle after the turn starts
+function wSplit(p){
+  const lag = STANCE[cfg.stance].lag;
+  if (!lag || !turnish() || p.sn === undefined) return p.nsh*p.sg;
+  const sl = Math.sin(W*(p.s - lag));
+  return Math.sign(sl)*Math.pow(Math.abs(sl), .8);
+}
 function pressure(p){
   const st = STANCE[cfg.stance];
   const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
-  const kk = clamp(p.nsh*p.sg*3, -1, 1)*st.kk*SHARE[cfg.level];
+  const kk = clamp(wSplit(p)*3, -1, 1)*st.kk*SHARE[cfg.level];
   let fa = .1 + .35*init - .35*comp;
   if (C.mogul) fa += .25*(1 - p.cmp)*init - .15*p.cmp;
   fa = clamp(fa + st.fa, -.95, .95);
@@ -1335,10 +1345,10 @@ function updateUI(p, act, md, now){
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
-const GUIDE = {"slip": {"q": [["想停，雙板嘅 uphill edge 要加大定放細？", "加大。膝頭同腳踝推向上坡，edge 接近坡度就停。"], ["上身應該面向邊？", "面向下坡，唔好跟住雙板打橫。"]], "sum": "雙板打橫直直滑落，用 edge 控速：加大就停，放細就滑。", "snow": "揀 10–20° 嘅平滑雪道，雙板打橫，滑 2 米、停、再滑 2 米；之後練 pivot slip 同 hockey stop。"}, "beg": {"q": [["轉右彎時，邊隻腳要受多啲力？", "左腳（彎外嗰隻）。外腳加壓，板就會轉向。"], ["重心應該喺腳跟定腳掌中間？", "腳掌中間。坐後會令大腿好快攰，又控制唔到板。"]], "sum": "保持 A 字，重心喺腳掌中間，想轉邊就壓相反嗰隻腳。", "snow": "喺緩坡慢慢做 4–5 個彎，每個彎講出嚟「壓左腳」／「壓右腳」，感覺壓力喺腳掌中間，唔係腳跟。"}, "mid": {"q": [["換刃嗰陣，身體應該向上伸定向下壓？", "先輕輕伸展減壓，雙板容易換邊；入彎後再屈曲加壓。"], ["上身應該跟住板轉嗎？", "唔應該。上身大致面向下坡，轉彎靠下半身。"]], "sum": "伸展換刃、屈曲加壓、上身面向下坡。", "snow": "每個彎心入面講「起、壓」嘅節奏；望住遠處一點，留意肩膀唔好跟板轉。"}, "carve": {"q": [["入彎時，最大壓力應該喺邊隻腳？", "外腳，大約 80–90%。"], ["Edge 角度應該大過、等於，定細過身體傾斜？", "大過。差距嚟自膝頭同髖嘅 angulation。"]], "sum": "早啲傾斜入彎，外腳撐住，上身保持水平，畀塊板自己轉。", "snow": "喺緩坡做 railroad track：板唔好打滑，雪上只留兩條幼線；感覺外腳鞋舌一直有壓力。"}, "mogul": {"q": [["撞上蘑菇面嗰陣，腳應該伸直定屈曲？", "屈曲吸收，好似避震咁。"], ["頭嘅高度應該跟住蘑菇上落嗎？", "唔應該。頭同上身盡量保持一條平滑嘅線。"]], "sum": "撞上就收腳，落坑就伸腳，上身保持平穩。", "snow": "先喺蘑菇區邊緣做單粒蘑菇「撞、收、伸」；再練喺蘑菇頂點杖嘅時機。"}, "short": {"q": [["短彎時上身應該面向邊？", "一直面向正下坡（fall line）。"], ["點杖係喺幾時？", "每次換刃之前，帶身體向前落下一個彎。"]], "sum": "上身望落山，腳喺下面左右擺，點杖帶節奏。", "snow": "揀條窄雪道，假設兩邊有牆；心入面數「點、轉、點、轉」。"}, "pivot": {"q": [["轉向嗰陣，邊個部位應該轉？", "大腿喺盤骨入面轉，上身唔郁。"], ["轉之前 edge 應該加大定放平？", "先放平，塊板先轉得順。"]], "sum": "放平 edge，大腿轉，上身唔郁，沿 fall line 直線落。", "snow": "喺中坡做，起點同終點對住同一條直線（例如纜車柱），檢查自己有冇向左右走。"}, "trav": {"q": [["斜滑降時，邊隻腳承受多啲重量？", "下坡腳。"], ["膝頭同髖應該推向上坡定下坡？", "上坡；上身就向下坡，形成 angulation。"]], "sum": "下坡腳承重、膝頭推上坡、上身望下坡；放刃落，入刃上。", "snow": "橫過雪道時試吓提起上坡腳，企得穩先算啱；做 garland 時感受「放」同「咬」嘅分別。"}, "lift": {"q": [["提起內腳之後，重心應該喺外腳嘅邊度？", "腳掌中間偏前，唔係腳跟。"], ["提起內腳靠邊組肌肉？", "膕繩肌屈膝提起，唔係用腰。"]], "sum": "所有重量交畀外腳，企得穩先算真係企喺外腳上面。", "snow": "喺緩坡做，由每個彎提起 1 秒開始，慢慢延長到成個彎。"}};
-const STANCE_SHORT = {"look": "望住對腳：上身彎、屁股向後，入彎遲。", "back": "重心偏後：板頭冇壓力，大腿好快攰。", "fwd": "重心太前：板尾打滑，出彎放唔到。", "even": "雙腳平均：外腳咬唔實，容易變 A-frame。"};
+const GUIDE = {"slip": {"q": [["想停，雙板嘅 uphill edge 要加大定放細？", "加大。膝頭同腳踝推向上坡，edge 接近坡度就停。"], ["上身應該面向邊？", "面向下坡，唔好跟住雙板打橫。"]], "sum": "雙板打橫直直滑落，用 edge 控速：加大就停，放細就滑。", "snow": "揀 10–20° 嘅平滑雪道，雙板打橫，滑 2 米、停、再滑 2 米；之後練 pivot slip 同 hockey stop。"}, "beg": {"q": [["想轉右邊嘅時候，應該把多啲重量放喺邊隻腳？", "左腳（彎外面嗰隻）。外腳加壓，板先會轉向。"], ["兩隻腳平均用力會點？", "轉唔到彎，或者轉得好慢。新手最常犯就係雙腳平均踩。"]], "sum": "想轉邊，就早啲把重量踩落外腳（彎外面嗰隻），保持 A 字，重心喺腳掌中間。", "snow": "喺緩坡慢慢做 5–8 個彎，每個彎出聲講「壓左腳」或「壓右腳」，感覺壓力係喺腳掌中間，而唔係腳跟。", "feel": "轉彎時，外腳鞋底中間有明顯壓力；如果大腿好快燒、板頭好輕，就係坐後咗。"}, "mid": {"q": [["換刃嗰陣，應該等轉完彎先轉重量，定係早啲轉？", "早啲轉。要喺 turn 頂部（剛開始轉嗰下）就開始把重量移去新嘅外腳。"], ["點樣用彎嘅形狀控制速度，而唔係靠死命煞停？", "把彎轉到夠橫（橫過山坡），完成成個 turn，速度自然會跌落嚟。"]], "sum": "每個彎一開始就轉重量去新嘅外腳，上身大致面向下坡，用 turn shape 控制速度，而唔係靠煞。", "snow": "喺中緩坡做，心入面數「轉重量 → 轉彎 → 完成」，刻意把彎劃到橫啲，感覺速度自己慢落嚟。", "feel": "新外腳喺彎開始時已經有壓力；如果成日要靠犁式煞停，就係彎轉得唔夠橫，或者重量轉得太遲。"}, "carve": {"q": [["入彎時，最大壓力應該喺邊隻腳？", "外腳，大約 80–90%。"], ["Edge 角度應該大過、等於，定細過身體傾斜？", "大過。差距嚟自膝頭同髖嘅 angulation。"]], "sum": "早啲傾斜入彎，外腳撐住，上身保持水平，畀塊板自己轉。", "snow": "喺緩坡做 railroad track：板唔好打滑，雪上只留兩條幼線；感覺外腳鞋舌一直有壓力。"}, "mogul": {"q": [["撞上蘑菇面嗰陣，腳應該伸直定屈曲？", "屈曲吸收，好似避震咁。"], ["頭嘅高度應該跟住蘑菇上落嗎？", "唔應該。頭同上身盡量保持一條平滑嘅線。"]], "sum": "撞上就收腳，落坑就伸腳，上身保持平穩。", "snow": "先喺蘑菇區邊緣做單粒蘑菇「撞、收、伸」；再練喺蘑菇頂點杖嘅時機。"}, "short": {"q": [["短彎時上身應該面向邊？", "一直面向正下坡（fall line）。"], ["點杖係喺幾時？", "每次換刃之前，帶身體向前落下一個彎。"]], "sum": "上身望落山，腳喺下面左右擺，點杖帶節奏。", "snow": "揀條窄雪道，假設兩邊有牆；心入面數「點、轉、點、轉」。"}, "pivot": {"q": [["轉向嗰陣，邊個部位應該轉？", "大腿喺盤骨入面轉，上身唔郁。"], ["轉之前 edge 應該加大定放平？", "先放平，塊板先轉得順。"]], "sum": "放平 edge，大腿轉，上身唔郁，沿 fall line 直線落。", "snow": "喺中坡做，起點同終點對住同一條直線（例如纜車柱），檢查自己有冇向左右走。"}, "trav": {"q": [["斜滑降時，邊隻腳承受多啲重量？", "下坡腳。"], ["膝頭同髖應該推向上坡定下坡？", "上坡；上身就向下坡，形成 angulation。"]], "sum": "下坡腳承重、膝頭推上坡、上身望下坡；放刃落，入刃上。", "snow": "橫過雪道時試吓提起上坡腳，企得穩先算啱；做 garland 時感受「放」同「咬」嘅分別。"}, "lift": {"q": [["提起內腳之後，重心應該喺外腳嘅邊度？", "腳掌中間偏前，唔係腳跟。"], ["提起內腳靠邊組肌肉？", "膕繩肌屈膝提起，唔係用腰。"]], "sum": "所有重量交畀外腳，企得穩先算真係企喺外腳上面。", "snow": "喺緩坡做，由每個彎提起 1 秒開始，慢慢延長到成個彎。"}};
+const STANCE_SHORT = {"late": "重量轉得太遲：彎頂打滑，要靠煞控速。", "look": "望住對腳：上身彎、屁股向後，入彎遲。", "back": "重心偏後：板頭冇壓力，大腿好快攰。", "fwd": "重心太前：板尾打滑，出彎放唔到。", "even": "雙腳平均：外腳咬唔實，容易變 A-frame。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
-const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {beg:'even', slip:'look', trav:'look'};
+const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {beg:'even', mid:'late', slip:'look', trav:'look'};
 let cmpOn = false, lastCyc = null;
 const toastDone = {};
 function renderGuide(){
@@ -1347,6 +1357,7 @@ function renderGuide(){
   document.querySelectorAll('#gQs .qa button').forEach(b => b.onclick = () => { const a = b.nextElementSibling; a.hidden = !a.hidden; b.textContent = a.hidden ? '睇答案' : '收埋'; });
   document.getElementById('gSum').textContent = '💡 重點：' + g.sum;
   document.getElementById('gSnow').textContent = '❄️ 雪上點練：' + g.snow;
+  const gf = document.getElementById('gFeel'); if (gf){ gf.textContent = g.feel ? '👣 你應該感覺到：' + g.feel : ''; gf.hidden = !g.feel; }
 }
 function showToast(t){
   const el = document.getElementById('toast'); el.textContent = '💡 ' + t; el.classList.add('show');
@@ -1402,7 +1413,7 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
-const FEEL1 = {"beg": "想轉右，就踩實左腳（彎外面嗰隻腳）。", "slip": "膝頭推向山就停，放鬆少少就滑。", "mid": "換方向嗰下，身體輕輕企高少少。", "carve": "壓實彎外面嗰塊板，等塊板自己帶你轉，唔好扭。", "mogul": "膝頭當避震：上包收腳，落包伸腳。", "short": "上身一直面向下坡唔郁，淨係下半身左右轉。", "pivot": "雙板一齊打橫，用腳踝同大腿扭，唔係用上身。", "trav": "上身企高，下坡腳承重，兩塊板平行斜住行。", "lift": "全身重量放落彎外面嗰隻腳，內腳提起都企得穩。"};
+const FEEL1 = {"beg": "想轉右，就踩實左腳（彎外面嗰隻腳）。", "slip": "膝頭推向山就停，放鬆少少就滑。", "mid": "每個彎一開始就將重量轉去新嘅外腳。", "carve": "壓實彎外面嗰塊板，等塊板自己帶你轉，唔好扭。", "mogul": "膝頭當避震：上包收腳，落包伸腳。", "short": "上身一直面向下坡唔郁，淨係下半身左右轉。", "pivot": "雙板一齊打橫，用腳踝同大腿扭，唔係用上身。", "trav": "上身企高，下坡腳承重，兩塊板平行斜住行。", "lift": "全身重量放落彎外面嗰隻腳，內腳提起都企得穩。"};
 let pathDone = {}; try { pathDone = JSON.parse(localStorage.getItem('pathDone') || '{}'); } catch(e){}
 function renderPath(curK){
   document.querySelectorAll('#path li').forEach(li => { li.classList.toggle('done', !!pathDone[li.dataset.k]); li.classList.toggle('cur', li.dataset.k === curK); });
