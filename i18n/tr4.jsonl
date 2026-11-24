@@ -1,0 +1,9 @@
+{"src":"外板反拱 ${sagCm(kk, L).toFixed(1)} cm・彎曲半徑 ${(1/kk).toFixed(1)} m","en":"Outside ski reverse camber ${sagCm(kk, L).toFixed(1)} cm・bend radius ${(1/kk).toFixed(1)} m","tw":"外板反弓 ${sagCm(kk, L).toFixed(1)} cm・彎曲半徑 ${(1/kk).toFixed(1)} m"}
+{"src":"板反拱 ${sagCm(kRaw, Lb).toFixed(1)} cm・彎曲半徑 ${(1/kRaw).toFixed(1)} m","en":"Board reverse camber ${sagCm(kRaw, Lb).toFixed(1)} cm・bend radius ${(1/kRaw).toFixed(1)} m","tw":"板子反弓 ${sagCm(kRaw, Lb).toFixed(1)} cm・彎曲半徑 ${(1/kRaw).toFixed(1)} m"}
+{"src":"板彎曲：","en":"Flex: ","tw":"板子彎曲："}
+{"src":"板彎曲：真實","en":"Flex: real","tw":"板子彎曲：真實"}
+{"src":"板未受力彎曲（平板／冇 edge）","en":"Ski not flexed (flat / no edge)","tw":"板子未受力彎曲（平板／沒有立刃）"}
+{"src":"板未受力彎曲（平板／離地）","en":"Board not flexed (flat / airborne)","tw":"板子未受力彎曲（平板／離地）"}
+{"src":"真實","en":"real","tw":"真實"}
+{"src":"誇張 ×4","en":"exaggerated ×4","tw":"誇張 ×4"}
+{"src":"關","en":"off","tw":"關"}

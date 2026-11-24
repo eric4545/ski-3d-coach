@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3D 刻滑教学：肌肉・重心・立刃</title>
+<style>
+:root{--bg:#0f1419;--panel:#171e26;--line:#2a3440;--text:#e6edf3;--muted:#8b98a5;--accent:#4cc9f0;--good:#3ddc84;--warn:#ffb020;--con:#3ddc84;--ecc:#ff4d6d;--iso:#4cc9f0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang HK","Noto Sans TC","Microsoft JhengHei",sans-serif}
+header{padding:12px 16px 8px;max-width:900px;margin:0 auto}
+h1{font-size:17px;margin:0}
+header p{margin:2px 0 0;color:var(--muted);font-size:12px}
+#stage{position:relative;height:60vh;min-height:340px;max-height:660px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#cfdbe6;overflow:hidden}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.hud{position:absolute;top:8px;left:8px;background:rgba(15,20,25,.84);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;pointer-events:none;max-width:62%;line-height:1.45}
+.hud b{font-size:14px;color:var(--accent)}
+#gauge{position:absolute;top:8px;right:8px;width:110px;height:124px;background:rgba(15,20,25,.84);border:1px solid var(--line);border-radius:8px}
+#top3{position:absolute;bottom:8px;left:8px;background:rgba(15,20,25,.86);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12px;pointer-events:none;line-height:1.55;max-width:78%}
+#top3 .t{color:var(--muted);font-size:11px}
+.badge{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:#0f1419;color:#fff;border:2px solid #fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.mode{font-size:11px;font-weight:600;padding:0 5px;border-radius:4px;white-space:nowrap}
+.m-con{color:#0f1419;background:var(--con)}.m-ecc{color:#fff;background:var(--ecc)}.m-iso{color:#0f1419;background:var(--iso)}.m-off{color:var(--muted);background:#26303a}
+#feet{position:absolute;top:138px;right:8px;width:110px;height:104px;background:rgba(15,20,25,.84);border:1px solid var(--line);border-radius:8px}
+.hint{position:absolute;bottom:8px;right:8px;color:#3b4a58;font-size:10px;pointer-events:none}
+main{padding:12px 16px 28px;max-width:900px;margin:0 auto}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.label{color:var(--muted);font-size:12px;min-width:44px}
+button,select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font:inherit;font-size:13px;cursor:pointer}
+button.on{border-color:var(--accent);color:var(--accent)}
+button.primary{background:var(--accent);color:#0f1419;border-color:var(--accent);font-weight:600;min-width:72px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%}
+.seg button{padding:8px 2px;font-size:12px}
+.seg button.on{background:var(--accent);color:#0f1419;font-weight:600}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+.card h2{font-size:15px;margin:0 0 6px}
+.card p{margin:4px 0;color:#c9d3dc}
+.slider{display:grid;grid-template-columns:62px 1fr 64px;gap:8px;align-items:center;margin:6px 0}
+.slider span{font-size:13px}.slider output{font-variant-numeric:tabular-nums;text-align:right;font-size:13px;color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--muted);font-weight:500;font-size:12px}
+td small{display:block;color:var(--muted);font-size:11px;line-height:1.3}
+tr.click{cursor:pointer}tr.focus td{background:#1f2a35}
+.bar{height:10px;background:#26303a;border-radius:5px;overflow:hidden;min-width:50px}
+.bar i{display:block;height:100%;width:0;border-radius:5px}
+.cell{display:flex;flex-direction:column;gap:3px}
+.cell .meta{display:flex;gap:6px;align-items:center;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.legend .grad{flex:0 0 110px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3a4652,#eb6e46,#ff1946)}
+.ok{color:var(--good)}.bad{color:var(--warn)}
+.warn{background:#3a2a10;border:1px solid #6b4a12;color:#ffd58a;border-radius:8px;padding:6px 10px;font-size:12px;margin-top:8px}
+.note{font-size:12px;color:var(--muted)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.modes td:first-child{white-space:nowrap}
+body.simple .adv{display:none!important}
+.cmpLbl{position:absolute;top:8px;display:none;background:rgba(15,20,25,.88);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-size:13px;font-weight:600;max-width:46%;pointer-events:none}
+.cmpLbl small{display:block;font-weight:400;font-size:11px;color:#c9d3dc;line-height:1.35}
+#cmpDiv{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;opacity:.85;display:none;pointer-events:none}
+body.cmp .cmpLbl,body.cmp #cmpDiv{display:block}
+body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,body.cmp #arcLbl{display:none!important}
+#toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%);background:#ffd23f;color:#0f1419;font-weight:600;font-size:13px;padding:8px 12px;border-radius:10px;max-width:86%;text-align:center;opacity:0;transition:opacity .4s;pointer-events:none}
+#toast.show{opacity:1}
+.qa{margin:6px 0;padding:8px 10px;background:#1f2a35;border-radius:8px}
+.qa button{margin-left:6px;padding:3px 8px;font-size:12px}
+.qa .ans{margin-top:4px;color:#3ddc84}
+.key{font-weight:600;color:#ffd23f !important;margin-top:10px !important}
+</style>
+</head>
+<body>
+<header>
+  <select id="langSel" aria-label="Language" style="float:right;margin-left:8px;background:#171e26;color:#e6edf3;border:1px solid #2a3440;border-radius:8px;padding:4px 6px;font-size:12px"><option value="index.html">廣東話（香港）</option><option value="zh-tw.html">繁體中文（台灣）</option><option value="zh-cn.html" selected>简体中文（中国大陆）</option><option value="en.html">English</option></select>
+  <h1>3D 双板教学：肌肉发力・重心・立刃</h1>
+  <p>拖曳 360° 旋转、双指缩放・一个循环 = 两个弯・点肌肉表任一列可单独查看该组肌肉</p>
+</header>
+
+<div id="stage">
+  <div class="hud" id="hud"></div>
+  <svg id="gauge" viewBox="0 0 110 124">
+    <text x="55" y="14" fill="#8b98a5" font-size="10" text-anchor="middle">从后面看（外脚）</text>
+    <line x1="8" y1="94" x2="102" y2="94" stroke="#5b6b7a" stroke-width="2"/>
+    <g id="gLean" transform="translate(55,94)">
+      <line x1="0" y1="0" x2="0" y2="-68" stroke="#ffd23f" stroke-width="2" stroke-dasharray="4 3"/>
+      <circle cx="0" cy="-68" r="5" fill="#ffd23f"/>
+    </g>
+    <g id="gSki" transform="translate(55,94)">
+      <rect x="-14" y="-5" width="28" height="5" fill="#d63c3c"/>
+      <rect x="-7" y="-22" width="14" height="17" rx="2" fill="#e0e0e0"/>
+    </g>
+    <text id="gTxt" x="55" y="114" fill="#e6edf3" font-size="11" text-anchor="middle"></text>
+  </svg>
+  <svg id="feet" viewBox="0 0 110 104">
+    <text x="55" y="12" fill="#8b98a5" font-size="10" text-anchor="middle">脚掌压力（俯视）</text>
+    <g id="footL"><path d="M0,-30 C10,-30 12,-18 11,-6 C10,8 9,22 6,28 C3,32 -3,32 -6,28 C-9,22 -10,8 -11,-6 C-12,-18 -10,-30 0,-30Z" fill="#26303a" stroke="#5b6b7a"/><circle class="cop" r="5" fill="#ff1946"/><text class="sh" y="44" fill="#e6edf3" font-size="10" text-anchor="middle"></text></g>
+    <g id="footR"><path d="M0,-30 C10,-30 12,-18 11,-6 C10,8 9,22 6,28 C3,32 -3,32 -6,28 C-9,22 -10,8 -11,-6 C-12,-18 -10,-30 0,-30Z" fill="#26303a" stroke="#5b6b7a"/><circle class="cop" r="5" fill="#ff1946"/><text class="sh" y="44" fill="#e6edf3" font-size="10" text-anchor="middle"></text></g>
+  </svg>
+  <div id="badges"></div>
+  <div class="cmpLbl" id="cmpL" style="left:8px">✅ 正确</div>
+  <div class="cmpLbl" id="cmpR" style="right:8px"></div>
+  <div id="cmpDiv"></div>
+  <div id="toast"></div>
+  <div id="top3"></div>
+  <div class="hint">拖曳旋转・双指缩放</div>
+</div>
+
+<main>
+  <div class="row">
+    <button data-mode="simple" class="on">👀 简易</button>
+    <button data-mode="detail">🔬 详细</button>
+    <button id="cmpBtn">⇆ 正确 vs 错误</button>
+  </div>
+  <div class="row seg" id="levels">
+    <button data-l="beg">入门・犁式</button>
+    <button data-l="mid">中级・平行式</button>
+    <button data-l="carve" class="on">刻滑</button>
+    <button data-l="mogul">猫跳 Mogul</button>
+    <button data-l="short">小回转</button>
+    <button data-l="pivot">侧滑转向</button>
+    <button data-l="trav">斜滑降＋Garland</button>
+    <button data-l="lift">提内脚练习</button>
+  </div>
+
+  <div class="row">
+    <button class="primary" id="play">⏸ 暂停</button>
+    <input type="range" id="scrub" min="0" max="1000" value="0">
+    <select id="speedMul">
+      <option value="0.25">0.25x</option>
+      <option value="0.5" selected>0.5x</option>
+      <option value="1">1x 实际速度</option>
+      <option value="2">2x</option>
+    </select>
+  </div>
+  <div class="row">
+    <span class="label">跳到</span>
+    <span id="jumps" style="display:contents"></span>
+  </div>
+  <div class="row">
+    <span class="label">显示</span>
+    <button class="on" data-t="muscle">肌肉</button>
+    <button class="on" data-t="xray">透视</button>
+    <button class="on" data-t="com">CoM</button>
+    <button class="on" data-t="force">力线</button>
+    <button class="on" data-t="edge">Edge</button>
+    <button class="on" data-t="bp">雪板压力</button>
+    <button class="on" id="bendBtn">雪板弯曲：真实</button>
+  </div>
+  <div class="row">
+    <span class="label">站姿</span>
+    <button class="on" data-st="ok">正常</button>
+    <button data-st="back">后坐</button>
+    <button data-st="fwd">太前</button>
+    <button data-st="even">双脚平均</button>
+  </div>
+  <div class="row">
+    <span class="label">镜头</span>
+    <button data-v="front">正面</button>
+    <button data-v="side">侧面</button>
+    <button data-v="back">后面</button>
+    <button data-v="top">俯视</button>
+    <button data-t="follow">跟随方向</button>
+  </div>
+
+  <div class="card" id="guide">
+    <h2>🎯 看之前先想一想</h2>
+    <div id="gQs"></div>
+    <p class="key" id="gSum"></p>
+    <p id="gSnow"></p>
+  </div>
+
+  <div class="card">
+    <h2>鸟瞰图：整个动作从开始到结束</h2>
+    <canvas id="birdMap" style="width:100%;height:300px;display:block;border-radius:8px;touch-action:manipulation;cursor:pointer"></canvas>
+    <div class="legend" id="mapLegend" style="margin-top:8px"></div>
+    <p class="note" id="mapInfo" style="margin-top:4px"></p>
+    <p class="note">粗线 = 重心路线（颜色 = 阶段，虚线 = 离地），灰线 = 板痕，短灰线 = 雪板方向，黄点 = 目前位置，绿色「起」→ 红色「完」。点地图任一处可以跳到那个时刻。</p>
+  </div>
+
+  <div class="card">
+    <h2 id="phTitle"></h2>
+    <p id="phCue"></p>
+    <div class="legend" style="margin-top:8px">
+      <span><span class="sw" style="background:#ffd23f"></span>CoM</span>
+      <span><span class="sw" style="background:#a855f7"></span>地面反作用力（外脚→重心）</span>
+      <span><span class="sw" style="background:#3a7bd5"></span>重力</span>
+      <span><span class="sw" style="background:#4cc9f0"></span>受力的刃</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>站姿：<span id="stName"></span></h2>
+    <p id="stTxt"></p>
+    <p class="note">右上角脚掌图：红点 = 压力中心（CoP），点越大 = 那只脚承受越多体重，下面数字是左右分配。</p>
+  </div>
+
+  <div class="card">
+    <h2>即时肌肉发力</h2>
+    <div class="legend" style="margin-bottom:6px"><span>放松</span><span class="grad"></span><span>最大</span></div>
+    <table class="modes" style="margin-bottom:10px">
+      <tbody>
+        <tr><td><span class="mode m-con">向心收缩</span></td><td>向心收缩 Concentric：肌肉一边缩短一边出力（例如站起来）</td></tr>
+        <tr><td><span class="mode m-ecc">离心收缩</span></td><td>离心收缩 Eccentric：肌肉被拉长但仍然出力抵抗（例如屈膝吸收压力）。滑雪大腿「酸」主要就是这种</td></tr>
+        <tr><td><span class="mode m-iso">等长收缩</span></td><td>等长收缩 Isometric：长度不变，静止撑住姿势</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>肌肉／作用（点击一行可单独查看）</th><th style="width:27%">左</th><th style="width:27%">右</th></tr></thead>
+      <tbody id="mBody"></tbody>
+    </table>
+    <p class="note" style="margin-top:6px"><b>为什么内脚也在出力？</b> ① 内脚仍然承受大约 10–40% 体重（雪况越硬、立刃越大，比例越高）；② 要让内脚收短，股四头肌要离心收缩、慢慢放，不是完全放松；③ 腘绳肌、髋屈肌负责把内脚拉后、拉高，让双脚前后一致；④ 胫骨前肌要拉住内脚鞋舌，不让内脚后坐；⑤ 关节周围肌肉协同收缩，保持膝盖稳定，万一外脚打滑也撑得住。所以外脚出主力，内脚负责「调节和保险」。</p>
+    <p class="note" style="margin-top:6px">发力类型是由模型关节角度的变化算出来的：肌肉变长又在出力 = 离心收缩，变短 = 向心收缩，几乎没变 = 等长收缩。</p>
+  </div>
+
+  <div class="card">
+    <h2>应该看什么（<span id="watchLv"></span>）</h2>
+    <table>
+      <thead><tr><th>看什么</th><th>重点</th><th></th></tr></thead>
+      <tbody id="watch"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>规格设置</h2>
+    <div class="slider"><span>身高</span><input type="range" id="H" min="145" max="200" step="1"><output id="oH"></output></div>
+    <div class="slider"><span>板长</span><input type="range" id="ski" min="120" max="200" step="1"><output id="oski"></output></div>
+    <div class="slider"><span>雪板 R</span><input type="range" id="R" min="9" max="30" step="0.5"><output id="oR"></output></div>
+    <div class="slider"><span>坡度</span><input type="range" id="slope" min="4" max="35" step="1"><output id="oslope"></output></div>
+    <div class="slider" id="HmRow" style="display:none"><span>猫跳高度</span><input type="range" id="Hm" min="0.3" max="1.0" step="0.05"><output id="oHm"></output></div>
+    <div class="slider"><span>速度</span><input type="range" id="v" min="5" max="70" step="1"><output id="ov"></output></div>
+    <table style="margin-top:8px">
+      <thead><tr><th>项目</th><th>目前</th><th>建议</th><th></th></tr></thead>
+      <tbody id="spec"></tbody>
+    </table>
+    <div id="warn"></div>
+    <p class="note" style="margin-top:6px">雪板 R = 侧切半径（板身上写的 R 数字）。刻滑时转弯半径 ≈ R × cos(立刃角度)，倾倒角由 tan θ = v² / (g·r) 算出，所以速度、R、立刃三者互相牵动。这是理想化公式，实际上雪板会弯得更深、雪会被压实，所以实际可以刻滑得快一点。建议范围是一般经验值，不是硬性规定。</p>
+  </div>
+
+  <p class="note">⚠️ 肌肉发力是依照滑雪生物力学文献和力链原理做的示意模型（相对值），不是实测 EMG。动作是程序产生的理想化示范，用来理解因果关系，不是角度标准。</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="rig.js"></script>
+<script>
+(() => {
+const V = THREE.Vector3, Q = THREE.Quaternion, D = Math.PI/180, G = 9.81, W = Math.PI*2;
+const UP = new V(0,1,0), AX = new V(1,0,0), AZ = new V(0,0,1);
+const clamp = (x,a,b) => Math.min(b, Math.max(a, x));
+function qYZX(yaw, roll, pitch){
+  const q = new Q().setFromAxisAngle(UP, yaw);
+  q.multiply(new Q().setFromAxisAngle(AZ, roll));
+  q.multiply(new Q().setFromAxisAngle(AX, pitch));
+  return q;
+}
+
+/* ---------- levels & config ---------- */
+const LV = {
+  beg:  {name:'入门・犁式 Wedge', v:12, slope:10, skiOff:-18, R:11, cap:22*D, ang:1.0, skid:0, wedge:14*D, Rbase:6, psiB:12, h0:.8, stance:.2, pr:.7, tr:.85, tp:0.41, tyaw:.45, pyaw:.85, knee:0, minDrive:.55, plant:0, lead:0},
+  mid:  {name:'中级・平行式转弯', v:25, slope:15, skiOff:-12, R:13, cap:42*D, ang:1.1, skid:10*D, wedge:0, Rbase:9, psiB:6, h0:.82, stance:.14, pr:.75, tr:.7, tp:0.46, tyaw:.25, pyaw:.65, knee:.6, minDrive:.45, plant:1, lead:.06},
+  mogul:{name:'猫跳 Mogul', v:15, slope:25, skiOff:-12, R:13, cap:40*D, ang:1.0, skid:15*D, wedge:0, Rbase:3, psiB:0, psiFix:30*D, h0:.82, stance:.12, pr:.6, tr:.5, tp:0.51, tyaw:.1, pyaw:.6, knee:.4, minDrive:.45, plant:1, lead:.04},
+  short:{name:'小回转', kind:'turn', v:22, slope:18, skiOff:-12, R:12, cap:45*D, ang:1.1, skid:8*D, wedge:0, Rbase:5, psiB:0, psiFix:26*D, h0:.8, stance:.13, pr:.7, tr:.55, tp:0.46, tyaw:.05, pyaw:.75, knee:.7, minDrive:.5, plant:1, lead:.05},
+  pivot:{name:'Pivot slip', kind:'pivot', v:10, slope:15, skiOff:-12, R:13, cap:20*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.6, tr:.3, tp:0.44, tyaw:.15, pyaw:.6, knee:.3, minDrive:.45, plant:0, lead:0},
+  trav: {name:'斜滑降＋Garland', kind:'trav', v:15, slope:15, skiOff:-12, R:13, cap:35*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:0.46, tyaw:.45, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.12},
+  lift: {name:'提内脚练习', kind:'turn', v:25, slope:15, skiOff:-10, R:14, cap:50*D, ang:1.15, skid:0, wedge:0, Rbase:10, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:.3, plant:0, lead:.1, lift:true},
+  carve:{name:'高端・刻滑', v:30, slope:18, skiOff:-6, R:15, cap:65*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1}
+};
+const REC = {
+  beg:  {ski:[-20,-10], R:[9,13],  slope:[6,12],  v:[8,18]},
+  mid:  {ski:[-15,-5],  R:[12,16], slope:[12,20], v:[18,35]},
+  mogul:{ski:[-15,-5],  R:[11,20], slope:[18,30], v:[10,25]},
+  short:{ski:[-15,-5],  R:[10,14], slope:[15,25], v:[15,30]},
+  pivot:{ski:[-15,-5],  R:[10,18], slope:[12,20], v:[0,99]},
+  trav: {ski:[-15,-5],  R:[10,18], slope:[12,22], v:[8,25]},
+  lift: {ski:[-12,0],   R:[12,18], slope:[10,18], v:[15,35]},
+  carve:{ski:[-10,0],   R:[12,20], slope:[15,28], v:[22,45]}
+};
+const cfg = {level:'carve', H:175, ski:169, R:15, slope:18, v:30, Hm:.6};
+let C = {};
+cfg.stance = 'ok';
+const STANCE = {
+  ok:   {name:'正常', fa:0, dz:0, dh:0, kk:1, add:{}, txt:'理想做法：入弯压前脚掌（拇趾球附近），胫骨贴住鞋舌；Apex 时移回脚掌中间；出弯慢慢往后一点，但不要坐到脚跟。外脚压内侧（拇趾侧），内脚轻轻用外侧（小趾侧）。'},
+  back: {name:'后坐（压脚跟）', fa:-.75, dz:-.13, dh:-.05, kk:1, add:{quad:.25, tib:-.15, calf:-.1, abs:.1}, txt:'板头没有压力，入弯慢、板头咬不住雪；弯尾会被板尾推出去，越滑越快。股四头肌要长时间离心收缩撑住，大腿很快就酸。在猫跳里会被弹飞。'},
+  fwd:  {name:'太前（压脚尖）', fa:.8, dz:.1, dh:0, kk:1, add:{calf:.25, erec:.15, quad:-.05}, txt:'板头压力太大、板尾没有压力，板尾会打滑（搓雪甩出），刻不出干净的弧线；出弯放不掉，换刃时容易被板头绊住。'},
+  even: {name:'双脚平均', fa:0, dz:0, dh:0, kk:.25, add:{}, txt:'内脚抢了外脚的压力，外脚的刃咬不牢、容易滑；内脚容易入错刃，变成 A 字腿或两支板分开（剪刀脚）。'}
+};
+const SHARE = {beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
+
+function build(){
+  const lv = LV[cfg.level], v = cfg.v/3.6;
+  let Rt, phiApex, warn = '';
+  if (lv.kind === 'pivot' || lv.kind === 'trav'){
+    C = {v: Math.max(v, 1), Rt: 0, phiApex: lv.cap, k: cfg.H/175, inten: .3, warn: '', mogul: false, P: 1, Sx: 1, Rb: 1, edgeApex: lv.cap*lv.ang};
+    if (lv.kind === 'pivot'){ C.L = 1.6; C.period = 7; }
+    else {
+      const Lc = 12, tab = []; let x = 0, z = 0;
+      for (let i = 0; i <= 400; i++){ tab.push([x, z]); const ps = (65 - 40*(1-Math.cos(W*i/400))/2)*D; x += Math.sin(ps)*Lc/400; z += Math.cos(ps)*Lc/400; }
+      Object.assign(C, {L: Lc, tab, dX: tab[400][0], dZ: tab[400][1], period: Lc/C.v});
+    }
+    slopeG.rotation.x = cfg.slope*D;
+    buildTerrain(); rescale(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch();
+    return;
+  }
+  if (cfg.level === 'carve'){
+    const c = v*v/(G*cfg.R); let phi = null;
+    for (let a = .5; a <= lv.cap/D; a += .25){ const ph = a*D, e = Math.min(lv.ang*ph, 75*D); if (Math.tan(ph) >= c/Math.cos(e)){ phi = ph; break; } }
+    if (phi === null){
+      phiApex = lv.cap; Rt = v*v/(G*Math.tan(lv.cap));
+      warn = `⚠️ ${cfg.v} km/h 配 R${cfg.R}：雪板立刃越多弯就越小，需要的倾倒就越大，找不到平衡点。实际上会打滑变搓雪（这里用 ${Rt.toFixed(0)} m 半径示范），或是要换 R 比较大的板／减速。`;
+    } else {
+      phiApex = phi; Rt = cfg.R*Math.cos(Math.min(lv.ang*phi, 75*D));
+      if (phi < 18*D) warn = `⚠️ 速度太慢：只需要倾倒 ${(phi/D).toFixed(0)}°，地面反作用力不够大，很难撑起立刃纯刻滑，容易又变成搓雪。`;
+    }
+  } else {
+    const need = v*v/(G*Math.tan(lv.cap));
+    Rt = Math.max(lv.Rbase, need);
+    if (need > lv.Rbase) warn = `⚠️ 以这个程度做得到的倾倒（约 ${(lv.cap/D).toFixed(0)}°），${cfg.v} km/h 要转 ${Rt.toFixed(0)} m 半径的大弯才撑得住。太快了，应该减速。`;
+    phiApex = Math.atan(v*v/(G*Rt));
+  }
+  const psiMax = lv.psiFix || clamp((28 + (cfg.slope-8)*1.4 + lv.psiB)*D, 22*D, 68*D);
+  const tp = Math.tan(psiMax), om = 1/(Rt*tp), A = Rt*tp*tp, L = W/om;
+  let arc = 0; for (let i = 0; i < 400; i++){ const xp = A*om*Math.cos(W*i/400); arc += Math.sqrt(1+xp*xp)*L/400; }
+  C = {v, Rt, phiApex, psiMax, om, A, L, period: arc/v, warn, k: cfg.H/175,
+       inten: clamp(Math.tan(phiApex)/Math.tan(55*D), 0, 1),
+       edgeApex: cfg.level === 'beg' ? 10*D + phiApex : Math.min(phiApex*lv.ang, 75*D)};
+  C.P = L/2; C.Sx = 2.8; C.Rb = 1.4; C.mogul = cfg.level === 'mogul';
+  slopeG.rotation.x = cfg.slope*D;
+  buildTerrain(); rescale(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch();
+}
+
+/* ---------- mogul terrain ---------- */
+function hf(x, z){
+  if (!C.mogul) return 0;
+  const zr = ((z % C.P) + C.P) % C.P, dz = Math.min(zr, C.P - zr);
+  const xr = ((x % C.Sx) + C.Sx) % C.Sx, dx = Math.min(xr, C.Sx - xr);
+  const r = Math.hypot(dx, dz);
+  if (r >= C.Rb) return 0;
+  const c = Math.cos(Math.PI*r/(2*C.Rb)); return cfg.Hm*c*c;
+}
+function skiPitch(foot, yaw){
+  const dx = Math.sin(yaw)*.3, dz = Math.cos(yaw)*.3;
+  return -Math.atan((hf(foot.x+dx, foot.z+dz) - hf(foot.x-dx, foot.z-dz))/.6);
+}
+
+/* ---------- bird's-eye track map ---------- */
+let mapS = [], mapBox = null, mapPh = [], mapT = 0;
+const PHC = ['#4cc9f0','#3ddc84','#ff1946','#ffb020','#a855f7','#eb6e46','#9aa5b1'];
+function buildMap(c){
+  mapS = []; mapPh = [];
+  for (let i = 0; i <= 240; i++){
+    const m = mapSample(pose(c + i/240)); m.s = i/240;
+    if (!mapPh.includes(m.ph)) mapPh.push(m.ph);
+    m.pi = mapPh.indexOf(m.ph); mapS.push(m);
+  }
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (const m of mapS) for (const [x, z] of [m.c, ...m.tr]){ x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z); }
+  mapBox = {x0, x1, z0, z1};
+  let dist = 0; for (let i = 1; i < mapS.length; i++) dist += Math.hypot(mapS[i].at[0]-mapS[i-1].at[0], mapS[i].at[1]-mapS[i-1].at[1]);
+  const lg = document.getElementById('mapLegend');
+  if (lg) lg.innerHTML = mapPh.map((ph, i) => `<span><span class="sw" style="background:${PHC[i % PHC.length]}"></span>${mapName(ph)}</span>`).join('')
+    + `<span><span class="sw" style="background:#7f93a8"></span>${mapTrackName()}</span>`;
+  const inf = document.getElementById('mapInfo');
+  if (inf) inf.textContent = `一个循环：下坡 ${(z1-z0).toFixed(1)} m・横向 ${(x1-x0).toFixed(1)} m・行进距离 ${dist.toFixed(1)} m・时间 ${C.period.toFixed(1)} s`;
+}
+function drawMap(p){
+  const cv = document.getElementById('birdMap'); if (!cv || !mapBox) return;
+  const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (cv.width !== Math.round(w*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.fillStyle = '#0f1620'; g.fillRect(0, 0, w, h);
+  const {x0, x1, z0, z1} = mapBox, pad = 22;
+  const sc = Math.min((w-2*pad)/Math.max(x1-x0, .5), (h-2*pad)/Math.max(z1-z0, .5), 90);
+  const cx = (x0+x1)/2, cz = (z0+z1)/2;
+  const X = x => w/2 + (x-cx)*sc, Y = z => h/2 + (z-cz)*sc;
+  cv._map = {X, Y};
+  if (typeof hf === 'function' && C.mogul){
+    g.strokeStyle = 'rgba(160,185,210,.25)'; g.lineWidth = 1;
+    for (let zz = Math.floor((z0-2)/C.P)*C.P; zz <= z1+2; zz += C.P) for (let xx = Math.floor((x0-3)/C.Sx)*C.Sx; xx <= x1+3; xx += C.Sx){
+      g.beginPath(); g.arc(X(xx), Y(zz), C.Rb*sc, 0, Math.PI*2); g.stroke();
+    }
+  }
+  // fall line arrow + scale bar
+  g.fillStyle = '#5b6b7a'; g.font = '11px sans-serif'; g.textAlign = 'right'; g.fillText('↓ 下坡', w-6, 14);
+  const bar = sc*5 > 40 && sc*5 < w*.5 ? 5 : sc*1 > 40 ? 1 : 10;
+  g.strokeStyle = '#5b6b7a'; g.lineWidth = 2; g.beginPath(); g.moveTo(8, h-8); g.lineTo(8 + bar*sc, h-8); g.stroke();
+  g.textAlign = 'left'; g.fillText(bar + ' m', 10 + bar*sc, h-5);
+  // heading ticks (ski / board direction)
+  g.strokeStyle = 'rgba(127,147,168,.55)'; g.lineWidth = 1.5;
+  for (let i = 0; i < mapS.length; i += 10){
+    const m = mapS[i], dx = Math.sin(m.yaw)*m.len/2, dz = Math.cos(m.yaw)*m.len/2;
+    g.beginPath(); g.moveTo(X(m.at[0]-dx), Y(m.at[1]-dz)); g.lineTo(X(m.at[0]+dx), Y(m.at[1]+dz)); g.stroke();
+  }
+  // tracks
+  g.strokeStyle = '#7f93a8'; g.lineWidth = 1.2;
+  for (let t = 0; t < mapS[0].tr.length; t++){
+    g.beginPath(); mapS.forEach((m, i) => { const [x, z] = m.tr[t]; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); }); g.stroke();
+  }
+  // CoM coloured by phase
+  g.lineWidth = 3; g.lineCap = 'round';
+  for (let i = 1; i < mapS.length; i++){
+    const a = mapS[i-1], b = mapS[i];
+    g.strokeStyle = PHC[b.pi % PHC.length]; g.setLineDash(b.air > .02 ? [4, 4] : []);
+    g.beginPath(); g.moveTo(X(a.c[0]), Y(a.c[1])); g.lineTo(X(b.c[0]), Y(b.c[1])); g.stroke();
+  }
+  g.setLineDash([]);
+  // start / end
+  const st = mapS[0].c, en = mapS[mapS.length-1].c;
+  g.fillStyle = '#3ddc84'; g.beginPath(); g.arc(X(st[0]), Y(st[1]), 7, 0, Math.PI*2); g.fill();
+  g.fillStyle = '#0f1419'; g.font = 'bold 9px sans-serif'; g.textAlign = 'center'; g.fillText('起', X(st[0]), Y(st[1])+3);
+  g.fillStyle = '#ff4d6d'; g.fillRect(X(en[0])-7, Y(en[1])-7, 14, 14);
+  g.fillStyle = '#fff'; g.fillText('完', X(en[0]), Y(en[1])+3);
+  // current position
+  const u = ((p.s % 1) + 1) % 1, cur = mapS[Math.min(mapS.length-1, Math.round(u*240))];
+  const m = mapSample(p);
+  const ox = m.at[0] - cur.at[0], oz = m.at[1] - cur.at[1];
+  const px = X(m.c[0]-ox), pz = Y(m.c[1]-oz), dx = Math.sin(m.yaw)*m.len/2*sc, dz = Math.cos(m.yaw)*m.len/2*sc;
+  g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.moveTo(X(m.at[0]-ox)-dx, Y(m.at[1]-oz)-dz); g.lineTo(X(m.at[0]-ox)+dx, Y(m.at[1]-oz)+dz); g.stroke();
+  g.fillStyle = '#ffd23f'; g.strokeStyle = '#0f1419'; g.lineWidth = 2;
+  g.beginPath(); g.arc(px, pz, 6, 0, Math.PI*2); g.fill(); g.stroke();
+}
+function mapClick(e){
+  const cv = e.currentTarget, r = cv.getBoundingClientRect(); if (!cv._map) return;
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  let best = null, bd = Infinity;
+  for (const m of mapS){ const d = Math.hypot(cv._map.X(m.c[0]) - mx, cv._map.Y(m.c[1]) - my); if (d < bd){ bd = d; best = m; } }
+  if (best) jump(Math.min(best.s, .999));
+}
+
+function mapSample(p){ return {ph: phaseOf(p), c: [p.com.x, p.com.z], tr: [[p.footR.x, p.footR.z], [p.footL.x, p.footL.z]], at: [(p.footR.x+p.footL.x)/2, (p.footR.z+p.footL.z)/2], yaw: (p.yawR+p.yawL)/2, len: cfg.ski/100, air: 0}; }
+const mapName = ph => (PH[cfg.level][ph] || [ph])[0].split('（')[0];
+const mapTrackName = () => '雪板痕';
+
+/* ---------- pose ---------- */
+function pose(s){
+  const lv = LV[cfg.level];
+  if (lv.kind === 'pivot'){
+    const c = Math.cos(W*s), yaw = 80*D*Math.sign(c)*Math.pow(Math.abs(c), .35);
+    const r = Math.abs(yaw)/(80*D), sg = yaw >= 0 ? -1 : 1, phiMag = (3 + 9*r*r*r)*D;
+    return finish({s, sn: sg*.6, cs: 0, mid: new V(0, 0, s*C.L), psi: yaw, sg, phi: phiMag*sg, phiMag, nsh: .5 + .3*r, kap: 0});
+  }
+  if (lv.kind === 'trav'){
+    const cyc = Math.floor(s), u = s - cyc, fi = u*400, i0 = Math.floor(fi), t = fi - i0;
+    const a = C.tab[i0], b = C.tab[Math.min(400, i0+1)];
+    const mid = new V(a[0] + (b[0]-a[0])*t + cyc*C.dX, 0, a[1] + (b[1]-a[1])*t + cyc*C.dZ);
+    const psi = (65 - 40*(1-Math.cos(W*u))/2)*D;
+    const down = Math.max(0, Math.sin(W*u)), up = Math.max(0, -Math.sin(W*u));
+    const phi = (-(10 + 25*up) + 8*down)*D, sg = phi >= 0 ? 1 : -1;
+    return finish({s, sn: sg*.6, cs: 0, mid, psi, sg, phi, phiMag: Math.abs(phi), nsh: 1, kap: 0, down, up});
+  }
+  const sn = Math.sin(W*s), cs = Math.cos(W*s);
+  const xp = C.A*C.om*cs, xpp = -C.A*C.om*C.om*sn;
+  const kap = Math.abs(xpp)/Math.pow(1+xp*xp, 1.5);
+  const sg = sn >= 0 ? 1 : -1;
+  const phiMag = Math.min(Math.atan(C.v*C.v*kap/G), lv.cap);
+  return finish({s, sn, cs, mid: new V(C.A*sn, 0, s*C.L), psi: Math.atan(xp), sg, phi: phiMag*sg, phiMag, nsh: Math.pow(Math.abs(sn), .8), kap});
+}
+function finish(b){
+  const lv = LV[cfg.level], k = C.k, {mid, psi, sg, phi, phiMag, nsh} = b;
+  const f = new V(Math.sin(psi), 0, Math.cos(psi));
+  const right = new V(-Math.cos(psi), 0, Math.sin(psi));
+  const upLean = UP.clone().applyQuaternion(qYZX(psi, phi, 0));
+  const st = STANCE[cfg.stance];
+  const hP = (lv.h0 - .08*phiMag/(60*D) + st.dh)*k;
+  const gm = hf(mid.x, mid.z), lift = new V(0, .35*gm, 0);
+  const P = mid.clone().addScaledVector(upLean, hP).addScaledVector(f, (-.12 + st.dz)*k).add(lift);
+  const com = mid.clone().addScaledVector(upLean, hP + .1*k).addScaledVector(f, (-.04 + st.dz*1.1)*k).add(lift);
+  const inner = right.clone().multiplyScalar(sg);
+  const footR = mid.clone().addScaledVector(right, lv.stance*k);
+  const footL = mid.clone().addScaledVector(right, -lv.stance*k);
+  (sg > 0 ? footR : footL).addScaledVector(f, lv.lead*k*nsh);
+  footR.y = .1*k + hf(footR.x, footR.z); footL.y = .1*k + hf(footL.x, footL.z);
+  let edgeR, edgeL;
+  if (cfg.level === 'beg'){
+    const e0 = 10*D;
+    edgeR = -(e0 - .4*Math.max(0,phi) + Math.max(0,-phi));
+    edgeL =  (e0 - .4*Math.max(0,-phi) + Math.max(0,phi));
+  } else { edgeR = edgeL = clamp(phi*lv.ang, -75*D, 75*D); }
+  const skid = -sg*lv.skid*nsh;
+  const yawR = psi + skid + lv.wedge, yawL = psi + skid - lv.wedge;
+  let pitchR = skiPitch(footR, yawR), pitchL = skiPitch(footL, yawL);
+  let liftAmt = 0;
+  if (lv.lift){
+    liftAmt = clamp((nsh - .12)/.3, 0, 1); liftAmt = liftAmt*liftAmt*(3-2*liftAmt);
+    if (sg > 0){ footR.y += .14*k*liftAmt; edgeR *= 1 - liftAmt; pitchR += .15*liftAmt; }
+    else { footL.y += .14*k*liftAmt; edgeL *= 1 - liftAmt; pitchL += .15*liftAmt; }
+  }
+  const edgeOuter = sg > 0 ? edgeL : edgeR;
+  return Object.assign(b, {f, right, P, com, footR, footL, edgeR, edgeL, yawR, yawL, pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
+}
+
+function twoBone(H, T, pole, a, b){
+  const d = T.clone().sub(H); let dist = d.length(); const dir = d.divideScalar(dist);
+  dist = clamp(dist, .05, a+b-.002);
+  const cosA = (a*a + dist*dist - b*b)/(2*a*dist), sinA = Math.sqrt(Math.max(0, 1-cosA*cosA));
+  const nrm = pole.clone().addScaledVector(dir, -pole.dot(dir)).normalize();
+  return {K: H.clone().addScaledVector(dir, a*cosA).addScaledVector(nrm, a*sinA), E: H.clone().addScaledVector(dir, dist), nrm};
+}
+
+function solve(p){
+  const lv = LV[cfg.level], k = C.k;
+  const qP = qYZX(p.psi*lv.pyaw, p.phi*lv.pr, .18);
+  const hipR = p.P.clone().add(new V(-.11*k,-.05*k,0).applyQuaternion(qP));
+  const hipL = p.P.clone().add(new V(.11*k,-.05*k,0).applyQuaternion(qP));
+  const base = p.f.clone().addScaledVector(p.inner, .35*p.nsh*lv.knee);
+  const poleR = base.clone(), poleL = base.clone();
+  if (cfg.level === 'beg'){ poleR.addScaledVector(p.right, -.3); poleL.addScaledVector(p.right, .3); }
+  poleR.normalize(); poleL.normalize();
+  const legR = twoBone(hipR, p.footR, poleR, .45*k, .45*k);
+  const legL = twoBone(hipL, p.footL, poleL, .45*k, .45*k);
+  const qT = qYZX(p.psi*lv.tyaw, p.phi*lv.tr, lv.tp);
+  const tBase = p.P.clone().add(new V(0,.07*k,0).applyQuaternion(qP));
+  const qSkiR = qYZX(p.yawR, p.edgeR, p.pitchR), qSkiL = qYZX(p.yawL, p.edgeL, p.pitchL);
+  // angles
+  const px = new V(1,0,0).applyQuaternion(qP), py = new V(0,1,0).applyQuaternion(qP), pz = new V(0,0,1).applyQuaternion(qP);
+  const ang = {};
+  for (const [S, H, lg, qS] of [['R', hipR, legR, qSkiR], ['L', hipL, legL, qSkiL]]){
+    const th = lg.K.clone().sub(H).normalize(), sh = lg.E.clone().sub(lg.K).normalize();
+    ang['knee'+S] = Math.acos(clamp(th.dot(sh), -1, 1));
+    ang['hip'+S] = Math.atan2(th.dot(pz), -th.dot(py));
+    ang['add'+S] = Math.asin(clamp(th.dot(px), -1, 1)) * (S === 'R' ? 1 : -1);
+    const up = sh.clone().negate(), fs = new V(0,0,1).applyQuaternion(qS), us = new V(0,1,0).applyQuaternion(qS);
+    ang['ank'+S] = Math.atan2(up.dot(fs), up.dot(us));
+  }
+  const ty = new V(0,1,0).applyQuaternion(qT);
+  ang.lat = Math.asin(clamp(ty.dot(px), -1, 1));
+  return {qP, qT, hipR, hipL, legR, legL, tBase, qSkiR, qSkiL, ang};
+}
+
+/* muscle length change per unit joint motion (+ = lengthening) */
+function dLen(key, side, d){
+  const S = side;
+  switch (key){
+    case 'quad': return d['knee'+S];
+    case 'ham': return -d['knee'+S] + d['hip'+S];
+    case 'glmax': return d['hip'+S];
+    case 'add': return -d['add'+S];
+    case 'glmed': return d['add'+S];
+    case 'tib': return -d['ank'+S];
+    case 'calf': return d['ank'+S];
+    case 'obl': return S === 'L' ? -d.lat : d.lat;
+    default: return 0;
+  }
+}
+
+function activations(p){
+  const lv = LV[cfg.level];
+  const drive = p.nsh*Math.max(.3 + .7*C.inten, lv.minDrive);
+  const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2), trans = 1 - p.nsh;
+  const o = {quad:.25+.7*drive, ham:.2+.4*drive, glmax:.2+.6*drive, glmed:.2+.7*drive, add:.2+.45*drive, tib:.3+.45*init+.15*trans, calf:.15+.35*comp+.15*drive, obl:.2+.7*drive};
+  const i = {quad:.15+.35*drive, ham:.15+.55*drive, glmax:.1+.25*drive, glmed:.1+.15*drive, add:.1+.25*drive, tib:.3+.5*drive, calf:.1+.1*drive, obl:.15+.3*drive};
+  const c = C.mogul ? p.cmp : 0;
+  const baseAdd = cfg.level === 'beg' ? {quad:.2, add:.3, tib:.1, glmed:.1} : cfg.level === 'mid' ? {add:.1, glmed:.08}
+    : C.mogul ? {quad:.1+.35*c, glmax:.25*c, ham:.15*c, tib:.2}
+    : cfg.level === 'short' ? {obl:.2, add:.08} : cfg.level === 'pivot' ? {obl:.3, add:.15, glmed:.15} : cfg.level === 'trav' ? {obl:.15} : {};
+  const st = STANCE[cfg.stance];
+  const kk = clamp(p.nsh*p.sg*3, -1, 1)*st.kk, oR = .5 - .5*kk, oL = .5 + .5*kk;
+  const r = {};
+  for (const key in o){
+    const b = (baseAdd[key] || 0) + (st.add[key] || 0);
+    r[key] = {R: clamp(oR*o[key] + (1-oR)*i[key] + b, 0, 1), L: clamp(oL*o[key] + (1-oL)*i[key] + b, 0, 1)};
+  }
+  if (lv.lift && p.liftAmt > 0){
+    const S = p.sg > 0 ? 'R' : 'L', w = p.liftAmt;
+    const lo = {quad:.15, ham:.2+.25*drive, glmax:.05, glmed:.05, add:.1, tib:.35, calf:.05};
+    for (const key in lo) r[key][S] = r[key][S]*(1-w) + lo[key]*w;
+    const O = S === 'R' ? 'L' : 'R';
+    for (const key of ['quad','glmax','glmed','add']) r[key][O] = clamp(r[key][O] + .12*w, 0, 1);
+  }
+  r.abs = {C: clamp(.3 + .35*trans + .3*c + (st.add.abs||0), 0, 1)}; r.erec = {C: clamp(.35 + .25*drive + .15*c + (st.add.erec||0), 0, 1)};
+  return r;
+}
+
+function pressure(p){
+  const st = STANCE[cfg.stance];
+  const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
+  const kk = clamp(p.nsh*p.sg*3, -1, 1)*st.kk*SHARE[cfg.level];
+  let fa = .1 + .35*init - .35*comp;
+  if (C.mogul) fa += .25*(1 - p.cmp)*init - .15*p.cmp;
+  fa = clamp(fa + st.fa, -.95, .95);
+  const out = {};
+  for (const S of ['R','L']){
+    const share = S === 'R' ? .5 - .5*kk : .5 + .5*kk;
+    const o = S === 'R' ? .5 - .5*clamp(p.nsh*p.sg*3,-1,1) : .5 + .5*clamp(p.nsh*p.sg*3,-1,1);
+    const ml = cfg.level === 'beg' ? -.5 : clamp((o*-.6 + (1-o)*.45)*p.nsh, -.9, .9);
+    out[S] = {share, fa, ml};
+  }
+  return out;
+}
+function modes(s, act){
+  const e = .004;
+  const a1 = solve(pose(s-e)).ang, a2 = solve(pose(s+e)).ang, dt = 2*e*C.period;
+  const d = {}; for (const kk in a1) d[kk] = (a2[kk]-a1[kk])/dt;
+  const m = {};
+  for (const key in act){
+    m[key] = {};
+    for (const side in act[key]){
+      if (act[key][side] < .22){ m[key][side] = 'off'; continue; }
+      const rate = dLen(key, side, d)/D; // deg/s of joint motion
+      m[key][side] = Math.abs(rate) < 1.5 ? 'iso' : rate > 0 ? 'ecc' : 'con';
+    }
+  }
+  return m;
+}
+const MODE_TXT = {con:'向心收缩', ecc:'离心收缩', iso:'等长收缩', off:'放松'};
+
+/* ---------- phases & watch lists ---------- */
+const PH = {
+  beg: {
+    trans:['换方向（双脚平均）','双脚平均受力，身体回到两板中间。保持 A 字（犁式），不要站直。'],
+    init:['入弯：重心移到新外脚','慢慢把重量移到弯外那只脚，膝盖和脚掌微微往弯内方向压。上半身不要跟着转。'],
+    apex:['弯中：外脚主导','外脚受力最多，外脚的内刃咬雪带着转。上半身面向下坡，手放在前面。'],
+    comp:['出弯：控速','外脚继续推住板尾（犁式开大一点就会减速），之后准备换边。']
+  },
+  mid: {
+    trans:['换刃（点杖＋伸展）','轻点新内侧雪杖，身体往前往下坡伸展、减轻压力，双板一起换刃，保持平行。'],
+    init:['入弯：大腿转向','大腿往弯内旋转带雪板转，板尾稍微搓雪；上半身保持面向下坡（反向扭转）。'],
+    apex:['弯中：外脚加压','外脚逐渐加压，反弓开始出现；肩膀大致与坡面平行。'],
+    comp:['出弯：控制搓雪控速','用搓雪角度控速，屈曲吸收，准备下一次点杖。']
+  },
+  mogul: {
+    trans:['猫跳顶：转向＋点杖','脚收到最短，在猫跳顶转向换刃（板头板尾离雪，最好转）；点杖在猫跳顶或猫跳背，上半身保持面向下坡。'],
+    init:['下猫跳背：伸展','双脚往下伸展，让雪板保持贴雪（向心收缩）；板头压进雪沟，不要后坐。'],
+    apex:['雪沟：控速','脚伸到最长，雪板在雪沟用搓雪控速；上半身像沿着一条直线滑下来，不跟着脚上下动。'],
+    comp:['撞上猫跳面：吸收','双脚屈膝屈髋吸收冲击（股四头肌、臀大肌离心收缩），腹肌收紧，不要让猫跳把上半身弹起。']
+  },
+  short: {
+    trans:['换刃＋点杖','点杖的同时屈曲放刃，双板在身体下方翻到新的刃；上半身一直面向下坡，不跟着雪板转。'],
+    init:['入弯：脚转、身体不转','大腿在骨盆里旋转带雪板转（上下半身分离），腹斜肌等长收缩撑住上半身方向。'],
+    apex:['弯中：短促加压','外脚快速加压，板尾稍微搓雪控速；节奏要快，不要停在弯中。'],
+    comp:['出弯：准备下一次点杖','压力立刻释放，手已经往前伸准备下一次点杖。']
+  },
+  pivot: {
+    slip:['横滑 Side slip','双板打横，上坡侧的刃轻轻咬雪控速；上半身面向下坡，膝盖微弯。'],
+    pivot:['Pivot：原地转向','双板放平，大腿在骨盆里旋转，让双板经过滚落线转到另一边；上半身完全不动。'],
+    trans:['',''], init:['',''], apex:['',''], comp:['','']
+  },
+  trav: {
+    trav:['斜滑降 Traverse','双板用上坡侧的刃横越斜坡，上半身面向下坡（反弓）；上坡脚稍微在前，下坡脚承重。'],
+    down:['Garland：放刃下滑','双板稍微放平，板头转向滚落线下滑，像半个弯的开头。'],
+    up:['Garland：入刃回升','重新加上坡侧的立刃，双板咬雪转回上坡，速度慢下来。'],
+    trans:['',''], init:['',''], apex:['',''], comp:['','']
+  },
+  lift: {
+    trans:['换刃：双脚落地','换刃时两只脚都在雪上，换完立刻把重量全部交给新外脚。'],
+    init:['提起内脚','内脚提起（板尾离雪、板头轻碰雪），证明全身重量真的在外脚上。'],
+    apex:['单脚转弯','只靠外脚完成整个弯：后坐或重心在内脚就会马上站不稳。'],
+    comp:['出弯：准备放下','出弯时慢慢放下内脚，准备做新的外脚。']
+  },
+  carve: {
+    trans:['换刃 Transition','旧外脚放松屈曲（cross-under），双板同时放平再换到新的刃；重心从旧弯内侧越过双脚上方。腹直肌和胫骨前肌把身体带向前，不要后坐。'],
+    init:['入弯 Initiation（上半弯）','新外脚由脚踝→膝盖→髋部逐级入刃，内收肌把膝盖带入弯；胫骨前肌拉住鞋舌保持前压。在地面反作用力变大之前就倾倒入弯。'],
+    apex:['最大倾倒 Apex','地面反作用力最大：外脚股四头肌、臀大肌、臀中肌撑住；腘绳肌协同收缩保护前十字韧带。外侧腹斜肌／腰方肌做上半身反弓；内脚收短。'],
+    comp:['出弯 Completion（下半弯）','逐步减少立刃角度，压力由前移到中后段，外脚开始屈曲（离心收缩）吸收，准备下一个换刃。']
+  }
+};
+function phaseOf(p){
+  const kind = LV[cfg.level].kind;
+  if (kind === 'pivot') return Math.abs(p.psi) > 60*D ? 'slip' : 'pivot';
+  if (kind === 'trav') return p.down > .35 ? 'down' : p.up > .35 ? 'up' : 'trav';
+  const s = p.s, u = ((s*2)%1+1)%1; return (u < .1 || u > .9) ? 'trans' : u < .38 ? 'init' : u < .62 ? 'apex' : 'comp'; }
+
+const WATCH = {
+  beg: [
+    {w:'前后重心', v:'side', s:.25, t:'重心（黄球）在脚掌正上方；胫骨和上半身大致平行。后坐会让大腿很快酸，也控制不了雪板。'},
+    {w:'犁式形状', v:'top', s:0, t:'板头靠近、板尾打开，两支板都用内刃（两边都有蓝色刃）。'},
+    {w:'外脚转弯', v:'back', s:.25, t:'外脚受力比内脚多：看肌肉表，外脚股四头肌和内收肌会比较高。'},
+    {w:'上半身方向', v:'front', s:.25, t:'上半身面向下坡，不要用肩膀扭去转弯。'},
+    {w:'坡度', v:null, s:null, t:'6–12° 最适合练习；太陡会被迫后坐，见「规格设置」。'}
+  ],
+  mid: [
+    {w:'双板平行', v:'top', s:.25, t:'两条板痕平行而且距离一样。雪板方向会比行进路线更往弯内一点，就是搓雪。'},
+    {w:'Counter-rotation', v:'front', s:.25, t:'上半身面向下坡，下半身跟着雪板转，腰部有扭转。'},
+    {w:'大腿转向', v:'back', s:.11, t:'换刃后用大腿内旋带雪板转，不是用上半身拖。'},
+    {w:'Pole plant', v:'side', s:.47, t:'换刃前轻点新内侧的雪杖，带重心往前往下坡。'},
+    {w:'重心路线', v:'top', s:0, t:'黄色重心轨迹比板痕短、走内线，表示身体先入弯。'}
+  ],
+  mogul: [
+    {w:'吸收与伸展', v:'side', s:.39, t:'撞上猫跳面就屈膝屈髋吸收，进雪沟就伸脚让雪板贴雪。黄色重心线应该比雪面平顺很多。'},
+    {w:'上半身静止', v:'front', s:0, t:'上半身面向下坡、手在前面，下半身像避震器一样动。'},
+    {w:'点杖时机', v:'side', s:.47, t:'在猫跳顶／猫跳背点杖，带身体往前进入下一个雪沟。'},
+    {w:'在猫跳顶转向', v:'top', s:0, t:'在猫跳顶换刃转向：那时只有雪板中间接触雪，最容易转。'},
+    {w:'前后重心', v:'side', s:.11, t:'下猫跳背时要压板头（胫骨前肌）；一后坐，下一个猫跳就会把你弹飞。'}
+  ],
+  short: [
+    {w:'上下半身分离', v:'front', s:.25, t:'上半身一直面向下坡，下半身左右摆：看腹斜肌一直「等长收缩」。'},
+    {w:'点杖节奏', v:'side', s:.47, t:'每次换刃前点杖，带重心往前往下坡。'},
+    {w:'重心直线', v:'top', s:0, t:'黄色重心线几乎是直线下山，双脚在下面左右摆。'},
+    {w:'快加压快释放', v:'back', s:.25, t:'立刃和压力时间短，不要停在弯中。'},
+    {w:'大腿旋转', v:'top', s:.11, t:'雪板转、骨盆和上半身不转：内收肌、臀中肌负责大腿旋转。'}
+  ],
+  pivot: [
+    {w:'上半身不动', v:'front', s:.25, t:'双板从一边转到另一边，上半身一直面向下坡。'},
+    {w:'先放刃再转', v:'back', s:.2, t:'转之前先把双板放平（立刃 → 0°），才转得顺。'},
+    {w:'大腿旋转', v:'top', s:.25, t:'转向是大腿在骨盆里旋转，不是扭腰。'},
+    {w:'直线下山', v:'top', s:0, t:'整个练习是沿着滚落线直线下滑，不应该往左右偏。'},
+    {w:'Uphill edge', v:'back', s:0, t:'横滑时用上坡侧的刃轻轻控速，不要吃得太深。'}
+  ],
+  trav: [
+    {w:'Angulation', v:'front', s:0, t:'膝盖和髋部朝上坡，上半身朝下坡 = 反弓，双板用上坡侧的刃。'},
+    {w:'下坡脚承重', v:'back', s:0, t:'下坡脚（这里是右脚）承受大部分体重，看脚掌图。'},
+    {w:'上坡脚在前', v:'top', s:0, t:'上坡侧的板稍微在前，骨盆和上半身面向下坡。'},
+    {w:'放刃下滑', v:'back', s:.25, t:'立刃放平，板头自然转向滚落线，像半个弯。'},
+    {w:'入刃回升', v:'back', s:.75, t:'重新吃上坡侧的刃，转回上坡；这一下就是转弯下半段的感觉。'}
+  ],
+  lift: [
+    {w:'内脚离雪', v:'back', s:.25, t:'Apex 时内脚提起，所有重量在外脚。'},
+    {w:'外脚脚掌', v:'side', s:.25, t:'脚掌图：外脚 100%，CoP 在脚掌中间偏前。'},
+    {w:'不要后坐', v:'side', s:.11, t:'一后坐就站不稳：选「站姿 → 后坐」比较。'},
+    {w:'内脚怎么收', v:'front', s:.25, t:'内脚靠腘绳肌屈膝提起，不是靠腰。'},
+    {w:'换刃落地', v:'back', s:0, t:'换刃时两只脚都落地，再把重量全部交给新外脚。'}
+  ],
+  carve: [
+    {w:'立刃大于倾倒', v:'back', s:.25, t:'右上角仪表：立刃角度大于身体倾倒 = 有反弓。'},
+    {w:'外脚长、内脚短', v:'back', s:.25, t:'外脚接近伸直撑住地面反作用力，内脚收短，让身体可以继续入弯。'},
+    {w:'重心越过', v:'top', s:0, t:'换刃时重心从双板上方越过，路线比板痕短很多。'},
+    {w:'前压', v:'side', s:.11, t:'入弯时胫骨压住鞋舌（胫骨前肌出力），板头先咬雪。'},
+    {w:'GRF 力线', v:'back', s:.25, t:'紫色力线从外脚穿过重心 = 平衡；穿不过重心就会倒进弯内或被甩出弯外。'}
+  ]
+};
+
+/* ---------- three setup ---------- */
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xcfdbe6);
+scene.fog = new THREE.Fog(0xcfdbe6, 22, 70);
+const camera = new THREE.PerspectiveCamera(48, 1, .05, 300);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8899aa, .75));
+const sun = new THREE.DirectionalLight(0xffffff, .85);
+sun.castShadow = true; sun.shadow.mapSize.set(1024,1024);
+Object.assign(sun.shadow.camera, {left:-4,right:4,top:4,bottom:-4,near:.5,far:25});
+scene.add(sun); scene.add(sun.target);
+
+const slopeG = new THREE.Group(); scene.add(slopeG);
+const snow = new THREE.Mesh(new THREE.PlaneGeometry(400,400), new THREE.MeshStandardMaterial({color:0xf2f6fa, roughness:.95}));
+snow.rotation.x = -Math.PI/2; snow.receiveShadow = true; slopeG.add(snow);
+const grid = new THREE.GridHelper(400, 200, 0xb3c2d1, 0xd3dce6); grid.position.y = .003; slopeG.add(grid);
+
+let terrain = null;
+function buildTerrain(){
+  if (terrain){ slopeG.remove(terrain); terrain.geometry.dispose(); terrain = null; }
+  grid.visible = !C.mogul;
+  if (!C.mogul) return;
+  const g = new THREE.PlaneGeometry(30, 50, 150, 250); g.rotateX(-Math.PI/2);
+  const pos = g.attributes.position;
+  const col = new Float32Array(pos.count*3), lo = new THREE.Color(0xc9d6e4), hi = new THREE.Color(0xffffff), tmp = new THREE.Color();
+  for (let i = 0; i < pos.count; i++){
+    const h = hf(pos.getX(i), pos.getZ(i)); pos.setY(i, h + .004);
+    tmp.copy(lo).lerp(hi, Math.min(1, h/cfg.Hm)); col.set([tmp.r, tmp.g, tmp.b], i*3);
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  g.computeVertexNormals();
+  terrain = new THREE.Mesh(g, new THREE.MeshStandardMaterial({vertexColors:true, roughness:.85}));
+  terrain.receiveShadow = true; terrain.castShadow = true; slopeG.add(terrain);
+}
+let trails = [];
+function rebuildTrails(c){
+  trails.forEach(t => { slopeG.remove(t); t.geometry.dispose(); });
+  const cp = [], tr = [], tl = [];
+  for (let i = -200; i <= 400; i++){
+    const p = pose(c + i/200);
+    cp.push(p.com.clone()); tr.push(new V(p.footR.x, hf(p.footR.x,p.footR.z)+.012, p.footR.z)); tl.push(new V(p.footL.x, hf(p.footL.x,p.footL.z)+.012, p.footL.z));
+  }
+  const mk = (pts, color, op) => new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color, transparent:true, opacity:op}));
+  comTrail = mk(cp, 0xe0a800, .9);
+  trails = [comTrail, mk(tr, 0x7f93a8, .85), mk(tl, 0x7f93a8, .85)];
+  trails.forEach(t => slopeG.add(t));
+  comTrail.visible = show.com;
+  trailCycle = c;
+  buildMap(c);
+}
+let comTrail, trailCycle = null;
+
+/* ---------- figure ---------- */
+const jacket = new THREE.MeshStandardMaterial({color:0x3b82c4, roughness:.6, transparent:true});
+const pants = new THREE.MeshStandardMaterial({color:0x3a4352, roughness:.7, transparent:true});
+const sphereGeo = new THREE.SphereGeometry(1, 18, 12);
+const muscles = [], limbs = [];
+function limb(len, r0, r1, mat){
+  const g = new THREE.Group();
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(r1, r0, len, 14), mat); c.position.y = len/2; g.add(c);
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(r0, 14, 10), mat));
+  slopeG.add(g); limbs.push(g); return g;
+}
+function addMuscle(parent, key, side, pos, scl){
+  const mat = new THREE.MeshStandardMaterial({color:0x3a4652, emissive:0x000000, roughness:.45, transparent:true, opacity:.96});
+  const m = new THREE.Mesh(sphereGeo, mat); m.position.set(...pos); m.scale.set(...scl); m.renderOrder = 2;
+  parent.add(m); muscles.push({m, key, side, base:m.scale.clone()});
+}
+function orient(obj, a, b, hint){
+  const y = b.clone().sub(a).normalize();
+  const z = hint.clone().addScaledVector(y, -hint.dot(y)).normalize();
+  obj.position.copy(a);
+  obj.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(new V().crossVectors(y, z), y, z));
+}
+function makeLeg(side){
+  const med = side === 'R' ? -1 : 1;
+  const thigh = limb(.45, .085, .06, pants), shin = limb(.45, .06, .045, pants);
+  addMuscle(thigh,'quad',side,[0,.22,.06],[.065,.18,.05]);
+  addMuscle(thigh,'ham',side,[0,.2,-.06],[.055,.17,.045]);
+  addMuscle(thigh,'add',side,[med*.06,.12,0],[.04,.13,.045]);
+  addMuscle(shin,'tib',side,[-med*.014,.16,.046],[.032,.13,.032]);
+  addMuscle(shin,'calf',side,[0,.13,-.05],[.05,.13,.042]);
+  return {thigh, shin};
+}
+const legR = makeLeg('R'), legL = makeLeg('L');
+const pelvis = new THREE.Group(); slopeG.add(pelvis);
+const pm = new THREE.Mesh(sphereGeo, pants); pm.scale.set(.17,.1,.12); pelvis.add(pm);
+for (const [side,sx] of [['R',-1],['L',1]]){
+  addMuscle(pelvis,'glmax',side,[sx*.075,-.02,-.1],[.08,.08,.05]);
+  addMuscle(pelvis,'glmed',side,[sx*.16,.03,-.01],[.035,.065,.065]);
+}
+const torso = new THREE.Group(); slopeG.add(torso);
+const tm = new THREE.Mesh(new THREE.CylinderGeometry(.16,.13,.5,16), jacket); tm.position.y = .25; torso.add(tm);
+const shm = new THREE.Mesh(sphereGeo, jacket); shm.scale.set(.2,.07,.12); shm.position.y = .47; torso.add(shm);
+const head = new THREE.Mesh(sphereGeo, new THREE.MeshStandardMaterial({color:0x1f2937, roughness:.4})); head.scale.setScalar(.11); head.position.set(0,.66,.02); torso.add(head);
+const gog = new THREE.Mesh(new THREE.BoxGeometry(.17,.05,.04), new THREE.MeshStandardMaterial({color:0xff8c1a, roughness:.2, metalness:.3})); gog.position.set(0,.665,.11); torso.add(gog);
+addMuscle(torso,'abs','C',[0,.2,.13],[.065,.16,.035]);
+addMuscle(torso,'erec','C',[0,.22,-.12],[.07,.18,.035]);
+for (const [side,sx] of [['R',-1],['L',1]]) addMuscle(torso,'obl',side,[sx*.14,.16,.03],[.035,.13,.075]);
+
+const ARM_U = new V(-.08,-.26,.04), ARM_F = new V(-.04,-.02,.22);
+function makeArm(){
+  const pole = new THREE.Group();
+  const pmsh = new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,1,6), new THREE.MeshStandardMaterial({color:0x222222})); pmsh.position.y = .5; pole.add(pmsh);
+  slopeG.add(pole);
+  return {up: limb(ARM_U.length(), .05, .042, jacket), fo: limb(ARM_F.length(), .042, .035, jacket), pole};
+}
+const armR = makeArm(), armL = makeArm();
+/* ---------- board bending (reverse camber when edged & loaded) ---------- */
+// For a carving ski/board with sidecut radius R at edge angle θ, the edge lies on the snow when the
+// base bends (toward the snow) with curvature tanθ / R; turn radius is then R·cosθ.
+let bendMul = 1, bendText = '';
+function bendable(geo){ geo.userData.base = Float32Array.from(geo.attributes.position.array); return geo; }
+function bendGeo(geo, kappa, zScale){
+  const b = geo.userData.base, pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++){ const zm = b[i*3+2]*zScale; pos.setY(i, b[i*3+1] + kappa*zm*zm/2); }
+  pos.needsUpdate = true; geo.computeVertexNormals();
+}
+const sagCm = (kappa, L) => kappa*L*L/8*100;
+/* ---------- board pressure strip ---------- */
+const PNS = 32;
+function makeStrip(){
+  const g = new THREE.PlaneGeometry(1, 1, 1, PNS); g.rotateX(-Math.PI/2);
+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count*3), 3));
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({vertexColors:true, transparent:true, opacity:.95, depthWrite:false}));
+  m.renderOrder = 5; return m;
+}
+const BP0 = new THREE.Color(0xf4f7fb), BP1 = new THREE.Color(0xffb020), BP2 = new THREE.Color(0xff1946);
+function bpRamp(v){ return v < .5 ? BP0.clone().lerp(BP1, v/.5) : BP1.clone().lerp(BP2, (v-.5)/.5); }
+function paintStrip(m, fn){
+  const pos = m.geometry.attributes.position, col = m.geometry.attributes.color;
+  for (let i = 0; i < pos.count; i++){ const c = bpRamp(Math.min(1, fn(pos.getZ(i)))); col.setXYZ(i, c.r, c.g, c.b); }
+  col.needsUpdate = true;
+}
+function makeMarker(){
+  const m = new THREE.Mesh(new THREE.ConeGeometry(.03, .09, 12), new THREE.MeshBasicMaterial({color:0xff1946, depthTest:false, transparent:true}));
+  m.rotation.x = Math.PI; m.renderOrder = 6; return m;
+}
+const bpLabel = f => f > .06 ? '前段（板头）' : f < -.06 ? '后段（板尾）' : '中段';
+let bpText = '';
+function makeSki(){
+  const g = new THREE.Group(), board = new THREE.Group(); g.add(board);
+  const ski = new THREE.Mesh(bendable(new THREE.BoxGeometry(.09,.015,1,1,1,40)), new THREE.MeshStandardMaterial({color:0x2b3442, roughness:.4})); ski.position.y = .0075; board.add(ski);
+  const edge = new THREE.Mesh(bendable(new THREE.BoxGeometry(.012,.012,.98,1,1,40)), new THREE.MeshBasicMaterial({color:0x4cc9f0})); board.add(edge);
+  const boot = new THREE.Mesh(new THREE.BoxGeometry(.11,.2,.3), new THREE.MeshStandardMaterial({color:0xe5e7eb, roughness:.5})); boot.position.set(0,.1,.02);
+  const bootG = new THREE.Group(); bootG.add(boot); g.add(bootG);
+  const strip = makeStrip(); bendable(strip.geometry); strip.scale.set(.05, 1, 1); strip.position.y = .0165; board.add(strip);
+  const mk = makeMarker(); g.add(mk);
+  slopeG.add(g); return {g, board, edge, bootG, strip, mk, ski};
+}
+const skiR = makeSki(), skiL = makeSki();
+const comBall = new THREE.Mesh(new THREE.SphereGeometry(.085,18,12), new THREE.MeshBasicMaterial({color:0xffd23f, depthTest:false, transparent:true}));
+comBall.renderOrder = 10; slopeG.add(comBall);
+const grf = new THREE.ArrowHelper(UP, new V(), 1, 0xa855f7, .14, .08); slopeG.add(grf);
+const grav = new THREE.ArrowHelper(new V(0,-1,0), new V(), .5, 0x3a7bd5, .1, .06); slopeG.add(grav);
+for (const a of [grf, grav]) a.traverse(o => { if (o.material){ o.material.depthTest = false; o.material.transparent = true; o.renderOrder = 11; } });
+slopeG.traverse(o => { if (o.isMesh && o !== snow && o !== comBall) o.castShadow = true; });
+
+function rescale(){
+  const k = C.k;
+  limbs.forEach(g => g.scale.setScalar(k));
+  pelvis.scale.setScalar(k); torso.scale.setScalar(k);
+  if (Rig.ready) Rig.setHeight(cfg.H/100);
+  for (const s of [skiR, skiL]){ s.board.scale.set(1, 1, cfg.ski/100); s.bootG.scale.setScalar(k); }
+}
+
+/* ---------- apply ---------- */
+function placeSki(ski, foot, yaw, edge, qS){
+  ski.g.quaternion.copy(qS);
+  ski.g.position.copy(foot).sub(new V(0,.1*C.k,0).applyQuaternion(qS));
+  ski.edge.position.set(-.045*(edge >= 0 ? 1 : -1), 0, 0);
+  ski.edge.visible = show.edge && Math.abs(edge) > .05;
+}
+function placeArm(arm, shoulder, qA, mirror, f, plant){
+  const k = C.k;
+  const u = ARM_U.clone().multiplyScalar(k), fo = ARM_F.clone().multiplyScalar(k);
+  u.x *= mirror; fo.x *= mirror; fo.z += .12*k*plant; fo.y += .04*k*plant;
+  const elbow = shoulder.clone().add(u.applyQuaternion(qA)), hand = elbow.clone().add(fo.applyQuaternion(qA));
+  orient(arm.up, shoulder, elbow, f); orient(arm.fo, elbow, hand, UP);
+  const out = new V(-mirror,0,0).applyQuaternion(qA);
+  placePole(arm, hand, f, out, plant);
+  return {hand, pole: out.clone().multiplyScalar(.6).addScaledVector(f, -.5).add(new V(0,-.4,0)).normalize(), f, out, plant};
+}
+function placePole(arm, hand, f, out, plant){
+  const k = C.k;
+  const dir = new V(0,-1,0).addScaledVector(f, -.32 + .8*plant).addScaledVector(out, .12).normalize();
+  const len = Math.min(1.2*k, Math.max(.2, hand.y/(-dir.y)));
+  orient(arm.pole, hand, hand.clone().addScaledVector(dir, len), f);
+  arm.pole.scale.y = len;
+}
+function plantAmt(s){
+  const u = ((s*2)%1+1)%1, d = Math.min(Math.abs(u-.95), Math.abs(u+1-.95));
+  return Math.exp(-(((d)/.045)**2));
+}
+
+let focus = null;
+function applyPose(p){
+  const lv = LV[cfg.level], k = C.k, J = solve(p);
+  pelvis.position.copy(p.P); pelvis.quaternion.copy(J.qP);
+  orient(legR.thigh, J.hipR, J.legR.K, J.legR.nrm); orient(legR.shin, J.legR.K, J.legR.E, p.f);
+  orient(legL.thigh, J.hipL, J.legL.K, J.legL.nrm); orient(legL.shin, J.legL.K, J.legL.E, p.f);
+  torso.position.copy(J.tBase); torso.quaternion.copy(J.qT);
+  const qA = qYZX(p.psi*lv.tyaw, p.phi*lv.tr, 0);
+  const pl = plantAmt(p.s)*lv.plant, newSg = -p.sg;
+  const aR = placeArm(armR, J.tBase.clone().add(new V(-.2*k,.45*k,0).applyQuaternion(J.qT)), qA, 1, p.f, newSg > 0 ? pl : 0);
+  const aL = placeArm(armL, J.tBase.clone().add(new V(.2*k,.45*k,0).applyQuaternion(J.qT)), qA, -1, p.f, newSg < 0 ? pl : 0);
+  placeSki(skiR, p.footR, p.yawR, p.edgeR, J.qSkiR); placeSki(skiL, p.footL, p.yawL, p.edgeL, J.qSkiL);
+  { const pr = pressure(p), L = cfg.ski/100;
+    for (const [S, sk] of [['R', skiR], ['L', skiL]]){
+      const d = pr[S], e = p['edge'+S], c = d.fa*.25, sig = .14 + .1*(1 - Math.min(1, Math.abs(e)/(20*D)));
+      const x = Math.abs(e) > .05 ? -.018*Math.sign(e) : 0;
+      sk.strip.visible = sk.mk.visible = show.bp && d.share > .02;
+      sk.strip.position.x = x;
+      paintStrip(sk.strip, z => d.share*1.15*Math.exp(-(((z - c)/sig)**2)));
+      const kap = bendMul*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
+      bendGeo(sk.ski.geometry, kap, L); bendGeo(sk.edge.geometry, kap, L); bendGeo(sk.strip.geometry, kap, L);
+      sk.kap = kap;
+      sk.mk.position.set(x, .07 + .05*d.share + kap*(c*L)**2/2, c*L); sk.mk.scale.setScalar(.6 + .8*d.share);
+    }
+    { const so = p.sg > 0 ? skiL : skiR, kk = (so.kap || 0)/(bendMul || 1);
+      bendText = bendMul && kk > 1e-4 ? `外板反弓 ${sagCm(kk, L).toFixed(1)} cm・弯曲半径 ${(1/kk).toFixed(1)} m` : (bendMul ? '雪板未受力弯曲（平板／没有立刃）' : ''); }
+    const S = p.sg > 0 ? 'L' : 'R'; bpText = `雪板压力：${p.nsh < .05 ? '两板平均・' : '外板'}${bpLabel(pr[S].fa*.25)}`; }
+  if (Rig.ready){
+    const qH = qYZX(p.psi*lv.tyaw, p.phi*lv.tr*.4, .05);
+    const o = Rig.drive({pelvis: p.P, qP: J.qP, qT: J.qT, qH,
+      legs: {R: {ankle: p.footR, pole: J.legR.nrm, qFoot: J.qSkiR}, L: {ankle: p.footL, pole: J.legL.nrm, qFoot: J.qSkiL}},
+      arms: {R: {hand: aR.hand, pole: aR.pole}, L: {hand: aL.hand, pole: aL.pole}}});
+    orient(legR.thigh, o.hipR, o.kneeR, o.poleR); orient(legR.shin, o.kneeR, o.ankleR, p.f);
+    orient(legL.thigh, o.hipL, o.kneeL, o.poleL); orient(legL.shin, o.kneeL, o.ankleL, p.f);
+    placePole(armR, o.handR, p.f, aR.out, aR.plant); placePole(armL, o.handL, p.f, aL.out, aL.plant);
+  }
+
+  comBall.position.copy(p.com);
+  const outer = (p.sg > 0 ? p.footL : p.footR).clone(); outer.y -= .08*k;
+  const gv = p.com.clone().sub(outer);
+  grf.position.copy(outer); grf.setDirection(gv.clone().normalize()); grf.setLength(gv.length(), .14, .08);
+  grav.position.copy(p.com);
+  grav.setDirection(new V(0, -Math.cos(cfg.slope*D), Math.sin(cfg.slope*D)));
+
+  const act = activations(p), md = modes(p.s, act), t = performance.now()/1000;
+  for (const mu of muscles){
+    const a = act[mu.key][mu.side], col = heat(a);
+    const dim = focus && focus !== mu.key;
+    mu.m.visible = show.muscle && !dim;
+    mu.m.material.color.copy(col);
+    mu.m.material.emissive.copy(col).multiplyScalar(.15 + .6*a);
+    mu.m.material.opacity = focus ? 1 : .25 + .75*clamp((a-.15)/.5, 0, 1);
+    const mode = md[mu.key][mu.side];
+    const pulse = focus === mu.key ? 1 + .12*Math.sin(t*8) : 1;
+    const sy = mode === 'ecc' ? 1.12 : mode === 'con' ? .9 : 1, sx = mode === 'con' ? 1.1 : mode === 'ecc' ? .94 : 1;
+    mu.m.scale.set(mu.base.x*sx*pulse, mu.base.y*sy*pulse, mu.base.z*sx*pulse);
+  }
+  return {act, md};
+}
+function heat(a){
+  const lo = [58,70,82], mi = [235,110,70], hi = [255,25,70];
+  const [c0, c1, t] = a < .5 ? [lo, mi, a/.5] : [mi, hi, (a-.5)/.5];
+  return new THREE.Color((c0[0]+(c1[0]-c0[0])*t)/255, (c0[1]+(c1[1]-c0[1])*t)/255, (c0[2]+(c1[2]-c0[2])*t)/255);
+}
+
+/* ---------- UI ---------- */
+const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:false};
+function applyVis(){
+  comBall.visible = show.com; if (comTrail) comTrail.visible = show.com;
+  grf.visible = grav.visible = show.force;
+  for (const m of [jacket, pants]){ m.opacity = show.xray ? .32 : 1; m.depthWrite = !show.xray; m.needsUpdate = true; }
+  if (Rig.ready) Rig.setOpacity(show.xray ? .42 : 1);
+}
+document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
+  const k = b.dataset.t; show[k] = !show[k]; b.classList.toggle('on', show[k]); applyVis();
+});
+let th = 2.45, ph = 1.2, rad = 4.6;
+const VIEWS = {front:[0,1.25], side:[Math.PI/2,1.3], back:[Math.PI,1.2], top:[Math.PI,.12]};
+function setView(v){ [th, ph] = VIEWS[v]; }
+document.querySelectorAll('[data-v]').forEach(b => b.onclick = () => setView(b.dataset.v));
+
+let sT = 0, playing = true, mul = .5;
+const playBtn = document.getElementById('play'), scrub = document.getElementById('scrub');
+playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? '⏸ 暂停' : '▶ 播放'; };
+function pause(){ playing = false; playBtn.textContent = '▶ 播放'; }
+function jump(s){ sT = Math.floor(sT) + s; pause(); }
+scrub.oninput = () => jump(scrub.value/1000);
+document.getElementById('speedMul').onchange = e => mul = +e.target.value;
+const JUMPS = {
+  def: [['换刃',0],['入弯',.11],['最大倾倒',.25],['出弯',.39]],
+  pivot: [['横滑',0],['开始转',.2],['转向中',.25],['另一边侧滑',.5]],
+  trav: [['斜滑降',0],['放刃下滑',.25],['入刃回升',.75]]
+};
+function renderJumps(){
+  const box = document.getElementById('jumps'); box.innerHTML = '';
+  (JUMPS[LV[cfg.level].kind] || JUMPS.def).forEach(([n, v]) => { const b = document.createElement('button'); b.textContent = n; b.onclick = () => jump(v); box.appendChild(b); });
+}
+
+/* level & spec sliders */
+const sl = {}; for (const id of ['H','ski','R','slope','v','Hm']) sl[id] = document.getElementById(id);
+const unit = {H:'cm', ski:'cm', R:'m', slope:'°', v:'km/h', Hm:'m'};
+function syncSliders(){ for (const id in sl){ sl[id].value = cfg[id]; document.getElementById('o'+id).textContent = cfg[id] + ' ' + unit[id]; } }
+for (const id in sl) sl[id].oninput = () => { cfg[id] = +sl[id].value; syncSliders(); build(); };
+function setLevel(l){
+  cfg.level = l; const lv = LV[l];
+  Object.assign(cfg, {v:lv.v, slope:lv.slope, R:lv.R, ski:cfg.H + lv.skiOff});
+  document.querySelectorAll('[data-l]').forEach(b => b.classList.toggle('on', b.dataset.l === l));
+  document.getElementById('HmRow').style.display = l === 'mogul' ? '' : 'none';
+  syncSliders(); build(); renderJumps(); lastPhase = '';
+  renderGuide();
+}
+document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => setLevel(b.dataset.l));
+function setStance(k){
+  cfg.stance = k;
+  document.querySelectorAll('[data-st]').forEach(b => b.classList.toggle('on', b.dataset.st === k));
+  document.getElementById('stName').textContent = STANCE[k].name;
+  document.getElementById('stTxt').textContent = STANCE[k].txt;
+  if (typeof cmpOn !== 'undefined') updCmpLbl();
+  rebuildTrails(Math.floor(sT));
+}
+document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => setStance(b.dataset.st));
+const footEl = {L: document.getElementById('footL'), R: document.getElementById('footR')};
+function drawFeet(p){
+  const pr = pressure(p);
+  for (const S of ['L','R']){
+    const cx = S === 'L' ? 32 : 78, cy = 52, el = footEl[S], d = pr[S];
+    el.setAttribute('transform', `translate(${cx},${cy})`);
+    const x = (S === 'R' ? d.ml : -d.ml)*8, y = -d.fa*24;
+    const c = el.querySelector('.cop');
+    c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1));
+    c.setAttribute('r', (3 + 9*d.share).toFixed(1));
+    c.setAttribute('fill', '#'+heat(d.share).getHexString());
+    el.querySelector('.sh').textContent = (S === 'L' ? '左 ' : '右 ') + Math.round(d.share*100) + '%';
+  }
+}
+
+function renderSpec(){
+  const r = REC[cfg.level], H = cfg.H;
+  const st = (x, lo, hi) => x >= lo && x <= hi ? '<span class="ok">✓</span>' : '<span class="bad">⚠</span>';
+  const rows = [
+    ['板长', cfg.ski+' cm', `${H+r.ski[0]}–${H+r.ski[1]} cm<small>身高 ${r.ski[0]}～${r.ski[1]}</small>`, st(cfg.ski, H+r.ski[0], H+r.ski[1])],
+    ['雪板 R', cfg.R+' m', `${r.R[0]}–${r.R[1]} m`, st(cfg.R, r.R[0], r.R[1])],
+    ['坡度', cfg.slope+'°', `${r.slope[0]}–${r.slope[1]}°`, st(cfg.slope, r.slope[0], r.slope[1])],
+    ['速度', cfg.v+' km/h', `${r.v[0]}–${r.v[1]} km/h`, st(cfg.v, r.v[0], r.v[1])],
+    ...(LV[cfg.level].kind === 'pivot' || LV[cfg.level].kind === 'trav' ? [] : [['→ 转弯半径', C.Rt.toFixed(1)+' m', cfg.level === 'carve' ? 'R × cos(edge)' : '由速度和做得到的倾倒决定', ''],
+    ['→ 最大倾倒', (C.phiApex/D).toFixed(0)+'°', 'tan θ = v²/(g·r)', ''],
+    ['→ 最大立刃', (C.edgeApex/D).toFixed(0)+'°', cfg.level === 'beg' ? '外脚内刃' : '倾倒＋反弓', ''],
+    ['→ 外脚地面反作用力', '≈ '+(1/Math.cos(C.phiApex)).toFixed(2)+'× 体重', '1 / cos θ', '']]),
+    ['→ 两个弯的时间', C.period.toFixed(1)+' s', '', ''],
+    ...(C.mogul ? [['→ 猫跳间距', C.P.toFixed(1)+' m', '一个弯一个猫跳', ''], ['→ 双脚要吸收', (cfg.Hm*.65*100).toFixed(0)+' cm', '猫跳高度 × 65%（上半身只跟 35%）', '']] : [])
+  ];
+  document.getElementById('spec').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+  document.getElementById('warn').innerHTML = C.warn ? `<div class="warn">${C.warn}</div>` : '';
+}
+function renderWatch(){
+  document.getElementById('watchLv').textContent = LV[cfg.level].name;
+  const tb = document.getElementById('watch'); tb.innerHTML = '';
+  WATCH[cfg.level].forEach(w => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="white-space:nowrap">${w.w}</td><td>${w.t}</td><td>${w.v ? '<button>▶ 看</button>' : ''}</td>`;
+    const b = tr.querySelector('button');
+    if (b) b.onclick = () => { setView(w.v); jump(w.s); stage.scrollIntoView({behavior:'smooth', block:'start'}); };
+    tb.appendChild(tr);
+  });
+}
+
+const META = [
+  ['quad','股四头肌','股四头肌：外脚撑住地面反作用力、控制屈膝'],
+  ['glmax','臀大肌','臀大肌：伸髋、维持髋部高度'],
+  ['glmed','臀中肌','臀中肌：稳定骨盆、侧向支撑'],
+  ['add','内收肌群','内收肌群：膝盖带入弯、双脚平行／维持犁式'],
+  ['ham','腘绳肌','腘绳肌：协同收缩保护前十字韧带；内脚收短'],
+  ['tib','胫骨前肌','胫骨前肌：拉住鞋舌保持前压'],
+  ['calf','小腿肌','小腿肌：弯尾压力控制'],
+  ['obl','腹斜肌／腰方肌','腹斜肌／腰方肌：上半身反弓'],
+  ['abs','腹直肌','腹直肌：换刃时把重心带向前'],
+  ['erec','竖脊肌','竖脊肌：维持上半身前倾']
+];
+const NAME = Object.fromEntries(META.map(m => [m[0], m[1]]));
+const tbody = document.getElementById('mBody'), cells = {};
+for (const [k,zh,en] of META){
+  const tr = document.createElement('tr'); tr.className = 'click';
+  const c = k === 'abs' || k === 'erec';
+  const cell = '<div class="cell"><div class="bar"><i></i></div><div class="meta"><span class="pct"></span><span class="mode"></span></div></div>';
+  tr.innerHTML = `<td>${zh}<small>${en}</small></td>` + (c ? `<td colspan="2">${cell}</td>` : `<td>${cell}</td><td>${cell}</td>`);
+  tr.onclick = () => {
+    focus = focus === k ? null : k;
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('focus'));
+    if (focus) tr.classList.add('focus');
+  };
+  tbody.appendChild(tr);
+  cells[k] = [...tr.querySelectorAll('.cell')].map(el => ({bar:el.querySelector('i'), pct:el.querySelector('.pct'), mode:el.querySelector('.mode')}));
+}
+function updateTable(act, md){
+  for (const [k] of META){
+    const sides = (k === 'abs' || k === 'erec') ? ['C'] : ['L','R'];
+    sides.forEach((sd, i) => {
+      const v = act[k][sd], m = md[k][sd], c = cells[k][i];
+      c.bar.style.width = (v*100).toFixed(0)+'%'; c.bar.style.background = '#'+heat(v).getHexString();
+      c.pct.textContent = (v*100).toFixed(0)+'%';
+      c.mode.className = 'mode m-'+m; c.mode.textContent = MODE_TXT[m];
+    });
+  }
+}
+
+const hud = document.getElementById('hud'), phTitle = document.getElementById('phTitle'), phCue = document.getElementById('phCue');
+const gLean = document.getElementById('gLean'), gSki = document.getElementById('gSki'), gTxt = document.getElementById('gTxt');
+const top3 = document.getElementById('top3'), badgeBox = document.getElementById('badges');
+const badges = [1,2,3].map(n => { const d = document.createElement('div'); d.className = 'badge'; d.textContent = n; badgeBox.appendChild(d); return d; });
+let lastPhase = '', tableT = 0;
+function sideName(side, p){
+  if (side === 'C') return '';
+  if (p.nsh < .08) return side === 'L' ? '左' : '右';
+  const outer = (p.sg > 0 && side === 'L') || (p.sg < 0 && side === 'R');
+  return outer ? '外脚' : '内脚';
+}
+function updateUI(p, act, md, now){
+  if (now - mapT > 60){ drawMap(p); mapT = now; }
+  const ph = phaseOf(p), lv = LV[cfg.level];
+  const turn = p.nsh < .05 ? '' : (p.sg > 0 ? '右弯' : '左弯');
+  const outer = p.nsh < .05 ? '—' : (p.sg > 0 ? '左脚' : '右脚');
+  const skiY = (p.yawR + p.yawL)/2, pelY = p.psi*lv.pyaw, torY = p.psi*lv.tyaw;
+  const sep = `髋转 ${Math.abs((skiY-pelY)/D).toFixed(0)}°・腰转 ${Math.abs((pelY-torY)/D).toFixed(0)}°`;
+  if (lv.kind === 'pivot' || lv.kind === 'trav'){
+    hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>坡度 ${cfg.slope}°・雪板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = 滚落线）<br>Uphill edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>${sep}`;
+  } else
+  hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b> ${turn}<br>${cfg.v} km/h・转弯半径 ${C.Rt.toFixed(1)} m<br>倾倒 ${(p.phiMag/D).toFixed(0)}°・外脚立刃 ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>外脚 ${outer}・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× 体重<br>${sep}`;
+  gLean.setAttribute('transform', `translate(55,94) rotate(${(p.phi/D).toFixed(1)})`);
+  gSki.setAttribute('transform', `translate(55,94) rotate(${(p.edgeOuter/D).toFixed(1)})`);
+  gTxt.textContent = `Edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°`;
+  if (ph !== lastPhase){ phTitle.textContent = PH[cfg.level][ph][0]; phCue.textContent = PH[cfg.level][ph][1]; lastPhase = ph; }
+
+  // top 3 muscles + badges
+  const list = [];
+  for (const key in act) for (const side in act[key]) list.push({key, side, a:act[key][side], m:md[key][side]});
+  list.sort((a,b) => b.a - a.a);
+  const top = focus ? list.filter(x => x.key === focus).slice(0,3) : list.slice(0,3);
+  top3.innerHTML = `<div class="t">${focus ? '单独查看：'+NAME[focus] : '目前最出力'}</div>` + top.map((x,i) =>
+    `${i+1}. ${sideName(x.side,p)}${NAME[x.key]} ${(x.a*100).toFixed(0)}% <span class="mode m-${x.m}">${MODE_TXT[x.m]}</span>`).join('<br>');
+  const w = stage.clientWidth, h = stage.clientHeight;
+  badges.forEach((b, i) => {
+    const x = top[i]; if (!x || !show.muscle){ b.style.display = 'none'; return; }
+    const mu = muscles.find(m => m.key === x.key && m.side === x.side);
+    const v = mu.m.getWorldPosition(new V()).project(camera);
+    if (v.z > 1){ b.style.display = 'none'; return; }
+    b.style.display = 'flex'; b.style.left = ((v.x+1)/2*w)+'px'; b.style.top = ((1-v.y)/2*h)+'px';
+    b.style.borderColor = x.m === 'ecc' ? '#ff4d6d' : x.m === 'con' ? '#3ddc84' : '#4cc9f0';
+  });
+  drawFeet(p);
+  if (now - tableT > 150){ updateTable(act, md); tableT = now; }
+  if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
+  if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
+  if (bendText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#b9a7ff">${bendText}</span>`;
+}
+
+/* ---------- learning: simple mode, compare, guide ---------- */
+const GUIDE = {"beg": {"q": [["转右弯时，哪只脚要多出点力？", "左脚（弯外那只）。外脚加压，雪板就会转。"], ["重心应该在脚跟还是脚掌中间？", "脚掌中间。后坐会让大腿很快酸，又控制不了雪板。"]], "sum": "保持 A 字，重心在脚掌中间，想往哪边转就压另一边的脚。", "snow": "在缓坡慢慢做 4–5 个弯，每个弯说出「压左脚」／「压右脚」，感觉压力在脚掌中间，不是脚跟。"}, "mid": {"q": [["换刃时，身体应该往上伸还是往下压？", "先轻轻伸展减压，双板容易换刃；入弯后再屈曲加压。"], ["上半身应该跟着雪板转吗？", "不应该。上半身大致面向下坡，转弯靠下半身。"]], "sum": "伸展换刃、屈曲加压、上半身面向下坡。", "snow": "每个弯心里喊「起、压」的节奏；看着远方一点，注意肩膀不要跟着雪板转。"}, "carve": {"q": [["入弯时，最大压力应该在哪只脚？", "外脚，大约 80–90%。"], ["立刃角度应该大于、等于，还是小于身体倾倒？", "大于。差距来自膝盖和髋部的反弓。"]], "sum": "早点倾倒入弯，外脚撑住，上半身保持水平，让雪板自己转。", "snow": "在缓坡做 railroad track：雪板不要打滑，雪上只留两条细线；感觉外脚鞋舌一直有压力。"}, "mogul": {"q": [["撞上猫跳面时，脚应该伸直还是屈曲？", "屈曲吸收，像避震器一样。"], ["头的高度应该跟着猫跳上下吗？", "不应该。头和上半身尽量保持一条平顺的线。"]], "sum": "撞上就收脚，进雪沟就伸脚，上半身保持平稳。", "snow": "先在猫跳区边缘做单颗猫跳「撞、收、伸」；再练在猫跳顶点杖的时机。"}, "short": {"q": [["小回转时上半身应该面向哪里？", "一直面向正下坡（滚落线）。"], ["什么时候点杖？", "每次换刃之前，带身体往前进入下一个弯。"]], "sum": "上半身面向山下，脚在下面左右摆，点杖带节奏。", "snow": "选一条窄雪道，假设两边有墙；心里数「点、转、点、转」。"}, "pivot": {"q": [["转向时，身体哪个部位应该转？", "大腿在骨盆里转，上半身不动。"], ["转之前立刃应该加大还是放平？", "先放平，雪板才转得顺。"]], "sum": "立刃放平，大腿转，上半身不动，沿滚落线直线下滑。", "snow": "在中级坡做，起点和终点对准同一条直线（例如缆车柱），检查自己有没有往左右偏。"}, "trav": {"q": [["斜滑降时，哪只脚承受比较多重量？", "下坡脚。"], ["膝盖和髋部应该推向上坡还是下坡？", "上坡；上半身就朝下坡，形成反弓。"]], "sum": "下坡脚承重、膝盖推向上坡、上半身朝下坡；放刃下滑，入刃回升。", "snow": "横越雪道时试着提起上坡脚，站得稳才对；做 garland 时感受「放」和「咬」的差别。"}, "lift": {"q": [["提起内脚之后，重心应该在外脚的哪里？", "脚掌中间偏前，不是脚跟。"], ["提起内脚靠哪些肌肉？", "腘绳肌屈膝提起，不是用腰。"]], "sum": "所有重量交给外脚，站得稳才算真的站在外脚上。", "snow": "在缓坡做，从每个弯提起 1 秒开始，慢慢延长到整个弯。"}};
+const STANCE_SHORT = {"back": "重心偏后：板头没有压力，大腿很快就累。", "fwd": "重心太前：板尾打滑，出弯放不掉。", "even": "双脚平均：外脚咬不牢，容易变成 A 字腿。"};
+for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
+const CMP_DEFAULT = 'back';
+let cmpOn = false, lastCyc = null;
+const toastDone = {};
+function renderGuide(){
+  const g = GUIDE[cfg.level]; if (!g) return;
+  document.getElementById('gQs').innerHTML = g.q.map(([q, a]) => `<div class="qa">❓ ${q}<button>看答案</button><div class="ans" hidden>✅ ${a}</div></div>`).join('');
+  document.querySelectorAll('#gQs .qa button').forEach(b => b.onclick = () => { const a = b.nextElementSibling; a.hidden = !a.hidden; b.textContent = a.hidden ? '看答案' : '收起'; });
+  document.getElementById('gSum').textContent = '💡 重点：' + g.sum;
+  document.getElementById('gSnow').textContent = '❄️ 雪上怎么练：' + g.snow;
+}
+function showToast(t){
+  const el = document.getElementById('toast'); el.textContent = '💡 ' + t; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 4500);
+}
+function setMode(m){
+  document.body.classList.toggle('simple', m === 'simple');
+  document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  if (m === 'simple') Object.assign(show, {muscle:false, force:false, xray:false, com:true, edge:true});
+  else Object.assign(show, {muscle:true, force:true, xray:true});
+  document.querySelectorAll('[data-t]').forEach(b => b.classList.toggle('on', !!show[b.dataset.t]));
+  applyVis();
+}
+function updCmpLbl(){
+  const st = STANCE[cfg.stance];
+  document.getElementById('cmpR').innerHTML = (cfg.stance === 'ok' ? '✅ ' : '❌ ') + st.name + (st.short ? '<small>' + st.short + '</small>' : '');
+}
+function setCmp(on){
+  cmpOn = on; document.body.classList.toggle('cmp', on);
+  document.getElementById('cmpBtn').classList.toggle('on', on);
+  if (on && cfg.stance === 'ok') setStance(CMP_DEFAULT);
+  if (on) setView('side');
+  updCmpLbl();
+}
+document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+document.getElementById('cmpBtn').onclick = () => setCmp(!cmpOn);
+['gauge','feet','top3','badges','arcLbl'].forEach(id => { const e = document.getElementById(id); if (e) e.classList.add('adv'); });
+['mBody','spec','watch'].forEach(id => { const e = document.getElementById(id); if (e) e.closest('.card').classList.add('adv'); });
+document.querySelector('[data-t="muscle"]').closest('.row').classList.add('adv');
+
+document.getElementById('bendBtn').onclick = () => {
+  bendMul = bendMul === 1 ? 4 : bendMul === 4 ? 0 : 1;
+  const b = document.getElementById('bendBtn');
+  b.textContent = '雪板弯曲：' + (bendMul === 1 ? '真实' : bendMul === 4 ? '夸张 ×4' : '关');
+  b.classList.toggle('on', bendMul > 0);
+};
+/* ---------- orbit ---------- */
+const cv = renderer.domElement, ptrs = new Map(); let pinch0 = 0, rad0 = rad;
+const pdist = () => { const [a,b] = [...ptrs.values()]; return Math.hypot(a.x-b.x, a.y-b.y); };
+cv.addEventListener('pointerdown', e => { cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY}); if (ptrs.size === 2){ pinch0 = pdist(); rad0 = rad; } });
+cv.addEventListener('pointermove', e => {
+  const pt = ptrs.get(e.pointerId); if (!pt) return;
+  const dx = e.clientX - pt.x, dy = e.clientY - pt.y; pt.x = e.clientX; pt.y = e.clientY;
+  if (ptrs.size === 1){ th -= dx*.009; ph = clamp(ph - dy*.009, .08, 1.52); }
+  else if (ptrs.size === 2){ rad = clamp(rad0*pinch0/pdist(), 1.6, 16); }
+});
+const upE = e => ptrs.delete(e.pointerId);
+cv.addEventListener('pointerup', upE); cv.addEventListener('pointercancel', upE);
+cv.addEventListener('wheel', e => { e.preventDefault(); rad = clamp(rad*(1+e.deltaY*.001), 1.6, 16); }, {passive:false});
+function resize(){ const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(stage); resize();
+
+/* ---------- loop ---------- */
+document.getElementById('birdMap').onclick = mapClick;
+setLevel('carve'); setStance('ok'); setMode('simple');
+Rig.load('xbot.json', slopeG, {color:0x7fa6cf, jointColor:0x2b3442}).then(() => {
+  limbs.forEach(g => { g.children[0].visible = g.children[1].visible = false; });
+  [armR, armL].forEach(a => { a.up.visible = a.fo.visible = false; });
+  [pm, tm, shm, head, gog].forEach(m => m.visible = false);
+  const helmet = new THREE.Mesh(new THREE.SphereGeometry(11.5, 20, 14, 0, Math.PI*2, 0, Math.PI*.55), new THREE.MeshStandardMaterial({color:0x1f2937, roughness:.35}));
+  helmet.position.set(0, 9, 0); Rig.attachToHead(helmet);
+  const gg = new THREE.Mesh(new THREE.BoxGeometry(15, 5, 4), new THREE.MeshStandardMaterial({color:0xff8c1a, roughness:.2, metalness:.3}));
+  gg.position.set(0, 7, 9); Rig.attachToHead(gg);
+  Rig.setHeight(cfg.H/100); applyVis();
+}).catch(e => console.warn('rig load failed', e));
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(.05, (now-last)/1000); last = now;
+  if (playing) sT += dt*mul/C.period;
+  scrub.value = Math.round((((sT%1)+1)%1)*1000);
+  if (Math.floor(sT) !== trailCycle) rebuildTrails(Math.floor(sT));
+  const p = pose(sT);
+  let {act, md} = applyPose(p);
+  snow.position.set(Math.round(p.mid.x/2)*2, 0, Math.round(p.mid.z/2)*2);
+  grid.position.set(snow.position.x, .003, snow.position.z);
+  if (terrain) terrain.position.set(Math.round(p.mid.x/C.Sx)*C.Sx, 0, Math.round(p.mid.z/C.P)*C.P);
+  slopeG.updateMatrixWorld(true);
+  const placeCam = (pp, aspect, rr) => {
+    const tl = (() => { const v = pp.com.clone(); v.y -= .2*C.k; return v; })();
+    const t = th + (show.follow ? pp.psi : 0);
+    const cl = tl.clone().add(new V(rr*Math.sin(ph)*Math.sin(t), rr*Math.cos(ph), rr*Math.sin(ph)*Math.cos(t)));
+    const target = slopeG.localToWorld(tl);
+    camera.aspect = aspect; camera.updateProjectionMatrix();
+    camera.position.copy(slopeG.localToWorld(cl)); camera.lookAt(target);
+    sun.position.copy(target).add(new V(5,6,-1)); sun.target.position.copy(target);
+  };
+  const Wd = stage.clientWidth, Hd = stage.clientHeight;
+  if (cmpOn){
+    const W2 = Wd/2, sel = cfg.stance;
+    renderer.setScissorTest(true);
+    cfg.stance = 'ok'; const p0 = pose(sT); applyPose(p0); slopeG.updateMatrixWorld(true);
+    placeCam(p0, W2/Hd, rad*1.3); renderer.setViewport(0, 0, W2, Hd); renderer.setScissor(0, 0, W2, Hd); renderer.render(scene, camera);
+    cfg.stance = sel; const r1 = applyPose(p); act = r1.act; md = r1.md; slopeG.updateMatrixWorld(true);
+    placeCam(p, W2/Hd, rad*1.3); renderer.setViewport(W2, 0, W2, Hd); renderer.setScissor(W2, 0, W2, Hd); renderer.render(scene, camera);
+    renderer.setScissorTest(false); renderer.setViewport(0, 0, Wd, Hd);
+  } else { placeCam(p, Wd/Hd, rad); renderer.render(scene, camera); }
+  const cyc = Math.floor(sT);
+  if (playing && lastCyc !== null && cyc !== lastCyc && !toastDone[cfg.level] && GUIDE[cfg.level]){ showToast('重点：' + GUIDE[cfg.level].sum); toastDone[cfg.level] = 1; }
+  lastCyc = cyc;
+  updateUI(p, act, md, now);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+<script>
+(function(){
+  var file = location.pathname.split('/').pop() || 'index.html';
+  var sel = document.getElementById('langSel');
+  if (sel) sel.onchange = function(){ try { localStorage.setItem('lang', sel.value); } catch(e){} location.href = sel.value; };
+  if (file !== 'index.html' && file !== '') return;
+  var saved = null; try { saved = localStorage.getItem('lang'); } catch(e){}
+  var target = saved;
+  if (!target){
+    var l = (navigator.language || '').toLowerCase();
+    if (/^zh-(hk|mo)/.test(l) || /yue/.test(l)) target = 'index.html';
+    else if (/^zh-(tw|hant)/.test(l)) target = 'zh-tw.html';
+    else if (/^zh/.test(l)) target = 'zh-cn.html';
+  }
+  if (target && target !== 'index.html') location.replace(target);
+})();
+</script>
+</body>
+</html>

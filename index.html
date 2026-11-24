@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant-HK">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -17,10 +17,28 @@ a.card span{display:block;color:#8b98a5;font-size:13px;margin-top:4px}
 </head>
 <body>
 <main>
+  <select id="langSel" aria-label="Language" style="float:right;margin-left:8px;background:#171e26;color:#e6edf3;border:1px solid #2a3440;border-radius:8px;padding:4px 6px;font-size:12px"><option value="index.html" selected>廣東話（香港）</option><option value="zh-tw.html">繁體中文（台灣）</option><option value="zh-cn.html">简体中文（中国大陆）</option><option value="en.html">English</option></select>
   <h1>3D 滑雪／單板教學</h1>
   <p>互動 3D 模型：肌肉發力（向心／離心／等長）、CoM、Edge、腳掌壓力，可以 360° 轉。</p>
-  <a class="card" href="ski/"><b>雙板 Ski</b><span>犁式・平行・Carving・蘑菇・短彎・Pivot slip・斜滑降＋Garland・提內腳 drill</span></a>
-  <a class="card" href="snowboard/"><b>單板 Snowboard</b><span>Side slip・斜滑降＋Garland・Skid・動態・Carving・極限低 Carve・Ollie／Nollie・Butter・Switch</span></a>
+  <a class="card" href="ski/index.html"><b>雙板 Ski</b><span>犁式・平行・Carving・蘑菇・短彎・Pivot slip・斜滑降＋Garland・提內腳 drill</span></a>
+  <a class="card" href="snowboard/index.html"><b>單板 Snowboard</b><span>Side slip・斜滑降＋Garland・Skid・動態・Carving・極限低 Carve・Ollie／Nollie・Butter・Switch</span></a>
 </main>
+<script>
+(function(){
+  var file = location.pathname.split('/').pop() || 'index.html';
+  var sel = document.getElementById('langSel');
+  if (sel) sel.onchange = function(){ try { localStorage.setItem('lang', sel.value); } catch(e){} location.href = sel.value; };
+  if (file !== 'index.html' && file !== '') return;
+  var saved = null; try { saved = localStorage.getItem('lang'); } catch(e){}
+  var target = saved;
+  if (!target){
+    var l = (navigator.language || '').toLowerCase();
+    if (/^zh-(hk|mo)/.test(l) || /yue/.test(l)) target = 'index.html';
+    else if (/^zh-(tw|hant)/.test(l)) target = 'zh-tw.html';
+    else if (/^zh/.test(l)) target = 'zh-cn.html';
+  }
+  if (target && target !== 'index.html') location.replace(target);
+})();
+</script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant-HK">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -70,6 +70,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
 </head>
 <body>
 <header>
+  <select id="langSel" aria-label="Language" style="float:right;margin-left:8px;background:#171e26;color:#e6edf3;border:1px solid #2a3440;border-radius:8px;padding:4px 6px;font-size:12px"><option value="index.html" selected>廣東話（香港）</option><option value="zh-tw.html">繁體中文（台灣）</option><option value="zh-cn.html">简体中文（中国大陆）</option><option value="en.html">English</option></select>
   <h1>3D 滑雪教學：肌肉發力・CoM・Edge</h1>
   <p>拖動 360° 轉、雙指縮放・一個循環 = 兩個彎・㩒肌肉表其中一行可以單獨睇嗰組肌肉</p>
 </header>
@@ -142,6 +143,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button class="on" data-t="force">力線</button>
     <button class="on" data-t="edge">Edge</button>
     <button class="on" data-t="bp">板壓力</button>
+    <button class="on" id="bendBtn">板彎曲：真實</button>
   </div>
   <div class="row">
     <span class="label">站位</span>
@@ -827,6 +829,17 @@ function makeArm(){
   return {up: limb(ARM_U.length(), .05, .042, jacket), fo: limb(ARM_F.length(), .042, .035, jacket), pole};
 }
 const armR = makeArm(), armL = makeArm();
+/* ---------- board bending (reverse camber when edged & loaded) ---------- */
+// For a carving ski/board with sidecut radius R at edge angle θ, the edge lies on the snow when the
+// base bends (toward the snow) with curvature tanθ / R; turn radius is then R·cosθ.
+let bendMul = 1, bendText = '';
+function bendable(geo){ geo.userData.base = Float32Array.from(geo.attributes.position.array); return geo; }
+function bendGeo(geo, kappa, zScale){
+  const b = geo.userData.base, pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++){ const zm = b[i*3+2]*zScale; pos.setY(i, b[i*3+1] + kappa*zm*zm/2); }
+  pos.needsUpdate = true; geo.computeVertexNormals();
+}
+const sagCm = (kappa, L) => kappa*L*L/8*100;
 /* ---------- board pressure strip ---------- */
 const PNS = 32;
 function makeStrip(){
@@ -850,13 +863,13 @@ const bpLabel = f => f > .06 ? '前段（板頭）' : f < -.06 ? '後段（板�
 let bpText = '';
 function makeSki(){
   const g = new THREE.Group(), board = new THREE.Group(); g.add(board);
-  const ski = new THREE.Mesh(new THREE.BoxGeometry(.09,.015,1), new THREE.MeshStandardMaterial({color:0x2b3442, roughness:.4})); ski.position.y = .0075; board.add(ski);
-  const edge = new THREE.Mesh(new THREE.BoxGeometry(.012,.012,.98), new THREE.MeshBasicMaterial({color:0x4cc9f0})); board.add(edge);
+  const ski = new THREE.Mesh(bendable(new THREE.BoxGeometry(.09,.015,1,1,1,40)), new THREE.MeshStandardMaterial({color:0x2b3442, roughness:.4})); ski.position.y = .0075; board.add(ski);
+  const edge = new THREE.Mesh(bendable(new THREE.BoxGeometry(.012,.012,.98,1,1,40)), new THREE.MeshBasicMaterial({color:0x4cc9f0})); board.add(edge);
   const boot = new THREE.Mesh(new THREE.BoxGeometry(.11,.2,.3), new THREE.MeshStandardMaterial({color:0xe5e7eb, roughness:.5})); boot.position.set(0,.1,.02);
   const bootG = new THREE.Group(); bootG.add(boot); g.add(bootG);
-  const strip = makeStrip(); strip.scale.set(.05, 1, 1); strip.position.y = .0165; board.add(strip);
+  const strip = makeStrip(); bendable(strip.geometry); strip.scale.set(.05, 1, 1); strip.position.y = .0165; board.add(strip);
   const mk = makeMarker(); g.add(mk);
-  slopeG.add(g); return {g, board, edge, bootG, strip, mk};
+  slopeG.add(g); return {g, board, edge, bootG, strip, mk, ski};
 }
 const skiR = makeSki(), skiL = makeSki();
 const comBall = new THREE.Mesh(new THREE.SphereGeometry(.085,18,12), new THREE.MeshBasicMaterial({color:0xffd23f, depthTest:false, transparent:true}));
@@ -922,8 +935,13 @@ function applyPose(p){
       sk.strip.visible = sk.mk.visible = show.bp && d.share > .02;
       sk.strip.position.x = x;
       paintStrip(sk.strip, z => d.share*1.15*Math.exp(-(((z - c)/sig)**2)));
-      sk.mk.position.set(x, .07 + .05*d.share, c*L); sk.mk.scale.setScalar(.6 + .8*d.share);
+      const kap = bendMul*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
+      bendGeo(sk.ski.geometry, kap, L); bendGeo(sk.edge.geometry, kap, L); bendGeo(sk.strip.geometry, kap, L);
+      sk.kap = kap;
+      sk.mk.position.set(x, .07 + .05*d.share + kap*(c*L)**2/2, c*L); sk.mk.scale.setScalar(.6 + .8*d.share);
     }
+    { const so = p.sg > 0 ? skiL : skiR, kk = (so.kap || 0)/(bendMul || 1);
+      bendText = bendMul && kk > 1e-4 ? `外板反拱 ${sagCm(kk, L).toFixed(1)} cm・彎曲半徑 ${(1/kk).toFixed(1)} m` : (bendMul ? '板未受力彎曲（平板／冇 edge）' : ''); }
     const S = p.sg > 0 ? 'L' : 'R'; bpText = `板壓力：${p.nsh < .05 ? '兩板平均・' : '外板'}${bpLabel(pr[S].fa*.25)}`; }
   if (Rig.ready){
     const qH = qYZX(p.psi*lv.tyaw, p.phi*lv.tr*.4, .05);
@@ -1150,6 +1168,7 @@ function updateUI(p, act, md, now){
   if (now - tableT > 150){ updateTable(act, md); tableT = now; }
   if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
   if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
+  if (bendText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#b9a7ff">${bendText}</span>`;
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
@@ -1195,6 +1214,12 @@ document.getElementById('cmpBtn').onclick = () => setCmp(!cmpOn);
 ['mBody','spec','watch'].forEach(id => { const e = document.getElementById(id); if (e) e.closest('.card').classList.add('adv'); });
 document.querySelector('[data-t="muscle"]').closest('.row').classList.add('adv');
 
+document.getElementById('bendBtn').onclick = () => {
+  bendMul = bendMul === 1 ? 4 : bendMul === 4 ? 0 : 1;
+  const b = document.getElementById('bendBtn');
+  b.textContent = '板彎曲：' + (bendMul === 1 ? '真實' : bendMul === 4 ? '誇張 ×4' : '關');
+  b.classList.toggle('on', bendMul > 0);
+};
 /* ---------- orbit ---------- */
 const cv = renderer.domElement, ptrs = new Map(); let pinch0 = 0, rad0 = rad;
 const pdist = () => { const [a,b] = [...ptrs.values()]; return Math.hypot(a.x-b.x, a.y-b.y); };
@@ -1262,6 +1287,23 @@ function frame(now){
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+})();
+</script>
+<script>
+(function(){
+  var file = location.pathname.split('/').pop() || 'index.html';
+  var sel = document.getElementById('langSel');
+  if (sel) sel.onchange = function(){ try { localStorage.setItem('lang', sel.value); } catch(e){} location.href = sel.value; };
+  if (file !== 'index.html' && file !== '') return;
+  var saved = null; try { saved = localStorage.getItem('lang'); } catch(e){}
+  var target = saved;
+  if (!target){
+    var l = (navigator.language || '').toLowerCase();
+    if (/^zh-(hk|mo)/.test(l) || /yue/.test(l)) target = 'index.html';
+    else if (/^zh-(tw|hant)/.test(l)) target = 'zh-tw.html';
+    else if (/^zh/.test(l)) target = 'zh-cn.html';
+  }
+  if (target && target !== 'index.html') location.replace(target);
 })();
 </script>
 </body>

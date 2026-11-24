@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3D Snowboard Coach: Muscles · CoM · Edge</title>
+<style>
+:root{--bg:#0f1419;--panel:#171e26;--line:#2a3440;--text:#e6edf3;--muted:#8b98a5;--accent:#4cc9f0;--good:#3ddc84;--warn:#ffb020;--con:#3ddc84;--ecc:#ff4d6d;--iso:#4cc9f0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang HK","Noto Sans TC","Microsoft JhengHei",sans-serif}
+header{padding:12px 16px 8px;max-width:900px;margin:0 auto}
+h1{font-size:17px;margin:0}
+header p{margin:2px 0 0;color:var(--muted);font-size:12px}
+#stage{position:relative;height:60vh;min-height:340px;max-height:660px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#cfdbe6;overflow:hidden}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.hud{position:absolute;top:8px;left:8px;background:rgba(15,20,25,.84);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;pointer-events:none;max-width:62%;line-height:1.45}
+.hud b{font-size:14px;color:var(--accent)}
+#gauge{position:absolute;top:8px;right:8px;width:110px;height:124px;background:rgba(15,20,25,.84);border:1px solid var(--line);border-radius:8px}
+#feet{position:absolute;top:138px;right:8px;width:110px;height:150px;background:rgba(15,20,25,.84);border:1px solid var(--line);border-radius:8px}
+#top3{position:absolute;bottom:8px;left:8px;background:rgba(15,20,25,.86);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12px;pointer-events:none;line-height:1.55;max-width:78%}
+#top3 .t{color:var(--muted);font-size:11px}
+.badge{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:#0f1419;color:#fff;border:2px solid #fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.mode{font-size:11px;font-weight:600;padding:0 5px;border-radius:4px;white-space:nowrap}
+.m-con{color:#0f1419;background:var(--con)}.m-ecc{color:#fff;background:var(--ecc)}.m-iso{color:#0f1419;background:var(--iso)}.m-off{color:var(--muted);background:#26303a}
+.hint{position:absolute;bottom:8px;right:8px;color:#3b4a58;font-size:10px;pointer-events:none}
+main{padding:12px 16px 28px;max-width:900px;margin:0 auto}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.label{color:var(--muted);font-size:12px;min-width:44px}
+button,select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font:inherit;font-size:13px;cursor:pointer}
+button.on{border-color:var(--accent);color:var(--accent)}
+button.primary{background:var(--accent);color:#0f1419;border-color:var(--accent);font-weight:600;min-width:72px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%}
+.seg button{padding:8px 2px;font-size:12px}
+.seg button.on{background:var(--accent);color:#0f1419;font-weight:600}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+.card h2{font-size:15px;margin:0 0 6px}
+.card p{margin:4px 0;color:#c9d3dc}
+.slider{display:grid;grid-template-columns:62px 1fr 64px;gap:8px;align-items:center;margin:6px 0}
+.slider span{font-size:13px}.slider output{font-variant-numeric:tabular-nums;text-align:right;font-size:13px;color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--muted);font-weight:500;font-size:12px}
+td small{display:block;color:var(--muted);font-size:11px;line-height:1.3}
+tr.click{cursor:pointer}tr.focus td{background:#1f2a35}
+.bar{height:10px;background:#26303a;border-radius:5px;overflow:hidden;min-width:50px}
+.bar i{display:block;height:100%;width:0;border-radius:5px}
+.cell{display:flex;flex-direction:column;gap:3px}
+.cell .meta{display:flex;gap:6px;align-items:center;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.legend .grad{flex:0 0 110px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3a4652,#eb6e46,#ff1946)}
+.ok{color:var(--good)}.bad{color:var(--warn)}
+.warn{background:#3a2a10;border:1px solid #6b4a12;color:#ffd58a;border-radius:8px;padding:6px 10px;font-size:12px;margin-top:8px}
+.note{font-size:12px;color:var(--muted)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.modes td:first-child{white-space:nowrap}
+body.simple .adv{display:none!important}
+.cmpLbl{position:absolute;top:8px;display:none;background:rgba(15,20,25,.88);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-size:13px;font-weight:600;max-width:46%;pointer-events:none}
+.cmpLbl small{display:block;font-weight:400;font-size:11px;color:#c9d3dc;line-height:1.35}
+#cmpDiv{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;opacity:.85;display:none;pointer-events:none}
+body.cmp .cmpLbl,body.cmp #cmpDiv{display:block}
+body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,body.cmp #arcLbl{display:none!important}
+#toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%);background:#ffd23f;color:#0f1419;font-weight:600;font-size:13px;padding:8px 12px;border-radius:10px;max-width:86%;text-align:center;opacity:0;transition:opacity .4s;pointer-events:none}
+#toast.show{opacity:1}
+.qa{margin:6px 0;padding:8px 10px;background:#1f2a35;border-radius:8px}
+.qa button{margin-left:6px;padding:3px 8px;font-size:12px}
+.qa .ans{margin-top:4px;color:#3ddc84}
+.key{font-weight:600;color:#ffd23f !important;margin-top:10px !important}
+</style>
+</head>
+<body>
+<header>
+  <select id="langSel" aria-label="Language" style="float:right;margin-left:8px;background:#171e26;color:#e6edf3;border:1px solid #2a3440;border-radius:8px;padding:4px 6px;font-size:12px"><option value="index.html">廣東話（香港）</option><option value="zh-tw.html">繁體中文（台灣）</option><option value="zh-cn.html">简体中文（中国大陆）</option><option value="en.html" selected>English</option></select>
+  <h1>3D Snowboard Coach: Muscles · CoM · Edge</h1>
+  <p>Drag to rotate 360°, pinch to zoom · one cycle = one toeside + one heelside turn · tap a row in the muscle table to isolate it</p>
+</header>
+
+<div id="stage">
+  <div class="hud" id="hud"></div>
+  <svg id="gauge" viewBox="0 0 110 124">
+    <text x="55" y="14" fill="#8b98a5" font-size="10" text-anchor="middle">Viewed from the tail</text>
+    <line x1="8" y1="94" x2="102" y2="94" stroke="#5b6b7a" stroke-width="2"/>
+    <g id="gLean" transform="translate(55,94)">
+      <line x1="0" y1="0" x2="0" y2="-68" stroke="#ffd23f" stroke-width="2" stroke-dasharray="4 3"/>
+      <circle cx="0" cy="-68" r="5" fill="#ffd23f"/>
+    </g>
+    <g id="gBoard" transform="translate(55,94)">
+      <rect x="-26" y="-5" width="52" height="5" rx="2" fill="#7c6cf0"/>
+    </g>
+    <text id="gTxt" x="55" y="114" fill="#e6edf3" font-size="11" text-anchor="middle"></text>
+  </svg>
+  <svg id="feet" viewBox="0 0 110 150">
+    <text x="55" y="12" fill="#8b98a5" font-size="10" text-anchor="middle">Foot pressure (top)</text>
+    <text x="55" y="24" fill="#5b6b7a" font-size="9" text-anchor="middle">▲ Nose</text>
+    <rect x="37" y="28" width="36" height="112" rx="18" fill="#2b2f4a" stroke="#7c6cf0"/>
+    <g id="footF"><g class="rot"><path d="M-22,0 C-22,-7 -14,-9 -4,-9 C8,-9 22,-8 22,0 C22,8 8,9 -4,9 C-14,9 -22,7 -22,0Z" fill="#26303a" stroke="#8b98a5"/><text class="toe" x="17" y="3" font-size="7" fill="#8b98a5" text-anchor="middle">toe</text><circle class="cop" r="5" fill="#ff1946"/></g><text class="sh" x="0" y="-12" fill="#e6edf3" font-size="9" text-anchor="middle"></text></g>
+    <g id="footB"><g class="rot"><path d="M-22,0 C-22,-7 -14,-9 -4,-9 C8,-9 22,-8 22,0 C22,8 8,9 -4,9 C-14,9 -22,7 -22,0Z" fill="#26303a" stroke="#8b98a5"/><text class="toe" x="17" y="3" font-size="7" fill="#8b98a5" text-anchor="middle">toe</text><circle class="cop" r="5" fill="#ff1946"/></g><text class="sh" x="0" y="20" fill="#e6edf3" font-size="9" text-anchor="middle"></text></g>
+  </svg>
+  <div id="arcLbl" style="position:absolute;pointer-events:none;transform:translate(-50%,-50%);background:rgba(15,20,25,.85);color:#fff;font-size:12px;font-weight:700;padding:1px 6px;border-radius:6px;border:1px solid #fff"></div>
+  <div id="badges"></div>
+  <div class="cmpLbl" id="cmpL" style="left:8px">✅ Correct</div>
+  <div class="cmpLbl" id="cmpR" style="right:8px"></div>
+  <div id="cmpDiv"></div>
+  <div id="toast"></div>
+  <div id="top3"></div>
+  <div class="hint">Drag to rotate · pinch to zoom</div>
+</div>
+
+<main>
+  <div class="row">
+    <button data-mode="simple" class="on">👀 Simple</button>
+    <button data-mode="detail">🔬 Detailed</button>
+    <button id="cmpBtn">⇆ Right vs wrong</button>
+  </div>
+  <div class="row seg">
+    <button data-l="slip">Side slip</button>
+    <button data-l="trav">Traverse + garland</button>
+    <button data-l="beg">Beginner · Skid</button>
+    <button data-l="mid">Intermediate · Dynamic</button>
+    <button data-l="carve" class="on">Carving</button>
+    <button data-l="euro">Euro carve</button>
+    <button data-l="ollie">Ollie／Nollie</button>
+    <button data-l="butter">Butter／Press</button>
+  </div>
+
+  <div class="row">
+    <button class="primary" id="play">⏸ Pause</button>
+    <input type="range" id="scrub" min="0" max="1000" value="0">
+    <select id="speedMul">
+      <option value="0.25">0.25x</option>
+      <option value="0.5" selected>0.5x</option>
+      <option value="1">1x real time</option>
+      <option value="2">2x</option>
+    </select>
+  </div>
+  <div class="row">
+    <span class="label">Jump to</span>
+    <span id="jumps" style="display:contents"></span>
+  </div>
+  <div class="row" id="subRow"></div>
+  <div class="row">
+    <span class="label">Show</span>
+    <button class="on" data-t="muscle">Muscles</button>
+    <button class="on" data-t="xray">X-ray</button>
+    <button class="on" data-t="com">CoM</button>
+    <button class="on" data-t="force">Force lines</button>
+    <button class="on" data-t="edge">Edge</button>
+    <button class="on" data-t="bp">Board pressure</button>
+    <button class="on" id="bendBtn">Flex: real</button>
+  </div>
+  <div class="row">
+    <span class="label">Stance</span>
+    <button class="on" data-st="ok">Normal</button>
+    <button data-st="back">Back foot too heavy</button>
+    <button data-st="waist">Waist bend / toilet sit</button>
+    <button data-st="rot">Upper-body rotation</button>
+  </div>
+  <div class="row">
+    <span class="label">Camera</span>
+    <button data-v="front">Front</button>
+    <button data-v="toeV">Toe side</button>
+    <button data-v="heelV">Heel side</button>
+    <button data-v="back">Back</button>
+    <button data-v="top">Top</button>
+    <button data-t="follow" class="on">Follow heading</button>
+  </div>
+
+  <div class="card" id="guide">
+    <h2>🎯 Think before you watch</h2>
+    <div id="gQs"></div>
+    <p class="key" id="gSum"></p>
+    <p id="gSnow"></p>
+  </div>
+
+  <div class="card">
+    <h2>Bird’s-eye view: the whole movement from start to end</h2>
+    <canvas id="birdMap" style="width:100%;height:300px;display:block;border-radius:8px;touch-action:manipulation;cursor:pointer"></canvas>
+    <div class="legend" id="mapLegend" style="margin-top:8px"></div>
+    <p class="note" id="mapInfo" style="margin-top:4px"></p>
+    <p class="note">Thick line = CoM path (colour = phase, dashed = airborne), grey line = ski track, short grey lines = ski direction, yellow dot = current position, green ’S’ → red ’E’. Tap anywhere on the map to jump to that moment.</p>
+  </div>
+
+  <div class="card">
+    <h2 id="phTitle"></h2>
+    <p id="phCue"></p>
+    <div class="legend" style="margin-top:8px">
+      <span><span class="sw" style="background:#ffd23f"></span>CoM</span>
+      <span><span class="sw" style="background:#a855f7"></span>GRF（edge→CoM）</span>
+      <span><span class="sw" style="background:#3a7bd5"></span>Gravity</span>
+      <span><span class="sw" style="background:#4cc9f0"></span>Loaded edge</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Stance: <span id="stName"></span></h2>
+    <p id="stTxt"></p>
+    <p class="note">Foot map (top right): nose points up, red dot = centre of pressure (CoP); toward ’toe’ = pressing the toes, the other way = pressing the heels; bigger dot = that foot carries more weight.</p>
+  </div>
+
+  <div class="card">
+    <h2>Live muscle activation</h2>
+    <div class="legend" style="margin-bottom:6px"><span>Relaxed</span><span class="grad"></span><span>Max</span></div>
+    <table class="modes" style="margin-bottom:10px">
+      <tbody>
+        <tr><td><span class="mode m-con">Concentric</span></td><td>Concentric: the muscle shortens while producing force</td></tr>
+        <tr><td><span class="mode m-ecc">Eccentric</span></td><td>Eccentric: the muscle lengthens while still resisting (absorbing load)</td></tr>
+        <tr><td><span class="mode m-iso">Isometric</span></td><td>Isometric: length unchanged, holding a position</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Muscle / role (tap a row to isolate)</th><th style="width:27%">Front foot / side</th><th style="width:27%">Back foot / side</th></tr></thead>
+      <tbody id="mBody"></tbody>
+    </table>
+    <p class="note" style="margin-top:6px"><b>Toeside vs heelside:</b>Toeside mainly uses the calves to press the toes down and the glutes to keep the hips from pushing back; heelside mainly uses the tibialis anterior to lift the toes, with the quads and abs holding the ’seated’ position. That’s why many people’s thighs and abs tire faster on heelside.</p>
+  </div>
+
+  <div class="card">
+    <h2>What to watch (<span id="watchLv"></span>）</h2>
+    <table>
+      <thead><tr><th>What to watch</th><th>Key point</th><th></th></tr></thead>
+      <tbody id="watch"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Spec</h2>
+    <div class="row" style="margin-bottom:6px">
+      <span class="label">Stance</span>
+      <button class="on" data-dir="1">Regular (left foot forward)</button>
+      <button data-dir="-1">Goofy (right foot forward)</button>
+      <button id="swBtn">Switch</button>
+    </div>
+    <p class="note" id="swNote" style="display:none">Switch: your usual back foot becomes the front foot. The muscle and fore/aft pressure pattern is the same as normal but mirrored: your usual back foot’s tibialis anterior and calf now do the front-foot job, so switch usually feels clumsy. A duck stance (+15/−6) becomes +6/−15 in switch; the front foot angle is smaller, so the board responds a little slower.</p>
+    <div class="slider"><span>Height</span><input type="range" id="H" min="145" max="200" step="1"><output id="oH"></output></div>
+    <div class="slider"><span>Ski length</span><input type="range" id="board" min="135" max="175" step="1"><output id="oboard"></output></div>
+    <div class="slider"><span>Ski R</span><input type="range" id="R" min="6" max="12" step="0.1"><output id="oR"></output></div>
+    <div class="slider"><span>Slope</span><input type="range" id="slope" min="4" max="35" step="1"><output id="oslope"></output></div>
+    <div class="slider"><span>Speed</span><input type="range" id="v" min="5" max="60" step="1"><output id="ov"></output></div>
+    <table style="margin-top:8px">
+      <thead><tr><th>Item</th><th>now</th><th>Recommended</th><th></th></tr></thead>
+      <tbody id="spec"></tbody>
+    </table>
+    <div id="warn"></div>
+    <p class="note" style="margin-top:6px">Board R = sidecut radius. When carving, turn radius ≈ R × cos(edge angle) and lean angle comes from tan θ = v² / (g·r). On a snowboard the edge angle is about equal to body lean, so the carving balance condition simplifies to sin θ ≈ v² / (g·R). Bindings at +15° / −6° (duck), stance width ≈ height × 0.31. Recommended ranges are rules of thumb.</p>
+  </div>
+
+  <p class="note">⚠️ Muscle activation is an illustrative model based on biomechanics (relative values), not measured EMG. Movements are procedurally generated idealised demos for understanding cause and effect, not a reference for exact angles.</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="rig.js"></script>
+<script>
+(() => {
+const V = THREE.Vector3, Q = THREE.Quaternion, D = Math.PI/180, G = 9.81, W = Math.PI*2;
+const UP = new V(0,1,0), AX = new V(1,0,0), AZ = new V(0,0,1);
+const clamp = (x,a,b) => Math.min(b, Math.max(a, x));
+const BW = .26;
+function qYZX(yaw, roll, pitch){
+  const q = new Q().setFromAxisAngle(UP, yaw);
+  q.multiply(new Q().setFromAxisAngle(AZ, roll));
+  q.multiply(new Q().setFromAxisAngle(AX, pitch));
+  return q;
+}
+const yawVec = a => new V(Math.sin(a), 0, Math.cos(a));
+
+/* ---------- levels & config ---------- */
+const LV = {
+  trav: {name:'Traverse + garland', kind:'trav', v:12, slope:12, boardOff:-20, R:7.5, cap:35*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.45},
+  ollie:{name:'Ollie／Nollie', kind:'ollie', v:15, slope:8, boardOff:-20, R:7.5, cap:10*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.3},
+  butter:{name:'Butter／Press 360', kind:'butter', v:8, slope:6, boardOff:-22, R:7.5, cap:10*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.3},
+  slip: {kind:'slip', name:'Side slip (falling leaf)', v:0, slope:12, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.5, slip:true},
+  beg:  {name:'Beginner · Skidded turns', v:15, slope:10, boardOff:-20, R:7.5, cap:25*D, skid:25*D, Rbase:6, psiB:10, h0:.8, minDrive:.5},
+  mid:  {name:'Intermediate · Dynamic turns', v:25, slope:15, boardOff:-17, R:7.8, cap:45*D, skid:10*D, Rbase:8, psiB:5, h0:.8, minDrive:.4},
+  carve:{name:'Carving', v:25, slope:18, boardOff:-14, R:8, cap:65*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:0, carve:true},
+  euro: {name:'Euro carve (extreme low carve)', v:31, slope:20, boardOff:-12, R:8, cap:80*D, skid:0, Rbase:0, psiB:0, h0:.78, minDrive:0, carve:true}
+};
+const REC = {
+  trav: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[8,20]},
+  ollie:{b:[-25,-15], R:[6.5,8],  slope:[4,12],  v:[8,25]},
+  butter:{b:[-28,-18], R:[6.5,8], slope:[3,10],  v:[3,15]},
+  slip: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[0,99]},
+  beg:  {b:[-25,-15], R:[6.5,8],  slope:[6,12],  v:[8,20]},
+  mid:  {b:[-22,-12], R:[7,8.5],  slope:[12,20], v:[15,35]},
+  carve:{b:[-20,-8],  R:[7.5,10], slope:[15,28], v:[18,40]},
+  euro: {b:[-18,-6],  R:[7,10],   slope:[15,25], v:[25,40]}
+};
+const STANCE = {
+  ok:   {name:'Normal', dw:0, dz:0, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'Ideal: slightly more on the front foot entering the turn (about 55–60%), shifting to the back foot at the exit. Toeside pressure on the forefoot, heelside on the heels. Upper body follows the board, eyes on the line, edges controlled with ankles and knees.'},
+  back: {name:'Back foot too heavy', dw:-.25, dz:-.1, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'No pressure on the nose: slow initiation, the nose floats, so you end up twisting the upper body to turn. The back-leg quads get overloaded and you skid or catch an edge.'},
+  waist:{name:'Waist bend / toilet sit', dw:0, dz:0, dt:-.09, dh:-.06, tp:.5, rot:0, add:{erec:.2, quad:.15}, txt:'Toeside bending at the waist: the butt sticks out and the CoM leaves the edge, so you slip. Heelside ’toilet sit’: the butt sits behind the board and you fall back. Flex your knees and ankles instead of your waist.'},
+  rot:  {name:'Upper-body rotation', dw:0, dz:0, dt:0, dh:0, tp:0, rot:30*D, add:{obl:.3}, txt:'Twisting the upper body to turn the board makes the tail wash out and the skid uncontrolled; upper and lower body get out of sync at the edge change and you fall easily. Turns should be driven by the lower body (ankles, knees).'}
+};
+const DIR = () => cfg.dir*(cfg.sw ? -1 : 1);
+const ANG = () => cfg.sw ? [6, -15] : [15, -6];
+const cfg = {trick:'ollie', butter:'nose', sw:false, level:'carve', H:175, board:161, R:8, slope:18, v:25, dir:1, stance:'ok', slipSide:'heel'};
+let C = {};
+
+function build(){
+  const lv = LV[cfg.level], v = cfg.v/3.6;
+  let Rt, phiApex, warn = '';
+  if (lv.kind === 'trav' || lv.kind === 'ollie' || lv.kind === 'butter'){
+    C = {v: Math.max(v, 1), Rt: 0, phiApex: lv.cap, k: cfg.H/175, S: cfg.H*.0031, inten: .35, warn: ''};
+    if (lv.kind === 'trav'){
+      const Lc = 12, tab = []; let x = 0, z = 0;
+      for (let i = 0; i <= 400; i++){ tab.push([x, z]); const ps = (65 - 40*(1-Math.cos(W*i/400))/2)*D; x += Math.sin(ps)*Lc/400; z += Math.cos(ps)*Lc/400; }
+      Object.assign(C, {L: Lc, tab, dX: tab[400][0], dZ: tab[400][1], period: Lc/C.v});
+    } else if (lv.kind === 'ollie'){ C.period = 3.2; C.L = C.v*C.period; }
+    else { C.period = 5; C.L = 4.4; }
+    slopeG.rotation.x = cfg.slope*D;
+    buildBoard(); rescale(); placeLegMuscles(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch(); renderJumps();
+    return;
+  }
+  if (lv.slip){
+    C = {v:1, Rt:0, phiApex: cfg.slope*D*.95, om:1, A:1.8, L:3.2, period:9, warn:'', k: cfg.H/175, S: cfg.H*.0031, inten:.35, slip:true};
+    slopeG.rotation.x = cfg.slope*D;
+    buildBoard(); rescale(); placeLegMuscles(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch(); renderJumps();
+    return;
+  }
+  if (lv.carve){
+    const c = v*v/(G*cfg.R);
+    if (c >= Math.sin(lv.cap)){
+      phiApex = lv.cap; Rt = v*v/(G*Math.tan(lv.cap));
+      warn = `⚠️ ${cfg.v} km/h on R${cfg.R}: the more the board edges, the tighter it turns, so there’s no balance point. In reality it will skid (shown here as a ${Rt.toFixed(1)} m radius), or you need to slow down or use a longer-radius board.`;
+    } else {
+      phiApex = Math.asin(c); Rt = cfg.R*Math.cos(phiApex);
+      if (phiApex < 18*D) warn = `⚠️ Too slow: only ${(phiApex/D).toFixed(0)}° of lean is needed, GRF is too low to hold a pure carve and it will tend to skid.`;
+    }
+  } else {
+    const need = v*v/(G*Math.tan(lv.cap));
+    Rt = Math.max(lv.Rbase, need);
+    if (need > lv.Rbase) warn = `⚠️ With the lean this level can manage (about ${(lv.cap/D).toFixed(0)}°), ${cfg.v} km/h needs a big ${Rt.toFixed(0)} m radius turn to hold — slow down.`;
+    phiApex = Math.atan(v*v/(G*Rt));
+  }
+  const psiMax = clamp((28 + (cfg.slope-8)*1.4 + lv.psiB)*D, 22*D, 66*D);
+  const tp = Math.tan(psiMax), om = 1/(Rt*tp), A = Rt*tp*tp, L = W/om;
+  let arc = 0; for (let i = 0; i < 400; i++){ const xp = A*om*Math.cos(W*i/400); arc += Math.sqrt(1+xp*xp)*L/400; }
+  C = {v, Rt, phiApex, om, A, L, period: arc/v, warn, k: cfg.H/175, S: cfg.H*.0031,
+       inten: clamp(Math.tan(phiApex)/Math.tan(55*D), 0, 1)};
+  slopeG.rotation.x = cfg.slope*D;
+  buildBoard(); rescale(); placeLegMuscles(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch(); renderJumps();
+}
+
+/* ---------- bird's-eye track map ---------- */
+let mapS = [], mapBox = null, mapPh = [], mapT = 0;
+const PHC = ['#4cc9f0','#3ddc84','#ff1946','#ffb020','#a855f7','#eb6e46','#9aa5b1'];
+function buildMap(c){
+  mapS = []; mapPh = [];
+  for (let i = 0; i <= 240; i++){
+    const m = mapSample(pose(c + i/240)); m.s = i/240;
+    if (!mapPh.includes(m.ph)) mapPh.push(m.ph);
+    m.pi = mapPh.indexOf(m.ph); mapS.push(m);
+  }
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (const m of mapS) for (const [x, z] of [m.c, ...m.tr]){ x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z); }
+  mapBox = {x0, x1, z0, z1};
+  let dist = 0; for (let i = 1; i < mapS.length; i++) dist += Math.hypot(mapS[i].at[0]-mapS[i-1].at[0], mapS[i].at[1]-mapS[i-1].at[1]);
+  const lg = document.getElementById('mapLegend');
+  if (lg) lg.innerHTML = mapPh.map((ph, i) => `<span><span class="sw" style="background:${PHC[i % PHC.length]}"></span>${mapName(ph)}</span>`).join('')
+    + `<span><span class="sw" style="background:#7f93a8"></span>${mapTrackName()}</span>`;
+  const inf = document.getElementById('mapInfo');
+  if (inf) inf.textContent = `One cycle: ${(z1-z0).toFixed(1)} m downhill・${(x1-x0).toFixed(1)} m across・${dist.toFixed(1)} m travelled・${C.period.toFixed(1)} s`;
+}
+function drawMap(p){
+  const cv = document.getElementById('birdMap'); if (!cv || !mapBox) return;
+  const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (cv.width !== Math.round(w*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.fillStyle = '#0f1620'; g.fillRect(0, 0, w, h);
+  const {x0, x1, z0, z1} = mapBox, pad = 22;
+  const sc = Math.min((w-2*pad)/Math.max(x1-x0, .5), (h-2*pad)/Math.max(z1-z0, .5), 90);
+  const cx = (x0+x1)/2, cz = (z0+z1)/2;
+  const X = x => w/2 + (x-cx)*sc, Y = z => h/2 + (z-cz)*sc;
+  cv._map = {X, Y};
+  if (typeof hf === 'function' && C.mogul){
+    g.strokeStyle = 'rgba(160,185,210,.25)'; g.lineWidth = 1;
+    for (let zz = Math.floor((z0-2)/C.P)*C.P; zz <= z1+2; zz += C.P) for (let xx = Math.floor((x0-3)/C.Sx)*C.Sx; xx <= x1+3; xx += C.Sx){
+      g.beginPath(); g.arc(X(xx), Y(zz), C.Rb*sc, 0, Math.PI*2); g.stroke();
+    }
+  }
+  // fall line arrow + scale bar
+  g.fillStyle = '#5b6b7a'; g.font = '11px sans-serif'; g.textAlign = 'right'; g.fillText('↓ Downhill', w-6, 14);
+  const bar = sc*5 > 40 && sc*5 < w*.5 ? 5 : sc*1 > 40 ? 1 : 10;
+  g.strokeStyle = '#5b6b7a'; g.lineWidth = 2; g.beginPath(); g.moveTo(8, h-8); g.lineTo(8 + bar*sc, h-8); g.stroke();
+  g.textAlign = 'left'; g.fillText(bar + ' m', 10 + bar*sc, h-5);
+  // heading ticks (ski / board direction)
+  g.strokeStyle = 'rgba(127,147,168,.55)'; g.lineWidth = 1.5;
+  for (let i = 0; i < mapS.length; i += 10){
+    const m = mapS[i], dx = Math.sin(m.yaw)*m.len/2, dz = Math.cos(m.yaw)*m.len/2;
+    g.beginPath(); g.moveTo(X(m.at[0]-dx), Y(m.at[1]-dz)); g.lineTo(X(m.at[0]+dx), Y(m.at[1]+dz)); g.stroke();
+  }
+  // tracks
+  g.strokeStyle = '#7f93a8'; g.lineWidth = 1.2;
+  for (let t = 0; t < mapS[0].tr.length; t++){
+    g.beginPath(); mapS.forEach((m, i) => { const [x, z] = m.tr[t]; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); }); g.stroke();
+  }
+  // CoM coloured by phase
+  g.lineWidth = 3; g.lineCap = 'round';
+  for (let i = 1; i < mapS.length; i++){
+    const a = mapS[i-1], b = mapS[i];
+    g.strokeStyle = PHC[b.pi % PHC.length]; g.setLineDash(b.air > .02 ? [4, 4] : []);
+    g.beginPath(); g.moveTo(X(a.c[0]), Y(a.c[1])); g.lineTo(X(b.c[0]), Y(b.c[1])); g.stroke();
+  }
+  g.setLineDash([]);
+  // start / end
+  const st = mapS[0].c, en = mapS[mapS.length-1].c;
+  g.fillStyle = '#3ddc84'; g.beginPath(); g.arc(X(st[0]), Y(st[1]), 7, 0, Math.PI*2); g.fill();
+  g.fillStyle = '#0f1419'; g.font = 'bold 9px sans-serif'; g.textAlign = 'center'; g.fillText('Start', X(st[0]), Y(st[1])+3);
+  g.fillStyle = '#ff4d6d'; g.fillRect(X(en[0])-7, Y(en[1])-7, 14, 14);
+  g.fillStyle = '#fff'; g.fillText('End', X(en[0]), Y(en[1])+3);
+  // current position
+  const u = ((p.s % 1) + 1) % 1, cur = mapS[Math.min(mapS.length-1, Math.round(u*240))];
+  const m = mapSample(p);
+  const ox = m.at[0] - cur.at[0], oz = m.at[1] - cur.at[1];
+  const px = X(m.c[0]-ox), pz = Y(m.c[1]-oz), dx = Math.sin(m.yaw)*m.len/2*sc, dz = Math.cos(m.yaw)*m.len/2*sc;
+  g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.moveTo(X(m.at[0]-ox)-dx, Y(m.at[1]-oz)-dz); g.lineTo(X(m.at[0]-ox)+dx, Y(m.at[1]-oz)+dz); g.stroke();
+  g.fillStyle = '#ffd23f'; g.strokeStyle = '#0f1419'; g.lineWidth = 2;
+  g.beginPath(); g.arc(px, pz, 6, 0, Math.PI*2); g.fill(); g.stroke();
+}
+function mapClick(e){
+  const cv = e.currentTarget, r = cv.getBoundingClientRect(); if (!cv._map) return;
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  let best = null, bd = Infinity;
+  for (const m of mapS){ const d = Math.hypot(cv._map.X(m.c[0]) - mx, cv._map.Y(m.c[1]) - my); if (d < bd){ bd = d; best = m; } }
+  if (best) jump(Math.min(best.s, .999));
+}
+
+function mapSample(p){ return {ph: phaseOf(p), c: [p.com.x, p.com.z], tr: [[p.mid.x, p.mid.z]], at: [p.gpos.x, p.gpos.z], yaw: p.yawB, len: cfg.board/100, air: p.lift || 0}; }
+const mapName = ph => (PH[cfg.level][ph] || [ph])[0].split('（')[0];
+const mapTrackName = () => 'Edge track';
+
+/* ---------- pose ---------- */
+function pose(s){
+  const lv = LV[cfg.level];
+  if (lv.slip) return poseSlip(s);
+  if (lv.kind === 'trav') return poseTrav(s);
+  if (lv.kind === 'ollie') return poseOllie(s);
+  if (lv.kind === 'butter') return poseButter(s);
+  const sn = Math.sin(W*s), cs = Math.cos(W*s);
+  const xp = C.A*C.om*cs, xpp = -C.A*C.om*C.om*sn;
+  const mid = new V(C.A*sn, 0, s*C.L);
+  const psi = Math.atan(xp);
+  const kap = Math.abs(xpp)/Math.pow(1+xp*xp, 1.5);
+  const sg = sn >= 0 ? 1 : -1;
+  const phiMag = Math.min(Math.atan(C.v*C.v*kap/G), lv.cap);
+  const nsh = Math.pow(Math.abs(sn), .8);
+  return finish({s, sn, cs, mid, psi, sg, phi: phiMag*sg, phiMag, nsh, yawB: psi - sg*lv.skid*nsh, kap});
+}
+const sm = (a, b, x) => { x = clamp((x-a)/(b-a), 0, 1); return x*x*(3-2*x); };
+function poseTrav(s){
+  const heel = cfg.slipSide === 'heel', dir = DIR(), ts = heel ? dir : -dir;
+  const cyc = Math.floor(s), u = s - cyc, fi = u*400, i0 = Math.floor(fi), t = fi - i0;
+  const a = C.tab[i0], b = C.tab[Math.min(400, i0+1)];
+  const mid = new V(ts*(a[0] + (b[0]-a[0])*t + cyc*C.dX), 0, a[1] + (b[1]-a[1])*t + cyc*C.dZ);
+  const psi = ts*(65 - 40*(1-Math.cos(W*u))/2)*D;
+  const down = Math.max(0, Math.sin(W*u)), up = Math.max(0, -Math.sin(W*u));
+  const toeLean = (heel ? -1 : 1)*(10 + 22*up - 8*down)*D, phi = toeLean*dir, sg = phi >= 0 ? 1 : -1;
+  return finish({s, sn: sg*.6, cs: 0, mid, psi, sg, phi, phiMag: Math.abs(phi), nsh: .6, yawB: psi, kap: 0, down, up});
+}
+function poseOllie(s){
+  const u = s - Math.floor(s), nol = cfg.trick === 'nollie', sgn = nol ? 1 : -1;
+  const pre = sm(.3,.44,u)*(1-sm(.46,.52,u)), pop = sm(.43,.48,u)*(1-sm(.5,.56,u));
+  const air = (u > .5 && u < .74) ? Math.sin(Math.PI*(u-.5)/.24) : 0;
+  const land = sm(.72,.77,u)*(1-sm(.8,.93,u)), press = sm(.33,.46,u)*(1-sm(.52,.62,u));
+  const pl = nol ? 'F' : 'B', ot = nol ? 'B' : 'F';
+  const ex = {F:{}, B:{}, C:{}};
+  ex[pl] = {quad:.3*pre + .35*pop, glmax:.2*pre + .35*pop, calf:.55*pop};
+  ex[ot] = {tib:.3*pop + .2*press, ham:.15*pop};
+  for (const S of ['F','B']) for (const [k2, v2] of [['quad', .15*pre + .45*land], ['glmax', .3*land], ['ham', .35*air]]) ex[S][k2] = (ex[S][k2]||0) + v2;
+  ex.C = {abs: .35*air + .1*pre};
+  return finish({s, sn: .3, cs: 0, mid: new V(0, 0, s*C.L), psi: 0, sg: 1, phi: 0, phiMag: 0, nsh: .3, yawB: 0, kap: 0,
+    pitch: sgn*12*D*press, lift: .34*air, blift: .2*air + .04*pop, dh: -.16*pre - .12*air - .14*land, dz: sgn*.07*pre,
+    wF: .5 + sgn*.32*Math.max(pre, pop), ex, u});
+}
+function poseButter(s){
+  const cyc = Math.floor(s), u = s - cyc, tailB = cfg.butter === 'tail', sgn = tailB ? -1 : 1, spinDir = DIR();
+  const press = sm(.2,.33,u)*(1-sm(.8,.9,u)), spinT = sm(.35,.8,u);
+  const yawB = spinDir*W*spinT;
+  const zpos = (u < .35 ? 3*u/.35 : u < .8 ? 3 + .4*sm(.35,.8,u) : 3.4 + (u-.8)/.2) + cyc*4.4;
+  const arm = cfg.board/200 - .15;
+  const P0 = new V(0, 0, zpos + sgn*arm);
+  const fB = yawVec(yawB);
+  const center = P0.clone().addScaledVector(fB, -sgn*arm);
+  const base = center.clone().addScaledVector(fB, sgn*(C.S/2)*.8*press);
+  const wind = sm(.2,.33,u)*(1-sm(.35,.45,u)), spinning = sm(.35,.45,u)*(1-sm(.75,.85,u));
+  const pl = tailB ? 'B' : 'F', ot = tailB ? 'F' : 'B';
+  const ex = {F:{}, B:{}, C:{}};
+  ex[pl] = {quad:.35*press, glmax:.3*press, calf: tailB ? 0 : .15*press};
+  ex[ot] = {ham:.25*press, tib:.1*press};
+  ex.F.obl = ex.B.obl = .45*Math.max(wind, spinning);
+  ex.C = {erec:.15*press};
+  return finish({s, sn: .3, cs: 0, mid: center, base, psi: yawB, sg: 1, phi: 0, phiMag: 0, nsh: .3, yawB, kap: 0,
+    pitch: sgn*9*D*press, lift: 0, wF: .5 + sgn*.35*press, dz: 0, dh: -.05*press,
+    tx: -spinDir*60*D*wind + spinDir*25*D*spinning, ex, u, press});
+}
+function slipPulse(s){ return (Math.sin(W*3*s) + 1)/2; }
+function poseSlip(s){
+  const dir = DIR(), heel = cfg.slipSide === 'heel';
+  const yawB = (heel ? 90 : -90)*D*dir;
+  const pulse = slipPulse(s);
+  const e = cfg.slope*D*(.5 + .45*pulse);
+  const toeLean = heel ? -e : e, phi = toeLean*dir;
+  const mid = new V(C.A*Math.sin(W*s), 0, s*C.L);
+  return finish({s, sn: (phi >= 0 ? 1 : -1)*.7, cs: 0, mid, psi: yawB, sg: phi >= 0 ? 1 : -1, phi, phiMag: Math.abs(phi), nsh: .55, yawB, kap: 0, pulse});
+}
+function finish(b){
+  const lv = LV[cfg.level], k = C.k, st = STANCE[cfg.stance], dir = DIR();
+  const right = new V(-Math.cos(b.psi), 0, Math.sin(b.psi));
+  const t = right.clone().multiplyScalar(dir);
+  const toeLean = b.phi*dir;
+  const fB = yawVec(b.yawB);
+  const edge = clamp(b.phi, -85*D, 85*D);
+  const qB = qYZX(b.yawB, edge, b.pitch || 0);
+  const xEdge = -(BW/2)*clamp(edge/(8*D), -1, 1);
+  const gpos = b.mid.clone().sub(new V(xEdge, 0, 0).applyQuaternion(qB));
+  if (b.pitch !== undefined){
+    const Lb = cfg.board/100, e1 = new V(0,0,Lb/2).applyQuaternion(qB).y, e2 = new V(0,0,-Lb/2).applyQuaternion(qB).y;
+    gpos.y = (b.lift || 0) - Math.min(e1, e2);
+  }
+  const M = gpos.clone().add(new V(0, .12*k, 0).applyQuaternion(qB));
+  const footF = M.clone().addScaledVector(fB, C.S/2), footB = M.clone().addScaledVector(fB, -C.S/2);
+  const upLean = UP.clone().applyQuaternion(qYZX(b.psi, b.phi, 0));
+  const heelSit = toeLean < 0 ? .1*(-toeLean)/(60*D) : 0;
+  const hP = (lv.h0 - .06*b.phiMag/(60*D) - heelSit + st.dh + (b.dh || 0))*k;
+  const P = (b.base || b.mid).clone().addScaledVector(upLean, hP).addScaledVector(fB, (st.dz + (b.dz || 0))*k).addScaledVector(t, st.dt*k).add(new V(0, b.blift || 0, 0));
+  const com = P.clone().addScaledVector(upLean, .1*k);
+  return Object.assign(b, {right, t, toeLean, fB, edge, qB, gpos, footF, footB, P, com});
+}
+
+function twoBone(H, T, pole, a, b){
+  const d = T.clone().sub(H); let dist = d.length(); const dir = d.divideScalar(dist);
+  dist = clamp(dist, .05, a+b-.002);
+  const cosA = (a*a + dist*dist - b*b)/(2*a*dist), sinA = Math.sqrt(Math.max(0, 1-cosA*cosA));
+  const nrm = pole.clone().addScaledVector(dir, -pole.dot(dir)).normalize();
+  return {K: H.clone().addScaledVector(dir, a*cosA).addScaledVector(nrm, a*sinA), E: H.clone().addScaledVector(dir, dist), nrm};
+}
+
+function solve(p){
+  const k = C.k, dir = DIR(), st = STANCE[cfg.stance];
+  const gP = p.yawB - dir*65*D + (p.tx || 0)*.3;
+  const qP = qYZX(gP, 0, .2 + p.toeLean*(p.toeLean > 0 ? .55 : .7));
+  const hipF = p.P.clone().add(new V(dir*.11*k, -.05*k, 0).applyQuaternion(qP));
+  const hipB = p.P.clone().add(new V(-dir*.11*k, -.05*k, 0).applyQuaternion(qP));
+  const [aF, aB] = ANG();
+  const yF = p.yawB - dir*(90-aF)*D, yBk = p.yawB - dir*(90-aB)*D;
+  const poleF = yawVec(yF), poleB = yawVec(yBk);
+  const legF = twoBone(hipF, p.footF, poleF, .45*k, .45*k);
+  const legB = twoBone(hipB, p.footB, poleB, .45*k, .45*k);
+  const gT = p.yawB - dir*55*D - p.sg*st.rot*p.nsh + (p.tx || 0);
+  const qT = qYZX(gT, 0, .3 + st.tp + p.toeLean*(p.toeLean > 0 ? .5 : .85));
+  const tBase = p.P.clone().add(new V(0, .07*k, 0).applyQuaternion(qP));
+  const px = new V(1,0,0).applyQuaternion(qP), py = new V(0,1,0).applyQuaternion(qP), pz = new V(0,0,1).applyQuaternion(qP);
+  const us = new V(0,1,0).applyQuaternion(p.qB);
+  const ang = {};
+  for (const [S, H, lg, yf, hx] of [['F', hipF, legF, yF, dir], ['B', hipB, legB, yBk, -dir]]){
+    const th = lg.K.clone().sub(H).normalize(), sh = lg.E.clone().sub(lg.K).normalize();
+    ang['knee'+S] = Math.acos(clamp(th.dot(sh), -1, 1));
+    ang['hip'+S] = Math.atan2(th.dot(pz), -th.dot(py));
+    ang['add'+S] = -Math.sign(hx)*Math.asin(clamp(th.dot(px), -1, 1));
+    const fs = yawVec(yf).addScaledVector(us, -yawVec(yf).dot(us)).normalize();
+    const up = sh.clone().negate();
+    ang['ank'+S] = Math.atan2(up.dot(fs), up.dot(us));
+  }
+  const ty = new V(0,1,0).applyQuaternion(qT);
+  ang.lat = Math.asin(clamp(ty.dot(px), -1, 1));
+  return {qP, qT, gT, hipF, hipB, legF, legB, tBase, ang};
+}
+
+function dLen(key, side, d){
+  switch (key){
+    case 'quad': return d['knee'+side];
+    case 'ham': return -d['knee'+side] + d['hip'+side];
+    case 'glmax': return d['hip'+side];
+    case 'add': return -d['add'+side];
+    case 'glmed': return d['add'+side];
+    case 'tib': return -d['ank'+side];
+    case 'calf': return d['ank'+side];
+    case 'obl': return (side === 'F' ? -1 : 1)*DIR()*d.lat;
+    default: return 0;
+  }
+}
+
+function weightF(p){
+  if (p.wF !== undefined) return clamp(p.wF + STANCE[cfg.stance].dw, .1, .9);
+  if (LV[cfg.level].slip) return clamp(.5 + .18*Math.cos(W*p.s)*Math.sign(p.fB.x||1) + STANCE[cfg.stance].dw, .15, .85);
+  const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
+  return clamp(.52 + .1*init - .14*comp + STANCE[cfg.stance].dw, .15, .85);
+}
+function activations(p){
+  const lv = LV[cfg.level], st = STANCE[cfg.stance];
+  const drive = p.nsh*Math.max(.3 + .7*C.inten, lv.minDrive);
+  const init = Math.max(0, p.sn*p.cs*2), trans = 1 - p.nsh;
+  const toe = p.toeLean > 0 ? drive : 0, heel = p.toeLean < 0 ? drive : 0;
+  const wF = weightF(p), r = {};
+  const leg = L => ({
+    quad: .12 + (.3*toe + .42*heel)*L + .1*L,
+    glmax: .12 + (.38*toe + .18*heel)*L,
+    ham: .12 + (.15*toe + .25*heel)*L,
+    glmed: .12 + .25*drive*L,
+    add: .1 + .2*drive*L,
+    tib: .15 + (.5*heel + .08*toe)*L,
+    calf: .12 + .5*toe*L
+  });
+  const F = leg(2*wF), B = leg(2*(1-wF));
+  const base = cfg.level === 'beg' ? {quad:.1} : {};
+  for (const key in F){
+    const b = (base[key]||0) + (st.add[key]||0);
+    r[key] = {F: clamp(F[key]+b, 0, 1), B: clamp(B[key]+b, 0, 1)};
+  }
+  const o = .2 + .3*init + .25*drive + (st.add.obl||0);
+  r.obl = {F: clamp(o, 0, 1), B: clamp(o*.9, 0, 1)};
+  r.abs = {C: clamp(.25 + .4*heel + .15*trans + (st.add.abs||0), 0, 1)};
+  r.erec = {C: clamp(.3 + .4*toe + (st.add.erec||0), 0, 1)};
+  if (p.ex){
+    for (const S of ['F','B']) for (const key in p.ex[S]) r[key][S] = clamp(r[key][S] + p.ex[S][key], 0, 1);
+    for (const key in p.ex.C) r[key].C = clamp(r[key].C + p.ex.C[key], 0, 1);
+  }
+  return r;
+}
+function modes(s, act){
+  const e = .004;
+  const a1 = solve(pose(s-e)).ang, a2 = solve(pose(s+e)).ang, dt = 2*e*C.period;
+  const d = {}; for (const kk in a1) d[kk] = (a2[kk]-a1[kk])/dt;
+  const m = {};
+  for (const key in act){
+    m[key] = {};
+    for (const side in act[key]){
+      if (act[key][side] < .22){ m[key][side] = 'off'; continue; }
+      const rate = dLen(key, side, d)/D;
+      m[key][side] = Math.abs(rate) < 1.5 ? 'iso' : rate > 0 ? 'ecc' : 'con';
+    }
+  }
+  return m;
+}
+const MODE_TXT = {con:'Concentric', ecc:'Eccentric', iso:'Isometric', off:'Relaxed'};
+
+/* ---------- phases & watch ---------- */
+const PH = {
+  trav: {
+    trav:['Traverse','Cross the slope on the uphill edge: heel traverse facing downhill, toe traverse facing uphill. Look where you want to go.'],
+    down:['Garland: release and drop','Flatten the edge slightly and the nose turns toward the fall line — like the start of half a turn.'],
+    up:['Garland: re-edge and climb','Re-edge (heel: lift the toes; toe: drive the knees forward); the board turns back uphill and slows down.'],
+    trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
+  ollie: {
+    ride:['Straight run','Weight even, knees slightly bent, ready.'],
+    pre:['Preload','Crouch by flexing knees and hips, weight toward the tail (the nose for a nollie); the nose starts to lift.'],
+    pop:['Pop','The back leg (front leg for a nollie) extends explosively: calves, quads and glutes shorten under load, snapping the tail off the snow.'],
+    air:['Tuck in the air','Pull both knees to the chest (hamstrings, abs); the front foot levels the board.'],
+    land:['Landing absorption','Land on both feet together and absorb by flexing knees and hips (quads and glutes work eccentrically), weight centred on the board.'],
+    trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
+  butter: {
+    ride:['Straight run','Board flat, ready.'],
+    press:['Press + upper-body wind-up','Shift weight to the front foot (back foot for a tail butter) to press the nose down while the other foot lifts the tail; wind the upper body up the opposite way.'],
+    spin:['Butter 360','The upper body leads the spin, the lower body follows, pivoting on the nose (or tail) on the snow; the obliques drive it.'],
+    out:['Flatten out','After the rotation, flatten the board with even weight and keep riding.'],
+    trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
+  slip: {
+    slide:['Slide: reduce the edge angle','With the edge angle below the slope angle, the board slides down. Look ahead, weight even, knees slightly bent.'],
+    ctrl:['Control: hold the edge','Hold the same edge angle and you slide at a steady speed; fine-tune with your ankles, not your butt.'],
+    brake:['Stop: increase the edge angle','As the edge angle approaches the slope angle the board stops. Heel slip: lift your toes (tibialis anterior); toe slip: push your knees forward (calves).'],
+    trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
+  beg: {
+    trans:['Edge change (flatten the board)','Flatten the board first (weight even, knees slightly bent), then slowly move your weight onto the new edge. Look where you want to go.'],
+    init:['Initiation: lead with the front foot','Weight a little more on the front foot, head and shoulders look into the turn; the nose turns first and the back foot follows.'],
+    toe:['Toeside: press the toes','Drive the knees forward toward the slope, press the toes lightly (calves); keep the body upright, don’t bend at the waist.'],
+    heel:['Heelside: lift the toes','Bend your knees as if sitting on a tall stool, lift your toes (tibialis anterior), weight over the heels; hands in front for balance — don’t sit too low.'],
+    comp:['Completion: control speed','Turn the board a bit more across and it skids to slow down; weight drifts back to centre, ready to change edges.']
+  },
+  mid: {
+    trans:['Edge change (extend to unweight)','Extend before the edge change to unweight; flatten the board quickly, then move to the other edge.'],
+    init:['Initiation: flex to load + front foot leads','After the edge change flex gradually to load; the front foot guides the nose into the turn; keep the upper body quiet, don’t rotate.'],
+    toe:['Toeside: knees into the turn','Push knees and hips into the turn, shins pressing the front of the boots; press the toes (calves), glutes hold you so you don’t bend at the waist.'],
+    heel:['Heelside: sit the hips into the turn','Sit the hips into the turn, keep the knees bent, tibialis anterior lifting the toes, abs braced so you don’t fall back.'],
+    comp:['Completion: pressure moves to the back foot','Pressure gradually moves to the back foot, use the skid angle to control speed, get ready to extend and change edges.']
+  },
+  euro: {
+    trans:['Edge change: big CoM crossover','The CoM travels from near the snow on one side, over the board, to near the snow on the other side; extend first, then drop in — the board flips underneath you.'],
+    init:['Initiation: tip early, edge early','Right after the edge change the body drops into the turn and the nose bites first; GRF quickly rises to about 2–3× body weight.'],
+    toe:['Toeside euro carve','The body is almost parallel to the snow and a hand can brush it, but your weight must stay over the board’s edge; push knees and hips into the turn — don’t put your weight on your hand.'],
+    heel:['Heelside euro carve','Hips nearly touch the snow, chest forward, back hand can drag; the tibialis anterior and quads work flat out against the highback.'],
+    comp:['Completion: rise up, ready to change edges','Edge angle eases off as the body ’springs’ back up from the snow, ready for the next crossover.']
+  },
+  carve: {
+    trans:['Transition','The CoM crosses over the board from the old turn’s inside to the new turn’s inside; the board flips under the CoM — you don’t push the board.'],
+    init:['Initiation','Tip into the turn early; the front foot adds edge first, so you’re on edge before GRF builds.'],
+    toe:['Toeside Apex','The body leans into the turn in one straight line, hips driving toward the nose; calves and glutes hold, knees into the turn for angulation.'],
+    heel:['Heelside Apex','Hips sit low into the turn, chest forward (angulation); tibialis anterior, quads and abs hold, with the highback taking a lot of load.'],
+    comp:['Completion','Pressure moves toward the back foot and the edge angle eases off, ready to release; don’t release too early or the tail will wash out.']
+  }
+};
+function phaseOf(p){
+  const kind = LV[cfg.level].kind;
+  if (kind === 'trav') return p.down > .35 ? 'down' : p.up > .35 ? 'up' : 'trav';
+  if (kind === 'ollie') return p.u < .3 ? 'ride' : p.u < .44 ? 'pre' : p.u < .52 ? 'pop' : p.u < .73 ? 'air' : p.u < .9 ? 'land' : 'ride';
+  if (kind === 'butter') return p.u < .2 ? 'ride' : p.u < .35 ? 'press' : p.u < .8 ? 'spin' : 'out';
+  if (LV[cfg.level].slip) return p.pulse > .62 ? 'brake' : p.pulse < .38 ? 'slide' : 'ctrl';
+  const u = ((p.s*2)%1+1)%1;
+  if (u < .1 || u > .9) return 'trans';
+  if (u < .38) return 'init';
+  if (u < .62) return p.toeLean > 0 ? 'toe' : 'heel';
+  return 'comp';
+}
+const sToe = () => DIR() > 0 ? .25 : .75, sHeel = () => DIR() > 0 ? .75 : .25;
+const JUMP = {trans:() => 0, init:() => .11, toe:sToe, heel:sHeel};
+const WATCH = {
+  trav: [
+    {w:'Heel traverse', v:'front', j:'heel', s:0, t:'Face downhill and cross the slope on the heel edge; lift the toes slightly to hold the edge.'},
+    {w:'Toe traverse', v:'back', j:'toe', s:0, t:'Back to the hill, on the toe edge; knees push uphill.'},
+    {w:'Release and drop', v:'front', j:.25, t:'Flatten the edge a little and the nose turns naturally toward the fall line.'},
+    {w:'Re-edge and climb', v:'front', j:.75, t:'Re-edge to turn back uphill — this is what the bottom half of a turn feels like.'},
+    {w:'Front foot steers', v:'top', j:.25, t:'When releasing to drop, a bit more front-foot pressure steers the nose down — watch the foot map.'}
+  ],
+  ollie: [
+    {w:'Preload', v:'toeV', j:.42, t:'Crouch with weight on the tail, nose lifting: the back-foot red dot grows in the foot map.'},
+    {w:'Pop', v:'toeV', j:.48, t:'The back leg extends explosively: calves, quads and glutes work concentrically.'},
+    {w:'Tuck in the air', v:'toeV', j:.6, t:'Pull the knees to the chest; the front foot levels the board: hamstrings and abs work.'},
+    {w:'Land', v:'toeV', j:.76, t:'Land on both feet together; the quads absorb eccentrically.'},
+    {w:'Compare with a nollie', v:'toeV', j:'nollie', t:'Switch to a nollie: everything flips front-to-back and the front foot pops.'}
+  ],
+  butter: [
+    {w:'Press', v:'toeV', j:.3, t:'Weight onto the front foot, nose down, tail up: front foot around 85%.'},
+    {w:'Upper-body wind-up', v:'top', j:.3, t:'Before spinning, twist the upper body the other way (wind-up): obliques work eccentrically.'},
+    {w:'Pivot spin', v:'top', j:.575, t:'The board pivots 360 on the nose on the snow; the upper body leads.'},
+    {w:'Flatten out', v:'front', j:.85, t:'After the spin, flatten the board with even weight — don’t sit back.'},
+    {w:'Tail butter', v:'top', j:'tail', t:'Switch to a tail butter: press with the back foot, pivot on the tail.'}
+  ],
+  slip: [
+    {w:'Heel slip', v:'front', j:'heel', t:'Face downhill on the heel edge. Tap ’Heelside’ to switch.'},
+    {w:'Toe slip', v:'back', j:'toe', t:'Back to the fall line, on the toe edge. Tap ’Toeside’ to switch; you can’t see downhill, so turn your head to look.'},
+    {w:'Edge vs slope', v:'heelV', j:'trans', t:'Top-right gauge: below the slope angle you slide, near it you stop.'},
+    {w:'Falling leaf', v:'top', j:'trans', t:'More pressure on the front foot and you drift diagonally toward the nose; more on the back foot, toward the tail — watch the two red dots in the foot map.'},
+    {w:'Upper body still', v:'front', j:'init', t:'Control comes from the ankles and knees; keep the upper body and hands still.'}
+  ],
+  beg: [
+    {w:'Eyes and shoulders', v:'front', j:'toe', t:'Look where you’re going (over the nose), shoulders roughly parallel to the board; don’t look at your feet.'},
+    {w:'Front foot leads', v:'heelV', j:'init', t:'Weight on the front foot when entering the turn (55–60%): the nose turns first and the back foot follows. Watch the front-foot red dot.'},
+    {w:'Bend knees, not waist', v:'heelV', j:'heel', t:'Heelside: like sitting on a tall stool; toeside: drive the knees forward — don’t bend at the waist.'},
+    {w:'Skid for speed control', v:'top', j:'toe', t:'The board points further into the turn than its path — that’s a skid, used to control speed.'},
+    {w:'Flat edge change', v:'back', j:'trans', t:'Flatten the board before changing edges, then roll onto the other edge.'}
+  ],
+  mid: [
+    {w:'Up-down movement', v:'heelV', j:'trans', t:'Extend to unweight at the edge change, flex to load in the turn.'},
+    {w:'Front/back foot pressure', v:'top', j:'init', t:'Front foot entering, back foot exiting: watch the two red dots change size in the foot map.'},
+    {w:'Toe vs heel muscles', v:'back', j:'toe', t:'On toeside the calves press the toes; jump to heelside to compare — the tibialis anterior takes over.'},
+    {w:'Quiet upper body', v:'front', j:'toe', t:'Don’t rotate the board with your upper body; try Stance → ’Upper-body rotation’ to compare.'},
+    {w:'Edge angle', v:'back', j:'heel', t:'Top-right gauge: the edge angle grows gradually from the small angle used when skidding.'}
+  ],
+  euro: [
+    {w:'Lean angle', v:'back', j:'toe', t:'Watch the white angle arc in 3D: only 70°+ counts as a true euro carve.'},
+    {w:'Hand on snow', v:'heelV', j:'toe', t:'On toeside the front hand reaches to the snow and only brushes it — it doesn’t hold you up.'},
+    {w:'Heelside hand drag', v:'toeV', j:'heel', t:'The back hand drags the snow and the hips are close to it, chest still facing forward.'},
+    {w:'GRF line', v:'back', j:'heel', t:'The purple force line still has to run from the edge through the CoM — not be held up by the hand.'},
+    {w:'Speed and R', v:null, j:null, t:'On an R8 board you need about 30 km/h to get down to 70°; drag the speed in Spec and watch the lean change.'}
+  ],
+  carve: [
+    {w:'Long body on toeside', v:'heelV', j:'toe', t:'The body leans into the turn in one line; don’t push the hips back (don’t bend at the waist).'},
+    {w:'Heelside angulation', v:'toeV', j:'heel', t:'Hips sit low into the turn, chest forward; the upper body is more upright than the lower body = angulation.'},
+    {w:'Edge = Lean', v:'back', j:'toe', t:'On a snowboard the edge angle is about equal to the body lean: the two lines on the gauge almost overlap.'},
+    {w:'CoM crossover at the edge change', v:'top', j:'trans', t:'The yellow CoM line crosses over the board from one side to the other and is shorter than the board track.'},
+    {w:'GRF line', v:'back', j:'heel', t:'The purple force line runs from the loaded edge through the CoM = balanced.'}
+  ]
+};
+
+/* ---------- three setup ---------- */
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xcfdbe6);
+scene.fog = new THREE.Fog(0xcfdbe6, 22, 70);
+const camera = new THREE.PerspectiveCamera(48, 1, .05, 300);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8899aa, .75));
+const sun = new THREE.DirectionalLight(0xffffff, .85);
+sun.castShadow = true; sun.shadow.mapSize.set(1024,1024);
+Object.assign(sun.shadow.camera, {left:-4,right:4,top:4,bottom:-4,near:.5,far:25});
+scene.add(sun); scene.add(sun.target);
+const slopeG = new THREE.Group(); scene.add(slopeG);
+const snow = new THREE.Mesh(new THREE.PlaneGeometry(400,400), new THREE.MeshStandardMaterial({color:0xf2f6fa, roughness:.95}));
+snow.rotation.x = -Math.PI/2; snow.receiveShadow = true; slopeG.add(snow);
+const grid = new THREE.GridHelper(400, 200, 0xb3c2d1, 0xd3dce6); grid.position.y = .003; slopeG.add(grid);
+
+let trails = [], comTrail, trailCycle = null;
+function rebuildTrails(c){
+  trails.forEach(t => { slopeG.remove(t); t.geometry.dispose(); });
+  const cp = [], tr = [];
+  for (let i = -200; i <= 400; i++){
+    const p = pose(c + i/200);
+    cp.push(p.com.clone()); tr.push(new V(p.mid.x, .008, p.mid.z));
+  }
+  const mk = (pts, color, op) => new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color, transparent:true, opacity:op}));
+  comTrail = mk(cp, 0xe0a800, .9);
+  trails = [comTrail, mk(tr, 0x7f93a8, .85)];
+  trails.forEach(t => slopeG.add(t));
+  comTrail.visible = show.com; trailCycle = c;
+  buildMap(c);
+}
+
+/* ---------- figure ---------- */
+const jacket = new THREE.MeshStandardMaterial({color:0x2f9e6e, roughness:.65, transparent:true});
+const pants = new THREE.MeshStandardMaterial({color:0x3a4352, roughness:.75, transparent:true});
+const sphereGeo = new THREE.SphereGeometry(1, 18, 12);
+const muscles = [], limbs = [];
+function limb(len, r0, r1, mat){
+  const g = new THREE.Group();
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(r1, r0, len, 14), mat); c.position.y = len/2; g.add(c);
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(r0, 14, 10), mat));
+  slopeG.add(g); limbs.push(g); return g;
+}
+function addMuscle(parent, key, side, pos, scl, tag){
+  const mat = new THREE.MeshStandardMaterial({color:0x3a4652, emissive:0x000000, roughness:.45, transparent:true, opacity:.96});
+  const m = new THREE.Mesh(sphereGeo, mat); m.position.set(...pos); m.scale.set(...scl); m.renderOrder = 2;
+  parent.add(m); muscles.push({m, key, side, base:m.scale.clone(), pos:pos.slice(), tag});
+}
+function orient(obj, a, b, hint){
+  const y = b.clone().sub(a).normalize();
+  const z = hint.clone().addScaledVector(y, -hint.dot(y)).normalize();
+  obj.position.copy(a);
+  obj.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(new V().crossVectors(y, z), y, z));
+}
+function makeLeg(side){
+  const thigh = limb(.45, .085, .06, pants), shin = limb(.45, .06, .045, pants);
+  addMuscle(thigh,'quad',side,[0,.22,.06],[.065,.18,.05]);
+  addMuscle(thigh,'ham',side,[0,.2,-.06],[.055,.17,.045]);
+  addMuscle(thigh,'add',side,[.06,.12,0],[.04,.13,.045],'med');
+  addMuscle(shin,'tib',side,[-.014,.16,.046],[.032,.13,.032],'lat');
+  addMuscle(shin,'calf',side,[0,.13,-.05],[.05,.13,.042]);
+  return {thigh, shin};
+}
+const legF = makeLeg('F'), legB = makeLeg('B');
+const pelvis = new THREE.Group(); slopeG.add(pelvis);
+const pm = new THREE.Mesh(sphereGeo, pants); pm.scale.set(.17,.1,.12); pelvis.add(pm);
+for (const side of ['F','B']){
+  addMuscle(pelvis,'glmax',side,[.075,-.02,-.1],[.08,.08,.05],'px');
+  addMuscle(pelvis,'glmed',side,[.16,.03,-.01],[.035,.065,.065],'px');
+}
+const torso = new THREE.Group(); slopeG.add(torso);
+const tm = new THREE.Mesh(new THREE.CylinderGeometry(.16,.13,.5,16), jacket); tm.position.y = .25; torso.add(tm);
+const shm = new THREE.Mesh(sphereGeo, jacket); shm.scale.set(.2,.07,.12); shm.position.y = .47; torso.add(shm);
+const headG = new THREE.Group(); headG.position.set(0,.66,.02); torso.add(headG);
+const head = new THREE.Mesh(sphereGeo, new THREE.MeshStandardMaterial({color:0x1f2937, roughness:.4})); head.scale.setScalar(.11); headG.add(head);
+const gog = new THREE.Mesh(new THREE.BoxGeometry(.17,.05,.04), new THREE.MeshStandardMaterial({color:0xff8c1a, roughness:.2, metalness:.3})); gog.position.set(0,.005,.09); headG.add(gog);
+addMuscle(torso,'abs','C',[0,.2,.13],[.065,.16,.035]);
+addMuscle(torso,'erec','C',[0,.22,-.12],[.07,.18,.035]);
+for (const side of ['F','B']) addMuscle(torso,'obl',side,[.14,.16,.03],[.035,.13,.075],'px');
+
+function placeLegMuscles(){
+  const dir = DIR();
+  for (const mu of muscles){
+    if (!mu.tag) continue;
+    const hx = mu.side === 'F' ? dir : -dir; // pelvis-x side of this leg/torso side
+    const med = hx; // leg-local +x = pelvis -x ; medial points toward other leg
+    let x = mu.pos[0];
+    if (mu.tag === 'px') x = Math.abs(x)*hx;
+    else if (mu.tag === 'med') x = Math.abs(x)*med;
+    else if (mu.tag === 'lat') x = -Math.abs(x)*med;
+    mu.m.position.set(x, mu.pos[1], mu.pos[2]);
+  }
+  headG.rotation.y = dir*.9;
+}
+
+const armF = {up:limb(.27,.05,.042,jacket), fo:limb(.26,.042,.035,jacket)};
+const armB = {up:limb(.27,.05,.042,jacket), fo:limb(.26,.042,.035,jacket)};
+
+const boardG = new THREE.Group(); slopeG.add(boardG);
+const boardMat = new THREE.MeshStandardMaterial({color:0x7c6cf0, roughness:.4});
+let boardParts = [], edgeL, edgeR;
+const bootMat = new THREE.MeshStandardMaterial({color:0x2b2b2b, roughness:.6});
+const bootF = new THREE.Mesh(new THREE.BoxGeometry(.12,.16,.3), bootMat), bootB = bootF.clone();
+boardG.add(bootF, bootB);
+/* ---------- board bending (reverse camber when edged & loaded) ---------- */
+// For a carving ski/board with sidecut radius R at edge angle θ, the edge lies on the snow when the
+// base bends (toward the snow) with curvature tanθ / R; turn radius is then R·cosθ.
+let bendMul = 1, bendText = '';
+function bendable(geo){ geo.userData.base = Float32Array.from(geo.attributes.position.array); return geo; }
+function bendGeo(geo, kappa, zScale){
+  const b = geo.userData.base, pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++){ const zm = b[i*3+2]*zScale; pos.setY(i, b[i*3+1] + kappa*zm*zm/2); }
+  pos.needsUpdate = true; geo.computeVertexNormals();
+}
+const sagCm = (kappa, L) => kappa*L*L/8*100;
+/* ---------- board pressure strip ---------- */
+const PNS = 32;
+function makeStrip(){
+  const g = new THREE.PlaneGeometry(1, 1, 1, PNS); g.rotateX(-Math.PI/2);
+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count*3), 3));
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({vertexColors:true, transparent:true, opacity:.95, depthWrite:false}));
+  m.renderOrder = 5; return m;
+}
+const BP0 = new THREE.Color(0xf4f7fb), BP1 = new THREE.Color(0xffb020), BP2 = new THREE.Color(0xff1946);
+function bpRamp(v){ return v < .5 ? BP0.clone().lerp(BP1, v/.5) : BP1.clone().lerp(BP2, (v-.5)/.5); }
+function paintStrip(m, fn){
+  const pos = m.geometry.attributes.position, col = m.geometry.attributes.color;
+  for (let i = 0; i < pos.count; i++){ const c = bpRamp(Math.min(1, fn(pos.getZ(i)))); col.setXYZ(i, c.r, c.g, c.b); }
+  col.needsUpdate = true;
+}
+function makeMarker(){
+  const m = new THREE.Mesh(new THREE.ConeGeometry(.03, .09, 12), new THREE.MeshBasicMaterial({color:0xff1946, depthTest:false, transparent:true}));
+  m.rotation.x = Math.PI; m.renderOrder = 6; return m;
+}
+const bpLabel = f => f > .06 ? 'front (tip)' : f < -.06 ? 'rear (tail)' : 'middle';
+let bpText = '';
+let bStrip = null, bParts = null; const bMk = makeMarker(); boardG.add(bMk);
+function buildBoard(){
+  boardParts.forEach(m => { boardG.remove(m); m.geometry.dispose(); });
+  const Lb = cfg.board/100;
+  const mid = new THREE.Mesh(bendable(new THREE.BoxGeometry(BW, .02, Lb-BW, 1, 1, 40)), boardMat); mid.position.y = .01;
+  const n = new THREE.Mesh(new THREE.CylinderGeometry(BW/2, BW/2, .02, 24, 1, false, -Math.PI/2, Math.PI), boardMat); n.position.set(0,.01,(Lb-BW)/2);
+  const tl = new THREE.Mesh(new THREE.CylinderGeometry(BW/2, BW/2, .02, 24, 1, false, Math.PI/2, Math.PI), boardMat); tl.position.set(0,.01,-(Lb-BW)/2);
+  edgeL = new THREE.Mesh(bendable(new THREE.BoxGeometry(.012,.012,Lb-BW,1,1,40)), new THREE.MeshBasicMaterial({color:0x4cc9f0})); edgeL.position.x = BW/2;
+  edgeR = new THREE.Mesh(bendable(new THREE.BoxGeometry(.012,.012,Lb-BW,1,1,40)), new THREE.MeshBasicMaterial({color:0x4cc9f0})); edgeR.position.x = -BW/2;
+  bStrip = makeStrip(); bendable(bStrip.geometry); bStrip.scale.set(.08, 1, Lb); bStrip.position.y = .0215;
+  boardParts = [mid, n, tl, edgeL, edgeR, bStrip]; bParts = {mid, n, tl};
+  boardParts.forEach(m => { m.castShadow = true; boardG.add(m); });
+}
+function placeBoots(){
+  const dir = DIR(), k = C.k;
+  const [gF, gB] = ANG();
+  const aF = Math.atan2(-dir*Math.cos(gF*D), Math.sin(gF*D)), aB = Math.atan2(-dir*Math.cos(gB*D), Math.sin(gB*D));
+  bootF.position.set(0, .02 + .08*k, C.S/2); bootF.rotation.set(0, aF, 0); bootF.scale.setScalar(k);
+  bootB.position.set(0, .02 + .08*k, -C.S/2); bootB.rotation.set(0, aB, 0); bootB.scale.setScalar(k);
+}
+
+const arcLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(Array.from({length:21}, () => new V())), new THREE.LineBasicMaterial({color:0xffffff, depthTest:false, transparent:true}));
+arcLine.renderOrder = 12; slopeG.add(arcLine);
+const normLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new V(), new V()]), new THREE.LineDashedMaterial({color:0xffffff, dashSize:.06, gapSize:.04, depthTest:false, transparent:true}));
+normLine.renderOrder = 12; slopeG.add(normLine);
+const comBall = new THREE.Mesh(new THREE.SphereGeometry(.085,18,12), new THREE.MeshBasicMaterial({color:0xffd23f, depthTest:false, transparent:true}));
+comBall.renderOrder = 10; slopeG.add(comBall);
+const grf = new THREE.ArrowHelper(UP, new V(), 1, 0xa855f7, .14, .08); slopeG.add(grf);
+const grav = new THREE.ArrowHelper(new V(0,-1,0), new V(), .5, 0x3a7bd5, .1, .06); slopeG.add(grav);
+for (const a of [grf, grav]) a.traverse(o => { if (o.material){ o.material.depthTest = false; o.material.transparent = true; o.renderOrder = 11; } });
+slopeG.traverse(o => { if (o.isMesh && o !== snow && o !== comBall) o.castShadow = true; });
+
+function rescale(){
+  limbs.forEach(g => g.scale.setScalar(C.k));
+  pelvis.scale.setScalar(C.k); torso.scale.setScalar(C.k);
+  if (Rig.ready) Rig.setHeight(cfg.H/100);
+  placeBoots();
+}
+
+/* ---------- apply ---------- */
+let focus = null, arcAt = new V(), arcDeg = 0;
+function placeArm(arm, sh, face, along, down, k){
+  const elbow = sh.clone().addScaledVector(down, .24*k).addScaledVector(along, .06*k).addScaledVector(face, .05*k);
+  const hand = elbow.clone().addScaledVector(along, .2*k).addScaledVector(face, .12*k).addScaledVector(down, .02*k);
+  orient(arm.up, sh, elbow, face); orient(arm.fo, elbow, hand, UP);
+  return hand;
+}
+function reachArm(arm, sh, target, face, along, down, k, w){
+  const elbow0 = sh.clone().addScaledVector(down, .24*k).addScaledVector(along, .06*k).addScaledVector(face, .05*k);
+  const hand0 = elbow0.clone().addScaledVector(along, .2*k).addScaledVector(face, .12*k);
+  const hand = hand0.lerp(target, w);
+  const sol = twoBone(sh, hand, down.clone().add(along).normalize(), .27*k, .26*k);
+  orient(arm.up, sh, sol.K, face); orient(arm.fo, sol.K, sol.E, UP);
+  return hand;
+}
+function applyPose(p){
+  const k = C.k, dir = DIR(), J = solve(p);
+  boardG.quaternion.copy(p.qB); boardG.position.copy(p.gpos);
+  const sgE = p.edge >= 0 ? 1 : -1, on = show.edge && Math.abs(p.edge) > .05;
+  edgeR.visible = on && sgE > 0; edgeL.visible = on && sgE < 0;
+  if (bStrip){
+    const Lb = cfg.board/100, wF = weightF(p), lift = p.lift || 0, pit = p.pitch || 0;
+    const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
+    let fn, cm;
+    if (lift > .02){ fn = () => 0; cm = 0; }
+    else if (Math.abs(pit) > 2*D){ cm = Math.sign(pit)*(Lb/2 - .1); fn = zm => 1.1*Math.exp(-(((zm - cm)/.09)**2)); }
+    else {
+      const sh = .12*(init - comp), a = C.S/2 + sh, b = -C.S/2 + sh, sg = .13 + .1*(1 - Math.min(1, Math.abs(p.edge)/(20*D)));
+      cm = wF*a + (1-wF)*b;
+      fn = zm => 1.25*(wF*Math.exp(-(((zm - a)/sg)**2)) + (1-wF)*Math.exp(-(((zm - b)/sg)**2)));
+    }
+    const x = Math.abs(p.edge) > .05 ? -(BW/2 - .045)*sgE : 0;
+    bStrip.visible = bMk.visible = show.bp && lift <= .02;
+    bStrip.position.x = x;
+    paintStrip(bStrip, z => fn(z*Lb));
+    const press = Math.max(p.press || 0, Math.min(1, Math.abs(pit)/(12*D)));
+    const kRaw = lift > .02 ? 0 : Math.tan(Math.min(Math.abs(p.edge), 80*D))/cfg.R + press/3;
+    const kap = bendMul*kRaw;
+    if (bParts){
+      bendGeo(bParts.mid.geometry, kap, 1); bendGeo(edgeL.geometry, kap, 1); bendGeo(edgeR.geometry, kap, 1); bendGeo(bStrip.geometry, kap, Lb);
+      const zc = (Lb - BW)/2;
+      bParts.n.position.y = .01 + kap*zc*zc/2; bParts.n.rotation.x = -Math.atan(kap*zc);
+      bParts.tl.position.y = .01 + kap*zc*zc/2; bParts.tl.rotation.x = Math.atan(kap*zc);
+      bootF.position.y = .02 + .08*C.k + kap*(C.S/2)**2/2; bootB.position.y = bootF.position.y;
+    }
+    bendText = !bendMul ? '' : kRaw > 1e-4 ? `Board reverse camber ${sagCm(kRaw, Lb).toFixed(1)} cm・bend radius ${(1/kRaw).toFixed(1)} m` : 'Board not flexed (flat / airborne)';
+    bMk.position.set(x, .08 + kap*cm*cm/2, cm);
+    bpText = lift > .02 ? 'Board pressure: airborne' : `Board pressure: ${bpLabel(cm/Lb)}・Front ${Math.round(wF*100)}%`;
+  }
+  pelvis.position.copy(p.P); pelvis.quaternion.copy(J.qP);
+  orient(legF.thigh, J.hipF, J.legF.K, J.legF.nrm); orient(legF.shin, J.legF.K, J.legF.E, J.legF.nrm);
+  orient(legB.thigh, J.hipB, J.legB.K, J.legB.nrm); orient(legB.shin, J.legB.K, J.legB.E, J.legB.nrm);
+  torso.position.copy(J.tBase); torso.quaternion.copy(J.qT);
+  const face = yawVec(J.gT), down = new V(0,-1,0);
+  const shF = J.tBase.clone().add(new V(dir*.2*k, .45*k, 0).applyQuaternion(J.qT));
+  const shB = J.tBase.clone().add(new V(-dir*.2*k, .45*k, 0).applyQuaternion(J.qT));
+  const drag = clamp((p.phiMag - 55*D)/(15*D), 0, 1);
+  const snowPt = (along, side) => { const q = p.mid.clone().addScaledVector(p.fB, along).addScaledVector(p.t, side); q.y = .03; return q; };
+  let hF, hB;
+  if (drag > 0 && p.toeLean > 0){ hF = reachArm(armF, shF, snowPt(.35*k, .45*k), face, p.fB, down, k, drag); hB = placeArm(armB, shB, face, p.fB.clone().multiplyScalar(-.6), down, k); }
+  else if (drag > 0){ hF = placeArm(armF, shF, face, p.fB, down, k); hB = reachArm(armB, shB, snowPt(-.45*k, -.5*k), face, p.fB.clone().negate(), down, k, drag); }
+  else { hF = placeArm(armF, shF, face, p.fB, down, k); hB = placeArm(armB, shB, face, p.fB.clone().multiplyScalar(-.6), down, k); }
+  if (Rig.ready){
+    const Fs = dir > 0 ? 'L' : 'R', Bs = dir > 0 ? 'R' : 'L';
+    const qF = p.qB.clone().multiply(new Q().setFromAxisAngle(UP, bootF.rotation.y));
+    const qBk = p.qB.clone().multiply(new Q().setFromAxisAngle(UP, bootB.rotation.y));
+    const outF = shF.clone().sub(J.tBase).setY(0).normalize(), outB = shB.clone().sub(J.tBase).setY(0).normalize();
+    const qH = qYZX(p.yawB - dir*10*D + (p.tx || 0)*.5, 0, .08);
+    const legs = {}, arms = {};
+    legs[Fs] = {ankle: p.footF, pole: J.legF.nrm, qFoot: qF}; legs[Bs] = {ankle: p.footB, pole: J.legB.nrm, qFoot: qBk};
+    arms[Fs] = {hand: hF, pole: outF.clone().add(down).addScaledVector(face, -.4).normalize()};
+    arms[Bs] = {hand: hB, pole: outB.clone().add(down).addScaledVector(face, -.4).normalize()};
+    const o = Rig.drive({pelvis: p.P, qP: J.qP, qT: J.qT, qH, legs, arms});
+    orient(legF.thigh, o['hip'+Fs], o['knee'+Fs], o['pole'+Fs]); orient(legF.shin, o['knee'+Fs], o['ankle'+Fs], o['pole'+Fs]);
+    orient(legB.thigh, o['hip'+Bs], o['knee'+Bs], o['pole'+Bs]); orient(legB.shin, o['knee'+Bs], o['ankle'+Bs], o['pole'+Bs]);
+  }
+
+  comBall.position.copy(p.com);
+  const base = p.mid.clone(); base.y = .02;
+  const gv = p.com.clone().sub(base);
+  grf.position.copy(base); grf.setDirection(gv.clone().normalize()); grf.setLength(gv.length(), .14, .08);
+  grav.position.copy(p.com); grav.setDirection(new V(0, -Math.cos(cfg.slope*D), Math.sin(cfg.slope*D)));
+  { const r0 = .55*k, u = gv.clone().normalize(), pts = arcLine.geometry.attributes.position;
+    const ang = Math.acos(clamp(u.y, -1, 1)), side = u.clone().setY(0).normalize();
+    for (let i = 0; i <= 20; i++){ const a = ang*i/20; const q = base.clone().addScaledVector(UP, r0*Math.cos(a)).addScaledVector(side, r0*Math.sin(a)); pts.setXYZ(i, q.x, q.y, q.z); }
+    pts.needsUpdate = true;
+    const np = normLine.geometry.attributes.position; np.setXYZ(0, base.x, base.y, base.z); np.setXYZ(1, base.x, base.y + 1.1*k, base.z); np.needsUpdate = true; normLine.computeLineDistances();
+    const mid = base.clone().addScaledVector(UP, r0*Math.cos(ang/2)*1.25).addScaledVector(side, r0*Math.sin(ang/2)*1.25);
+    arcAt = slopeG.localToWorld(mid); arcDeg = ang/D; }
+
+  const act = activations(p), md = modes(p.s, act), t = performance.now()/1000;
+  for (const mu of muscles){
+    const a = act[mu.key][mu.side], col = heat(a);
+    mu.m.visible = show.muscle && !(focus && focus !== mu.key);
+    mu.m.material.color.copy(col);
+    mu.m.material.emissive.copy(col).multiplyScalar(.15 + .6*a);
+    mu.m.material.opacity = focus ? 1 : .25 + .75*clamp((a-.15)/.5, 0, 1);
+    const mode = md[mu.key][mu.side];
+    const pulse = focus === mu.key ? 1 + .12*Math.sin(t*8) : 1;
+    const sy = mode === 'ecc' ? 1.12 : mode === 'con' ? .9 : 1, sx = mode === 'con' ? 1.1 : mode === 'ecc' ? .94 : 1;
+    mu.m.scale.set(mu.base.x*sx*pulse, mu.base.y*sy*pulse, mu.base.z*sx*pulse);
+  }
+  return {act, md};
+}
+function heat(a){
+  const lo = [58,70,82], mi = [235,110,70], hi = [255,25,70];
+  const [c0, c1, t] = a < .5 ? [lo, mi, a/.5] : [mi, hi, (a-.5)/.5];
+  return new THREE.Color((c0[0]+(c1[0]-c0[0])*t)/255, (c0[1]+(c1[1]-c0[1])*t)/255, (c0[2]+(c1[2]-c0[2])*t)/255);
+}
+
+/* ---------- UI ---------- */
+const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:true};
+function applyVis(){
+  comBall.visible = show.com; if (comTrail) comTrail.visible = show.com;
+  grf.visible = grav.visible = arcLine.visible = normLine.visible = show.force;
+  for (const m of [jacket, pants]){ m.opacity = show.xray ? .5 : 1; m.depthWrite = !show.xray; m.needsUpdate = true; }
+  if (Rig.ready) Rig.setOpacity(show.xray ? .42 : 1);
+}
+document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
+  const k = b.dataset.t; show[k] = !show[k]; b.classList.toggle('on', show[k]); applyVis();
+});
+let th = Math.PI, ph = 1.22, rad = 4;
+function setView(v){
+  const toeSide = DIR() > 0 ? -Math.PI/2 : Math.PI/2; // world-ish: toe side when heading downhill
+  const V2 = {front:[0,1.25], back:[Math.PI,1.2], top:[Math.PI,.12], toeV:[toeSide,1.3], heelV:[-toeSide,1.3]};
+  [th, ph] = V2[v];
+}
+document.querySelectorAll('[data-v]').forEach(b => b.onclick = () => setView(b.dataset.v));
+
+let sT = 0, playing = true, mul = .5;
+const playBtn = document.getElementById('play'), scrub = document.getElementById('scrub');
+playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? '⏸ Pause' : '▶ Play'; };
+function pause(){ playing = false; playBtn.textContent = '▶ Play'; }
+function jump(s){ sT = Math.floor(sT) + s; pause(); }
+scrub.oninput = () => jump(scrub.value/1000);
+document.getElementById('speedMul').onchange = e => mul = +e.target.value;
+const JUMPS = {
+  turn: [['Edge change',() => 0],['Initiation',() => .11],['Toeside',sToe],['Heelside',sHeel]],
+  slip: [['Slide',() => .25],['Steady',() => 0],['Stop',() => 1/12]],
+  trav: [['Traverse',() => 0],['Release and drop',() => .25],['Re-edge and climb',() => .75]],
+  ollie:[['Preload',() => .42],['Pop',() => .48],['Air',() => .6],['Land',() => .76]],
+  butter:[['Press',() => .3],['Start turning',() => .45],['Halfway',() => .575],['Finish',() => .85]]
+};
+const SUBS = {
+  slip: ['slipSide', [['heel','Heelside'],['toe','Toeside']]],
+  trav: ['slipSide', [['heel','Heelside'],['toe','Toeside']]],
+  ollie:['trick', [['ollie','Ollie (pop off the tail)'],['nollie','Nollie (pop off the nose)']]],
+  butter:['butter', [['nose','Nose butter'],['tail','Tail butter']]]
+};
+const kindOf = () => LV[cfg.level].kind || 'turn';
+function setSub(key, val){ cfg[key] = val; lastPhase = ''; rebuildTrails(Math.floor(sT)); renderJumps(); }
+function renderJumps(){
+  const box = document.getElementById('jumps'); box.innerHTML = '';
+  (JUMPS[kindOf()] || JUMPS.turn).forEach(([n, f]) => { const b = document.createElement('button'); b.textContent = n; b.onclick = () => jump(f()); box.appendChild(b); });
+  const sr = document.getElementById('subRow'), sub = SUBS[kindOf()];
+  sr.innerHTML = ''; sr.style.display = sub ? '' : 'none';
+  if (!sub) return;
+  const lab = document.createElement('span'); lab.className = 'label'; lab.textContent = 'Move'; sr.appendChild(lab);
+  for (const [v, n] of sub[1]){ const b = document.createElement('button'); b.textContent = n; b.classList.toggle('on', cfg[sub[0]] === v); b.onclick = () => setSub(sub[0], v); sr.appendChild(b); }
+}
+function goWatch(j){
+  const sub = SUBS[kindOf()];
+  if (sub && (j === 'toe' || j === 'heel' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail')){ setSub(sub[0], j); return; }
+  if (typeof j === 'number') return jump(j);
+  if (kindOf() === 'slip') return jump(j === 'trans' ? 1/12 : .25);
+  jump(JUMP[j]());
+}
+
+const sl = {}; for (const id of ['H','board','R','slope','v']) sl[id] = document.getElementById(id);
+const unit = {H:'cm', board:'cm', R:'m', slope:'°', v:'km/h'};
+function syncSliders(){ for (const id in sl){ sl[id].value = cfg[id]; document.getElementById('o'+id).textContent = cfg[id] + ' ' + unit[id]; } }
+for (const id in sl) sl[id].oninput = () => { cfg[id] = +sl[id].value; syncSliders(); build(); };
+let lastPhase = '';
+function setLevel(l){
+  cfg.level = l; const lv = LV[l];
+  Object.assign(cfg, {v:lv.v, slope:lv.slope, R:lv.R, board:cfg.H + lv.boardOff});
+  document.querySelectorAll('[data-l]').forEach(b => b.classList.toggle('on', b.dataset.l === l));
+  syncSliders(); build(); lastPhase = '';
+  renderGuide();
+}
+document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => setLevel(b.dataset.l));
+document.querySelectorAll('[data-dir]').forEach(b => b.onclick = () => {
+  cfg.dir = +b.dataset.dir;
+  document.querySelectorAll('[data-dir]').forEach(x => x.classList.toggle('on', x === b));
+  build(); lastPhase = '';
+});
+document.getElementById('swBtn').onclick = () => {
+  cfg.sw = !cfg.sw; document.getElementById('swBtn').classList.toggle('on', cfg.sw);
+  build(); lastPhase = '';
+  document.getElementById('swNote').style.display = cfg.sw ? '' : 'none';
+};
+function setStance(k){
+  cfg.stance = k;
+  document.querySelectorAll('[data-st]').forEach(b => b.classList.toggle('on', b.dataset.st === k));
+  document.getElementById('stName').textContent = STANCE[k].name;
+  document.getElementById('stTxt').textContent = STANCE[k].txt;
+  if (typeof cmpOn !== 'undefined') updCmpLbl();
+  if (C.L) rebuildTrails(Math.floor(sT));
+}
+document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => setStance(b.dataset.st));
+
+function renderSpec(){
+  const r = REC[cfg.level], H = cfg.H;
+  const kk = kindOf();
+  if (kk === 'trav' || kk === 'ollie' || kk === 'butter'){
+    const ok = (x, a) => x >= a[0] && x <= a[1] ? '<span class="ok">✓</span>' : '<span class="bad">⚠</span>';
+    const why = {trav:'Garlands are the step before linked turns: you only practise the top half (release and drop) and bottom half (re-edge and climb) of a turn, with no edge change.',
+      ollie:'An ollie uses the flex of the tail (or nose): the preload bends the board to store energy, the pop releases it, then you tuck your legs so the board rises with you.',
+      butter:'A butter presses the nose (or tail) into the snow as a pivot while the rest of the board lifts off, so friction is low and it can spin. Soft boards with less camber make it easier.'}[kk];
+    document.getElementById('spec').innerHTML = `<tr><td>Slope</td><td>${cfg.slope}°</td><td>${r.slope[0]}–${r.slope[1]}°</td><td>${ok(cfg.slope, r.slope)}</td></tr><tr><td>Ski length</td><td>${cfg.board} cm</td><td>${H+r.b[0]}–${H+r.b[1]} cm</td><td>${ok(cfg.board, [H+r.b[0], H+r.b[1]])}</td></tr><tr><td>→ Principle</td><td colspan="3">${why}</td></tr>`;
+    document.getElementById('warn').innerHTML = ''; return;
+  }
+  if (LV[cfg.level].slip){
+    document.getElementById('spec').innerHTML = `<tr><td>Slope</td><td>${cfg.slope}°</td><td>8–15°</td><td>${cfg.slope>=8&&cfg.slope<=15?'<span class="ok">✓</span>':'<span class="bad">⚠</span>'}</td></tr><tr><td>→ Edge range</td><td>${(cfg.slope*.5).toFixed(0)}–${(cfg.slope*.95).toFixed(0)}°</td><td>Slope × 0.5–0.95</td><td></td></tr><tr><td>→ Principle</td><td colspan="3">The closer the edge angle is to the slope angle, the more ’level’ the base sits against gravity → more friction → you stop; a small edge angle lets you slide. No speed setting needed.</td></tr>`;
+    document.getElementById('warn').innerHTML = ''; return;
+  }
+  const st = (x, lo, hi) => x >= lo && x <= hi ? '<span class="ok">✓</span>' : '<span class="bad">⚠</span>';
+  const rows = [
+    ['Ski length', cfg.board+' cm', `${H+r.b[0]}–${H+r.b[1]} cm<small>height ${r.b[0]} to ${r.b[1]}</small>`, st(cfg.board, H+r.b[0], H+r.b[1])],
+    ['Ski R', cfg.R+' m', `${r.R[0]}–${r.R[1]} m`, st(cfg.R, r.R[0], r.R[1])],
+    ['Slope', cfg.slope+'°', `${r.slope[0]}–${r.slope[1]}°`, st(cfg.slope, r.slope[0], r.slope[1])],
+    ['Speed', cfg.v+' km/h', `${r.v[0]}–${r.v[1]} km/h`, st(cfg.v, r.v[0], r.v[1])],
+    ['Stance width', (C.S*100).toFixed(0)+' cm', 'height × 0.31', ''],
+    ['→ Turn radius', C.Rt.toFixed(1)+' m', LV[cfg.level].carve ? 'R × cos(edge)' : 'set by speed and achievable lean', ''],
+    ['→ Max lean / edge', (C.phiApex/D).toFixed(0)+'°', LV[cfg.level].carve ? 'sin θ = v²/(g·R)' : 'tan θ = v²/(g·r)', ''],
+    ['→ GRF', '≈ '+(1/Math.cos(C.phiApex)).toFixed(2)+'× body weight', '1 / cos θ', ''],
+    ['→ Time for two turns', C.period.toFixed(1)+' s', '', '']
+  ];
+  document.getElementById('spec').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+  document.getElementById('warn').innerHTML = C.warn ? `<div class="warn">${C.warn}</div>` : '';
+}
+function renderWatch(){
+  document.getElementById('watchLv').textContent = LV[cfg.level].name;
+  const tb = document.getElementById('watch'); tb.innerHTML = '';
+  WATCH[cfg.level].forEach(w => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="white-space:nowrap">${w.w}</td><td>${w.t}</td><td>${w.v ? '<button>▶ Show</button>' : ''}</td>`;
+    const b = tr.querySelector('button');
+    if (b) b.onclick = () => {
+      setView(w.v); goWatch(w.j); if (w.s !== undefined) jump(w.s);
+      stage.scrollIntoView({behavior:'smooth', block:'start'});
+    };
+    tb.appendChild(tr);
+  });
+}
+
+const META = [
+  ['quad','Quadriceps','Quadriceps: hold the flexed-knee stance, heaviest on heelside'],
+  ['glmax','Glute maximus','Glute max: keeps the hips from pushing back on toeside'],
+  ['glmed','Glute medius','Glute med: stabilises the pelvis'],
+  ['add','Adductors','Adductors: knees in / stability'],
+  ['ham','Hamstrings','Hamstrings: co-contract to protect the knee'],
+  ['tib','Tibialis anterior','Tibialis ant.: lifts the toes on heelside'],
+  ['calf','Calves','Gastroc/Soleus: press the toes down on toeside'],
+  ['obl','Obliques','Obliques: upper/lower body separation, guiding the turn'],
+  ['abs','Rectus abdominis','Rectus abd.: stops you falling back on heelside'],
+  ['erec','Erector spinae','Erector spinae: supports the upper body on toeside']
+];
+const NAME = Object.fromEntries(META.map(m => [m[0], m[1]]));
+const tbody = document.getElementById('mBody'), cells = {};
+for (const [k,zh,en] of META){
+  const tr = document.createElement('tr'); tr.className = 'click';
+  const c = k === 'abs' || k === 'erec';
+  const cell = '<div class="cell"><div class="bar"><i></i></div><div class="meta"><span class="pct"></span><span class="mode"></span></div></div>';
+  tr.innerHTML = `<td>${zh}<small>${en}</small></td>` + (c ? `<td colspan="2">${cell}</td>` : `<td>${cell}</td><td>${cell}</td>`);
+  tr.onclick = () => {
+    focus = focus === k ? null : k;
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('focus'));
+    if (focus) tr.classList.add('focus');
+  };
+  tbody.appendChild(tr);
+  cells[k] = [...tr.querySelectorAll('.cell')].map(el => ({bar:el.querySelector('i'), pct:el.querySelector('.pct'), mode:el.querySelector('.mode')}));
+}
+function updateTable(act, md){
+  for (const [k] of META){
+    const sides = (k === 'abs' || k === 'erec') ? ['C'] : ['F','B'];
+    sides.forEach((sd, i) => {
+      const v = act[k][sd], m = md[k][sd], c = cells[k][i];
+      c.bar.style.width = (v*100).toFixed(0)+'%'; c.bar.style.background = '#'+heat(v).getHexString();
+      c.pct.textContent = (v*100).toFixed(0)+'%';
+      c.mode.className = 'mode m-'+m; c.mode.textContent = MODE_TXT[m];
+    });
+  }
+}
+
+const hud = document.getElementById('hud'), phTitle = document.getElementById('phTitle'), phCue = document.getElementById('phCue');
+const gLean = document.getElementById('gLean'), gBoard = document.getElementById('gBoard'), gTxt = document.getElementById('gTxt');
+const top3 = document.getElementById('top3'), badgeBox = document.getElementById('badges');
+const badges = [1,2,3].map(n => { const d = document.createElement('div'); d.className = 'badge'; d.textContent = n; badgeBox.appendChild(d); return d; });
+const footEl = {F: document.getElementById('footF'), B: document.getElementById('footB')};
+function drawFeet(p){
+  const wF = weightF(p), dir = DIR();
+  const fa = clamp(p.toeLean/(40*D), -1, 1)*.9;
+  for (const S of ['F','B']){
+    const el = footEl[S], share = S === 'F' ? wF : 1 - wF;
+    const cy = S === 'F' ? 60 : 108;
+    el.setAttribute('transform', `translate(55,${cy})`);
+    const ang = -dir*ANG()[S === 'F' ? 0 : 1];
+    const rot = el.querySelector('.rot');
+    rot.setAttribute('transform', `rotate(${ang}) scale(${dir},1)`);
+    const c = el.querySelector('.cop');
+    c.setAttribute('cx', (fa*17).toFixed(1)); c.setAttribute('cy', 0);
+    c.setAttribute('r', (3 + 9*share).toFixed(1));
+    c.setAttribute('fill', '#'+heat(share).getHexString());
+    el.querySelector('.toe').setAttribute('transform', dir < 0 ? 'scale(-1,1) translate(-34,0)' : '');
+    el.querySelector('.sh').textContent = (S === 'F' ? 'Front foot  ' : 'Back foot  ') + Math.round(share*100) + '%';
+  }
+}
+function sideName(key, side){
+  if (side === 'C') return '';
+  if (key === 'obl') return side === 'F' ? 'Front side ' : 'Back side ';
+  return side === 'F' ? 'Front foot ' : 'Back foot ';
+}
+let tableT = 0;
+function updateUI(p, act, md, now){
+  if (now - mapT > 60){ drawMap(p); mapT = now; }
+  const ph = phaseOf(p), P = PH[cfg.level][ph];
+  const tt = p.nsh < .05 ? '' : (p.toeLean > 0 ? 'Toeside' : 'Heelside');
+  const kd = kindOf();
+  if (kd === 'trav' || kd === 'ollie' || kd === 'butter'){
+    const sub = SUBS[kd], subName = sub[1].find(x => x[0] === cfg[sub[0]])[1];
+    const extra = kd === 'trav' ? `Board heading ${Math.abs(p.psi/D).toFixed(0)}° (0° = fall line)・Edge ${Math.abs(p.edge/D).toFixed(0)}°`
+      : kd === 'ollie' ? `Board height ${Math.round((p.lift||0)*100)} cm・Board pitch ${Math.abs((p.pitch||0)/D).toFixed(0)}°`
+      : `Rotated ${Math.round(((p.yawB/W*360)%360+360)%360)}°・Board pitch ${Math.abs((p.pitch||0)/D).toFixed(0)}°`;
+    hud.innerHTML = `<b>${subName}・${P[0]}</b><br>${extra}<br>Front ${Math.round(weightF(p)*100)}%・Back ${Math.round((1-weightF(p))*100)}%<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
+  } else if (LV[cfg.level].slip){
+    hud.innerHTML = `<b>${cfg.slipSide === 'heel' ? 'Heel slip' : 'Toe slip'}・${P[0]}</b><br>Slope ${cfg.slope}°・Edge ${Math.abs(p.edge/D).toFixed(0)}°<br>${p.pulse > .62 ? '🛑 Nearly stopped' : p.pulse < .38 ? '⬇️ Sliding' : '➡️ Steady slide'}<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
+  } else
+  hud.innerHTML = `<b>${P[0]}</b> ${ph==='toe'||ph==='heel' ? '' : tt}<br>${cfg.v} km/h・Turn radius ${C.Rt.toFixed(1)} m<br>Lean ${(p.phiMag/D).toFixed(0)}°・Edge ${Math.abs(p.edge/D).toFixed(0)}°<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× body weight`;
+  // gauge from tail: toe side to the right on screen for regular → show toe-lean positive as right
+  const gl = p.toeLean/D;
+  gLean.setAttribute('transform', `translate(55,94) rotate(${gl.toFixed(1)})`);
+  gBoard.setAttribute('transform', `translate(55,94) rotate(${(p.edge*DIR()/D).toFixed(1)})`);
+  gTxt.textContent = `${tt || 'Flat'} ${Math.abs(p.edge/D).toFixed(0)}°`;
+  if (ph !== lastPhase){ phTitle.textContent = P[0]; phCue.textContent = P[1]; lastPhase = ph; }
+
+  const list = [];
+  for (const key in act) for (const side in act[key]) list.push({key, side, a:act[key][side], m:md[key][side]});
+  list.sort((a,b) => b.a - a.a);
+  const top = focus ? list.filter(x => x.key === focus).slice(0,3) : list.slice(0,3);
+  top3.innerHTML = `<div class="t">${focus ? 'Isolated: '+NAME[focus] : 'Working hardest now'}</div>` + top.map((x,i) =>
+    `${i+1}. ${sideName(x.key,x.side)}${NAME[x.key]} ${(x.a*100).toFixed(0)}% <span class="mode m-${x.m}">${MODE_TXT[x.m]}</span>`).join('<br>');
+  const w = stage.clientWidth, h = stage.clientHeight;
+  badges.forEach((b, i) => {
+    const x = top[i]; if (!x || !show.muscle){ b.style.display = 'none'; return; }
+    const mu = muscles.find(m => m.key === x.key && m.side === x.side);
+    const v = mu.m.getWorldPosition(new V()).project(camera);
+    if (v.z > 1){ b.style.display = 'none'; return; }
+    b.style.display = 'flex'; b.style.left = ((v.x+1)/2*w)+'px'; b.style.top = ((1-v.y)/2*h)+'px';
+    b.style.borderColor = x.m === 'ecc' ? '#ff4d6d' : x.m === 'con' ? '#3ddc84' : '#4cc9f0';
+  });
+  const al = document.getElementById('arcLbl');
+  if (show.force && arcDeg > 3){ const v = arcAt.clone().project(camera); al.style.display = 'block'; al.style.left = ((v.x+1)/2*w)+'px'; al.style.top = ((1-v.y)/2*h)+'px'; al.textContent = arcDeg.toFixed(0)+'°'; }
+  else al.style.display = 'none';
+  drawFeet(p);
+  if (now - tableT > 150){ updateTable(act, md); tableT = now; }
+  if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
+  if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
+  if (bendText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#b9a7ff">${bendText}</span>`;
+}
+
+/* ---------- learning: simple mode, compare, guide ---------- */
+const GUIDE = {"slip": {"q": [["To stop, do you increase or decrease the edge angle?", "Increase it — close to the slope angle you stop."], ["Where should you look?", "Look ahead (downhill), not at the board."]], "sum": "Control the edge angle with your ankles: big = stop, small = slide.", "snow": "Heel slip: lift your toes to stop, lower them to slide; repeat 5 times, then try a toe slip."}, "trav": {"q": [["How do you turn from a traverse toward the fall line?", "Flatten the edge slightly and press lightly with the front foot."], ["What brings you back uphill?", "Re-edge: heel side lift the toes, toe side drive the knees."]], "sum": "Release and drop, re-edge and climb — the step before linked turns.", "snow": "Do 3–4 garlands per run before stopping; practise both heel and toe."}, "beg": {"q": [["At initiation, should your weight be on the front or back foot?", "Slightly more on the front foot (about 55–60%)."], ["Where should you look?", "Look where you want to go; head and shoulders lead the body."]], "sum": "Look where you’re going, front foot leads, back foot follows.", "snow": "Before each turn, turn your head toward the next direction first, then press the front foot lightly."}, "mid": {"q": [["Which muscles do the main work on heelside?", "The tibialis anterior lifts the toes; the quads and abs hold the position."], ["Should the upper body rotate the board?", "No — control it with your ankles and knees."]], "sum": "Extend to change edges, flex to load, keep the upper body quiet.", "snow": "Say ’up, press’ for every turn; try a few turns with your hands on your knees to feel the lower body steering."}, "carve": {"q": [["How does a snowboard’s edge angle compare with body lean?", "About the same."], ["Should the hips push back on toeside?", "No — the body leans into the turn in one straight line."]], "sum": "Tip early, let the board turn itself, leave a single thin line in the snow.", "snow": "On a gentle slope do a carved traverse: use one edge across the run, then look back to see if it left a single thin line."}, "euro": {"q": [["Is the hand on the snow there to hold you up?", "No. Your weight is still over the edge; the hand only touches lightly."], ["What do you need most to get really low?", "Enough speed and an edge that bites; too slow and you can’t get low."]], "sum": "Speed and the edge hold you up, not your hand.", "snow": "Pick a wide, well-groomed run, start with heelside and increase the lean gradually; protect your knees and wrists."}, "ollie": {"q": [["What should your body do before the pop?", "Crouch down with weight over the tail, like loading a spring."], ["In the air, how do you make the board come up with you?", "Pull the knees to the chest; the front foot levels the board."]], "sum": "Load the tail, pop, tuck, land with bent knees.", "snow": "Practise in place on flat ground first, then slowly on a gentle slope; land on both feet at the same time."}, "butter": {"q": [["Where is your weight in a nose butter?", "Front foot, about 80–90%."], ["Where does the rotation come from?", "The upper body winds up first, then leads the spin, and the lower body follows."]], "sum": "Press the nose, wind up, lead with the upper body.", "snow": "First practise a nose press on flat ground and hold for 3 seconds, then add a 180, and only then try a 360."}};
+const STANCE_SHORT = {"back": "Back foot too heavy: the nose floats and you have to twist the upper body to turn.", "waist": "Waist bend / toilet sit: the CoM leaves the edge and you fall easily.", "rot": "Upper-body rotation: the tail swings out and upper and lower body are out of sync."};
+for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
+const CMP_DEFAULT = 'back';
+let cmpOn = false, lastCyc = null;
+const toastDone = {};
+function renderGuide(){
+  const g = GUIDE[cfg.level]; if (!g) return;
+  document.getElementById('gQs').innerHTML = g.q.map(([q, a]) => `<div class="qa">❓ ${q}<button>Show answer</button><div class="ans" hidden>✅ ${a}</div></div>`).join('');
+  document.querySelectorAll('#gQs .qa button').forEach(b => b.onclick = () => { const a = b.nextElementSibling; a.hidden = !a.hidden; b.textContent = a.hidden ? 'Show answer' : 'Hide'; });
+  document.getElementById('gSum').textContent = '💡 Key point: ' + g.sum;
+  document.getElementById('gSnow').textContent = '❄️ On snow:' + g.snow;
+}
+function showToast(t){
+  const el = document.getElementById('toast'); el.textContent = '💡 ' + t; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 4500);
+}
+function setMode(m){
+  document.body.classList.toggle('simple', m === 'simple');
+  document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  if (m === 'simple') Object.assign(show, {muscle:false, force:false, xray:false, com:true, edge:true});
+  else Object.assign(show, {muscle:true, force:true, xray:true});
+  document.querySelectorAll('[data-t]').forEach(b => b.classList.toggle('on', !!show[b.dataset.t]));
+  applyVis();
+}
+function updCmpLbl(){
+  const st = STANCE[cfg.stance];
+  document.getElementById('cmpR').innerHTML = (cfg.stance === 'ok' ? '✅ ' : '❌ ') + st.name + (st.short ? '<small>' + st.short + '</small>' : '');
+}
+function setCmp(on){
+  cmpOn = on; document.body.classList.toggle('cmp', on);
+  document.getElementById('cmpBtn').classList.toggle('on', on);
+  if (on && cfg.stance === 'ok') setStance(CMP_DEFAULT);
+  if (on) setView('heelV');
+  updCmpLbl();
+}
+document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+document.getElementById('cmpBtn').onclick = () => setCmp(!cmpOn);
+['gauge','feet','top3','badges','arcLbl'].forEach(id => { const e = document.getElementById(id); if (e) e.classList.add('adv'); });
+['mBody','spec','watch'].forEach(id => { const e = document.getElementById(id); if (e) e.closest('.card').classList.add('adv'); });
+document.querySelector('[data-t="muscle"]').closest('.row').classList.add('adv');
+
+document.getElementById('bendBtn').onclick = () => {
+  bendMul = bendMul === 1 ? 4 : bendMul === 4 ? 0 : 1;
+  const b = document.getElementById('bendBtn');
+  b.textContent = 'Flex: ' + (bendMul === 1 ? 'real' : bendMul === 4 ? 'exaggerated ×4' : 'off');
+  b.classList.toggle('on', bendMul > 0);
+};
+/* ---------- orbit ---------- */
+const cv = renderer.domElement, ptrs = new Map(); let pinch0 = 0, rad0 = rad;
+const pdist = () => { const [a,b] = [...ptrs.values()]; return Math.hypot(a.x-b.x, a.y-b.y); };
+cv.addEventListener('pointerdown', e => { cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY}); if (ptrs.size === 2){ pinch0 = pdist(); rad0 = rad; } });
+cv.addEventListener('pointermove', e => {
+  const pt = ptrs.get(e.pointerId); if (!pt) return;
+  const dx = e.clientX - pt.x, dy = e.clientY - pt.y; pt.x = e.clientX; pt.y = e.clientY;
+  if (ptrs.size === 1){ th -= dx*.009; ph = clamp(ph - dy*.009, .08, 1.52); }
+  else if (ptrs.size === 2){ rad = clamp(rad0*pinch0/pdist(), 1.6, 16); }
+});
+const upE = e => ptrs.delete(e.pointerId);
+cv.addEventListener('pointerup', upE); cv.addEventListener('pointercancel', upE);
+cv.addEventListener('wheel', e => { e.preventDefault(); rad = clamp(rad*(1+e.deltaY*.001), 1.6, 16); }, {passive:false});
+function resize(){ const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(stage); resize();
+
+/* ---------- loop ---------- */
+document.getElementById('birdMap').onclick = mapClick;
+setStance('ok'); setLevel('carve'); setMode('simple');
+Rig.load('xbot.json', slopeG, {color:0x5fb38c, jointColor:0x263238}).then(() => {
+  limbs.forEach(g => { g.children[0].visible = g.children[1].visible = false; });
+  [armF, armB].forEach(a => { a.up.visible = a.fo.visible = false; });
+  [pm, tm, shm, head, gog].forEach(m => m.visible = false);
+  const helmet = new THREE.Mesh(new THREE.SphereGeometry(11.5, 20, 14, 0, Math.PI*2, 0, Math.PI*.55), new THREE.MeshStandardMaterial({color:0x1f2937, roughness:.35}));
+  helmet.position.set(0, 9, 0); Rig.attachToHead(helmet);
+  const gg = new THREE.Mesh(new THREE.BoxGeometry(15, 5, 4), new THREE.MeshStandardMaterial({color:0xff8c1a, roughness:.2, metalness:.3}));
+  gg.position.set(0, 7, 9); Rig.attachToHead(gg);
+  Rig.setHeight(cfg.H/100); applyVis();
+}).catch(e => console.warn('rig load failed', e));
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(.05, (now-last)/1000); last = now;
+  if (playing) sT += dt*mul/C.period;
+  scrub.value = Math.round((((sT%1)+1)%1)*1000);
+  if (Math.floor(sT) !== trailCycle) rebuildTrails(Math.floor(sT));
+  const p = pose(sT);
+  let {act, md} = applyPose(p);
+  snow.position.set(Math.round(p.mid.x/2)*2, 0, Math.round(p.mid.z/2)*2);
+  grid.position.set(snow.position.x, .003, snow.position.z);
+  slopeG.updateMatrixWorld(true);
+  const placeCam = (pp, aspect, rr) => {
+    const tl = (() => { const v = pp.com.clone(); v.y = Math.max(v.y - .2*C.k, .35*C.k); return v; })();
+    const t = th + (show.follow && !LV[cfg.level].slip ? pp.psi : 0);
+    const cl = tl.clone().add(new V(rr*Math.sin(ph)*Math.sin(t), rr*Math.cos(ph), rr*Math.sin(ph)*Math.cos(t)));
+    const target = slopeG.localToWorld(tl);
+    camera.aspect = aspect; camera.updateProjectionMatrix();
+    camera.position.copy(slopeG.localToWorld(cl)); camera.lookAt(target);
+    sun.position.copy(target).add(new V(5,6,-1)); sun.target.position.copy(target);
+  };
+  const Wd = stage.clientWidth, Hd = stage.clientHeight;
+  if (cmpOn){
+    const W2 = Wd/2, sel = cfg.stance;
+    renderer.setScissorTest(true);
+    cfg.stance = 'ok'; const p0 = pose(sT); applyPose(p0); slopeG.updateMatrixWorld(true);
+    placeCam(p0, W2/Hd, rad*1.3); renderer.setViewport(0, 0, W2, Hd); renderer.setScissor(0, 0, W2, Hd); renderer.render(scene, camera);
+    cfg.stance = sel; const r1 = applyPose(p); act = r1.act; md = r1.md; slopeG.updateMatrixWorld(true);
+    placeCam(p, W2/Hd, rad*1.3); renderer.setViewport(W2, 0, W2, Hd); renderer.setScissor(W2, 0, W2, Hd); renderer.render(scene, camera);
+    renderer.setScissorTest(false); renderer.setViewport(0, 0, Wd, Hd);
+  } else { placeCam(p, Wd/Hd, rad); renderer.render(scene, camera); }
+  const cyc = Math.floor(sT);
+  if (playing && lastCyc !== null && cyc !== lastCyc && !toastDone[cfg.level] && GUIDE[cfg.level]){ showToast('Key point: ' + GUIDE[cfg.level].sum); toastDone[cfg.level] = 1; }
+  lastCyc = cyc;
+  updateUI(p, act, md, now);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+<script>
+(function(){
+  var file = location.pathname.split('/').pop() || 'index.html';
+  var sel = document.getElementById('langSel');
+  if (sel) sel.onchange = function(){ try { localStorage.setItem('lang', sel.value); } catch(e){} location.href = sel.value; };
+  if (file !== 'index.html' && file !== '') return;
+  var saved = null; try { saved = localStorage.getItem('lang'); } catch(e){}
+  var target = saved;
+  if (!target){
+    var l = (navigator.language || '').toLowerCase();
+    if (/^zh-(hk|mo)/.test(l) || /yue/.test(l)) target = 'index.html';
+    else if (/^zh-(tw|hant)/.test(l)) target = 'zh-tw.html';
+    else if (/^zh/.test(l)) target = 'zh-cn.html';
+  }
+  if (target && target !== 'index.html') location.replace(target);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,3067 @@
+[
+{
+"id": 0,
+"src": "3D 單板教學：肌肉・CoM・Edge",
+"page": "board3d"
+},
+{
+"id": 1,
+"src": "3D 單板教學：肌肉發力・CoM・Edge",
+"page": "board3d"
+},
+{
+"id": 2,
+"src": "Adductors：膝頭向內／穩定",
+"page": "board3d"
+},
+{
+"id": 3,
+"src": "Butter 係將板頭（或板尾）壓喺雪面做支點，其餘部分離雪，所以摩擦細、轉得到。軟板同 camber 少嘅板較易做。",
+"page": "board3d"
+},
+{
+"id": 4,
+"src": "Butter 轉 360",
+"page": "board3d"
+},
+{
+"id": 5,
+"src": "CoM 由舊彎內穿過板上方，去到新彎內；係板喺 CoM 下面翻過去，唔係人推板。",
+"page": "board3d"
+},
+{
+"id": 6,
+"src": "CoM 由貼近雪面嘅一邊，穿過板上方去另一邊貼雪；身體要先伸展再倒落去，板喺身下面翻過去。",
+"page": "board3d"
+},
+{
+"id": 7,
+"src": "Edge 對坡度",
+"page": "board3d"
+},
+{
+"id": 8,
+"src": "Edge 愈接近坡度，板底愈「平」對住地心吸力 → 摩擦愈大 → 停；edge 細就滑。速度唔使設定。",
+"page": "board3d"
+},
+{
+"id": 9,
+"src": "Edge 慢慢減，身體由雪面「彈」返起身，準備下一次穿越。",
+"page": "board3d"
+},
+{
+"id": 10,
+"src": "Edge 接近坡度，板就會停。Heel slip 拉起腳趾（脛前肌）、toe slip 膝頭推前（小腿肌）。",
+"page": "board3d"
+},
+{
+"id": 11,
+"src": "Edge 放平少少，板頭自然轉向 fall line。",
+"page": "board3d"
+},
+{
+"id": 12,
+"src": "Edge 細過坡度，板就會向下滑。眼望前面，雙腳平均，膝頭保持微屈。",
+"page": "board3d"
+},
+{
+"id": 13,
+"src": "Edge 角度",
+"page": "board3d"
+},
+{
+"id": 14,
+"src": "Erector spinae：toeside 撐住上身",
+"page": "board3d"
+},
+{
+"id": 15,
+"src": "Garland 係連續轉彎之前嘅一步：只練轉彎嘅上半（放刃落）同下半（入刃上），唔使換刃。",
+"page": "board3d"
+},
+{
+"id": 16,
+"src": "Gastroc/Soleus：toeside 壓低腳趾",
+"page": "board3d"
+},
+{
+"id": 17,
+"src": "Glute max：toeside 保持髖部唔好向後頂",
+"page": "board3d"
+},
+{
+"id": 18,
+"src": "Glute med：穩定骨盆",
+"page": "board3d"
+},
+{
+"id": 19,
+"src": "Goofy（右腳前）",
+"page": "board3d"
+},
+{
+"id": 20,
+"src": "Hamstrings：共縮護膝",
+"page": "board3d"
+},
+{
+"id": 21,
+"src": "Heel slip：拉起腳趾停、放低腳趾滑，重複 5 次；之後再試 toe slip。",
+"page": "board3d"
+},
+{
+"id": 22,
+"src": "Heel 面",
+"page": "board3d"
+},
+{
+"id": 23,
+"src": "Heelside 主要靠邊組肌肉？",
+"page": "board3d"
+},
+{
+"id": 24,
+"src": "Heelside 地這い",
+"page": "board3d"
+},
+{
+"id": 25,
+"src": "Heelside 好似坐高凳；toeside 膝頭向前推，唔好彎腰。",
+"page": "board3d"
+},
+{
+"id": 26,
+"src": "Heelside 拖雪",
+"page": "board3d"
+},
+{
+"id": 27,
+"src": "Heelside：拉腳趾",
+"page": "board3d"
+},
+{
+"id": 28,
+"src": "Heelside：髖坐入彎",
+"page": "board3d"
+},
+{
+"id": 29,
+"src": "Nollie 比較",
+"page": "board3d"
+},
+{
+"id": 30,
+"src": "Nollie（板頭彈）",
+"page": "board3d"
+},
+{
+"id": 31,
+"src": "Nose butter 重心放邊？",
+"page": "board3d"
+},
+{
+"id": 32,
+"src": "Obliques：上下身分離、入彎引導",
+"page": "board3d"
+},
+{
+"id": 33,
+"src": "Ollie 係利用板尾（或板頭）嘅彈性：預壓將板彎曲儲能，pop 時釋放，再收腳令塊板跟身體起。",
+"page": "board3d"
+},
+{
+"id": 34,
+"src": "Ollie（板尾彈）",
+"page": "board3d"
+},
+{
+"id": 35,
+"src": "Pop 之前身體要做乜？",
+"page": "board3d"
+},
+{
+"id": 36,
+"src": "Pop 彈起",
+"page": "board3d"
+},
+{
+"id": 37,
+"src": "Press＋上身預扭",
+"page": "board3d"
+},
+{
+"id": 38,
+"src": "Quadriceps：撐住屈膝姿勢，heelside 特別重",
+"page": "board3d"
+},
+{
+"id": 39,
+"src": "R8 要大約 30 km/h 先倒得落 70°；去 Spec 拉速度，睇吓傾斜點變。",
+"page": "board3d"
+},
+{
+"id": 40,
+"src": "Rectus abd.：heelside 防止向後倒",
+"page": "board3d"
+},
+{
+"id": 41,
+"src": "Regular（左腳前）",
+"page": "board3d"
+},
+{
+"id": 42,
+"src": "Side slip（落葉）",
+"page": "board3d"
+},
+{
+"id": 43,
+"src": "Skid 控速",
+"page": "board3d"
+},
+{
+"id": 44,
+"src": "Switch 換腳",
+"page": "board3d"
+},
+{
+"id": 45,
+"src": "Switch：用平時後腳做前腳。肌肉同前後腳壓力嘅模式同正常一樣，不過係鏡像：平時後腳嘅脛前肌、小腿肌要做前腳嘅工作，所以 switch 通常會覺得笨拙。Duck stance（+15/−6）switch 時變成 +6/−15，前腳角度細啲，所以 switch 時塊板反應會慢少少。",
+"page": "board3d"
+},
+{
+"id": 46,
+"src": "Tibialis ant.：heelside 拉起腳趾",
+"page": "board3d"
+},
+{
+"id": 47,
+"src": "Toe vs heel 肌肉",
+"page": "board3d"
+},
+{
+"id": 48,
+"src": "Toe 面",
+"page": "board3d"
+},
+{
+"id": 49,
+"src": "Toeside 前手伸向雪面，只係輕輕掃，唔係撐住身體。",
+"page": "board3d"
+},
+{
+"id": 50,
+"src": "Toeside 地這い",
+"page": "board3d"
+},
+{
+"id": 51,
+"src": "Toeside 對 Heelside 嘅分別：",
+"page": "board3d"
+},
+{
+"id": 52,
+"src": "Toeside 小腿肌壓腳趾；跳去 heelside 比較，脛前肌會變成主力。",
+"page": "board3d"
+},
+{
+"id": 53,
+"src": "Toeside 彎腰：屁股伸出去，CoM 離開 edge，容易打滑。Heelside 坐馬桶：屁股坐咗喺板後面，容易向後坐低跌。應該用屈膝、屈腳踝代替屈腰。",
+"page": "board3d"
+},
+{
+"id": 54,
+"src": "Toeside 時髖應該向後頂嗎？",
+"page": "board3d"
+},
+{
+"id": 55,
+"src": "Toeside 長身",
+"page": "board3d"
+},
+{
+"id": 56,
+"src": "Toeside：壓腳趾",
+"page": "board3d"
+},
+{
+"id": 57,
+"src": "Toeside：膝頭入彎",
+"page": "board3d"
+},
+{
+"id": 58,
+"src": "toeside 主要靠小腿肌壓低腳趾、臀大肌保持髖部唔好向後推；heelside 主要靠脛前肌拉起腳趾、股四頭肌同腹肌撐住「坐」嘅姿勢。所以好多人 heelside 大腿同腹肌特別攰。",
+"page": "board3d"
+},
+{
+"id": 59,
+"src": "→ Edge 範圍",
+"page": "board3d"
+},
+{
+"id": 60,
+"src": "→ 原理",
+"page": "board3d"
+},
+{
+"id": 61,
+"src": "→ 最大傾斜／edge",
+"page": "board3d"
+},
+{
+"id": 62,
+"src": "▲ 板頭",
+"page": "board3d"
+},
+{
+"id": 63,
+"src": "⚠️ ${cfg.v} km/h 配 R${cfg.R}：板愈入刃彎就愈細，搵唔到平衡點。實際上會打滑變 skid（呢度用 ${Rt.toFixed(1)} m 半徑示範），或者要減速、換長 R 嘅板。",
+"page": "board3d"
+},
+{
+"id": 64,
+"src": "⚠️ 以呢個程度可以做到嘅傾斜（約 ${(lv.cap/D).toFixed(0)}°），${cfg.v} km/h 要轉 ${Rt.toFixed(0)} m 半徑嘅大彎先撐得住，應該減速。",
+"page": "board3d"
+},
+{
+"id": 65,
+"src": "⚠️ 肌肉發力係根據生物力學原理整嘅示意模型（相對值），唔係實測 EMG。動作係程序生成嘅理想化示範，用嚟理解因果關係，唔係度數標準。",
+"page": "board3d"
+},
+{
+"id": 66,
+"src": "⚠️ 速度太慢：只需要傾斜 ${(phiApex/D).toFixed(0)}°，GRF 唔夠大，好難純 carve，容易變返 skid。",
+"page": "board3d"
+},
+{
+"id": 67,
+"src": "➡️ 穩定滑",
+"page": "board3d"
+},
+{
+"id": 68,
+"src": "⬇️ 滑落中",
+"page": "board3d"
+},
+{
+"id": 69,
+"src": "・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× 體重",
+"page": "board3d"
+},
+{
+"id": 70,
+"src": "一條雪道做 3–4 個 garland 先停，heel 同 toe 兩邊都要練。",
+"page": "board3d"
+},
+{
+"id": 71,
+"src": "上下動作",
+"page": "board3d"
+},
+{
+"id": 72,
+"src": "上身先預扭，再帶頭轉，下半身跟住。",
+"page": "board3d"
+},
+{
+"id": 73,
+"src": "上身唔好帶轉；試吓「站位」揀「上身帶轉」比較。",
+"page": "board3d"
+},
+{
+"id": 74,
+"src": "上身帶轉",
+"page": "board3d"
+},
+{
+"id": 75,
+"src": "上身帶轉：板尾甩出，上下身唔同步。",
+"page": "board3d"
+},
+{
+"id": 76,
+"src": "上身帶頭轉，下半身跟住，用板頭（或板尾）做支點喺雪面磨轉；腹斜肌主導。",
+"page": "board3d"
+},
+{
+"id": 77,
+"src": "上身應該帶轉塊板嗎？",
+"page": "board3d"
+},
+{
+"id": 78,
+"src": "上身穩定",
+"page": "board3d"
+},
+{
+"id": 79,
+"src": "上身預扭",
+"page": "board3d"
+},
+{
+"id": 80,
+"src": "中級・動態",
+"page": "board3d"
+},
+{
+"id": 81,
+"src": "中級・動態轉彎",
+"page": "board3d"
+},
+{
+"id": 82,
+"src": "企法",
+"page": "board3d"
+},
+{
+"id": 83,
+"src": "伸展換刃、屈曲加壓、上身穩定。",
+"page": "board3d"
+},
+{
+"id": 84,
+"src": "保持同一個 edge 角度，就會以穩定速度滑落；用腳踝微調，唔係用屁股。",
+"page": "board3d"
+},
+{
+"id": 85,
+"src": "傾斜",
+"page": "board3d"
+},
+{
+"id": 86,
+"src": "傾斜 ${(p.phiMag/D).toFixed(0)}°・Edge ${Math.abs(p.edge/D).toFixed(0)}°",
+"page": "board3d"
+},
+{
+"id": 87,
+"src": "傾斜角",
+"page": "board3d"
+},
+{
+"id": 88,
+"src": "先喺平地原地練，再喺緩坡慢速做；著地時雙腳要同時落。",
+"page": "board3d"
+},
+{
+"id": 89,
+"src": "先喺平地練 nose press 企定 3 秒，再加 180，最後先試 360。",
+"page": "board3d"
+},
+{
+"id": 90,
+"src": "先將板放平（雙腳平均、膝頭微屈），再慢慢將重心移去新嘅邊刃。眼望要去嘅方向。",
+"page": "board3d"
+},
+{
+"id": 91,
+"src": "入彎 Initiation",
+"page": "board3d"
+},
+{
+"id": 92,
+"src": "入彎前腳、出彎後腳：睇腳掌圖兩粒紅點大細嘅變化。",
+"page": "board3d"
+},
+{
+"id": 93,
+"src": "入彎時重心應該放前腳定後腳？",
+"page": "board3d"
+},
+{
+"id": 94,
+"src": "入彎時重心放前腳（55–60%），板頭先轉，後腳跟住。睇腳掌圖前腳個紅點。",
+"page": "board3d"
+},
+{
+"id": 95,
+"src": "入彎：前腳帶",
+"page": "board3d"
+},
+{
+"id": 96,
+"src": "入彎：屈曲加壓＋前腳帶",
+"page": "board3d"
+},
+{
+"id": 97,
+"src": "入彎：早倒、早入刃",
+"page": "board3d"
+},
+{
+"id": 98,
+"src": "入門・Skid",
+"page": "board3d"
+},
+{
+"id": 99,
+"src": "入門・Skid 轉彎",
+"page": "board3d"
+},
+{
+"id": 100,
+"src": "出彎 Completion",
+"page": "board3d"
+},
+{
+"id": 101,
+"src": "出彎：壓力去後腳",
+"page": "board3d"
+},
+{
+"id": 102,
+"src": "出彎：起身準備換刃",
+"page": "board3d"
+},
+{
+"id": 103,
+"src": "切換做 Nollie：所有嘢前後倒轉，前腳做 pop。",
+"page": "board3d"
+},
+{
+"id": 104,
+"src": "切換做 Tail butter：後腳壓、板尾做支點。",
+"page": "board3d"
+},
+{
+"id": 105,
+"src": "刹停",
+"page": "board3d"
+},
+{
+"id": 106,
+"src": "刹停：edge 加大",
+"page": "board3d"
+},
+{
+"id": 107,
+"src": "前側",
+"page": "board3d"
+},
+{
+"id": 108,
+"src": "前後腳壓力",
+"page": "board3d"
+},
+{
+"id": 109,
+"src": "前腳",
+"page": "board3d"
+},
+{
+"id": 110,
+"src": "前腳 ${Math.round(weightF(p)*100)}%・後腳 ${Math.round((1-weightF(p))*100)}%",
+"page": "board3d"
+},
+{
+"id": 111,
+"src": "前腳多啲壓力就向板頭斜落，後腳多啲就向板尾，睇腳掌圖兩粒紅點。",
+"page": "board3d"
+},
+{
+"id": 112,
+"src": "前腳多少少（大約 55–60%）。",
+"page": "board3d"
+},
+{
+"id": 113,
+"src": "前腳帶",
+"page": "board3d"
+},
+{
+"id": 114,
+"src": "前腳帶方向",
+"page": "board3d"
+},
+{
+"id": 115,
+"src": "前腳，大約 80–90%。",
+"page": "board3d"
+},
+{
+"id": 116,
+"src": "前腳／前側",
+"page": "board3d"
+},
+{
+"id": 117,
+"src": "加大，接近坡度就會停。",
+"page": "board3d"
+},
+{
+"id": 118,
+"src": "動作",
+"page": "board3d"
+},
+{
+"id": 119,
+"src": "右上角 gauge：edge 由 skid 時嘅細角度慢慢加大。",
+"page": "board3d"
+},
+{
+"id": 120,
+"src": "右上角 gauge：edge 細過坡度就滑，接近坡度就停。",
+"page": "board3d"
+},
+{
+"id": 121,
+"src": "右上角腳掌圖：板頭向上，紅點 = 壓力中心（CoP），向「趾」= 壓腳趾、向另一邊 = 壓腳跟；點愈大 = 嗰隻腳承受愈多體重。",
+"page": "board3d"
+},
+{
+"id": 122,
+"src": "向心 Concentric：肌肉一路縮短一路出力",
+"page": "board3d"
+},
+{
+"id": 123,
+"src": "唔係。重心仍然喺 edge 上面，手只係輕輕掂。",
+"page": "board3d"
+},
+{
+"id": 124,
+"src": "唔應該，身體成條直線向彎內傾。",
+"page": "board3d"
+},
+{
+"id": 125,
+"src": "唔應該，靠腳踝同膝頭控制。",
+"page": "board3d"
+},
+{
+"id": 126,
+"src": "單板 edge 差唔多等於身體傾斜：gauge 兩條線幾乎重疊。",
+"page": "board3d"
+},
+{
+"id": 127,
+"src": "單板 edge 角度同身體傾斜比較係點？",
+"page": "board3d"
+},
+{
+"id": 128,
+"src": "喺空中點樣令塊板跟住起？",
+"page": "board3d"
+},
+{
+"id": 129,
+"src": "喺緩坡做 carve traverse：只用一邊 edge 橫過雪道，再回頭睇雪上係咪一條幼線。",
+"page": "board3d"
+},
+{
+"id": 130,
+"src": "坡度 ${cfg.slope}°・Edge ${Math.abs(p.edge/D).toFixed(0)}°",
+"page": "board3d"
+},
+{
+"id": 131,
+"src": "坡度 × 0.5～0.95",
+"page": "board3d"
+},
+{
+"id": 132,
+"src": "塊板以板頭做支點喺雪面磨轉 360，上身帶頭。",
+"page": "board3d"
+},
+{
+"id": 133,
+"src": "壓力慢慢移去後腳，用 skid 角度控速，準備伸展換刃。",
+"page": "board3d"
+},
+{
+"id": 134,
+"src": "壓力移向後腳、edge 慢慢減，準備釋放；唔好太早放刃，否則板尾會甩出。",
+"page": "board3d"
+},
+{
+"id": 135,
+"src": "壓尾、彈起、收腳、屈膝著地。",
+"page": "board3d"
+},
+{
+"id": 136,
+"src": "壓板頭、預扭、上身帶轉。",
+"page": "board3d"
+},
+{
+"id": 137,
+"src": "夠速度同埋 edge 咬實；太慢就倒唔落。",
+"page": "board3d"
+},
+{
+"id": 138,
+"src": "好似坐高凳咁屈膝，腳趾向上拉（脛前肌），重心喺腳跟上面；手放前面平衡，唔好坐低過頭。",
+"page": "board3d"
+},
+{
+"id": 139,
+"src": "完成",
+"page": "board3d"
+},
+{
+"id": 140,
+"src": "完成轉向後兩腳平均放返平，繼續滑。",
+"page": "board3d"
+},
+{
+"id": 141,
+"src": "屈腰／坐馬桶",
+"page": "board3d"
+},
+{
+"id": 142,
+"src": "屈腰／坐馬桶：重心離開 edge，容易跌。",
+"page": "board3d"
+},
+{
+"id": 143,
+"src": "屈膝唔屈腰",
+"page": "board3d"
+},
+{
+"id": 144,
+"src": "屈膝屈髖蹲低，重心移向板尾（Nollie 就係板頭）；板頭開始翹起。",
+"page": "board3d"
+},
+{
+"id": 145,
+"src": "差唔多一樣。",
+"page": "board3d"
+},
+{
+"id": 146,
+"src": "已轉 ${Math.round(((p.yawB/W*360)%360+360)%360)}°・板角度 ${Math.abs((p.pitch||0)/D).toFixed(0)}°",
+"page": "board3d"
+},
+{
+"id": 147,
+"src": "平板",
+"page": "board3d"
+},
+{
+"id": 148,
+"src": "後側",
+"page": "board3d"
+},
+{
+"id": 149,
+"src": "後手拖雪、髖貼近雪面，胸口仍然向前。",
+"page": "board3d"
+},
+{
+"id": 150,
+"src": "後腳",
+"page": "board3d"
+},
+{
+"id": 151,
+"src": "後腳太重",
+"page": "board3d"
+},
+{
+"id": 152,
+"src": "後腳太重：板頭飄，要靠上身扭先轉到。",
+"page": "board3d"
+},
+{
+"id": 153,
+"src": "後腳爆發伸直：小腿肌、股四頭肌、臀大肌「縮短發力」。",
+"page": "board3d"
+},
+{
+"id": 154,
+"src": "後腳（Nollie 係前腳）爆發伸直：小腿肌、股四頭肌、臀大肌縮短發力，用板尾彈雪。",
+"page": "board3d"
+},
+{
+"id": 155,
+"src": "後腳／後側",
+"page": "board3d"
+},
+{
+"id": 156,
+"src": "想倒得低，最需要乜？",
+"page": "board3d"
+},
+{
+"id": 157,
+"src": "想停，edge 要加大定放細？",
+"page": "board3d"
+},
+{
+"id": 158,
+"src": "想由斜滑降轉向 fall line，要點做？",
+"page": "board3d"
+},
+{
+"id": 159,
+"src": "手掃雪",
+"page": "board3d"
+},
+{
+"id": 160,
+"src": "手掃雪係用嚟撐住身體嗎？",
+"page": "board3d"
+},
+{
+"id": 161,
+"src": "拖動 360° 轉、雙指縮放・一個循環 = 一個 toeside＋一個 heelside・㩒肌肉表其中一行可以單獨睇",
+"page": "board3d"
+},
+{
+"id": 162,
+"src": "控制係靠腳踝同膝頭，上身同手保持穩定。",
+"page": "board3d"
+},
+{
+"id": 163,
+"src": "控制：維持 edge",
+"page": "board3d"
+},
+{
+"id": 164,
+"src": "揀壓雪好嘅闊雪道，先練 heelside，逐步加大傾斜；記得保護膝頭同手腕。",
+"page": "board3d"
+},
+{
+"id": 165,
+"src": "換刃 CoM 穿越",
+"page": "board3d"
+},
+{
+"id": 166,
+"src": "換刃前伸展身體減輕壓力，板好快放平，再過去另一邊刃。",
+"page": "board3d"
+},
+{
+"id": 167,
+"src": "換刃前先將板放平，再過去另一邊刃。",
+"page": "board3d"
+},
+{
+"id": 168,
+"src": "換刃後慢慢屈曲加壓，前腳引導板頭入彎；上身保持穩定，唔好帶轉。",
+"page": "board3d"
+},
+{
+"id": 169,
+"src": "換刃後身體即刻向彎內倒，板頭先咬雪；GRF 會快速升到大約 2–3 倍體重。",
+"page": "board3d"
+},
+{
+"id": 170,
+"src": "換刃時伸展減壓，入彎就屈曲加壓。",
+"page": "board3d"
+},
+{
+"id": 171,
+"src": "換刃要平",
+"page": "board3d"
+},
+{
+"id": 172,
+"src": "換刃（伸展減壓）",
+"page": "board3d"
+},
+{
+"id": 173,
+"src": "換刃（板放平）",
+"page": "board3d"
+},
+{
+"id": 174,
+"src": "換刃：CoM 大幅穿越",
+"page": "board3d"
+},
+{
+"id": 175,
+"src": "支點轉",
+"page": "board3d"
+},
+{
+"id": 176,
+"src": "放刃落、入刃上，係連續轉彎之前嘅一步。",
+"page": "board3d"
+},
+{
+"id": 177,
+"src": "放刃落時前腳壓力多啲帶板頭向下，睇腳掌圖。",
+"page": "board3d"
+},
+{
+"id": 178,
+"src": "放平少少 edge，前腳輕輕加壓。",
+"page": "board3d"
+},
+{
+"id": 179,
+"src": "放平少少 edge，板頭轉向 fall line 滑落，好似半個彎嘅開頭。",
+"page": "board3d"
+},
+{
+"id": 180,
+"src": "放返平",
+"page": "board3d"
+},
+{
+"id": 181,
+"src": "早啲傾斜入彎，前腳先加 edge，GRF 未大之前已經入刃。",
+"page": "board3d"
+},
+{
+"id": 182,
+"src": "早啲傾斜，畀塊板自己轉，雪上只留一條幼線。",
+"page": "board3d"
+},
+{
+"id": 183,
+"src": "望住行嘅方向（板頭），肩膀大致同板平行；唔好望腳。",
+"page": "board3d"
+},
+{
+"id": 184,
+"src": "望住要去嘅方向，頭同肩膀帶身體。",
+"page": "board3d"
+},
+{
+"id": 185,
+"src": "望前面（下坡方向），唔好望塊板。",
+"page": "board3d"
+},
+{
+"id": 186,
+"src": "望去邊，前腳帶，後腳跟住。",
+"page": "board3d"
+},
+{
+"id": 187,
+"src": "板 R = sidecut radius。Carving 時彎半徑 ≈ R × cos(edge angle)，傾斜角由 tan θ = v² / (g·r) 計。單板 edge 差唔多等於身體傾斜，所以 carve 嘅平衡條件可以簡化成 sin θ ≈ v² / (g·R)。Binding 角度用 +15° / −6°（duck），腳距 ≈ 身高 × 0.31。建議範圍係一般經驗值。",
+"page": "board3d"
+},
+{
+"id": 188,
+"src": "板 edge 痕",
+"page": "board3d"
+},
+{
+"id": 189,
+"src": "板嘅方向比行走路線更入彎，即係 skid，用嚟控速。",
+"page": "board3d"
+},
+{
+"id": 190,
+"src": "板壓力：${bpLabel(cm/Lb)}・前腳 ${Math.round(wF*100)}%",
+"page": "board3d"
+},
+{
+"id": 191,
+"src": "板壓力：離地",
+"page": "board3d"
+},
+{
+"id": 192,
+"src": "板打橫多少少就會 skid 減速，重心慢慢返去雙腳中間，準備換刃。",
+"page": "board3d"
+},
+{
+"id": 193,
+"src": "板放平，準備。",
+"page": "board3d"
+},
+{
+"id": 194,
+"src": "板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = fall line）・Edge ${Math.abs(p.edge/D).toFixed(0)}°",
+"page": "board3d"
+},
+{
+"id": 195,
+"src": "板離雪 ${Math.round((p.lift||0)*100)} cm・板角度 ${Math.abs((p.pitch||0)/D).toFixed(0)}°",
+"page": "board3d"
+},
+{
+"id": 196,
+"src": "板頭冇壓力，入彎慢、板頭會飄，結果要用上身扭先轉到。後腳股四頭肌負荷爆煲，容易打滑或者 catch edge。",
+"page": "board3d"
+},
+{
+"id": 197,
+"src": "極限低 Carve",
+"page": "board3d"
+},
+{
+"id": 198,
+"src": "極限低 Carve（Euro carve）",
+"page": "board3d"
+},
+{
+"id": 199,
+"src": "每個彎之前先轉頭望去下一個方向，再輕輕壓前腳。",
+"page": "board3d"
+},
+{
+"id": 200,
+"src": "每個彎講「起、壓」；試吓手放喺膝頭上面做幾個彎，感覺下半身帶轉。",
+"page": "board3d"
+},
+{
+"id": 201,
+"src": "滑落",
+"page": "board3d"
+},
+{
+"id": 202,
+"src": "滑落：edge 放細",
+"page": "board3d"
+},
+{
+"id": 203,
+"src": "理想：入彎前腳稍重（約 55–60%），出彎移去後腳。Toeside 壓力喺前腳掌，heelside 喺腳跟。上身跟住板，眼望行嘅方向，用腳踝同膝頭控制 edge。",
+"page": "board3d"
+},
+{
+"id": 204,
+"src": "用 uphill edge 橫過斜坡：heel traverse 面向下坡、toe traverse 面向上坡。眼望要去嘅方向。",
+"page": "board3d"
+},
+{
+"id": 205,
+"src": "用上身扭去帶板轉，會令板尾甩出、skid 失控，換刃時上下身唔同步，好容易跌。轉彎應該由下半身（腳踝、膝頭）帶。",
+"page": "board3d"
+},
+{
+"id": 206,
+"src": "用腳踝控制 edge 角度：大就停，細就滑。",
+"page": "board3d"
+},
+{
+"id": 207,
+"src": "由板尾睇",
+"page": "board3d"
+},
+{
+"id": 208,
+"src": "直滑",
+"page": "board3d"
+},
+{
+"id": 209,
+"src": "眼應該望邊？",
+"page": "board3d"
+},
+{
+"id": 210,
+"src": "睇 3D 上面嘅白色角度弧：70°+ 先叫做真正嘅地這い。",
+"page": "board3d"
+},
+{
+"id": 211,
+"src": "穩定",
+"page": "board3d"
+},
+{
+"id": 212,
+"src": "空中",
+"page": "board3d"
+},
+{
+"id": 213,
+"src": "空中收腳",
+"page": "board3d"
+},
+{
+"id": 214,
+"src": "紫色力線仍然要由 edge 穿過 CoM，唔係由隻手撐住。",
+"page": "board3d"
+},
+{
+"id": 215,
+"src": "紫色力線由受力 edge 穿過 CoM = 平衡。",
+"page": "board3d"
+},
+{
+"id": 216,
+"src": "肌肉／作用（㩒一行單獨睇）",
+"page": "board3d"
+},
+{
+"id": 217,
+"src": "背向下坡，用 toe edge；膝頭推向上坡。",
+"page": "board3d"
+},
+{
+"id": 218,
+"src": "背向下坡，用腳趾嗰邊 edge。㩒「Toeside」掣切換；睇唔到下面，所以要轉頭望。",
+"page": "board3d"
+},
+{
+"id": 219,
+"src": "脛前肌拉起腳趾，股四頭肌同腹肌撐住。",
+"page": "board3d"
+},
+{
+"id": 220,
+"src": "腳距",
+"page": "board3d"
+},
+{
+"id": 221,
+"src": "腹斜肌",
+"page": "board3d"
+},
+{
+"id": 222,
+"src": "膝頭同髖向彎內推，脛骨壓住 boot 前面；腳趾壓（小腿肌），臀大肌撐住唔好彎腰。",
+"page": "board3d"
+},
+{
+"id": 223,
+"src": "膝頭向前、向坡面推，腳趾輕壓（小腿肌出力）；身體保持企直，唔好彎腰。",
+"page": "board3d"
+},
+{
+"id": 224,
+"src": "膝頭向胸口收，前腳拉平塊板。",
+"page": "board3d"
+},
+{
+"id": 225,
+"src": "膝頭向胸口收，前腳拉平塊板：膕繩肌、腹肌出力。",
+"page": "board3d"
+},
+{
+"id": 226,
+"src": "落葉 Falling leaf",
+"page": "board3d"
+},
+{
+"id": 227,
+"src": "著地",
+"page": "board3d"
+},
+{
+"id": 228,
+"src": "著地吸收",
+"page": "board3d"
+},
+{
+"id": 229,
+"src": "視線同肩膀",
+"page": "board3d"
+},
+{
+"id": 230,
+"src": "趾",
+"page": "board3d"
+},
+{
+"id": 231,
+"src": "蹲低、重心向板尾，板頭翹起：腳掌圖後腳紅點變大。",
+"page": "board3d"
+},
+{
+"id": 232,
+"src": "蹲低，重心移去板尾，好似壓彈弓。",
+"page": "board3d"
+},
+{
+"id": 233,
+"src": "身體同雪面差唔多平行，手可以掃雪，但重心仍然要喺板 edge 上面；膝頭、髖向彎內推，唔好將體重放落隻手度。",
+"page": "board3d"
+},
+{
+"id": 234,
+"src": "身體成條直線向彎內傾，髖向板頭方向推；小腿肌同臀大肌撐住，膝頭入彎做 angulation。",
+"page": "board3d"
+},
+{
+"id": 235,
+"src": "身體成條線向彎內傾，髖唔好向後頂（唔好彎腰）。",
+"page": "board3d"
+},
+{
+"id": 236,
+"src": "身高 ${r.b[0]}～${r.b[1]}",
+"page": "board3d"
+},
+{
+"id": 237,
+"src": "身高 × 0.31",
+"page": "board3d"
+},
+{
+"id": 238,
+"src": "轉一半",
+"page": "board3d"
+},
+{
+"id": 239,
+"src": "轉之前上身向反方向扭（wind-up），腹斜肌拉長對抗。",
+"page": "board3d"
+},
+{
+"id": 240,
+"src": "轉嘅力量由邊度嚟？",
+"page": "board3d"
+},
+{
+"id": 241,
+"src": "轉完兩腳平均放返平，唔好坐後。",
+"page": "board3d"
+},
+{
+"id": 242,
+"src": "轉返上坡靠乜？",
+"page": "board3d"
+},
+{
+"id": 243,
+"src": "速度同 R",
+"page": "board3d"
+},
+{
+"id": 244,
+"src": "重心放前腳多啲，頭同肩膀望住彎嘅方向，板頭會先跟住轉，後腳跟住。",
+"page": "board3d"
+},
+{
+"id": 245,
+"src": "重心移去前腳（Tail butter 就係後腳）壓低板頭，另一隻腳提起板尾；上身向反方向預扭（wind-up）。",
+"page": "board3d"
+},
+{
+"id": 246,
+"src": "重心移去前腳，板頭壓低、板尾翹起：前腳 85% 左右。",
+"page": "board3d"
+},
+{
+"id": 247,
+"src": "重新加 edge 轉返上坡，呢一下就係轉彎下半部嘅感覺。",
+"page": "board3d"
+},
+{
+"id": 248,
+"src": "重新加 edge（heel：拉腳趾；toe：膝頭推前），板轉返上坡、速度慢落嚟。",
+"page": "board3d"
+},
+{
+"id": 249,
+"src": "重新加 edge：heel 拉腳趾，toe 推膝頭。",
+"page": "board3d"
+},
+{
+"id": 250,
+"src": "雙腳同時著地，屈膝屈髖吸收（股四頭肌、臀大肌拉長對抗），重心喺板中間。",
+"page": "board3d"
+},
+{
+"id": 251,
+"src": "雙腳同時著地，股四頭肌「拉長對抗」吸收。",
+"page": "board3d"
+},
+{
+"id": 252,
+"src": "雙腳平均，膝頭微屈，準備。",
+"page": "board3d"
+},
+{
+"id": 253,
+"src": "雙膝向胸口收（膕繩肌、腹肌），前腳將塊板拉平。",
+"page": "board3d"
+},
+{
+"id": 254,
+"src": "離心 Eccentric：肌肉被拉長但仍然出力頂住（吸收壓力）",
+"page": "board3d"
+},
+{
+"id": 255,
+"src": "靠速度同 edge 撐住身體，唔係靠隻手。",
+"page": "board3d"
+},
+{
+"id": 256,
+"src": "面向下坡，用 heel edge 橫過斜坡；腳趾拉起少少保持 edge。",
+"page": "board3d"
+},
+{
+"id": 257,
+"src": "面向下坡，用後腳跟嗰邊 edge（heel edge）。㩒「Heelside」掣切換。",
+"page": "board3d"
+},
+{
+"id": 258,
+"src": "預壓",
+"page": "board3d"
+},
+{
+"id": 259,
+"src": "預壓 Preload",
+"page": "board3d"
+},
+{
+"id": 260,
+"src": "髖向彎內坐低，膝頭保持屈曲，脛前肌拉住腳趾，腹肌收緊防止向後倒。",
+"page": "board3d"
+},
+{
+"id": 261,
+"src": "髖坐低入彎、胸口向前（angulation）；脛前肌、股四頭肌、腹肌撐住，highback 承受大量壓力。",
+"page": "board3d"
+},
+{
+"id": 262,
+"src": "髖坐低入彎、胸口向前；上身比下半身企直啲 = angulation。",
+"page": "board3d"
+},
+{
+"id": 263,
+"src": "髖幾乎掂雪，胸口向前，後手可以拖雪；脛前肌同股四頭肌全力撐住 highback 方向嘅壓力。",
+"page": "board3d"
+},
+{
+"id": 264,
+"src": "黃色 CoM 線由一邊穿過板上方去另一邊，路線比板痕短。",
+"page": "board3d"
+},
+{
+"id": 265,
+"src": "🛑 接近停",
+"page": "board3d"
+},
+{
+"id": 266,
+"src": "3D 滑雪／單板教學",
+"page": "ski-3d-coach"
+},
+{
+"id": 267,
+"src": "Side slip・斜滑降＋Garland・Skid・動態・Carving・極限低 Carve・Ollie／Nollie・Butter・Switch",
+"page": "ski-3d-coach"
+},
+{
+"id": 268,
+"src": "互動 3D 模型：肌肉發力（向心／離心／等長）、CoM、Edge、腳掌壓力，可以 360° 轉。",
+"page": "ski-3d-coach"
+},
+{
+"id": 269,
+"src": "單板 Snowboard",
+"page": "ski-3d-coach"
+},
+{
+"id": 270,
+"src": "犁式・平行・Carving・蘑菇・短彎・Pivot slip・斜滑降＋Garland・提內腳 drill",
+"page": "ski-3d-coach"
+},
+{
+"id": 271,
+"src": "雙板 Ski",
+"page": "ski-3d-coach"
+},
+{
+"id": 272,
+"src": "1x 真實",
+"page": "ski3d"
+},
+{
+"id": 273,
+"src": "3D Carving 教學：肌肉・CoM・Edge",
+"page": "ski3d"
+},
+{
+"id": 274,
+"src": "3D 滑雪教學：肌肉發力・CoM・Edge",
+"page": "ski3d"
+},
+{
+"id": 275,
+"src": "6–12° 練最好；太斜會被逼坐後，見 Spec 設定。",
+"page": "ski3d"
+},
+{
+"id": 276,
+"src": "Adductors：膝帶入彎、雙腳平行／wedge",
+"page": "ski3d"
+},
+{
+"id": 277,
+"src": "Apex 時內腳提起，所有重量喺外腳。",
+"page": "ski3d"
+},
+{
+"id": 278,
+"src": "CoM 直線",
+"page": "ski3d"
+},
+{
+"id": 279,
+"src": "CoM 穿越",
+"page": "ski3d"
+},
+{
+"id": 280,
+"src": "CoM 路線",
+"page": "ski3d"
+},
+{
+"id": 281,
+"src": "CoM（黃波）喺腳掌正上方；脛骨同上身大致平行。坐後會令大腿好快燒，亦控唔到板。",
+"page": "ski3d"
+},
+{
+"id": 282,
+"src": "Edge 同壓力時間短，唔好停喺彎中。",
+"page": "ski3d"
+},
+{
+"id": 283,
+"src": "Edge 大過傾斜",
+"page": "ski3d"
+},
+{
+"id": 284,
+"src": "Edge 角度應該大過、等於，定細過身體傾斜？",
+"page": "ski3d"
+},
+{
+"id": 285,
+"src": "Erector spinae：維持上身前傾",
+"page": "ski3d"
+},
+{
+"id": 286,
+"src": "GRF 最大：外腳股四頭肌、臀大肌、臀中肌撐住；膕繩肌共縮保護 ACL。外側腹斜肌／腰方肌做上身 angulation；內腳收短。",
+"page": "ski3d"
+},
+{
+"id": 287,
+"src": "GRF 線",
+"page": "ski3d"
+},
+{
+"id": 288,
+"src": "GRF（外腳→CoM）",
+"page": "ski3d"
+},
+{
+"id": 289,
+"src": "Garland：再入刃上",
+"page": "ski3d"
+},
+{
+"id": 290,
+"src": "Garland：放刃落",
+"page": "ski3d"
+},
+{
+"id": 291,
+"src": "Gastroc/Soleus：彎尾壓力控制",
+"page": "ski3d"
+},
+{
+"id": 292,
+"src": "Glute max：伸髖、維持髖部高度",
+"page": "ski3d"
+},
+{
+"id": 293,
+"src": "Glute med：穩定骨盆、側向支撐",
+"page": "ski3d"
+},
+{
+"id": 294,
+"src": "Hamstrings：共縮護 ACL；內腳收短",
+"page": "ski3d"
+},
+{
+"id": 295,
+"src": "Obliques/QL：上身 angulation",
+"page": "ski3d"
+},
+{
+"id": 296,
+"src": "Pivot：原地轉向",
+"page": "ski3d"
+},
+{
+"id": 297,
+"src": "Pole plant 節奏",
+"page": "ski3d"
+},
+{
+"id": 298,
+"src": "Quadriceps：外腳撐住 GRF、控制屈膝",
+"page": "ski3d"
+},
+{
+"id": 299,
+"src": "Rectus abd.：換刃時將 CoM 帶前",
+"page": "ski3d"
+},
+{
+"id": 300,
+"src": "Spec 設定",
+"page": "ski3d"
+},
+{
+"id": 301,
+"src": "Tibialis ant.：拉鞋舌保持前壓",
+"page": "ski3d"
+},
+{
+"id": 302,
+"src": "Wedge 形狀",
+"page": "ski3d"
+},
+{
+"id": 303,
+"src": "km/h・彎半徑 ${C.Rt.toFixed(1)} m",
+"page": "ski3d"
+},
+{
+"id": 304,
+"src": "× 體重",
+"page": "ski3d"
+},
+{
+"id": 305,
+"src": "→ 兩個彎時間",
+"page": "ski3d"
+},
+{
+"id": 306,
+"src": "→ 外腳 GRF",
+"page": "ski3d"
+},
+{
+"id": 307,
+"src": "→ 彎半徑",
+"page": "ski3d"
+},
+{
+"id": 308,
+"src": "→ 最大 edge",
+"page": "ski3d"
+},
+{
+"id": 309,
+"src": "→ 最大傾斜",
+"page": "ski3d"
+},
+{
+"id": 310,
+"src": "→ 腳要吸收",
+"page": "ski3d"
+},
+{
+"id": 311,
+"src": "→ 蘑菇間距",
+"page": "ski3d"
+},
+{
+"id": 312,
+"src": "↓ 下坡",
+"page": "ski3d"
+},
+{
+"id": 313,
+"src": "⇆ 正確 vs 錯誤",
+"page": "ski3d"
+},
+{
+"id": 314,
+"src": "⏸ 暫停",
+"page": "ski3d"
+},
+{
+"id": 315,
+"src": "① 內腳仍然承受大約 10–40% 體重（雪況愈硬、edge 愈大，比例愈高）；② 要令內腳收短，股四頭肌就要拉長對抗、慢慢放，唔係完全放鬆；③ 膕繩肌、髖屈肌負責將內腳拉後、拉高，保持兩隻腳前後一致；④ 脛前肌要拉住內腳鞋舌，唔畀內腳坐後；⑤ 關節周圍肌肉共縮，保持膝頭穩定，萬一外腳打滑都撐得住。所以外腳出主力，內腳就負責「調節同保險」。",
+"page": "ski3d"
+},
+{
+"id": 316,
+"src": "▶ 播放",
+"page": "ski3d"
+},
+{
+"id": 317,
+"src": "▶ 睇",
+"page": "ski3d"
+},
+{
+"id": 318,
+"src": "⚠️ ${cfg.v} km/h 配 R${cfg.R}：板愈入刃彎就愈細，要嘅傾斜就愈大，搵唔到平衡點。實際上會打滑變 skid（呢度用 ${Rt.toFixed(0)} m 半徑示範），或者要換長 R 嘅板／減速。",
+"page": "ski3d"
+},
+{
+"id": 319,
+"src": "⚠️ 以呢個程度可以做到嘅傾斜（約 ${(lv.cap/D).toFixed(0)}°），${cfg.v} km/h 要轉 ${Rt.toFixed(0)} m 半徑嘅大彎先撐得住。太快喇，應該減速。",
+"page": "ski3d"
+},
+{
+"id": 320,
+"src": "⚠️ 肌肉發力係根據滑雪生物力學文獻同 force chain 原理整嘅示意模型（相對值），唔係實測 EMG。動作係程序生成嘅理想化示範，用嚟理解因果關係，唔係度數標準。",
+"page": "ski3d"
+},
+{
+"id": 321,
+"src": "⚠️ 速度太慢：只需要傾斜 ${(phi/D).toFixed(0)}°，GRF 唔夠大，好難撐起 edge 純 carve，容易變返 skid。",
+"page": "ski3d"
+},
+{
+"id": 322,
+"src": "✅ 正確",
+"page": "ski3d"
+},
+{
+"id": 323,
+"src": "❄️ 雪上點練：",
+"page": "ski3d"
+},
+{
+"id": 324,
+"src": "一個彎一個蘑菇",
+"page": "ski3d"
+},
+{
+"id": 325,
+"src": "一個循環：下坡 ${(z1-z0).toFixed(1)} m・橫向 ${(x1-x0).toFixed(1)} m・行走距離 ${dist.toFixed(1)} m・時間 ${C.period.toFixed(1)} s",
+"page": "ski3d"
+},
+{
+"id": 326,
+"src": "一坐後就企唔穩：揀「站位 → 坐後」比較。",
+"page": "ski3d"
+},
+{
+"id": 327,
+"src": "一直面向正下坡（fall line）。",
+"page": "ski3d"
+},
+{
+"id": 328,
+"src": "上下身分離",
+"page": "ski3d"
+},
+{
+"id": 329,
+"src": "上坡嗰隻板稍為向前，盤骨同上身面向下坡。",
+"page": "ski3d"
+},
+{
+"id": 330,
+"src": "上坡腳在前",
+"page": "ski3d"
+},
+{
+"id": 331,
+"src": "上坡；上身就向下坡，形成 angulation。",
+"page": "ski3d"
+},
+{
+"id": 332,
+"src": "上身一直面向下坡，下半身左右擺：睇腹斜肌一直「固定撐住」。",
+"page": "ski3d"
+},
+{
+"id": 333,
+"src": "上身唔郁",
+"page": "ski3d"
+},
+{
+"id": 334,
+"src": "上身應該跟住板轉嗎？",
+"page": "ski3d"
+},
+{
+"id": 335,
+"src": "上身方向",
+"page": "ski3d"
+},
+{
+"id": 336,
+"src": "上身望落山，腳喺下面左右擺，點杖帶節奏。",
+"page": "ski3d"
+},
+{
+"id": 337,
+"src": "上身靜止",
+"page": "ski3d"
+},
+{
+"id": 338,
+"src": "上身面向下坡、手喺前面，下半身好似避震咁郁。",
+"page": "ski3d"
+},
+{
+"id": 339,
+"src": "上身面向下坡，下半身跟板轉，腰部有扭轉。",
+"page": "ski3d"
+},
+{
+"id": 340,
+"src": "上身面向下坡，唔好用膊頭扭去轉彎。",
+"page": "ski3d"
+},
+{
+"id": 341,
+"src": "下坡腳。",
+"page": "ski3d"
+},
+{
+"id": 342,
+"src": "下坡腳承重",
+"page": "ski3d"
+},
+{
+"id": 343,
+"src": "下坡腳承重、膝頭推上坡、上身望下坡；放刃落，入刃上。",
+"page": "ski3d"
+},
+{
+"id": 344,
+"src": "下坡腳（呢度係右腳）承受大部分體重，睇腳掌圖。",
+"page": "ski3d"
+},
+{
+"id": 345,
+"src": "中段",
+"page": "ski3d"
+},
+{
+"id": 346,
+"src": "中級・平行",
+"page": "ski3d"
+},
+{
+"id": 347,
+"src": "中級・平行轉彎",
+"page": "ski3d"
+},
+{
+"id": 348,
+"src": "伸展換刃、屈曲加壓、上身面向下坡。",
+"page": "ski3d"
+},
+{
+"id": 349,
+"src": "保持 A 字，重心喺腳掌中間，想轉邊就壓相反嗰隻腳。",
+"page": "ski3d"
+},
+{
+"id": 350,
+"src": "俯視",
+"page": "ski3d"
+},
+{
+"id": 351,
+"src": "側面",
+"page": "ski3d"
+},
+{
+"id": 352,
+"src": "傾斜 ${(p.phiMag/D).toFixed(0)}°・外腳 edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°",
+"page": "ski3d"
+},
+{
+"id": 353,
+"src": "傾斜＋angulation",
+"page": "ski3d"
+},
+{
+"id": 354,
+"src": "先喺蘑菇區邊緣做單粒蘑菇「撞、收、伸」；再練喺蘑菇頂點杖嘅時機。",
+"page": "ski3d"
+},
+{
+"id": 355,
+"src": "先放平，塊板先轉得順。",
+"page": "ski3d"
+},
+{
+"id": 356,
+"src": "先輕輕伸展減壓，雙板容易換邊；入彎後再屈曲加壓。",
+"page": "ski3d"
+},
+{
+"id": 357,
+"src": "入彎",
+"page": "ski3d"
+},
+{
+"id": 358,
+"src": "入彎 Initiation（上半彎）",
+"page": "ski3d"
+},
+{
+"id": 359,
+"src": "入彎時脛骨壓住鞋舌（脛前肌出力），板頭先咬雪。",
+"page": "ski3d"
+},
+{
+"id": 360,
+"src": "入彎時，最大壓力應該喺邊隻腳？",
+"page": "ski3d"
+},
+{
+"id": 361,
+"src": "入彎：大腿 steering",
+"page": "ski3d"
+},
+{
+"id": 362,
+"src": "入彎：腳轉、身唔轉",
+"page": "ski3d"
+},
+{
+"id": 363,
+"src": "入彎：重心移去新外腳",
+"page": "ski3d"
+},
+{
+"id": 364,
+"src": "入門・犁式",
+"page": "ski3d"
+},
+{
+"id": 365,
+"src": "入門・犁式 Wedge",
+"page": "ski3d"
+},
+{
+"id": 366,
+"src": "內收肌群",
+"page": "ski3d"
+},
+{
+"id": 367,
+"src": "內腳",
+"page": "ski3d"
+},
+{
+"id": 368,
+"src": "內腳提起（板尾離雪、板頭輕掂雪），證明全身重量真係喺外腳上面。",
+"page": "ski3d"
+},
+{
+"id": 369,
+"src": "內腳搶咗外腳嘅壓力，外腳 edge 咬唔實、容易滑；內腳容易入錯邊刃，變成 A-frame 或者兩隻板分開（剪刀腳）。",
+"page": "ski3d"
+},
+{
+"id": 370,
+"src": "內腳離雪",
+"page": "ski3d"
+},
+{
+"id": 371,
+"src": "內腳靠膕繩肌屈膝提起，唔係靠腰。",
+"page": "ski3d"
+},
+{
+"id": 372,
+"src": "內腳點收",
+"page": "ski3d"
+},
+{
+"id": 373,
+"src": "兩板平均・",
+"page": "ski3d"
+},
+{
+"id": 374,
+"src": "兩條板痕平行而且距離一樣。板嘅方向會比行走路線更入彎少少，即係 skid。",
+"page": "ski3d"
+},
+{
+"id": 375,
+"src": "兩隻腳平均受力，身體返去兩板中間。保持 A 字（wedge），唔好企直。",
+"page": "ski3d"
+},
+{
+"id": 376,
+"src": "再入刃上",
+"page": "ski3d"
+},
+{
+"id": 377,
+"src": "出彎",
+"page": "ski3d"
+},
+{
+"id": 378,
+"src": "出彎 Completion（下半彎）",
+"page": "ski3d"
+},
+{
+"id": 379,
+"src": "出彎時慢慢放低內腳，準備做新外腳。",
+"page": "ski3d"
+},
+{
+"id": 380,
+"src": "出彎：控制 skid 控速",
+"page": "ski3d"
+},
+{
+"id": 381,
+"src": "出彎：控速",
+"page": "ski3d"
+},
+{
+"id": 382,
+"src": "出彎：準備下一下 pole",
+"page": "ski3d"
+},
+{
+"id": 383,
+"src": "出彎：準備放低",
+"page": "ski3d"
+},
+{
+"id": 384,
+"src": "前壓",
+"page": "ski3d"
+},
+{
+"id": 385,
+"src": "前後重心",
+"page": "ski3d"
+},
+{
+"id": 386,
+"src": "前段（板頭）",
+"page": "ski3d"
+},
+{
+"id": 387,
+"src": "力線",
+"page": "ski3d"
+},
+{
+"id": 388,
+"src": "即時肌肉發力",
+"page": "ski3d"
+},
+{
+"id": 389,
+"src": "受力 edge",
+"page": "ski3d"
+},
+{
+"id": 390,
+"src": "另一邊橫滑",
+"page": "ski3d"
+},
+{
+"id": 391,
+"src": "只靠外腳完成個彎：坐後或者重心喺內腳就即刻企唔穩。",
+"page": "ski3d"
+},
+{
+"id": 392,
+"src": "右",
+"page": "ski3d"
+},
+{
+"id": 393,
+"src": "右上角 gauge：edge angle 大過身體傾斜 = 有 angulation。",
+"page": "ski3d"
+},
+{
+"id": 394,
+"src": "右上角腳掌圖：紅點 = 壓力中心（CoP），點愈大 = 嗰隻腳承受愈多體重，下面數字係左右分配。",
+"page": "ski3d"
+},
+{
+"id": 395,
+"src": "右彎",
+"page": "ski3d"
+},
+{
+"id": 396,
+"src": "右腳",
+"page": "ski3d"
+},
+{
+"id": 397,
+"src": "向心 Concentric：肌肉一路縮短一路出力（例如企返起身）",
+"page": "ski3d"
+},
+{
+"id": 398,
+"src": "吸收同伸展",
+"page": "ski3d"
+},
+{
+"id": 399,
+"src": "唔好坐後",
+"page": "ski3d"
+},
+{
+"id": 400,
+"src": "唔應該。上身大致面向下坡，轉彎靠下半身。",
+"page": "ski3d"
+},
+{
+"id": 401,
+"src": "唔應該。頭同上身盡量保持一條平滑嘅線。",
+"page": "ski3d"
+},
+{
+"id": 402,
+"src": "單獨睇：",
+"page": "ski3d"
+},
+{
+"id": 403,
+"src": "單腳轉彎",
+"page": "ski3d"
+},
+{
+"id": 404,
+"src": "喺中坡做，起點同終點對住同一條直線（例如纜車柱），檢查自己有冇向左右走。",
+"page": "ski3d"
+},
+{
+"id": 405,
+"src": "喺緩坡做 railroad track：板唔好打滑，雪上只留兩條幼線；感覺外腳鞋舌一直有壓力。",
+"page": "ski3d"
+},
+{
+"id": 406,
+"src": "喺緩坡做，由每個彎提起 1 秒開始，慢慢延長到成個彎。",
+"page": "ski3d"
+},
+{
+"id": 407,
+"src": "喺緩坡慢慢做 4–5 個彎，每個彎講出嚟「壓左腳」／「壓右腳」，感覺壓力喺腳掌中間，唔係腳跟。",
+"page": "ski3d"
+},
+{
+"id": 408,
+"src": "喺蘑菇頂換刃 pivot：嗰陣只有板中間接觸雪，最易轉。",
+"page": "ski3d"
+},
+{
+"id": 409,
+"src": "喺蘑菇頂／蘑菇背點杖，帶身體向前落下一個坑。",
+"page": "ski3d"
+},
+{
+"id": 410,
+"src": "喺頂轉向",
+"page": "ski3d"
+},
+{
+"id": 411,
+"src": "固定撐住",
+"page": "ski3d"
+},
+{
+"id": 412,
+"src": "坐後",
+"page": "ski3d"
+},
+{
+"id": 413,
+"src": "坐後（壓腳跟）",
+"page": "ski3d"
+},
+{
+"id": 414,
+"src": "坑底：控速",
+"page": "ski3d"
+},
+{
+"id": 415,
+"src": "坡度",
+"page": "ski3d"
+},
+{
+"id": 416,
+"src": "坡度 ${cfg.slope}°・板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = fall line）",
+"page": "ski3d"
+},
+{
+"id": 417,
+"src": "壓力即刻釋放，手已經伸前準備下一下點杖。",
+"page": "ski3d"
+},
+{
+"id": 418,
+"src": "外板",
+"page": "ski3d"
+},
+{
+"id": 419,
+"src": "外腳",
+"page": "ski3d"
+},
+{
+"id": 420,
+"src": "外腳 ${outer}・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× 體重",
+"page": "ski3d"
+},
+{
+"id": 421,
+"src": "外腳內刃",
+"page": "ski3d"
+},
+{
+"id": 422,
+"src": "外腳受力多過內腳：睇肌肉表，外腳股四頭肌同內收肌會高啲。",
+"page": "ski3d"
+},
+{
+"id": 423,
+"src": "外腳受力最多，外腳嘅內刃咬雪帶住轉。上身面向下坡，手放喺前面。",
+"page": "ski3d"
+},
+{
+"id": 424,
+"src": "外腳快速加壓，板尾少少 skid 控速；節奏要快，唔好停喺彎中。",
+"page": "ski3d"
+},
+{
+"id": 425,
+"src": "外腳接近伸直撐住 GRF，內腳收短，等身體可以繼續入彎。",
+"page": "ski3d"
+},
+{
+"id": 426,
+"src": "外腳繼續推住板尾（wedge 開闊啲就會減速），之後準備換邊。",
+"page": "ski3d"
+},
+{
+"id": 427,
+"src": "外腳腳掌",
+"page": "ski3d"
+},
+{
+"id": 428,
+"src": "外腳轉彎",
+"page": "ski3d"
+},
+{
+"id": 429,
+"src": "外腳逐漸加壓，angulation 開始出現；肩膀大致同坡面平行。",
+"page": "ski3d"
+},
+{
+"id": 430,
+"src": "外腳，大約 80–90%。",
+"page": "ski3d"
+},
+{
+"id": 431,
+"src": "大腿 steering",
+"page": "ski3d"
+},
+{
+"id": 432,
+"src": "大腿向彎內旋轉帶板轉，板尾少少 skid；上身保持面向下坡（counter）。",
+"page": "ski3d"
+},
+{
+"id": 433,
+"src": "大腿喺盤骨入面旋轉帶板轉（上下身分離），腹斜肌固定撐住上身方向。",
+"page": "ski3d"
+},
+{
+"id": 434,
+"src": "大腿喺盤骨入面轉，上身唔郁。",
+"page": "ski3d"
+},
+{
+"id": 435,
+"src": "大腿旋轉",
+"page": "ski3d"
+},
+{
+"id": 436,
+"src": "大過。差距嚟自膝頭同髖嘅 angulation。",
+"page": "ski3d"
+},
+{
+"id": 437,
+"src": "太前",
+"page": "ski3d"
+},
+{
+"id": 438,
+"src": "太前（壓腳尖）",
+"page": "ski3d"
+},
+{
+"id": 439,
+"src": "完",
+"page": "ski3d"
+},
+{
+"id": 440,
+"src": "小腿肌",
+"page": "ski3d"
+},
+{
+"id": 441,
+"src": "屈曲吸收，好似避震咁。",
+"page": "ski3d"
+},
+{
+"id": 442,
+"src": "左",
+"page": "ski3d"
+},
+{
+"id": 443,
+"src": "左彎",
+"page": "ski3d"
+},
+{
+"id": 444,
+"src": "左腳",
+"page": "ski3d"
+},
+{
+"id": 445,
+"src": "左腳（彎外嗰隻）。外腳加壓，板就會轉向。",
+"page": "ski3d"
+},
+{
+"id": 446,
+"src": "建議",
+"page": "ski3d"
+},
+{
+"id": 447,
+"src": "彎中：外腳主導",
+"page": "ski3d"
+},
+{
+"id": 448,
+"src": "彎中：外腳加壓",
+"page": "ski3d"
+},
+{
+"id": 449,
+"src": "彎中：短促加壓",
+"page": "ski3d"
+},
+{
+"id": 450,
+"src": "後段（板尾）",
+"page": "ski3d"
+},
+{
+"id": 451,
+"src": "後面",
+"page": "ski3d"
+},
+{
+"id": 452,
+"src": "後面睇（外腳）",
+"page": "ski3d"
+},
+{
+"id": 453,
+"src": "快加壓快放",
+"page": "ski3d"
+},
+{
+"id": 454,
+"src": "慢慢將重量移去彎外嗰隻腳，膝頭同腳掌微微壓向彎內方向。上身唔好跟住轉。",
+"page": "ski3d"
+},
+{
+"id": 455,
+"src": "應該睇咩（",
+"page": "ski3d"
+},
+{
+"id": 456,
+"src": "所有重量交畀外腳，企得穩先算真係企喺外腳上面。",
+"page": "ski3d"
+},
+{
+"id": 457,
+"src": "拉長對抗",
+"page": "ski3d"
+},
+{
+"id": 458,
+"src": "拖動 360° 轉、雙指縮放・一個循環 = 兩個彎・㩒肌肉表其中一行可以單獨睇嗰組肌肉",
+"page": "ski3d"
+},
+{
+"id": 459,
+"src": "拖動旋轉・雙指縮放",
+"page": "ski3d"
+},
+{
+"id": 460,
+"src": "揀條窄雪道，假設兩邊有牆；心入面數「點、轉、點、轉」。",
+"page": "ski3d"
+},
+{
+"id": 461,
+"src": "提內腳 drill",
+"page": "ski3d"
+},
+{
+"id": 462,
+"src": "提起內腳",
+"page": "ski3d"
+},
+{
+"id": 463,
+"src": "提起內腳之後，重心應該喺外腳嘅邊度？",
+"page": "ski3d"
+},
+{
+"id": 464,
+"src": "提起內腳靠邊組肌肉？",
+"page": "ski3d"
+},
+{
+"id": 465,
+"src": "換刃",
+"page": "ski3d"
+},
+{
+"id": 466,
+"src": "換刃 Transition",
+"page": "ski3d"
+},
+{
+"id": 467,
+"src": "換刃前輕點新內側雪杖，帶 CoM 向前向下坡。",
+"page": "ski3d"
+},
+{
+"id": 468,
+"src": "換刃嗰陣，身體應該向上伸定向下壓？",
+"page": "ski3d"
+},
+{
+"id": 469,
+"src": "換刃後用大腿內旋帶板轉，唔係用上身拖。",
+"page": "ski3d"
+},
+{
+"id": 470,
+"src": "換刃時 CoM 喺雙板上方穿過，路線比板痕短好多。",
+"page": "ski3d"
+},
+{
+"id": 471,
+"src": "換刃時兩隻腳都喺雪上，換完即刻將重量交晒畀新外腳。",
+"page": "ski3d"
+},
+{
+"id": 472,
+"src": "換刃時兩隻腳都落地，再將重量交晒畀新外腳。",
+"page": "ski3d"
+},
+{
+"id": 473,
+"src": "換刃落地",
+"page": "ski3d"
+},
+{
+"id": 474,
+"src": "換刃（Pole plant＋伸展）",
+"page": "ski3d"
+},
+{
+"id": 475,
+"src": "換刃＋Pole plant",
+"page": "ski3d"
+},
+{
+"id": 476,
+"src": "換刃：雙腳落地",
+"page": "ski3d"
+},
+{
+"id": 477,
+"src": "換方向（雙腳平均）",
+"page": "ski3d"
+},
+{
+"id": 478,
+"src": "撞上就收腳，落坑就伸腳，上身保持平穩。",
+"page": "ski3d"
+},
+{
+"id": 479,
+"src": "撞上蘑菇面嗰陣，腳應該伸直定屈曲？",
+"page": "ski3d"
+},
+{
+"id": 480,
+"src": "撞上蘑菇面就屈膝屈髖吸收，落坑就伸腳保持雪板貼雪。黃色 CoM 線應該平滑過雪面好多。",
+"page": "ski3d"
+},
+{
+"id": 481,
+"src": "撞上蘑菇面：吸收",
+"page": "ski3d"
+},
+{
+"id": 482,
+"src": "收埋",
+"page": "ski3d"
+},
+{
+"id": 483,
+"src": "放刃先轉",
+"page": "ski3d"
+},
+{
+"id": 484,
+"src": "放刃落",
+"page": "ski3d"
+},
+{
+"id": 485,
+"src": "放平 edge，大腿轉，上身唔郁，沿 fall line 直線落。",
+"page": "ski3d"
+},
+{
+"id": 486,
+"src": "放平 edge，板頭自然轉向 fall line，好似半個彎。",
+"page": "ski3d"
+},
+{
+"id": 487,
+"src": "放平雙板，大腿喺盤骨入面旋轉，令雙板經過 fall line 轉去另一邊；上身完全唔郁。",
+"page": "ski3d"
+},
+{
+"id": 488,
+"src": "放鬆",
+"page": "ski3d"
+},
+{
+"id": 489,
+"src": "整個練習係沿住 fall line 直線滑落，唔應該向左右走。",
+"page": "ski3d"
+},
+{
+"id": 490,
+"src": "斜滑降",
+"page": "ski3d"
+},
+{
+"id": 491,
+"src": "斜滑降 Traverse",
+"page": "ski3d"
+},
+{
+"id": 492,
+"src": "斜滑降時，邊隻腳承受多啲重量？",
+"page": "ski3d"
+},
+{
+"id": 493,
+"src": "斜滑降＋Garland",
+"page": "ski3d"
+},
+{
+"id": 494,
+"src": "新外腳由腳踝→膝→髖逐級入刃，內收肌將膝帶入彎；脛前肌拉住鞋舌保持前壓。喺 GRF 未大之前已經傾斜入彎。",
+"page": "ski3d"
+},
+{
+"id": 495,
+"src": "早啲傾斜入彎，外腳撐住，上身保持水平，畀塊板自己轉。",
+"page": "ski3d"
+},
+{
+"id": 496,
+"src": "最大",
+"page": "ski3d"
+},
+{
+"id": 497,
+"src": "最大傾斜",
+"page": "ski3d"
+},
+{
+"id": 498,
+"src": "最大傾斜 Apex",
+"page": "ski3d"
+},
+{
+"id": 499,
+"src": "板 R",
+"page": "ski3d"
+},
+{
+"id": 500,
+"src": "板 R = sidecut radius（板身寫住嘅 R 數字）。Carving 時彎半徑 ≈ R × cos(edge angle)，傾斜角由 tan θ = v² / (g·r) 計出嚟，所以速度、R、edge 三樣係互相扣住。呢個係理想化公式，實際上板會彎得更深、雪會被壓實，所以真實可以 carve 得快少少。建議範圍係一般經驗值，唔係硬性規定。",
+"page": "ski3d"
+},
+{
+"id": 501,
+"src": "板壓力",
+"page": "ski3d"
+},
+{
+"id": 502,
+"src": "板壓力：${p.nsh",
+"page": "ski3d"
+},
+{
+"id": 503,
+"src": "板轉、盤骨同上身唔轉：內收肌、臀中肌負責大腿旋轉。",
+"page": "ski3d"
+},
+{
+"id": 504,
+"src": "板長",
+"page": "ski3d"
+},
+{
+"id": 505,
+"src": "板頭冇壓力，入彎慢、板頭咬唔到雪；彎尾會被板尾推出去，愈滑愈快。股四頭肌要長時間拉長對抗撐住，大腿好快燒。喺蘑菇入面會被彈飛。",
+"page": "ski3d"
+},
+{
+"id": 506,
+"src": "板頭壓力太大、板尾冇壓，板尾會打滑（skid 出去），carve 唔到乾淨嘅弧線；出彎放唔到，換刃時容易被板頭絆住。",
+"page": "ski3d"
+},
+{
+"id": 507,
+"src": "板頭近、板尾開，兩隻板都係用內刃（兩邊都有藍色 edge）。",
+"page": "ski3d"
+},
+{
+"id": 508,
+"src": "橫滑",
+"page": "ski3d"
+},
+{
+"id": 509,
+"src": "橫滑 Side slip",
+"page": "ski3d"
+},
+{
+"id": 510,
+"src": "橫滑時用 uphill edge 輕輕控速，唔好入得太深。",
+"page": "ski3d"
+},
+{
+"id": 511,
+"src": "橫過雪道時試吓提起上坡腳，企得穩先算啱；做 garland 時感受「放」同「咬」嘅分別。",
+"page": "ski3d"
+},
+{
+"id": 512,
+"src": "正常",
+"page": "ski3d"
+},
+{
+"id": 513,
+"src": "正面",
+"page": "ski3d"
+},
+{
+"id": 514,
+"src": "每個彎心入面講「起、壓」嘅節奏；望住遠處一點，留意肩膀唔好跟板轉。",
+"page": "ski3d"
+},
+{
+"id": 515,
+"src": "每次換刃之前，帶身體向前落下一個彎。",
+"page": "ski3d"
+},
+{
+"id": 516,
+"src": "每次換刃前點杖，帶 CoM 向前向下坡。",
+"page": "ski3d"
+},
+{
+"id": 517,
+"src": "理想做法：入彎壓前腳掌（拇趾球附近），脛骨貼住鞋舌；Apex 時移返腳掌中間；出彎慢慢移後少少，但唔好坐落腳跟。外腳壓內側（拇趾邊），內腳輕輕用外側（細趾邊）。",
+"page": "ski3d"
+},
+{
+"id": 518,
+"src": "用 skid 角度控速，屈曲吸收，準備下一下 pole plant。",
+"page": "ski3d"
+},
+{
+"id": 519,
+"src": "由速度同可做到嘅傾斜決定",
+"page": "ski3d"
+},
+{
+"id": 520,
+"src": "發力類型係由模型關節角度嘅變化計出嚟：肌肉變長而又出緊力 = 拉長對抗，變短 = 縮短發力，差唔多冇變 = 固定撐住。",
+"page": "ski3d"
+},
+{
+"id": 521,
+"src": "直線落山",
+"page": "ski3d"
+},
+{
+"id": 522,
+"src": "睇咩",
+"page": "ski3d"
+},
+{
+"id": 523,
+"src": "睇答案",
+"page": "ski3d"
+},
+{
+"id": 524,
+"src": "短彎 小回り",
+"page": "ski3d"
+},
+{
+"id": 525,
+"src": "短彎時上身應該面向邊？",
+"page": "ski3d"
+},
+{
+"id": 526,
+"src": "站位",
+"page": "ski3d"
+},
+{
+"id": 527,
+"src": "站位：",
+"page": "ski3d"
+},
+{
+"id": 528,
+"src": "等長 Isometric：長度唔變，靜止咁撐住姿勢",
+"page": "ski3d"
+},
+{
+"id": 529,
+"src": "粗線 = CoM 路線（顏色 = 階段，虛線 = 離地），灰線 = 板痕，短灰線 = 板嘅方向，黃點 = 而家位置，綠色「起」→ 紅色「完」。㩒地圖任何一點可以跳去嗰個時刻。",
+"page": "ski3d"
+},
+{
+"id": 530,
+"src": "紫色力線由外腳穿過 CoM = 平衡；穿唔到 CoM 就會倒入彎或者被拋出彎。",
+"page": "ski3d"
+},
+{
+"id": 531,
+"src": "縮短發力",
+"page": "ski3d"
+},
+{
+"id": 532,
+"src": "而家",
+"page": "ski3d"
+},
+{
+"id": 533,
+"src": "而家最出力",
+"page": "ski3d"
+},
+{
+"id": 534,
+"src": "肌肉",
+"page": "ski3d"
+},
+{
+"id": 535,
+"src": "肌肉／作用（㩒一行可以單獨睇）",
+"page": "ski3d"
+},
+{
+"id": 536,
+"src": "股四頭肌",
+"page": "ski3d"
+},
+{
+"id": 537,
+"src": "脛前肌",
+"page": "ski3d"
+},
+{
+"id": 538,
+"src": "腳掌中間。坐後會令大腿好快攰，又控制唔到板。",
+"page": "ski3d"
+},
+{
+"id": 539,
+"src": "腳掌中間偏前，唔係腳跟。",
+"page": "ski3d"
+},
+{
+"id": 540,
+"src": "腳掌圖：外腳 100%，CoP 喺腳掌中間偏前。",
+"page": "ski3d"
+},
+{
+"id": 541,
+"src": "腳掌壓力（上面睇）",
+"page": "ski3d"
+},
+{
+"id": 542,
+"src": "腳收到最短，喺蘑菇頂 pivot 換刃（板頭板尾離雪，最易轉）；點杖喺蘑菇頂或者蘑菇背，上身保持面向下坡。",
+"page": "ski3d"
+},
+{
+"id": 543,
+"src": "腳最長，雪板喺坑底用 skid 控速；上身好似喺條直線上面滑落嚟，唔跟腳上下郁。",
+"page": "ski3d"
+},
+{
+"id": 544,
+"src": "腹斜肌／腰方肌",
+"page": "ski3d"
+},
+{
+"id": 545,
+"src": "腹直肌",
+"page": "ski3d"
+},
+{
+"id": 546,
+"src": "膕繩肌",
+"page": "ski3d"
+},
+{
+"id": 547,
+"src": "膕繩肌屈膝提起，唔係用腰。",
+"page": "ski3d"
+},
+{
+"id": 548,
+"src": "膝頭同髖向上坡，上身向下坡 = angulation，雙板用 uphill edge。",
+"page": "ski3d"
+},
+{
+"id": 549,
+"src": "膝頭同髖應該推向上坡定下坡？",
+"page": "ski3d"
+},
+{
+"id": 550,
+"src": "臀中肌",
+"page": "ski3d"
+},
+{
+"id": 551,
+"src": "臀大肌",
+"page": "ski3d"
+},
+{
+"id": 552,
+"src": "舊外腳放鬆屈曲（cross-under），雙板同時 roll 平再換去新邊刃；CoM 由舊彎內穿過雙腳上方。腹直肌同脛前肌將身體帶向前，唔好坐後。",
+"page": "ski3d"
+},
+{
+"id": 553,
+"src": "落蘑菇背時要壓板頭（脛前肌）；一坐後，下一個蘑菇就會將你彈飛。",
+"page": "ski3d"
+},
+{
+"id": 554,
+"src": "落蘑菇背：伸展",
+"page": "ski3d"
+},
+{
+"id": 555,
+"src": "蘑菇 Mogul",
+"page": "ski3d"
+},
+{
+"id": 556,
+"src": "蘑菇頂：轉向＋點杖",
+"page": "ski3d"
+},
+{
+"id": 557,
+"src": "蘑菇高",
+"page": "ski3d"
+},
+{
+"id": 558,
+"src": "蘑菇高 × 65%（上身只跟 35%）",
+"page": "ski3d"
+},
+{
+"id": 559,
+"src": "豎脊肌",
+"page": "ski3d"
+},
+{
+"id": 560,
+"src": "起",
+"page": "ski3d"
+},
+{
+"id": 561,
+"src": "跟方向",
+"page": "ski3d"
+},
+{
+"id": 562,
+"src": "跳去",
+"page": "ski3d"
+},
+{
+"id": 563,
+"src": "身高",
+"page": "ski3d"
+},
+{
+"id": 564,
+"src": "身高 ${r.ski[0]}～${r.ski[1]}",
+"page": "ski3d"
+},
+{
+"id": 565,
+"src": "輕點新內側雪杖，身體向前向下坡伸展、減輕壓力，雙板一齊換刃，保持平行。",
+"page": "ski3d"
+},
+{
+"id": 566,
+"src": "轉之前 edge 應該加大定放平？",
+"page": "ski3d"
+},
+{
+"id": 567,
+"src": "轉之前先放平雙板（edge → 0°），先轉得順。",
+"page": "ski3d"
+},
+{
+"id": 568,
+"src": "轉右彎時，邊隻腳要受多啲力？",
+"page": "ski3d"
+},
+{
+"id": 569,
+"src": "轉向係大腿喺盤骨入面旋轉，唔係扭腰。",
+"page": "ski3d"
+},
+{
+"id": 570,
+"src": "轉向嗰陣，邊個部位應該轉？",
+"page": "ski3d"
+},
+{
+"id": 571,
+"src": "轉緊",
+"page": "ski3d"
+},
+{
+"id": 572,
+"src": "透視",
+"page": "ski3d"
+},
+{
+"id": 573,
+"src": "逐步減少 edge angle，壓力由前移去中後段，外腳開始屈曲（拉長對抗）吸收，準備下一個 transition。",
+"page": "ski3d"
+},
+{
+"id": 574,
+"src": "速度",
+"page": "ski3d"
+},
+{
+"id": 575,
+"src": "進階・Carving",
+"page": "ski3d"
+},
+{
+"id": 576,
+"src": "重力",
+"page": "ski3d"
+},
+{
+"id": 577,
+"src": "重心偏後：板頭冇壓力，大腿好快攰。",
+"page": "ski3d"
+},
+{
+"id": 578,
+"src": "重心太前：板尾打滑，出彎放唔到。",
+"page": "ski3d"
+},
+{
+"id": 579,
+"src": "重心應該喺腳跟定腳掌中間？",
+"page": "ski3d"
+},
+{
+"id": 580,
+"src": "重新入 uphill edge，轉返上坡；呢一下就係轉彎下半部嘅感覺。",
+"page": "ski3d"
+},
+{
+"id": 581,
+"src": "重新加 uphill edge，雙板咬雪轉返上坡，速度慢落嚟。",
+"page": "ski3d"
+},
+{
+"id": 582,
+"src": "重點",
+"page": "ski3d"
+},
+{
+"id": 583,
+"src": "重點：",
+"page": "ski3d"
+},
+{
+"id": 584,
+"src": "鏡頭",
+"page": "ski3d"
+},
+{
+"id": 585,
+"src": "長外腳短內腳",
+"page": "ski3d"
+},
+{
+"id": 586,
+"src": "開始轉",
+"page": "ski3d"
+},
+{
+"id": 587,
+"src": "雙板平行",
+"page": "ski3d"
+},
+{
+"id": 588,
+"src": "雙板打橫，uphill edge 輕輕咬雪控速；上身面向下坡，膝頭微屈。",
+"page": "ski3d"
+},
+{
+"id": 589,
+"src": "雙板放平少少，板頭轉向 fall line 滑落，好似半個彎嘅開頭。",
+"page": "ski3d"
+},
+{
+"id": 590,
+"src": "雙板用 uphill edge 橫過斜坡，上身面向下坡（angulation）；上坡腳稍為向前，下坡腳承重。",
+"page": "ski3d"
+},
+{
+"id": 591,
+"src": "雙板由一邊轉去另一邊，上身一直面向下坡。",
+"page": "ski3d"
+},
+{
+"id": 592,
+"src": "雙腳向下伸展，等雪板保持貼雪（縮短發力）；板頭壓落坑，唔好坐後。",
+"page": "ski3d"
+},
+{
+"id": 593,
+"src": "雙腳屈膝屈髖吸收衝擊（股四頭肌、臀大肌拉長對抗），腹肌收緊，唔好畀蘑菇將上身彈起。",
+"page": "ski3d"
+},
+{
+"id": 594,
+"src": "雙腳平均",
+"page": "ski3d"
+},
+{
+"id": 595,
+"src": "雙腳平均：外腳咬唔實，容易變 A-frame。",
+"page": "ski3d"
+},
+{
+"id": 596,
+"src": "離心 Eccentric：肌肉被拉長但仍然出力頂住（例如屈膝吸收壓力）。滑雪大腿「燒」主要係呢種",
+"page": "ski3d"
+},
+{
+"id": 597,
+"src": "雪板痕",
+"page": "ski3d"
+},
+{
+"id": 598,
+"src": "項目",
+"page": "ski3d"
+},
+{
+"id": 599,
+"src": "頭嘅高度應該跟住蘑菇上落嗎？",
+"page": "ski3d"
+},
+{
+"id": 600,
+"src": "顯示",
+"page": "ski3d"
+},
+{
+"id": 601,
+"src": "髖轉 ${Math.abs((skiY-pelY)/D).toFixed(0)}°・腰轉 ${Math.abs((pelY-torY)/D).toFixed(0)}°",
+"page": "ski3d"
+},
+{
+"id": 602,
+"src": "鳥瞰圖：成個動作由開始到完",
+"page": "ski3d"
+},
+{
+"id": 603,
+"src": "黃色 CoM 線差唔多係直線落山，雙腳喺下面左右擺。",
+"page": "ski3d"
+},
+{
+"id": 604,
+"src": "黃色 CoM 軌跡比板痕短、行內線，表示身體開始先入彎。",
+"page": "ski3d"
+},
+{
+"id": 605,
+"src": "點杖係喺幾時？",
+"page": "ski3d"
+},
+{
+"id": 606,
+"src": "點杖同時屈曲放刃，雙板喺身下面翻去新邊；上身一直面向下坡，唔跟板轉。",
+"page": "ski3d"
+},
+{
+"id": 607,
+"src": "點杖時機",
+"page": "ski3d"
+},
+{
+"id": 608,
+"src": "點解內腳都有發力？",
+"page": "ski3d"
+},
+{
+"id": 609,
+"src": "🎯 睇之前諗一諗",
+"page": "ski3d"
+},
+{
+"id": 610,
+"src": "👀 簡易",
+"page": "ski3d"
+},
+{
+"id": 611,
+"src": "💡 重點：",
+"page": "ski3d"
+},
+{
+"id": 612,
+"src": "🔬 詳細",
+"page": "ski3d"
+}
+]
