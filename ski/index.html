@@ -468,7 +468,7 @@ let Cok = null;
 /* ---------- ankle: boot cuff follows the shin ---------- */
 let ankleText = '';
 function makeCuff(color){
-  const geo = new THREE.BoxGeometry(.13, .17, .14); geo.translate(0, .085, 0);
+  const geo = new THREE.BoxGeometry(.17, .24, .19); geo.translate(0, .12, .01);
   const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({color, roughness:.5}));
   m.castShadow = true; slopeG.add(m); return m;
 }
@@ -922,14 +922,14 @@ function makeSki(){
   const g = new THREE.Group(), board = new THREE.Group(); g.add(board);
   const ski = new THREE.Mesh(bendable(new THREE.BoxGeometry(.09,.015,1,1,1,40)), new THREE.MeshStandardMaterial({color:0x2b3442, roughness:.4})); ski.position.y = .0075; board.add(ski);
   const edge = new THREE.Mesh(bendable(new THREE.BoxGeometry(.012,.012,.98,1,1,40)), new THREE.MeshBasicMaterial({color:0x4cc9f0})); board.add(edge);
-  const boot = new THREE.Mesh(new THREE.BoxGeometry(.11,.09,.3), new THREE.MeshStandardMaterial({color:0xe5e7eb, roughness:.5})); boot.position.set(0,.045,.02);
+  const boot = new THREE.Mesh(new THREE.BoxGeometry(.16,.12,.34), new THREE.MeshStandardMaterial({color:0x1e3a8a, roughness:.45})); boot.position.set(0,.06,.01);
   const bootG = new THREE.Group(); bootG.add(boot); g.add(bootG);
   const strip = makeStrip(); bendable(strip.geometry); strip.scale.set(.05, 1, 1); strip.position.y = .0165; board.add(strip);
   const mk = makeMarker(); g.add(mk);
   slopeG.add(g); return {g, board, edge, bootG, strip, mk, ski};
 }
 const skiR = makeSki(), skiL = makeSki();
-skiR.cuff = makeCuff(0xe5e7eb); skiL.cuff = makeCuff(0xe5e7eb);
+skiR.cuff = makeCuff(0x2563eb); skiL.cuff = makeCuff(0x2563eb);
 const comBall = new THREE.Mesh(new THREE.SphereGeometry(.085,18,12), new THREE.MeshBasicMaterial({color:0xffd23f, depthTest:false, transparent:true}));
 comBall.renderOrder = 10; slopeG.add(comBall);
 const grf = new THREE.ArrowHelper(UP, new V(), 1, 0xa855f7, .14, .08); slopeG.add(grf);

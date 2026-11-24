@@ -471,7 +471,7 @@ let Cok = null;
 /* ---------- ankle: boot cuff follows the shin ---------- */
 let ankleText = '';
 function makeCuff(color){
-  const geo = new THREE.BoxGeometry(.13, .17, .14); geo.translate(0, .085, 0);
+  const geo = new THREE.BoxGeometry(.17, .24, .19); geo.translate(0, .12, .01);
   const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({color, roughness:.5}));
   m.castShadow = true; slopeG.add(m); return m;
 }
@@ -552,12 +552,14 @@ function poseButter(s){
 }
 function slipPulse(s){ return (Math.sin(W*3*s) + 1)/2; }
 function poseSlip(s){
-  const dir = DIR(), heel = cfg.slipSide === 'heel';
+  const dir = DIR(), heel = cfg.slipSide !== 'toe', leaf = cfg.slipSide === 'leaf';
   const yawB = (heel ? 90 : -90)*D*dir;
   const pulse = slipPulse(s);
   const e = cfg.slope*D*(.5 + .45*pulse);
   const toeLean = heel ? -e : e, phi = toeLean*dir;
-  const mid = new V(C.A*Math.sin(W*s), 0, s*C.L);
+  // downhill progress only while the edge is low (slide); nearly stops when the edge is high
+  const zf = (s*(1 - .475) + .475*(Math.cos(W*3*s) - 1)/(W*3))/(1 - .475);
+  const mid = new V(leaf ? C.A*Math.sin(W*s) : 0, 0, zf*C.L);
   return finish({s, sn: (phi >= 0 ? 1 : -1)*.7, cs: 0, mid, psi: yawB, sg: phi >= 0 ? 1 : -1, phi, phiMag: Math.abs(phi), nsh: .55, yawB, kap: 0, pulse});
 }
 function finish(b){
@@ -644,7 +646,7 @@ function dLen(key, side, d){
 
 function weightF(p){
   if (p.wF !== undefined) return clamp(p.wF + STANCE[cfg.stance].dw, .1, .9);
-  if (LV[cfg.level].slip) return clamp(.5 + .18*Math.cos(W*p.s)*Math.sign(p.fB.x||1) + STANCE[cfg.stance].dw, .15, .85);
+  if (LV[cfg.level].slip) return clamp(.5 + (cfg.slipSide === 'leaf' ? .18*Math.cos(W*p.s)*Math.sign(p.fB.x||1) : 0) + STANCE[cfg.stance].dw, .15, .85);
   const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
   return clamp(.52 + .1*init - .14*comp + STANCE[cfg.stance].dw, .15, .85);
 }
@@ -794,7 +796,7 @@ const WATCH = {
     {w:'Heel slip', v:'front', j:'heel', t:'面向下坡，用腳跟那側的刃（後刃）。按「後刃」切換。'},
     {w:'Toe slip', v:'back', j:'toe', t:'背向下坡，用腳趾那側的刃。按「前刃」切換；看不到下方，所以要轉頭看。'},
     {w:'立刃 vs 坡度', v:'heelV', j:'trans', t:'右上角儀表：立刃小於坡度就滑，接近坡度就停。'},
-    {w:'落葉飄 Falling leaf', v:'top', j:'trans', t:'前腳壓力多一點就往板頭斜下，後腳多一點就往板尾，看腳掌圖的兩個紅點。'},
+    {w:'落葉飄 Falling leaf', v:'top', j:'leaf', t:'學會直直往下滑和停下之後再做：前腳壓力多一點就往板頭斜下，後腳多一點就往板尾，看腳掌圖的兩個紅點。'},
     {w:'上半身不動', v:'front', j:'init', t:'控制靠腳踝和膝蓋，上半身和手保持穩定。'}
   ],
   beg: [
@@ -932,9 +934,9 @@ const armB = {up:limb(.27,.05,.042,jacket), fo:limb(.26,.042,.035,jacket)};
 const boardG = new THREE.Group(); slopeG.add(boardG);
 const boardMat = new THREE.MeshStandardMaterial({color:0x7c6cf0, roughness:.4});
 let boardParts = [], edgeL, edgeR;
-const bootMat = new THREE.MeshStandardMaterial({color:0x2b2b2b, roughness:.6});
-const bootF = new THREE.Mesh(new THREE.BoxGeometry(.12,.07,.3), bootMat), bootB = bootF.clone();
-const cuffF = makeCuff(0x2b2b2b), cuffB = makeCuff(0x2b2b2b);
+const bootMat = new THREE.MeshStandardMaterial({color:0x78350f, roughness:.6});
+const bootF = new THREE.Mesh(new THREE.BoxGeometry(.16,.1,.33), bootMat), bootB = bootF.clone();
+const cuffF = makeCuff(0xb45309), cuffB = makeCuff(0xb45309);
 boardG.add(bootF, bootB);
 /* ---------- board bending (reverse camber when edged & loaded) ---------- */
 // For a carving ski/board with sidecut radius R at edge angle θ, the edge lies on the snow when the
@@ -985,8 +987,8 @@ function placeBoots(){
   const dir = DIR(), k = C.k;
   const [gF, gB] = ANG();
   const aF = Math.atan2(-dir*Math.cos(gF*D), Math.sin(gF*D)), aB = Math.atan2(-dir*Math.cos(gB*D), Math.sin(gB*D));
-  bootF.position.set(0, .02 + .035*k, C.S/2); bootF.rotation.set(0, aF, 0); bootF.scale.setScalar(k);
-  bootB.position.set(0, .02 + .035*k, -C.S/2); bootB.rotation.set(0, aB, 0); bootB.scale.setScalar(k);
+  bootF.position.set(0, .02 + .05*k, C.S/2); bootF.rotation.set(0, aF, 0); bootF.scale.setScalar(k);
+  bootB.position.set(0, .02 + .05*k, -C.S/2); bootB.rotation.set(0, aB, 0); bootB.scale.setScalar(k);
 }
 
 const arcLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(Array.from({length:21}, () => new V())), new THREE.LineBasicMaterial({color:0xffffff, depthTest:false, transparent:true}));
@@ -1052,7 +1054,7 @@ function applyPose(p){
       const zc = (Lb - BW)/2;
       bParts.n.position.y = .01 + kap*zc*zc/2; bParts.n.rotation.x = -Math.atan(kap*zc);
       bParts.tl.position.y = .01 + kap*zc*zc/2; bParts.tl.rotation.x = Math.atan(kap*zc);
-      bootF.position.y = .02 + .035*C.k + kap*(C.S/2)**2/2; bootB.position.y = bootF.position.y;
+      bootF.position.y = .02 + .05*C.k + kap*(C.S/2)**2/2; bootB.position.y = bootF.position.y;
     }
     bendText = !bendMul ? '' : kRaw > 1e-4 ? `板子反弓 ${sagCm(kRaw, Lb).toFixed(1)} cm・彎曲半徑 ${(1/kRaw).toFixed(1)} m` : '板子未受力彎曲（平板／離地）';
     bMk.position.set(x, .08 + kap*cm*cm/2, cm);
@@ -1159,7 +1161,7 @@ const JUMPS = {
   butter:[['Press',() => .3],['開始轉',() => .45],['轉一半',() => .575],['完成',() => .85]]
 };
 const SUBS = {
-  slip: ['slipSide', [['heel','後刃'],['toe','前刃']]],
+  slip: ['slipSide', [['heel','後刃'],['toe','前刃'],['leaf','落葉飄（左右移動）']]],
   trav: ['slipSide', [['heel','後刃'],['toe','前刃']]],
   ollie:['trick', [['ollie','Ollie（板尾起跳）'],['nollie','Nollie（板頭起跳）']]],
   butter:['butter', [['nose','Nose butter'],['tail','Tail butter']]]
@@ -1177,7 +1179,7 @@ function renderJumps(){
 }
 function goWatch(j){
   const sub = SUBS[kindOf()];
-  if (sub && (j === 'toe' || j === 'heel' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail')){ setSub(sub[0], j); return; }
+  if (sub && (j === 'toe' || j === 'heel' || j === 'leaf' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail')){ setSub(sub[0], j); return; }
   if (typeof j === 'number') return jump(j);
   if (kindOf() === 'slip') return jump(j === 'trans' ? 1/12 : .25);
   jump(JUMP[j]());
@@ -1341,7 +1343,7 @@ function updateUI(p, act, md, now){
       : `已轉 ${Math.round(((p.yawB/W*360)%360+360)%360)}°・板子角度 ${Math.abs((p.pitch||0)/D).toFixed(0)}°`;
     hud.innerHTML = `<b>${subName}・${P[0]}</b><br>${extra}<br>前腳 ${Math.round(weightF(p)*100)}%・後腳 ${Math.round((1-weightF(p))*100)}%<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
   } else if (LV[cfg.level].slip){
-    hud.innerHTML = `<b>${cfg.slipSide === 'heel' ? 'Heel slip' : 'Toe slip'}・${P[0]}</b><br>坡度 ${cfg.slope}°・立刃 ${Math.abs(p.edge/D).toFixed(0)}°<br>${p.pulse > .62 ? '🛑 接近停止' : p.pulse < .38 ? '⬇️ 下滑中' : '➡️ 穩定滑行'}<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
+    hud.innerHTML = `<b>${cfg.slipSide === 'toe' ? 'Toe slip' : cfg.slipSide === 'leaf' ? '落葉飄' : 'Heel slip'}・${P[0]}</b><br>坡度 ${cfg.slope}°・立刃 ${Math.abs(p.edge/D).toFixed(0)}°<br>${p.pulse > .62 ? '🛑 接近停止' : p.pulse < .38 ? '⬇️ 下滑中' : '➡️ 穩定滑行'}<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
   } else
   hud.innerHTML = `<b>${P[0]}</b> ${ph==='toe'||ph==='heel' ? '' : tt}<br>${cfg.v} km/h・轉彎半徑 ${C.Rt.toFixed(1)} m<br>傾倒 ${(p.phiMag/D).toFixed(0)}°・立刃 ${Math.abs(p.edge/D).toFixed(0)}°<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× 體重`;
   // gauge from tail: toe side to the right on screen for regular → show toe-lean positive as right

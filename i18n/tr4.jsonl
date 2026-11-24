@@ -21,3 +21,6 @@
 {"src": "前腳腳踝：前屈 ${a.flex.toFixed(0)}°（向腳趾為正）", "en": "Front ankle: flex ${a.flex.toFixed(0)}° (+ = toward toes)", "tw": "前腳腳踝：背屈 ${a.flex.toFixed(0)}°（往腳趾為正）"}
 {"src": "外腳腳踝：前屈 ${a.flex.toFixed(0)}°・側傾 ${a.lat.toFixed(0)}°（向彎內為正）", "en": "Outside ankle: flex ${a.flex.toFixed(0)}°・lateral tilt ${a.lat.toFixed(0)}° (+ = into the turn)", "tw": "外腳腳踝：背屈 ${a.flex.toFixed(0)}°・側傾 ${a.lat.toFixed(0)}°（往彎內為正）"}
 {"src": "綠虛線 = 正確站位嘅路線；實線 = 而家呢個站位（彎半徑 ×${fx.r}）", "en": "Green dashes = correct-stance line; solid = this stance (turn radius ×${fx.r})", "tw": "綠虛線 = 正確站姿的路線；實線 = 目前這個站姿（轉彎半徑 ×${fx.r}）"}
+{"src": "落葉飄（左右移）", "en": "Falling leaf (side to side)", "tw": "落葉飄（左右移動）"}
+{"src": "落葉飄", "en": "Falling leaf", "tw": "落葉飄"}
+{"src": "學識直落同停之後先做：前腳多啲壓力就向板頭斜落，後腳多啲就向板尾，睇腳掌圖兩粒紅點。", "en": "Do this after you can slide straight down and stop: more front-foot pressure drifts you diagonally toward the nose, more back-foot pressure toward the tail — watch the two red dots in the foot map.", "tw": "學會直直往下滑和停下之後再做：前腳壓力多一點就往板頭斜下，後腳多一點就往板尾，看腳掌圖的兩個紅點。"}
