@@ -286,6 +286,7 @@ const STANCE = {
 const SHARE = {beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
 
 function build(){
+  Cok = null;
   const lv = LV[cfg.level], v = cfg.v/3.6;
   let Rt, phiApex, warn = '';
   if (lv.kind === 'pivot' || lv.kind === 'trav'){
@@ -317,12 +318,15 @@ function build(){
     phiApex = Math.atan(v*v/(G*Rt));
   }
   const psiMax = lv.psiFix || clamp((28 + (cfg.slope-8)*1.4 + lv.psiB)*D, 22*D, 68*D);
+  const RtOk = Rt, fxS = turnish() ? STANCE[cfg.stance].fx : null;
+  if (fxS) Rt *= fxS.r;
   const tp = Math.tan(psiMax), om = 1/(Rt*tp), A = Rt*tp*tp, L = W/om;
   let arc = 0; for (let i = 0; i < 400; i++){ const xp = A*om*Math.cos(W*i/400); arc += Math.sqrt(1+xp*xp)*L/400; }
   C = {v, Rt, phiApex, psiMax, om, A, L, period: arc/v, warn, k: cfg.H/175,
        inten: clamp(Math.tan(phiApex)/Math.tan(55*D), 0, 1),
        edgeApex: cfg.level === 'beg' ? 10*D + phiApex : Math.min(phiApex*lv.ang, 75*D)};
   C.P = L/2; C.Sx = 2.8; C.Rb = 1.4; C.mogul = cfg.level === 'mogul';
+  Cok = fxS ? Object.assign({}, C, pathOf(RtOk, psiMax, v)) : null;
   slopeG.rotation.x = cfg.slope*D;
   buildTerrain(); rescale(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch();
 }
@@ -410,10 +414,10 @@ function drawMap(p){
   g.fillStyle = '#fff'; g.fillText('完', X(en[0]), Y(en[1])+3);
   { const fx = STANCE[cfg.stance].fx;
     if (fx && fx.r && turnish()){
-      const s0 = mapS[0].c; g.strokeStyle = '#ff4d6d'; g.lineWidth = 2; g.setLineDash([6, 5]); g.beginPath();
-      mapS.forEach((m, i) => { const x = s0[0] + (m.c[0]-s0[0])*fx.r, z = s0[1] + (m.c[1]-s0[1])*fx.r; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); });
+      const s0 = mapS[0].c; g.strokeStyle = '#3ddc84'; g.lineWidth = 2; g.setLineDash([6, 5]); g.beginPath();
+      mapS.forEach((m, i) => { const x = s0[0] + (m.c[0]-s0[0])/fx.r, z = s0[1] + (m.c[1]-s0[1])/fx.r; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); });
       g.stroke(); g.setLineDash([]);
-      g.fillStyle = '#ff4d6d'; g.font = '11px sans-serif'; g.textAlign = 'left'; g.fillText(`紅虛線 = 這個站姿實際會走的路線（轉彎半徑 ×${fx.r}）`, 8, 14);
+      g.fillStyle = '#3ddc84'; g.font = '11px sans-serif'; g.textAlign = 'left'; g.fillText(`綠虛線 = 正確站姿的路線；實線 = 目前這個站姿（轉彎半徑 ×${fx.r}）`, 8, 14);
     }
   }
   // current position
@@ -454,6 +458,30 @@ function fxList(fx){
   if (fx.r) li.push(fx.r > 1 ? `轉彎半徑變大 ×${fx.r}（入彎晚、彎形走樣）` : `轉彎半徑變小 ×${fx.r}（彎收得太急、靠搓雪）`);
   if (fx.bend) li.push(`板子彎曲只剩大約 ${Math.round(fx.bend*100)}%（沒有真正刻滑）`);
   return '<br><b>3D 中會看到的後果：</b><br>' + li.map(x => '・' + x).join('<br>');
+}
+function pathOf(Rt, psiMax, v){
+  const tp = Math.tan(psiMax), om = 1/(Rt*tp), A = Rt*tp*tp, L = W/om;
+  let arc = 0; for (let i = 0; i < 400; i++){ const xp = A*om*Math.cos(W*i/400); arc += Math.sqrt(1+xp*xp)*L/400; }
+  return {Rt, om, A, L, period: arc/v};
+}
+let Cok = null;
+/* ---------- ankle: boot cuff follows the shin ---------- */
+let ankleText = '';
+function makeCuff(color){
+  const geo = new THREE.BoxGeometry(.13, .17, .14); geo.translate(0, .085, 0);
+  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({color, roughness:.5}));
+  m.castShadow = true; slopeG.add(m); return m;
+}
+function placeCuff(cuff, ankle, knee, fwd){
+  const sh = knee.clone().sub(ankle).normalize();
+  orient(cuff, ankle.clone().addScaledVector(sh, -.06*C.k), knee, fwd);
+  cuff.scale.setScalar(C.k);
+}
+function ankleAngles(ankle, knee, q, inside){
+  const sh = knee.clone().sub(ankle).normalize();
+  const up = new V(0,1,0).applyQuaternion(q), fw = new V(0,0,1).applyQuaternion(q);
+  const inl = inside.clone().addScaledVector(up, -inside.dot(up)); inl.addScaledVector(fw, -inl.dot(fw)); inl.normalize();
+  return {flex: Math.atan2(sh.dot(fw), sh.dot(up))/D, lat: Math.atan2(sh.dot(inl), sh.dot(up))/D};
 }
 /* ---------- pose ---------- */
 function pose(s){
@@ -529,7 +557,7 @@ function solve(p){
   const qP = qYZX(p.psi*lv.pyaw, p.phi*lv.pr, .18);
   const hipR = p.P.clone().add(new V(-.11*k,-.05*k,0).applyQuaternion(qP));
   const hipL = p.P.clone().add(new V(.11*k,-.05*k,0).applyQuaternion(qP));
-  const base = p.f.clone().addScaledVector(p.inner, .35*p.nsh*lv.knee);
+  const base = p.f.clone().addScaledVector(p.inner, .16*p.nsh*lv.knee);
   const poleR = base.clone(), poleL = base.clone();
   if (cfg.level === 'beg'){ poleR.addScaledVector(p.right, -.3); poleL.addScaledVector(p.right, .3); }
   poleR.normalize(); poleL.normalize();
@@ -894,13 +922,14 @@ function makeSki(){
   const g = new THREE.Group(), board = new THREE.Group(); g.add(board);
   const ski = new THREE.Mesh(bendable(new THREE.BoxGeometry(.09,.015,1,1,1,40)), new THREE.MeshStandardMaterial({color:0x2b3442, roughness:.4})); ski.position.y = .0075; board.add(ski);
   const edge = new THREE.Mesh(bendable(new THREE.BoxGeometry(.012,.012,.98,1,1,40)), new THREE.MeshBasicMaterial({color:0x4cc9f0})); board.add(edge);
-  const boot = new THREE.Mesh(new THREE.BoxGeometry(.11,.2,.3), new THREE.MeshStandardMaterial({color:0xe5e7eb, roughness:.5})); boot.position.set(0,.1,.02);
+  const boot = new THREE.Mesh(new THREE.BoxGeometry(.11,.09,.3), new THREE.MeshStandardMaterial({color:0xe5e7eb, roughness:.5})); boot.position.set(0,.045,.02);
   const bootG = new THREE.Group(); bootG.add(boot); g.add(bootG);
   const strip = makeStrip(); bendable(strip.geometry); strip.scale.set(.05, 1, 1); strip.position.y = .0165; board.add(strip);
   const mk = makeMarker(); g.add(mk);
   slopeG.add(g); return {g, board, edge, bootG, strip, mk, ski};
 }
 const skiR = makeSki(), skiL = makeSki();
+skiR.cuff = makeCuff(0xe5e7eb); skiL.cuff = makeCuff(0xe5e7eb);
 const comBall = new THREE.Mesh(new THREE.SphereGeometry(.085,18,12), new THREE.MeshBasicMaterial({color:0xffd23f, depthTest:false, transparent:true}));
 comBall.renderOrder = 10; slopeG.add(comBall);
 const grf = new THREE.ArrowHelper(UP, new V(), 1, 0xa855f7, .14, .08); slopeG.add(grf);
@@ -981,6 +1010,10 @@ function applyPose(p){
     orient(legR.thigh, o.hipR, o.kneeR, o.poleR); orient(legR.shin, o.kneeR, o.ankleR, p.f);
     orient(legL.thigh, o.hipL, o.kneeL, o.poleL); orient(legL.shin, o.kneeL, o.ankleL, p.f);
     placePole(armR, o.handR, p.f, aR.out, aR.plant); placePole(armL, o.handL, p.f, aL.out, aL.plant);
+    placeCuff(skiR.cuff, o.ankleR, o.kneeR, new V(0,0,1).applyQuaternion(J.qSkiR));
+    placeCuff(skiL.cuff, o.ankleL, o.kneeL, new V(0,0,1).applyQuaternion(J.qSkiL));
+    { const S = p.sg > 0 ? 'L' : 'R', a = ankleAngles(o['ankle'+S], o['knee'+S], J['qSki'+S], p.inner);
+      ankleText = `外腳腳踝：背屈 ${a.flex.toFixed(0)}°・側傾 ${a.lat.toFixed(0)}°（往彎內為正）`; }
   }
 
   comBall.position.copy(p.com);
@@ -1064,7 +1097,7 @@ function setStance(k){
   document.getElementById('stName').textContent = STANCE[k].name;
   document.getElementById('stTxt').innerHTML = STANCE[k].txt + fxList(STANCE[k].fx);
   if (typeof cmpOn !== 'undefined') updCmpLbl();
-  rebuildTrails(Math.floor(sT));
+  if (C.L) build();
 }
 document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => setStance(b.dataset.st));
 const footEl = {L: document.getElementById('footL'), R: document.getElementById('footR')};
@@ -1200,6 +1233,7 @@ function updateUI(p, act, md, now){
   if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
   { const fx = STANCE[cfg.stance].fx;
     if (fx && turnish()) hud.innerHTML += `<br><span style="color:#ffb020">⚠️ 打滑 ${Math.round((p.skidX||0)/D)}°・抓地 ${Math.round(fx.edge*100)}%・轉彎半徑 ×${fx.r}</span>`; }
+  if (ankleText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#7fd1ff">${ankleText}</span>`;
   if (bendText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#b9a7ff">${bendText}</span>`;
 }
 
@@ -1308,7 +1342,7 @@ function frame(now){
   if (cmpOn){
     const W2 = Wd/2, sel = cfg.stance;
     renderer.setScissorTest(true);
-    cfg.stance = 'ok'; const p0 = pose(sT); applyPose(p0); slopeG.updateMatrixWorld(true);
+    cfg.stance = 'ok'; const Cerr = C; if (Cok) C = Cok; const p0 = pose(sT); applyPose(p0); C = Cerr; slopeG.updateMatrixWorld(true);
     placeCam(p0, W2/Hd, rad*1.3); renderer.setViewport(0, 0, W2, Hd); renderer.setScissor(0, 0, W2, Hd); renderer.render(scene, camera);
     cfg.stance = sel; const r1 = applyPose(p); act = r1.act; md = r1.md; slopeG.updateMatrixWorld(true);
     placeCam(p, W2/Hd, rad*1.3); renderer.setViewport(W2, 0, W2, Hd); renderer.setScissor(W2, 0, W2, Hd); renderer.render(scene, camera);

@@ -297,6 +297,7 @@ const cfg = {trick:'ollie', butter:'nose', sw:false, level:'carve', H:175, board
 let C = {};
 
 function build(){
+  Cok = null;
   const lv = LV[cfg.level], v = cfg.v/3.6;
   let Rt, phiApex, warn = '';
   if (lv.kind === 'trav' || lv.kind === 'ollie' || lv.kind === 'butter'){
@@ -336,10 +337,13 @@ function build(){
     phiApex = Math.atan(v*v/(G*Rt));
   }
   const psiMax = clamp((28 + (cfg.slope-8)*1.4 + lv.psiB)*D, 22*D, 66*D);
+  const RtOk = Rt, fxS = turnish() ? STANCE[cfg.stance].fx : null;
+  if (fxS) Rt *= fxS.r;
   const tp = Math.tan(psiMax), om = 1/(Rt*tp), A = Rt*tp*tp, L = W/om;
   let arc = 0; for (let i = 0; i < 400; i++){ const xp = A*om*Math.cos(W*i/400); arc += Math.sqrt(1+xp*xp)*L/400; }
   C = {v, Rt, phiApex, om, A, L, period: arc/v, warn, k: cfg.H/175, S: cfg.H*.0031,
        inten: clamp(Math.tan(phiApex)/Math.tan(55*D), 0, 1)};
+  Cok = fxS ? Object.assign({}, C, pathOf(RtOk, psiMax, v)) : null;
   slopeG.rotation.x = cfg.slope*D;
   buildBoard(); rescale(); placeLegMuscles(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch(); renderJumps();
 }
@@ -413,10 +417,10 @@ function drawMap(p){
   g.fillStyle = '#fff'; g.fillText('完', X(en[0]), Y(en[1])+3);
   { const fx = STANCE[cfg.stance].fx;
     if (fx && fx.r && turnish()){
-      const s0 = mapS[0].c; g.strokeStyle = '#ff4d6d'; g.lineWidth = 2; g.setLineDash([6, 5]); g.beginPath();
-      mapS.forEach((m, i) => { const x = s0[0] + (m.c[0]-s0[0])*fx.r, z = s0[1] + (m.c[1]-s0[1])*fx.r; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); });
+      const s0 = mapS[0].c; g.strokeStyle = '#3ddc84'; g.lineWidth = 2; g.setLineDash([6, 5]); g.beginPath();
+      mapS.forEach((m, i) => { const x = s0[0] + (m.c[0]-s0[0])/fx.r, z = s0[1] + (m.c[1]-s0[1])/fx.r; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); });
       g.stroke(); g.setLineDash([]);
-      g.fillStyle = '#ff4d6d'; g.font = '11px sans-serif'; g.textAlign = 'left'; g.fillText(`紅虛線 = 這個站姿實際會走的路線（轉彎半徑 ×${fx.r}）`, 8, 14);
+      g.fillStyle = '#3ddc84'; g.font = '11px sans-serif'; g.textAlign = 'left'; g.fillText(`綠虛線 = 正確站姿的路線；實線 = 目前這個站姿（轉彎半徑 ×${fx.r}）`, 8, 14);
     }
   }
   // current position
@@ -457,6 +461,30 @@ function fxList(fx){
   if (fx.r) li.push(fx.r > 1 ? `轉彎半徑變大 ×${fx.r}（入彎晚、彎形走樣）` : `轉彎半徑變小 ×${fx.r}（彎收得太急、靠搓雪）`);
   if (fx.bend) li.push(`板子彎曲只剩大約 ${Math.round(fx.bend*100)}%（沒有真正刻滑）`);
   return '<br><b>3D 中會看到的後果：</b><br>' + li.map(x => '・' + x).join('<br>');
+}
+function pathOf(Rt, psiMax, v){
+  const tp = Math.tan(psiMax), om = 1/(Rt*tp), A = Rt*tp*tp, L = W/om;
+  let arc = 0; for (let i = 0; i < 400; i++){ const xp = A*om*Math.cos(W*i/400); arc += Math.sqrt(1+xp*xp)*L/400; }
+  return {Rt, om, A, L, period: arc/v};
+}
+let Cok = null;
+/* ---------- ankle: boot cuff follows the shin ---------- */
+let ankleText = '';
+function makeCuff(color){
+  const geo = new THREE.BoxGeometry(.13, .17, .14); geo.translate(0, .085, 0);
+  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({color, roughness:.5}));
+  m.castShadow = true; slopeG.add(m); return m;
+}
+function placeCuff(cuff, ankle, knee, fwd){
+  const sh = knee.clone().sub(ankle).normalize();
+  orient(cuff, ankle.clone().addScaledVector(sh, -.06*C.k), knee, fwd);
+  cuff.scale.setScalar(C.k);
+}
+function ankleAngles(ankle, knee, q, inside){
+  const sh = knee.clone().sub(ankle).normalize();
+  const up = new V(0,1,0).applyQuaternion(q), fw = new V(0,0,1).applyQuaternion(q);
+  const inl = inside.clone().addScaledVector(up, -inside.dot(up)); inl.addScaledVector(fw, -inl.dot(fw)); inl.normalize();
+  return {flex: Math.atan2(sh.dot(fw), sh.dot(up))/D, lat: Math.atan2(sh.dot(inl), sh.dot(up))/D};
 }
 /* ---------- pose ---------- */
 function pose(s){
@@ -552,7 +580,8 @@ function finish(b){
   const footF = M.clone().addScaledVector(fB, C.S/2), footB = M.clone().addScaledVector(fB, -C.S/2);
   const upLean = UP.clone().applyQuaternion(qYZX(b.psi, b.phi, 0));
   const heelSit = toeLean < 0 ? .1*(-toeLean)/(60*D) : 0;
-  const hP = (lv.h0 - .06*b.phiMag/(60*D) - heelSit + st.dh + (b.dh || 0))*k;
+  const toeUp = toeLean > 0 ? .07*Math.min(1, toeLean/(60*D)) : 0;
+  const hP = (lv.h0 + .05 + toeUp - .06*b.phiMag/(60*D) - heelSit + st.dh + (b.dh || 0))*k;
   const P = (b.base || b.mid).clone().addScaledVector(upLean, hP).addScaledVector(fB, (st.dz + (b.dz || 0))*k).addScaledVector(t, st.dt*k).add(new V(0, b.blift || 0, 0));
   const com = P.clone().addScaledVector(upLean, .1*k);
   return Object.assign(b, {right, t, toeLean, fB, edge, qB, gpos, footF, footB, P, com});
@@ -574,7 +603,9 @@ function solve(p){
   const hipB = p.P.clone().add(new V(-dir*.11*k, -.05*k, 0).applyQuaternion(qP));
   const [aF, aB] = ANG();
   const yF = p.yawB - dir*(90-aF)*D, yBk = p.yawB - dir*(90-aB)*D;
-  const poleF = yawVec(yF), poleB = yawVec(yBk);
+  // knees flex toward the toes in the board's own frame (follows board roll)
+  const footDir = a => new V(Math.sin(a), .25, Math.cos(a)).normalize().applyQuaternion(p.qB);
+  const poleF = footDir(bootF.rotation.y), poleB = footDir(bootB.rotation.y);
   const legF = twoBone(hipF, p.footF, poleF, .45*k, .45*k);
   const legB = twoBone(hipB, p.footB, poleB, .45*k, .45*k);
   const gT = p.yawB - dir*55*D - p.sg*st.rot*p.nsh + (p.tx || 0);
@@ -902,7 +933,8 @@ const boardG = new THREE.Group(); slopeG.add(boardG);
 const boardMat = new THREE.MeshStandardMaterial({color:0x7c6cf0, roughness:.4});
 let boardParts = [], edgeL, edgeR;
 const bootMat = new THREE.MeshStandardMaterial({color:0x2b2b2b, roughness:.6});
-const bootF = new THREE.Mesh(new THREE.BoxGeometry(.12,.16,.3), bootMat), bootB = bootF.clone();
+const bootF = new THREE.Mesh(new THREE.BoxGeometry(.12,.07,.3), bootMat), bootB = bootF.clone();
+const cuffF = makeCuff(0x2b2b2b), cuffB = makeCuff(0x2b2b2b);
 boardG.add(bootF, bootB);
 /* ---------- board bending (reverse camber when edged & loaded) ---------- */
 // For a carving ski/board with sidecut radius R at edge angle θ, the edge lies on the snow when the
@@ -953,8 +985,8 @@ function placeBoots(){
   const dir = DIR(), k = C.k;
   const [gF, gB] = ANG();
   const aF = Math.atan2(-dir*Math.cos(gF*D), Math.sin(gF*D)), aB = Math.atan2(-dir*Math.cos(gB*D), Math.sin(gB*D));
-  bootF.position.set(0, .02 + .08*k, C.S/2); bootF.rotation.set(0, aF, 0); bootF.scale.setScalar(k);
-  bootB.position.set(0, .02 + .08*k, -C.S/2); bootB.rotation.set(0, aB, 0); bootB.scale.setScalar(k);
+  bootF.position.set(0, .02 + .035*k, C.S/2); bootF.rotation.set(0, aF, 0); bootF.scale.setScalar(k);
+  bootB.position.set(0, .02 + .035*k, -C.S/2); bootB.rotation.set(0, aB, 0); bootB.scale.setScalar(k);
 }
 
 const arcLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(Array.from({length:21}, () => new V())), new THREE.LineBasicMaterial({color:0xffffff, depthTest:false, transparent:true}));
@@ -1020,7 +1052,7 @@ function applyPose(p){
       const zc = (Lb - BW)/2;
       bParts.n.position.y = .01 + kap*zc*zc/2; bParts.n.rotation.x = -Math.atan(kap*zc);
       bParts.tl.position.y = .01 + kap*zc*zc/2; bParts.tl.rotation.x = Math.atan(kap*zc);
-      bootF.position.y = .02 + .08*C.k + kap*(C.S/2)**2/2; bootB.position.y = bootF.position.y;
+      bootF.position.y = .02 + .035*C.k + kap*(C.S/2)**2/2; bootB.position.y = bootF.position.y;
     }
     bendText = !bendMul ? '' : kRaw > 1e-4 ? `板子反弓 ${sagCm(kRaw, Lb).toFixed(1)} cm・彎曲半徑 ${(1/kRaw).toFixed(1)} m` : '板子未受力彎曲（平板／離地）';
     bMk.position.set(x, .08 + kap*cm*cm/2, cm);
@@ -1052,6 +1084,12 @@ function applyPose(p){
     const o = Rig.drive({pelvis: p.P, qP: J.qP, qT: J.qT, qH, legs, arms});
     orient(legF.thigh, o['hip'+Fs], o['knee'+Fs], o['pole'+Fs]); orient(legF.shin, o['knee'+Fs], o['ankle'+Fs], o['pole'+Fs]);
     orient(legB.thigh, o['hip'+Bs], o['knee'+Bs], o['pole'+Bs]); orient(legB.shin, o['knee'+Bs], o['ankle'+Bs], o['pole'+Bs]);
+    placeCuff(cuffF, o['ankle'+Fs], o['knee'+Fs], new V(0,0,1).applyQuaternion(qF));
+    placeCuff(cuffB, o['ankle'+Bs], o['knee'+Bs], new V(0,0,1).applyQuaternion(qBk));
+    { const inside = p.t.clone().multiplyScalar(Math.sign(p.toeLean) || 1);
+      const toFoot = q => { const fw = new V(0,0,1).applyQuaternion(q); return q.clone().multiply(new Q().setFromAxisAngle(UP, 0)); };
+      const a = ankleAngles(o['ankle'+Fs], o['knee'+Fs], toFoot(qF), inside);
+      ankleText = `前腳腳踝：背屈 ${a.flex.toFixed(0)}°（往腳趾為正）`; }
   }
 
   comBall.position.copy(p.com);
@@ -1174,7 +1212,7 @@ function setStance(k){
   document.getElementById('stName').textContent = STANCE[k].name;
   document.getElementById('stTxt').innerHTML = STANCE[k].txt + fxList(STANCE[k].fx);
   if (typeof cmpOn !== 'undefined') updCmpLbl();
-  if (C.L) rebuildTrails(Math.floor(sT));
+  if (C.L) build();
 }
 document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => setStance(b.dataset.st));
 
@@ -1337,6 +1375,7 @@ function updateUI(p, act, md, now){
   if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
   { const fx = STANCE[cfg.stance].fx;
     if (fx && turnish()) hud.innerHTML += `<br><span style="color:#ffb020">⚠️ 打滑 ${Math.round((p.skidX||0)/D)}°・抓地 ${Math.round(fx.edge*100)}%・轉彎半徑 ×${fx.r}</span>`; }
+  if (ankleText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#7fd1ff">${ankleText}</span>`;
   if (bendText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#b9a7ff">${bendText}</span>`;
 }
 
@@ -1444,7 +1483,7 @@ function frame(now){
   if (cmpOn){
     const W2 = Wd/2, sel = cfg.stance;
     renderer.setScissorTest(true);
-    cfg.stance = 'ok'; const p0 = pose(sT); applyPose(p0); slopeG.updateMatrixWorld(true);
+    cfg.stance = 'ok'; const Cerr = C; if (Cok) C = Cok; const p0 = pose(sT); applyPose(p0); C = Cerr; slopeG.updateMatrixWorld(true);
     placeCam(p0, W2/Hd, rad*1.3); renderer.setViewport(0, 0, W2, Hd); renderer.setScissor(0, 0, W2, Hd); renderer.render(scene, camera);
     cfg.stance = sel; const r1 = applyPose(p); act = r1.act; md = r1.md; slopeG.updateMatrixWorld(true);
     placeCam(p, W2/Hd, rad*1.3); renderer.setViewport(W2, 0, W2, Hd); renderer.setScissor(W2, 0, W2, Hd); renderer.render(scene, camera);

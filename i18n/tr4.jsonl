@@ -18,3 +18,6 @@
 {"src": "板尾向外甩、打滑：最多大約 ${fx.skid}°", "en": "Tail washes out and skids: up to about ${fx.skid}°", "tw": "板尾往外甩、打滑：最多大約 ${fx.skid}°"}
 {"src": "板彎曲只剩大約 ${Math.round(fx.bend*100)}%（冇真正 carve 到）", "en": "Flex down to about ${Math.round(fx.bend*100)}% (not really carving)", "tw": "板子彎曲只剩大約 ${Math.round(fx.bend*100)}%（沒有真正刻滑）"}
 {"src": "紅虛線 = 呢個站位實際會行嘅路線（彎半徑 ×${fx.r}）", "en": "Red dashes = the line this stance would actually take (turn radius ×${fx.r})", "tw": "紅虛線 = 這個站姿實際會走的路線（轉彎半徑 ×${fx.r}）"}
+{"src": "前腳腳踝：前屈 ${a.flex.toFixed(0)}°（向腳趾為正）", "en": "Front ankle: flex ${a.flex.toFixed(0)}° (+ = toward toes)", "tw": "前腳腳踝：背屈 ${a.flex.toFixed(0)}°（往腳趾為正）"}
+{"src": "外腳腳踝：前屈 ${a.flex.toFixed(0)}°・側傾 ${a.lat.toFixed(0)}°（向彎內為正）", "en": "Outside ankle: flex ${a.flex.toFixed(0)}°・lateral tilt ${a.lat.toFixed(0)}° (+ = into the turn)", "tw": "外腳腳踝：背屈 ${a.flex.toFixed(0)}°・側傾 ${a.lat.toFixed(0)}°（往彎內為正）"}
+{"src": "綠虛線 = 正確站位嘅路線；實線 = 而家呢個站位（彎半徑 ×${fx.r}）", "en": "Green dashes = correct-stance line; solid = this stance (turn radius ×${fx.r})", "tw": "綠虛線 = 正確站姿的路線；實線 = 目前這個站姿（轉彎半徑 ×${fx.r}）"}
