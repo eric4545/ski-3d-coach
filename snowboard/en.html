@@ -287,9 +287,9 @@ const REC = {
 };
 const STANCE = {
   ok:   {name:'Normal', dw:0, dz:0, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'Ideal: slightly more on the front foot entering the turn (about 55–60%), shifting to the back foot at the exit. Toeside pressure on the forefoot, heelside on the heels. Upper body follows the board, eyes on the line, edges controlled with ankles and knees.'},
-  back: {name:'Back foot too heavy', dw:-.25, dz:-.1, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'No pressure on the nose: slow initiation, the nose floats, so you end up twisting the upper body to turn. The back-leg quads get overloaded and you skid or catch an edge.'},
-  waist:{name:'Waist bend / toilet sit', dw:0, dz:0, dt:-.09, dh:-.06, tp:.5, rot:0, add:{erec:.2, quad:.15}, txt:'Toeside bending at the waist: the butt sticks out and the CoM leaves the edge, so you slip. Heelside ’toilet sit’: the butt sits behind the board and you fall back. Flex your knees and ankles instead of your waist.'},
-  rot:  {name:'Upper-body rotation', dw:0, dz:0, dt:0, dh:0, tp:0, rot:30*D, add:{obl:.3}, txt:'Twisting the upper body to turn the board makes the tail wash out and the skid uncontrolled; upper and lower body get out of sync at the edge change and you fall easily. Turns should be driven by the lower body (ankles, knees).'}
+  back: {fx:{skid:12, ph:'init', edge:.8, r:1.3, bend:.5}, name:'Back foot too heavy', dw:-.25, dz:-.1, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'No pressure on the nose: slow initiation, the nose floats, so you end up twisting the upper body to turn. The back-leg quads get overloaded and you skid or catch an edge.'},
+  waist:{fx:{skid:8, ph:'all', edge:.75, r:1.2, bend:.6}, name:'Waist bend / toilet sit', dw:0, dz:0, dt:-.09, dh:-.06, tp:.5, rot:0, add:{erec:.2, quad:.15}, txt:'Toeside bending at the waist: the butt sticks out and the CoM leaves the edge, so you slip. Heelside ’toilet sit’: the butt sits behind the board and you fall back. Flex your knees and ankles instead of your waist.'},
+  rot:  {fx:{skid:15, ph:'comp', edge:.85, r:.9, bend:.4}, name:'Upper-body rotation', dw:0, dz:0, dt:0, dh:0, tp:0, rot:30*D, add:{obl:.3}, txt:'Twisting the upper body to turn the board makes the tail wash out and the skid uncontrolled; upper and lower body get out of sync at the edge change and you fall easily. Turns should be driven by the lower body (ankles, knees).'}
 };
 const DIR = () => cfg.dir*(cfg.sw ? -1 : 1);
 const ANG = () => cfg.sw ? [6, -15] : [15, -6];
@@ -411,6 +411,14 @@ function drawMap(p){
   g.fillStyle = '#0f1419'; g.font = 'bold 9px sans-serif'; g.textAlign = 'center'; g.fillText('Start', X(st[0]), Y(st[1])+3);
   g.fillStyle = '#ff4d6d'; g.fillRect(X(en[0])-7, Y(en[1])-7, 14, 14);
   g.fillStyle = '#fff'; g.fillText('End', X(en[0]), Y(en[1])+3);
+  { const fx = STANCE[cfg.stance].fx;
+    if (fx && fx.r && turnish()){
+      const s0 = mapS[0].c; g.strokeStyle = '#ff4d6d'; g.lineWidth = 2; g.setLineDash([6, 5]); g.beginPath();
+      mapS.forEach((m, i) => { const x = s0[0] + (m.c[0]-s0[0])*fx.r, z = s0[1] + (m.c[1]-s0[1])*fx.r; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); });
+      g.stroke(); g.setLineDash([]);
+      g.fillStyle = '#ff4d6d'; g.font = '11px sans-serif'; g.textAlign = 'left'; g.fillText(`Red dashes = the line this stance would actually take (turn radius ×${fx.r})`, 8, 14);
+    }
+  }
   // current position
   const u = ((p.s % 1) + 1) % 1, cur = mapS[Math.min(mapS.length-1, Math.round(u*240))];
   const m = mapSample(p);
@@ -432,6 +440,24 @@ function mapSample(p){ return {ph: phaseOf(p), c: [p.com.x, p.com.z], tr: [[p.mi
 const mapName = ph => (PH[cfg.level][ph] || [ph])[0].split('（')[0];
 const mapTrackName = () => 'Edge track';
 
+/* ---------- stance consequences ---------- */
+const turnish = () => { const kd = LV[cfg.level].kind; return !kd || kd === 'turn'; };
+function stanceSkid(b, fx){
+  if (!fx || !fx.skid || !turnish()) return 0;
+  const init = Math.max(0, b.sn*b.cs*2), comp = Math.max(0, -b.sn*b.cs*2);
+  const w = fx.ph === 'init' ? .35 + init : fx.ph === 'comp' ? .35 + comp : 1;
+  return fx.skid*D*b.nsh*Math.min(1.3, w);
+}
+function fxList(fx){
+  if (!fx) return '';
+  const li = [];
+  if (fx.skid) li.push(`Tail washes out and skids: up to about ${fx.skid}°`);
+  if (fx.edge) li.push(`Grip down to about ${Math.round(fx.edge*100)}% (the edge doesn’t hold)`);
+  if (fx.inner) li.push(`Inside-ski edge only ${Math.round(fx.inner*100)}%, skis not parallel (A-frame)`);
+  if (fx.r) li.push(fx.r > 1 ? `Turn radius grows ×${fx.r} (late initiation, turn shape falls apart)` : `Turn radius shrinks ×${fx.r} (turn closed too abruptly, relying on skidding)`);
+  if (fx.bend) li.push(`Flex down to about ${Math.round(fx.bend*100)}% (not really carving)`);
+  return '<br><b>What you’ll see in 3D:</b><br>' + li.map(x => '・' + x).join('<br>');
+}
 /* ---------- pose ---------- */
 function pose(s){
   const lv = LV[cfg.level];
@@ -511,8 +537,10 @@ function finish(b){
   const right = new V(-Math.cos(b.psi), 0, Math.sin(b.psi));
   const t = right.clone().multiplyScalar(dir);
   const toeLean = b.phi*dir;
+  const fx = turnish() ? st.fx : null;
+  b.skidX = stanceSkid(b, fx); b.yawB -= b.sg*b.skidX;
   const fB = yawVec(b.yawB);
-  const edge = clamp(b.phi, -85*D, 85*D);
+  const edge = clamp(b.phi*(fx ? fx.edge : 1), -85*D, 85*D);
   const qB = qYZX(b.yawB, edge, b.pitch || 0);
   const xEdge = -(BW/2)*Math.sin(clamp(edge/(25*D), -1, 1)*Math.PI/2);
   const gpos = b.mid.clone().sub(new V(xEdge, 0, 0).applyQuaternion(qB));
@@ -984,7 +1012,7 @@ function applyPose(p){
     bStrip.position.x = x;
     paintStrip(bStrip, z => fn(z*Lb));
     const press = Math.max(p.press || 0, Math.min(1, Math.abs(pit)/(12*D)));
-    const carveF = {euro:1, carve:1, mid:.6, beg:.3, trav:.4, slip:.1}[cfg.level] ?? 0;
+    const carveF = ({euro:1, carve:1, mid:.6, beg:.3, trav:.4, slip:.1}[cfg.level] ?? 0)*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1);
     const kRaw = lift > .02 ? 0 : carveF*Math.tan(Math.min(Math.abs(p.edge), 80*D))/cfg.R + press/3;
     const kap = bendMul*kRaw;
     if (bParts){
@@ -1144,7 +1172,7 @@ function setStance(k){
   cfg.stance = k;
   document.querySelectorAll('[data-st]').forEach(b => b.classList.toggle('on', b.dataset.st === k));
   document.getElementById('stName').textContent = STANCE[k].name;
-  document.getElementById('stTxt').textContent = STANCE[k].txt;
+  document.getElementById('stTxt').innerHTML = STANCE[k].txt + fxList(STANCE[k].fx);
   if (typeof cmpOn !== 'undefined') updCmpLbl();
   if (C.L) rebuildTrails(Math.floor(sT));
 }
@@ -1307,6 +1335,8 @@ function updateUI(p, act, md, now){
   if (now - tableT > 150){ updateTable(act, md); tableT = now; }
   if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
   if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
+  { const fx = STANCE[cfg.stance].fx;
+    if (fx && turnish()) hud.innerHTML += `<br><span style="color:#ffb020">⚠️ Skid ${Math.round((p.skidX||0)/D)}°・Grip ${Math.round(fx.edge*100)}%・Turn radius ×${fx.r}</span>`; }
   if (bendText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#b9a7ff">${bendText}</span>`;
 }
 
@@ -1339,6 +1369,7 @@ function setMode(m){
 function updCmpLbl(){
   const st = STANCE[cfg.stance];
   document.getElementById('cmpR').innerHTML = (cfg.stance === 'ok' ? '✅ ' : '❌ ') + st.name + (st.short ? '<small>' + st.short + '</small>' : '');
+  if (st.fx) document.getElementById('cmpR').innerHTML += `<small style="color:#ffb020">Skid ${st.fx.skid}°・Grip ${Math.round(st.fx.edge*100)}%・Turn radius ×${st.fx.r}</small>`;
 }
 function setCmp(on){
   cmpOn = on; document.body.classList.toggle('cmp', on);

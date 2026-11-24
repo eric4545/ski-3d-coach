@@ -279,9 +279,9 @@ let C = {};
 cfg.stance = 'ok';
 const STANCE = {
   ok:   {name:'正常', fa:0, dz:0, dh:0, kk:1, add:{}, txt:'理想做法：入彎壓前腳掌（拇趾球附近），脛骨貼住鞋舌；Apex 時移返腳掌中間；出彎慢慢移後少少，但唔好坐落腳跟。外腳壓內側（拇趾邊），內腳輕輕用外側（細趾邊）。'},
-  back: {name:'坐後（壓腳跟）', fa:-.75, dz:-.13, dh:-.05, kk:1, add:{quad:.25, tib:-.15, calf:-.1, abs:.1}, txt:'板頭冇壓力，入彎慢、板頭咬唔到雪；彎尾會被板尾推出去，愈滑愈快。股四頭肌要長時間拉長對抗撐住，大腿好快燒。喺蘑菇入面會被彈飛。'},
-  fwd:  {name:'太前（壓腳尖）', fa:.8, dz:.1, dh:0, kk:1, add:{calf:.25, erec:.15, quad:-.05}, txt:'板頭壓力太大、板尾冇壓，板尾會打滑（skid 出去），carve 唔到乾淨嘅弧線；出彎放唔到，換刃時容易被板頭絆住。'},
-  even: {name:'雙腳平均', fa:0, dz:0, dh:0, kk:.25, add:{}, txt:'內腳搶咗外腳嘅壓力，外腳 edge 咬唔實、容易滑；內腳容易入錯邊刃，變成 A-frame 或者兩隻板分開（剪刀腳）。'}
+  back: {fx:{skid:6, ph:'comp', edge:.85, r:1.25, bend:.5}, name:'坐後（壓腳跟）', fa:-.75, dz:-.13, dh:-.05, kk:1, add:{quad:.25, tib:-.15, calf:-.1, abs:.1}, txt:'板頭冇壓力，入彎慢、板頭咬唔到雪；彎尾會被板尾推出去，愈滑愈快。股四頭肌要長時間拉長對抗撐住，大腿好快燒。喺蘑菇入面會被彈飛。'},
+  fwd:  {fx:{skid:8, ph:'comp', edge:.9, r:.9, bend:.6}, name:'太前（壓腳尖）', fa:.8, dz:.1, dh:0, kk:1, add:{calf:.25, erec:.15, quad:-.05}, txt:'板頭壓力太大、板尾冇壓，板尾會打滑（skid 出去），carve 唔到乾淨嘅弧線；出彎放唔到，換刃時容易被板頭絆住。'},
+  even: {fx:{skid:5, ph:'all', edge:.8, inner:.3, r:1.15, bend:.7}, name:'雙腳平均', fa:0, dz:0, dh:0, kk:.25, add:{}, txt:'內腳搶咗外腳嘅壓力，外腳 edge 咬唔實、容易滑；內腳容易入錯邊刃，變成 A-frame 或者兩隻板分開（剪刀腳）。'}
 };
 const SHARE = {beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
 
@@ -408,6 +408,14 @@ function drawMap(p){
   g.fillStyle = '#0f1419'; g.font = 'bold 9px sans-serif'; g.textAlign = 'center'; g.fillText('起', X(st[0]), Y(st[1])+3);
   g.fillStyle = '#ff4d6d'; g.fillRect(X(en[0])-7, Y(en[1])-7, 14, 14);
   g.fillStyle = '#fff'; g.fillText('完', X(en[0]), Y(en[1])+3);
+  { const fx = STANCE[cfg.stance].fx;
+    if (fx && fx.r && turnish()){
+      const s0 = mapS[0].c; g.strokeStyle = '#ff4d6d'; g.lineWidth = 2; g.setLineDash([6, 5]); g.beginPath();
+      mapS.forEach((m, i) => { const x = s0[0] + (m.c[0]-s0[0])*fx.r, z = s0[1] + (m.c[1]-s0[1])*fx.r; i ? g.lineTo(X(x), Y(z)) : g.moveTo(X(x), Y(z)); });
+      g.stroke(); g.setLineDash([]);
+      g.fillStyle = '#ff4d6d'; g.font = '11px sans-serif'; g.textAlign = 'left'; g.fillText(`紅虛線 = 呢個站位實際會行嘅路線（彎半徑 ×${fx.r}）`, 8, 14);
+    }
+  }
   // current position
   const u = ((p.s % 1) + 1) % 1, cur = mapS[Math.min(mapS.length-1, Math.round(u*240))];
   const m = mapSample(p);
@@ -429,6 +437,24 @@ function mapSample(p){ return {ph: phaseOf(p), c: [p.com.x, p.com.z], tr: [[p.fo
 const mapName = ph => (PH[cfg.level][ph] || [ph])[0].split('（')[0];
 const mapTrackName = () => '雪板痕';
 
+/* ---------- stance consequences ---------- */
+const turnish = () => { const kd = LV[cfg.level].kind; return !kd || kd === 'turn'; };
+function stanceSkid(b, fx){
+  if (!fx || !fx.skid || !turnish()) return 0;
+  const init = Math.max(0, b.sn*b.cs*2), comp = Math.max(0, -b.sn*b.cs*2);
+  const w = fx.ph === 'init' ? .35 + init : fx.ph === 'comp' ? .35 + comp : 1;
+  return fx.skid*D*b.nsh*Math.min(1.3, w);
+}
+function fxList(fx){
+  if (!fx) return '';
+  const li = [];
+  if (fx.skid) li.push(`板尾向外甩、打滑：最多大約 ${fx.skid}°`);
+  if (fx.edge) li.push(`抓地力只剩大約 ${Math.round(fx.edge*100)}%（edge 咬唔實）`);
+  if (fx.inner) li.push(`內板 edge 只剩 ${Math.round(fx.inner*100)}%，雙板唔平行（A-frame）`);
+  if (fx.r) li.push(fx.r > 1 ? `彎半徑變大 ×${fx.r}（入彎遲、彎形走樣）` : `彎半徑變細 ×${fx.r}（彎收得太急、靠搓雪）`);
+  if (fx.bend) li.push(`板彎曲只剩大約 ${Math.round(fx.bend*100)}%（冇真正 carve 到）`);
+  return '<br><b>3D 入面會見到嘅後果：</b><br>' + li.map(x => '・' + x).join('<br>');
+}
 /* ---------- pose ---------- */
 function pose(s){
   const lv = LV[cfg.level];
@@ -474,7 +500,10 @@ function finish(b){
     edgeR = -(e0 - .4*Math.max(0,phi) + Math.max(0,-phi));
     edgeL =  (e0 - .4*Math.max(0,-phi) + Math.max(0,phi));
   } else { edgeR = edgeL = clamp(phi*lv.ang, -75*D, 75*D); }
-  const skid = -sg*lv.skid*nsh;
+  const fx = turnish() ? st.fx : null;
+  if (fx){ edgeR *= fx.edge; edgeL *= fx.edge; if (fx.inner){ if (sg > 0) edgeR *= fx.inner; else edgeL *= fx.inner; } }
+  const skidX = stanceSkid(b, fx);
+  const skid = -sg*(lv.skid*nsh + skidX);
   const yawR = psi + skid + lv.wedge, yawL = psi + skid - lv.wedge;
   let pitchR = skiPitch(footR, yawR), pitchL = skiPitch(footL, yawL);
   let liftAmt = 0;
@@ -484,7 +513,7 @@ function finish(b){
     else { footL.y += .14*k*liftAmt; edgeL *= 1 - liftAmt; pitchL += .15*liftAmt; }
   }
   const edgeOuter = sg > 0 ? edgeL : edgeR;
-  return Object.assign(b, {f, right, P, com, footR, footL, edgeR, edgeL, yawR, yawL, pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
+  return Object.assign(b, {skidX, f, right, P, com, footR, footL, edgeR, edgeL, yawR, yawL, pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
 }
 
 function twoBone(H, T, pole, a, b){
@@ -936,7 +965,7 @@ function applyPose(p){
       sk.strip.position.x = x;
       paintStrip(sk.strip, z => d.share*1.15*Math.exp(-(((z - c)/sig)**2)));
       const carveF = {carve:1, lift:1, mid:.5, short:.5, mogul:.5, trav:.5, beg:.25, pivot:.15}[cfg.level] ?? 0;
-      const kap = bendMul*carveF*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
+      const kap = bendMul*carveF*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1)*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
       bendGeo(sk.ski.geometry, kap, L); bendGeo(sk.edge.geometry, kap, L); bendGeo(sk.strip.geometry, kap, L);
       sk.kap = kap;
       sk.mk.position.set(x, .07 + .05*d.share + kap*(c*L)**2/2, c*L); sk.mk.scale.setScalar(.6 + .8*d.share);
@@ -1033,7 +1062,7 @@ function setStance(k){
   cfg.stance = k;
   document.querySelectorAll('[data-st]').forEach(b => b.classList.toggle('on', b.dataset.st === k));
   document.getElementById('stName').textContent = STANCE[k].name;
-  document.getElementById('stTxt').textContent = STANCE[k].txt;
+  document.getElementById('stTxt').innerHTML = STANCE[k].txt + fxList(STANCE[k].fx);
   if (typeof cmpOn !== 'undefined') updCmpLbl();
   rebuildTrails(Math.floor(sT));
 }
@@ -1169,6 +1198,8 @@ function updateUI(p, act, md, now){
   if (now - tableT > 150){ updateTable(act, md); tableT = now; }
   if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
   if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
+  { const fx = STANCE[cfg.stance].fx;
+    if (fx && turnish()) hud.innerHTML += `<br><span style="color:#ffb020">⚠️ 打滑 ${Math.round((p.skidX||0)/D)}°・抓地 ${Math.round(fx.edge*100)}%・彎半徑 ×${fx.r}</span>`; }
   if (bendText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#b9a7ff">${bendText}</span>`;
 }
 
@@ -1201,6 +1232,7 @@ function setMode(m){
 function updCmpLbl(){
   const st = STANCE[cfg.stance];
   document.getElementById('cmpR').innerHTML = (cfg.stance === 'ok' ? '✅ ' : '❌ ') + st.name + (st.short ? '<small>' + st.short + '</small>' : '');
+  if (st.fx) document.getElementById('cmpR').innerHTML += `<small style="color:#ffb020">打滑 ${st.fx.skid}°・抓地 ${Math.round(st.fx.edge*100)}%・彎半徑 ×${st.fx.r}</small>`;
 }
 function setCmp(on){
   cmpOn = on; document.body.classList.toggle('cmp', on);
