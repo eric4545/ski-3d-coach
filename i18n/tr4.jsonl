@@ -177,3 +177,52 @@
 {"src": "每個彎一開始就將重量轉去新嘅外腳。", "en": "Move your weight to the new outside foot at the start of every turn.", "tw": "每個彎一開始就把重心轉到新的外腳。"}
 {"src": "🏋️ 健身動作參考 Gym", "en": "🏋️ Gym exercise reference", "tw": "🏋️ 健身動作參考 Gym"}
 {"src": "器械・熱身・核心・滑雪／單板輔助動作（只有廣東話）", "en": "Machines · warm-up · core · ski/snowboard drills (Cantonese only)", "tw": "器械・熱身・核心・滑雪／單板輔助動作（僅粵語）"}
+{"src": "連續側滑", "en": "Linked side slip", "tw": "連續側滑"}
+{"src": "底部 grip 轉彎", "en": "Bottom-grip turns", "tw": "彎底立刃轉彎"}
+{"src": "連續側滑 Linked side slip", "en": "Linked side slip", "tw": "連續側滑 Linked side slip"}
+{"src": "Release：放平", "en": "Release: flatten", "tw": "放刃：放平"}
+{"src": "膝頭同腳踝輕輕向下坡放，雙板放平，edge 唔再咬住；雙板會自己開始向下滑，板頭慢慢跌向山下。", "en": "Ease knees and ankles toward the valley so the skis go flat and the edges let go; the skis start sliding on their own and the tips drift down the hill.", "tw": "膝蓋和腳踝輕輕往下坡放，雙板放平，立刃不再咬雪；雙板會自己開始往下滑，板頭慢慢往山下轉。"}
+{"src": "Steer：轉向橫過山坡", "en": "Steer: turn across the hill", "tw": "轉向：轉成橫過山坡"}
+{"src": "用大腿同腳踝帶雙板轉，經過 fall line 轉去另一邊，上身一直面向下坡。", "en": "Steer the skis with thighs and ankles through the fall line to the other side; the upper body keeps facing downhill.", "tw": "用大腿和腳踝帶雙板轉，經過滾落線轉到另一邊，上半身一直面向下坡。"}
+{"src": "Grip：edge 咬住停", "en": "Grip: edges bite to stop", "tw": "咬雪：立刃停下"}
+{"src": "膝頭腳踝推向上坡，新嘅 uphill edge 加大到接近坡度，雙板咬住雪停低。下坡腳承重。", "en": "Push knees and ankles toward the hill, raise the new uphill edges close to the slope angle and the skis bite and stop. Weight on the downhill foot.", "tw": "膝蓋腳踝推向上坡，新的上坡刃加大到接近坡度，雙板咬住雪停下。下坡腳承重。"}
+{"src": "彎頂：release", "en": "Top of the turn: release", "tw": "彎頂：放刃"}
+{"src": "唔使停死，彎頂放平雙板，等佢自己轉落山；呢個位唔好煞。", "en": "No full stop: flatten the skis at the top and let them turn down the hill by themselves; don’t brake here.", "tw": "不用完全停下，彎頂把雙板放平，讓它自己轉向山下；這裡不要煞車。"}
+{"src": "彎中：steer", "en": "Middle of the turn: steer", "tw": "彎中：轉向"}
+{"src": "雙板經過 fall line 轉去橫過山坡，速度會上升，唔使驚。", "en": "The skis pass the fall line and come across the hill; speed builds, that’s fine.", "tw": "雙板經過滾落線轉到橫過山坡，速度會上升，不用怕。"}
+{"src": "彎底：grip 磨速度", "en": "Bottom of the turn: grip to scrub speed", "tw": "彎底：立刃減速"}
+{"src": "雙板橫過山坡嗰下用 edge 咬住，磨走多出嚟嘅速度，然後即刻 release 去下一個彎。", "en": "As the skis come across the hill, set the edges to scrub off the extra speed, then release straight into the next turn.", "tw": "雙板橫過山坡時用立刃咬住，磨掉多餘的速度，然後馬上放刃進入下一個彎。"}
+{"src": "三步一循環", "en": "Three steps per cycle", "tw": "三步一循環"}
+{"src": "Release 放平 → Steer 轉向橫過山 → Grip 咬住停；然後去另一邊再嚟。鳥瞰圖係一級級落嘅鋸齒。", "en": "Release flat → steer across the hill → grip to stop, then the same to the other side. The top-down map shows a stepped zig-zag.", "tw": "放刃放平 → 轉向橫過山坡 → 立刃停下；然後換另一邊再來。俯視圖是一級級往下的鋸齒。"}
+{"src": "Release 唔係煞", "en": "Release is not braking", "tw": "放刃不是煞車"}
+{"src": "放平嗰下雙板先會自己滑同轉；睇 HUD edge 角度跌到差唔多 0°。", "en": "Only when flat do the skis slide and turn by themselves; watch the HUD edge angle drop to about 0°.", "tw": "放平時雙板才會自己滑和轉；看 HUD 立刃角度降到接近 0°。"}
+{"src": "Grip 要夠角度", "en": "Grip needs enough edge", "tw": "立刃角度要夠"}
+{"src": "要停低，edge 要差唔多等於坡度；拉高坡度睇吓需要嘅角度變幾多。", "en": "To stop, the edge angle has to be about the slope angle; raise the slope and see how much more you need.", "tw": "要停下，立刃角度要差不多等於坡度；調高坡度看看需要的角度變多少。"}
+{"src": "上身面向下坡", "en": "Upper body faces downhill", "tw": "上半身面向下坡"}
+{"src": "雙板左右轉，上身一直面向山下。", "en": "The skis turn side to side; the upper body keeps facing down the hill.", "tw": "雙板左右轉，上半身一直面向山下。"}
+{"src": "彎底先 grip", "en": "Grip only at the bottom", "tw": "彎底才立刃"}
+{"src": "速度喺彎底（雙板橫過山坡）先用 edge 磨走；彎頂放鬆，唔好煞。睇 HUD 速度升跌。", "en": "Scrub speed with the edges only at the bottom (skis across the hill); stay relaxed at the top, no braking. Watch the HUD speed rise and fall.", "tw": "速度在彎底（雙板橫過山坡）才用立刃磨掉；彎頂放鬆，不要煞車。看 HUD 速度升降。"}
+{"src": "唔使停死", "en": "No need to stop", "tw": "不用完全停下"}
+{"src": "Grip 磨走速度就夠，速度仲有一半就即刻 release 去下一個彎。", "en": "Just scrub speed with the grip; with about half the speed left, release into the next turn.", "tw": "立刃磨掉速度就夠，速度剩一半就馬上放刃進入下一個彎。"}
+{"src": "陡坡更明顯", "en": "Clearer on steep slopes", "tw": "陡坡更明顯"}
+{"src": "拉高坡度（例如 28°）：每個彎底嘅 grip 角度要更大，先控得住速度。", "en": "Raise the slope (say 28°): each bottom-of-turn grip needs more edge angle to control speed.", "tw": "調高坡度（例如 28°）：每個彎底的立刃角度要更大，才控得住速度。"}
+{"src": "重量早啲轉", "en": "Move your weight early", "tw": "重心早點轉移"}
+{"src": "Grip 之前重量已經要喺新外腳（下坡腳），睇腳掌圖。", "en": "Before the grip, your weight should already be on the new outside (downhill) foot; see the foot map.", "tw": "立刃前重心就要在新外腳（下坡腳）上，看腳掌圖。"}
+{"src": "坡度 ${cfg.slope}°・Edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°（停低要 ≈ ${need}°）", "en": "Slope ${cfg.slope}° · Edge ${Math.abs(p.edgeOuter/D).toFixed(0)}° (≈ ${need}° to stop)", "tw": "坡度 ${cfg.slope}°・立刃 ${Math.abs(p.edgeOuter/D).toFixed(0)}°（停下要 ≈ ${need}°）"}
+{"src": "速度 ${(p.vel*3.6).toFixed(0)} km/h・板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = fall line）", "en": "Speed ${(p.vel*3.6).toFixed(0)} km/h · ski direction ${Math.abs(p.psi/D).toFixed(0)}° (0° = fall line)", "tw": "速度 ${(p.vel*3.6).toFixed(0)} km/h・板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = 滾落線）"}
+{"src": "Release 嗰下雙板點解會自己轉落山？", "en": "Why do the skis turn down the hill by themselves on the release?", "tw": "放刃時雙板為什麼會自己轉向山下？"}
+{"src": "放平之後 edge 唔再咬住，地心吸力令雙板向下滑，板頭自然跌向 fall line。", "en": "Once flat, the edges no longer hold; gravity slides the skis downhill and the tips fall toward the fall line.", "tw": "放平後立刃不再咬雪，重力讓雙板往下滑，板頭自然轉向滾落線。"}
+{"src": "要停低，edge 要幾大？", "en": "How much edge do you need to stop?", "tw": "要停下，立刃要多大？"}
+{"src": "差唔多等於坡度：坡度 20°，uphill edge 就要約 20°。", "en": "About the slope angle: on a 20° slope the uphill edge needs about 20°.", "tw": "差不多等於坡度：坡度 20°，上坡刃就要約 20°。"}
+{"src": "Release 放平 → Steer 轉向橫過山坡 → Grip 用 edge 咬住停，一路重複。控速靠 edge，唔係硬煞。", "en": "Release flat → steer across the hill → grip with the edges to stop, over and over. Speed control comes from the edges, not hard braking.", "tw": "放刃放平 → 轉向橫過山坡 → 立刃咬住停下，一直重複。控速靠立刃，不是硬煞。"}
+{"src": "先喺藍線：放平滑 2–3 米、轉去另一邊、咬住停；熟咗先試陡啲嘅坡。", "en": "Start on a blue run: slide flat 2–3 m, turn to the other side, grip to stop; try steeper slopes once it is solid.", "tw": "先在中級道：放平滑 2–3 公尺、轉到另一邊、咬住停下；熟練了再試陡一點的坡。"}
+{"src": "Grip 嗰下下坡腳同脛骨推實鞋舌，雙板停得乾淨；如果停唔到，多數係 edge 角度未夠或者坐後。", "en": "At the grip the downhill foot and shin press into the boot and the skis stop cleanly; if you can’t stop, the edge angle is usually too small or you are sitting back.", "tw": "立刃時下坡腳和脛骨壓實鞋舌，雙板乾淨停下；如果停不下來，多半是立刃角度不夠或坐後。"}
+{"src": "喺陡坡，應該喺彎邊個位控速？", "en": "On a steep slope, where in the turn do you control speed?", "tw": "在陡坡，應該在彎的哪個位置控速？"}
+{"src": "彎底，雙板橫過山坡嗰下用 edge grip 磨走速度。", "en": "At the bottom, as the skis come across the hill, grip with the edges to scrub speed.", "tw": "彎底，雙板橫過山坡時用立刃磨掉速度。"}
+{"src": "彎頂要唔要煞？", "en": "Do you brake at the top of the turn?", "tw": "彎頂要不要煞車？"}
+{"src": "唔使，彎頂 release 放平，等雙板自己轉落山。", "en": "No: release flat at the top and let the skis turn down the hill.", "tw": "不用，彎頂放刃放平，讓雙板自己轉向山下。"}
+{"src": "彎頂放鬆、彎底 grip：每個彎底磨走多出嚟嘅速度，再 release 去下一個彎。", "en": "Relax at the top, grip at the bottom: scrub the extra speed at the bottom of each turn, then release into the next.", "tw": "彎頂放鬆、彎底立刃：每個彎底磨掉多餘速度，再放刃進入下一個彎。"}
+{"src": "喺藍線先做，數住「放、轉、咬」；穩定咗先去黑線。", "en": "Do it on a blue run first, counting “release, steer, grip”; move to black runs once it is steady.", "tw": "先在中級道做，數著「放、轉、咬」；穩定了再去高級道。"}
+{"src": "彎底 grip 嗰下速度跌、腳底壓力大；彎頂放鬆嗰下雙板好輕、自己轉。", "en": "At the bottom grip, speed drops and pressure builds under the foot; at the relaxed top the skis feel light and turn by themselves.", "tw": "彎底立刃時速度下降、腳底壓力大；彎頂放鬆時雙板很輕、自己轉。"}
+{"src": "放平就滑、轉向橫過山坡、edge 咬住就停。", "en": "Flat to slide, steer across the hill, edges bite to stop.", "tw": "放平就滑、轉向橫過山坡、立刃咬住就停。"}
+{"src": "彎頂放鬆，彎底先用 edge 咬住磨走速度。", "en": "Relax at the top; use the edges to scrub speed only at the bottom.", "tw": "彎頂放鬆，彎底才用立刃磨掉速度。"}
