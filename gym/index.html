@@ -79,7 +79,7 @@ ol.how{margin:4px 0 6px 18px;padding:0}ol.how li{margin:3px 0;color:#c9d3dc}
   </div>
 
   <div class="card">
-    <div class="seg" id="cats"></div>
+    <div class="seg" id="cats" style="grid-template-columns:repeat(5,1fr)"></div>
     <div class="wrap" id="moves" style="margin-top:10px"></div>
   </div>
 
@@ -146,7 +146,7 @@ const PH = {con:['向心','m-con','🟢 發力（向心）・呼氣'], ecc:['離
 
 // pose shorthand: leg/arm apply to both sides; L/R/aL/aR override
 const BASE = {psi:0, roll:0, yaw:0, t:0, l:0, ty:0, hy:0, pt:0, hp:0, clav:0, fr:0, lift:0, off:[0,0,0],
-  L:{th:[0,4], sh:[0,4], ft:null, fy:0, kin:0, ak:null, akx:0}, R:{th:[0,4], sh:[0,4], ft:null, fy:0, kin:0, ak:null, akx:0},
+  L:{th:[0,4], sh:[0,4], ft:null, fy:0, kin:0, ak:null, akx:0, aw:null, bend:null, foot:null, raise:0}, R:{th:[0,4], sh:[0,4], ft:null, fy:0, kin:0, ak:null, akx:0, aw:null, bend:null, foot:null, raise:0},
   aL:{ar:[0,8], fa:[10,8]}, aR:{ar:[0,8], fa:[10,8]}};
 const clone = o => JSON.parse(JSON.stringify(o));
 function P(o){
@@ -332,6 +332,28 @@ wu_catcow: {cat:'warm', name:'貓牛式 Cat-Cow', view:'side', props:['mat'], te
        {name:'頸部硬撐', why:'頭死命向上仰，頸後受壓。頭跟住脊椎一齊郁。', d:{hp:-32}, mark:'head'}],
   ski:'脊椎靈活，屈曲伸展時唔會僵硬，吸收地形更順。',
   sb:'脊椎靈活，吸收地形起伏；跌倒時背部冇咁易受傷。'},
+knee_wall: {cat:'warm', name:'膝頭掂牆 Knee-to-Wall', view:'side', props:['wallFront'], tempoD:{up:1.5, hold:1.5, down:1.5, rest:.3}, tempoTxt:'膝頭向前掂牆、停 1–2 秒、返後；每邊 10 下。',
+  A: P({sup:'fixed', pos:[0,.86,-.04], t:8, L:{aw:[.1,.09,.2], bend:[0,0,1], foot:'flat'}, R:{aw:[-.1,.09,-.48], bend:[0,-.3,1], foot:'toes'}, arm:{ar:[60,15], fa:[80,10]}}),
+  B: P({sup:'fixed', pos:[0,.77,.03], t:10, L:{aw:[.1,.09,.2], bend:[0,0,1], foot:'flat'}, R:{aw:[-.1,.09,-.48], bend:[0,-.3,1], foot:'toes'}, arm:{ar:[60,15], fa:[80,10]}}),
+  mus:{calves_L:[2], tib_L:[1], quads_L:[1,'iso'], core:[1,'iso']},
+  do:'面向牆，前腳腳尖離牆約 10 cm，膝頭向前推去掂牆，腳踭唔可以離地；掂到就將腳再移後少少', dont:'腳踭離地、膝頭內塌', stop:'腳踝前面夾痛', note:'掂唔到（腳尖離牆 < 10 cm 都唔得），雪上就好難屈腳踝、壓唔到鞋舌。',
+  mis:[{name:'腳踭離地', why:'腳踭一離地就唔係測腳踝活動度。腳踭踩實。', d:{pos:[0,.03,.02]}, mark:'foot', mus:{calves_L:-1}},
+       {name:'膝頭內塌', why:'膝頭向內跌嚟「呃」距離。膝頭對準第二隻腳趾。', d:{kneeIn:14}, mark:'knee', view:'front'}],
+  ski:'腳踝屈曲（dorsiflexion）夠，先可以壓住鞋舌、用腳踝推 edge；唔夠就會用成個身代償，變坐後或者彎腰。',
+  sb:'屈膝屈踝嘅幅度，直接影響 heelside 坐低同吸收地形。'},
+hip_9090: {cat:'warm', name:'90/90 髖轉 90/90 Hip Switch', view:'diag', props:['mat'], tempoTxt:'每邊轉 2 秒、停 2 秒；左右各 6–8 下。',
+  seq:[{p:P({sup:'seat', y0:.1, t:-4, L:{th:[90,0], sh:[90,-90], ft:180}, R:{th:[90,90], sh:[-90,0], ft:-90}, arm:{ar:[-35,20], fa:[-35,20]}}), d:1.6, ph:'ecc', say:'雙膝跌去右邊'},
+       {same:0, d:1.6, ph:'iso', say:'停住，上身挺直'},
+       {p:P({sup:'seat', y0:.1, t:-4, leg:{th:[140,14], sh:[20,14], ft:90}, arm:{ar:[-35,20], fa:[-35,20]}}), d:1.4, ph:'con', say:'雙膝提返起'},
+       {mirrorOf:0, d:1.6, ph:'ecc', say:'雙膝跌去左邊'},
+       {same:3, d:1.6, ph:'iso', say:'停住，上身挺直'},
+       {same:2, d:1.4, ph:'con', say:'雙膝提返起'}],
+  mus:{glutes:[2], abductors:[2], adductors:[2], hipflex:[2], core:[1,'iso']},
+  do:'坐地，兩隻膝頭都屈 90 度，左右倒落地；上身保持挺直，唔好用手大力撐', dont:'上身跟住扭、圓背', stop:'髖前面或者膝頭夾痛',
+  mis:[{name:'上身跟住扭', why:'冇真正轉到髖，係上身轉。胸口一直朝前，淨係髖同腳轉。', d:{follow:1, twist:20}, mark:'trunk', mus:{obliques:1}},
+       {name:'圓背', why:'坐唔直就做唔到髖內外旋。挺胸坐高。', d:{round:20}, mark:'trunk', view:'side'}],
+  ski:'Pivot slip 同短彎上下身分離，靠髖內外旋；髖轉唔到，成個人就會跟住轉。',
+  sb:'髖靈活，heelside 同 toeside 推髖入彎都容易啲。'},
 wu_hip_circle: {cat:'warm', name:'髖關節繞圈 Hip Circles', view:'diag', tempoTxt:'慢慢畫大圈，每圈約 4 秒；左右各 8 下。',
   seq:[{p:P({...STAND, anchor:'R', L:{th:[8,4], sh:[-12,4]}, arm:{ar:[60,22], fa:[70,10]}}), d:1, ph:'ecc', say:'返到下面'},
        {p:P({...STAND, anchor:'R', L:{th:[95,4], sh:[-5,4]}, arm:{ar:[60,22], fa:[70,10]}}), d:1.1, ph:'con', say:'膝頭向前提高'},
@@ -380,6 +402,14 @@ pallof_sl: {cat:'core', grip:true, name:'單腳抗旋轉推舉 Pallof Press（�
        {name:'企唔穩仲死撐', why:'身體側傾、膝頭塌入去。企唔穩就放低隻腳，質素先。', d:{lean:-10, kneeIn:10}, mark:'knee', mus:{abductors_R:1}}],
   ski:'轉彎時下身帶住雪板轉，上身面向山下：骨盆穩定、胸口唔跟住轉，就係呢個感覺。',
   sb:'前後腳承重時骨盆唔歪；練單腳穩定兼抗旋轉。'},
+copenhagen: {cat:'core', name:'哥本哈根側撐 Copenhagen Plank', view:'front', props:['mat','copBench'], hold:true, tempoTxt:'每邊撐 20–40 秒 × 3 組；先用膝頭版（凳放膝頭）。',
+  A: P({sup:'floor', roll:-86, L:{th:[0,4], sh:[0,4], ft:90, raise:.42}, R:{th:[0,-6], sh:[0,-6], ft:90, raise:.3}, aR:{ar:[0,86], fa:[90,0]}, aL:{ar:[0,30], fa:[0,30]}}),
+  mus:{adductors_L:[3,'iso'], obliques:[3,'iso'], abductors:[2,'iso'], core:[1,'iso'], delts_R:[1,'iso']},
+  do:'側撐，上面隻腳（腳踝至膝頭之間）放喺凳邊，用大腿內側托住；下面隻腳離地。身體成一直線', dont:'髖部下墜、肩膊聳起', stop:'大腿內側或者腹股溝痛', note:'太難就將凳放喺膝頭位置（短槓桿），穩定咗先移去腳踝。', gear:'用具：長凳＋墊',
+  mis:[{name:'髖部下墜', why:'內收肌冇撐住，髖跌落地。頂高髖，頭到腳成一直線。', d:{hipDrop:14}, mark:'pelvis', mus:{adductors_L:-1}},
+       {name:'肩膊聳起', why:'手肘唔喺肩膊正下面，肩關節受壓。手肘對正肩膊。', d:{shrug:22}, mark:'shoulder', mus:{traps:2}}],
+  ski:'內收肌弱，carving 時內板好易走位；呢個係練內收肌最直接嘅動作，連埋側腹一齊練。',
+  sb:'內收肌穩住雙膝，ollie 落地同換刃時唔散。'},
 dead_bug: {cat:'core', name:'死蟲式 Dead Bug', view:'side', props:['mat'], tempoTxt:'每邊伸出 2 秒、收返 1.5 秒，腰全程貼地。',
   seq:[{p:P({sup:'floor', psi:90, leg:{th:[90,8], sh:[0,8], ft:90}, arm:{ar:[90,10], fa:[90,10]}}), d:1.5, ph:'con', say:'收返中間'},
        {same:0, d:.4, ph:'iso', say:'腰貼地，準備'},
@@ -396,7 +426,79 @@ dead_bug: {cat:'core', name:'死蟲式 Dead Bug', view:'side', props:['mat'], te
   ski:'四肢郁嘅時候核心穩住，令上半身喺髖部轉動時保持穩定。',
   sb:'ollie、跳台、換刃時身體唔散，力量傳得到塊板。'},
 
+
+reverse_nordic: {cat:'str', name:'反向北歐挺 Reverse Nordic', view:'side', props:['mat'], startB:true, tempoD:{up:1.5, hold:.3, down:4, rest:.5}, tempoTxt:'向後傾 3–5 秒（離心）、返起身 1.5 秒；3 組 × 4–6 下。',
+  A: P({sup:'floor', t:-38, leg:{th:[38,8], sh:[-90,8], ft:-90}, arm:{ar:[80,14], fa:[88,10]}}),
+  B: P({sup:'floor', t:-2, leg:{th:[2,8], sh:[-90,8], ft:-90}, arm:{ar:[80,14], fa:[88,10]}}),
+  mus:{quads:[3], hipflex:[2], core:[2,'iso'], glutes:[1,'iso']},
+  do:'跪喺墊上，膝頭到頭成一直線，夾臀收肚，成個人好似一塊板咁慢慢向後傾，傾到控制唔到就用手撐地，再返起身', dont:'屈髖（屁股向後坐）、跌落去冇控制', stop:'膝頭前側痛；第一次做每組 2–3 下就夠，翌日痠兩日係正常',
+  mis:[{name:'屈髖、屁股向後坐', why:'髖一屈，股四頭肌就唔使拉長受力，變咗冇用。夾臀，由膝頭到頭保持一直線。', d:{hinge:30}, mark:'pelvis', mus:{quads:-1}},
+       {name:'跌落去冇控制', why:'冇離心控制，等於冇練到，膝頭仲受衝擊。只傾到自己控制得到嘅角度。', d:{fast:true}, mark:null}],
+  ski:'滑雪股四頭肌多數係屈住慢慢受力（離心），呢個係冇器械下最強嘅離心股四頭肌訓練。',
+  sb:'heelside 長時間屈膝撐住、跳台落地吸收，都係股四頭肌離心受力。'},
+spanish_squat: {cat:'str', name:'西班牙深蹲 Spanish Squat', view:'side', props:['bandPost'], hold:true, tempoTxt:'撐 45–60 秒 × 3 組；或者慢落 8–10 下。',
+  A: P({sup:'feet', anchor:'both', t:18, leg:{th:[82,10], sh:[-3,10]}, arm:{ar:[80,10], fa:[85,8]}}),
+  mus:{quads:[3,'iso'], glutes:[2,'iso'], tib:[1,'iso'], core:[1,'iso']},
+  do:'粗彈力帶綁喺前面柱或者機，套住兩邊膝頭後面。向後坐落去，等條帶拉住膝頭，脛骨保持垂直，上身挺直', dont:'膝頭向前推（脛骨前傾）、膝頭內塌', stop:'膝頭前側刺痛', gear:'用具：粗彈力帶＋穩陣嘅柱或者機',
+  mis:[{name:'膝頭向前推', why:'脛骨一前傾，條帶就冇作用，壓力去返膝頭前面。坐後啲，脛骨企直。', d:{kneeFwd:22}, mark:'knee', mus:{quads:-1}},
+       {name:'膝頭內塌', why:'膝頭向內跌。膝蓋對準腳尖，向外頂住條帶。', d:{kneeIn:12}, mark:'knee', view:'front', mus:{abductors:-1}}],
+  ski:'股四頭肌喺屈膝位置長時間撐住；膝頭壓力相對細，冇 leg extension 機都可以練。',
+  sb:'heelside 坐低嗰個姿勢差唔多，練股四頭肌耐力。'},
+sl_rdl: {cat:'str', name:'單腳羅馬尼亞硬拉 Single-Leg RDL', view:'side', props:['dumbbell'], startB:true, tempoD:{up:1.2, hold:.4, down:2.5, rest:.4}, tempoTxt:'慢慢向前摺 2–3 秒、企返起身；每邊 3 組 × 8 下。',
+  A: P({sup:'feet', anchor:'L', t:78, L:{th:[26,4], sh:[-8,4]}, R:{th:[-62,4], sh:[-62,4], ft:-20}, aR:{ar:[0,4], fa:[0,4]}, aL:{ar:[10,30], fa:[20,30]}}),
+  B: P({sup:'feet', anchor:'L', t:3, L:{th:[4,4], sh:[-3,4]}, R:{th:[-6,4], sh:[-22,4]}, aR:{ar:[0,6], fa:[0,6]}, aL:{ar:[10,25], fa:[20,25]}}),
+  mus:{hams_L:[3], glutes_L:[3], erec:[2,'iso'], abductors_L:[2,'iso'], calves_L:[1,'iso'], core:[1,'iso']},
+  do:'一隻手拎啞鈴，用另一邊腳企（膝微屈）。由髖摺向前，背保持直，後腳自然向後伸，上身同後腳成一直線，再用臀部發力企返起身', dont:'彎腰、盆骨向外打開、膝頭鎖死', stop:'下背痛', gear:'用具：一個啞鈴（先用輕嘅）',
+  mis:[{name:'彎腰', why:'腰背拱起，壓力去晒下背。由髖摺，背保持直。', d:{round:24}, mark:'trunk', mus:{erec:1, hams_L:-1}},
+       {name:'盆骨向外打開', why:'後腳嗰邊盆骨翻起，臀中肌冇撐住。兩邊盆骨保持水平向地。', d:{hipYaw:16, lean:6}, mark:'pelvis', view:'back', mus:{abductors_L:-1}}],
+  ski:'強化腿後腱同臀部，幫你企返喺雪板中間而唔係坐後；腿後腱亦保護膝頭。單腳企唔穩，雪上就會自動坐後補償。',
+  sb:'後鏈有力，heelside 推髖向前、唔坐馬桶；單腳平衡亦有幫助。'},
+lateral_lunge: {cat:'str', name:'側弓步 Lateral Lunge', view:'front', startB:true, tempoD:{up:1.2, hold:.4, down:2, rest:.4}, tempoTxt:'坐落去 2 秒、推返起身；每邊 3 組 × 6 下，左右交替。',
+  A: P({sup:'feet', anchor:'both', t:32, L:{th:[60,20], sh:[-25,20]}, R:{th:[8,48], sh:[8,48]}, arm:{ar:[75,8], fa:[85,6]}}),
+  B: P({sup:'feet', anchor:'both', t:4, L:{th:[0,33], sh:[0,33]}, R:{th:[0,33], sh:[0,33]}, arm:{ar:[70,8], fa:[80,6]}}),
+  mus:{quads_L:[3], glutes_L:[3], adductors_L:[2], adductors_R:[2], abductors_L:[1,'iso'], core:[1,'iso']},
+  do:'雙腳打開大步，坐入一邊髖，嗰邊膝頭對準腳尖，另一隻腳伸直，腳掌貼地；再推返起身', dont:'膝頭內塌、腳踭離地、彎腰', stop:'大腿內側拉扯痛', note:'左右交替做。',
+  mis:[{name:'膝頭內塌', why:'屈嗰隻腳膝頭向內跌。膝蓋對準腳尖。', d:{kneeIn:14}, mark:'knee', mus:{abductors_L:-1}},
+       {name:'彎腰', why:'上身塌落去代替坐入髖。挺胸，屁股向後坐。', d:{round:22}, mark:'trunk', view:'side', mus:{erec:1}}],
+  ski:'滑雪係橫向出 edge、橫向受力；練內收肌同臀部控制 edge angle，普通前後方向嘅健身練唔到。',
+  sb:'橫向推力同控制，換刃時膝頭穩定。'},
+soleus_raise: {cat:'str', name:'屈膝提踵 Soleus Raise', view:'side', tempoD:{up:1, hold:1, down:2, rest:.3}, tempoTxt:'踮高 1 秒、停 1 秒、慢慢落 2 秒；3 組 × 12–15 下。',
+  A: P({sup:'toes', step:0, leg:{th:[32,6], sh:[-28,6], ft:90}, arm:{ar:[70,12], fa:[80,10]}}),
+  B: P({sup:'toes', step:0, leg:{th:[32,6], sh:[-28,6], ft:45}, arm:{ar:[70,12], fa:[80,10]}}),
+  mus:{calves:[3], quads:[2,'iso'], tib:[1,'iso'], core:[1,'iso']},
+  do:'膝頭保持微屈（好似滑雪姿勢），雙手輕扶牆，踮高腳踭再慢慢落', dont:'膝頭伸直（變咗練另一嚿）、彈住做', stop:'跟腱痛',
+  mis:[{name:'膝頭伸直', why:'膝頭一伸直，主力就變咗腓腸肌，練唔到屈膝時用嘅比目魚肌。保持屈膝。', d:{lockKnee:1}, mark:'knee', mus:{quads:-1}},
+       {name:'彈住做', why:'靠彈力上落，肌肉冇控制。頂點停 1 秒，慢慢落。', d:{fast:true}, mark:null}],
+  ski:'屈膝時發力嘅係比目魚肌，即係滑雪嗰個姿勢真正用到嘅小腿；仲幫你將脛骨壓向鞋舌。',
+  sb:'toeside 用前腳掌加壓，屈膝時靠比目魚肌。'},
+tib_raise: {cat:'str', name:'脛前肌提腳尖 Tibialis Raise', view:'side', props:['wallBack'], tempoD:{up:1, hold:.5, down:1.5, rest:.3}, tempoTxt:'腳尖抬起 1 秒、慢慢放低 1.5 秒；3 組 × 15 下。',
+  A: P({sup:'feet', anchor:'both', psi:9, leg:{th:[0,5], sh:[0,5], ft:90}, arm:{ar:[0,10], fa:[5,10]}}),
+  B: P({sup:'feet', anchor:'both', psi:9, leg:{th:[0,5], sh:[0,5], ft:125}, arm:{ar:[0,10], fa:[5,10]}}),
+  mus:{tib:[3], core:[1,'iso']},
+  do:'背靠牆，腳踭離牆約 25–30 cm，膝頭伸直。腳尖慢慢抬起到最高，再慢慢放低', dont:'屈膝、腳尖彈落', stop:'脛骨前面刺痛',
+  mis:[{name:'屈膝借力', why:'膝頭一屈，脛前肌就做少咗。膝頭伸直、背貼牆。', d:{kneeFwd:12}, mark:'knee', mus:{tib:-1}},
+       {name:'腳尖彈落', why:'放低嗰下冇控制。慢慢放 1.5 秒。', d:{fast:true}, mark:null}],
+  ski:'落陡坡同蘑菇時控制腳踝屈曲、脛骨頂住鞋舌，好大程度靠脛前肌；你從未感覺過小腿同脛骨發力，呢個係起點。',
+  sb:'toeside 同 heelside 之間轉換，脛前肌負責拉起腳尖。'},
 /* ---------- ski / snowboard specific ---------- */
+bss: {cat:'str', name:'後腳抬高分腿蹲 Bulgarian Split Squat', view:'side', props:['rearBench'], startB:true, tempoD:{up:1.2, hold:.4, down:3, rest:.4}, tempoTxt:'3 秒慢慢落、底部唔彈、起身 1 秒；每腳 6–8 下。',
+  A: P({sup:'feet', anchor:'L', t:22, L:{th:[78,5], sh:[-18,5]}, R:{aw:[-.13,.5,-.78]}, arm:{ar:[0,10], fa:[10,10]}}),
+  B: P({sup:'feet', anchor:'L', t:8, L:{th:[14,5], sh:[-6,5]}, R:{aw:[-.13,.5,-.78]}, arm:{ar:[0,10], fa:[10,10]}}),
+  mus:{quads_L:[3], glutes_L:[3], adductors_L:[2], abductors_L:[2,'iso'], hams_L:[1], hipflex_R:[1,'iso'], calves_L:[1,'iso'], core:[1,'iso']},
+  do:'後腳腳背擱喺凳上，前腳踏前一大步。3 秒慢慢垂直落，前膝對準腳尖，落到前大腿接近水平，再用前腳發力企返起身', dont:'前膝內塌、上身塌落去、用後腳推', stop:'膝蓋前側銳痛；企唔穩就扶住架', note:'先徒手，穩定咗先拎啞鈴；每腳 6–8 下。', gear:'用具：長凳（約膝頭高）',
+  mis:[{name:'前膝內塌', why:'臀中肌冇撐住，膝頭向內跌。膝蓋對準第二隻腳趾。', d:{kneeIn:14}, mark:'knee', mus:{abductors_L:-1}},
+       {name:'落得太快', why:'彈住落、彈住起，離心冇練到。3 秒慢慢落，底部唔好彈。', d:{fast:true}, mark:null}],
+  ski:'姿勢最接近彎中外腳屈膝受力嗰下；每隻腳分開練，兩邊力量唔平均都睇得出。',
+  sb:'前後腳各自承重（例如落葉飄、單腳推行），練單腳屈膝控制。'},
+step_down: {cat:'str', name:'慢落台階 Step-Down', view:'front', props:['stepBox'], startB:true, tempoD:{up:1.2, hold:.3, down:3, rest:.3}, tempoTxt:'3 秒慢慢落、腳踭輕點地、起身；每腳 8–10 下。',
+  A: P({sup:'feet', anchor:'R', step:.25, t:30, R:{th:[62,4], sh:[-32,4]}, L:{th:[42,4], sh:[34,4], ft:95}, arm:{ar:[60,12], fa:[70,10]}}),
+  B: P({sup:'feet', anchor:'R', step:.25, t:6, R:{th:[5,4], sh:[-3,4]}, L:{th:[28,4], sh:[22,4], ft:95}, arm:{ar:[55,12], fa:[65,10]}}),
+  mus:{quads_R:[3], glutes_R:[2], abductors_R:[3,'iso'], adductors_R:[1], calves_R:[1,'iso'], hipflex_L:[1,'iso'], core:[1,'iso']},
+  do:'企喺台階邊，用一隻腳承重，另一隻腳伸前。3 秒慢慢屈膝，腳踭輕點地，再企返起身。全程膝蓋對準腳尖，盆骨保持水平', dont:'膝蓋內塌、盆骨一邊跌落、跌落去', stop:'膝蓋前側痛就停；降低台階高度', note:'台階先用 15–20 cm，穩定咗先加高。', gear:'用具：台階或者踏板（約 20–25 cm）',
+  mis:[{name:'膝蓋內塌', why:'攰嗰陣最易出現，係膝頭受傷嘅位。膝頭對準腳尖，臀部收力。', d:{kneeIn:15}, mark:'knee', mus:{abductors_R:-1}},
+       {name:'盆骨跌落一邊', why:'臀中肌冇撐住，伸前嗰邊盆骨跌落。盆骨保持水平。', d:{lean:10}, mark:'pelvis', mus:{abductors_R:-1, obliques:1}}],
+  ski:'防傷重點：滑到攰嗰陣膝頭唔好內扣；練嘅係外腳膝頭對準腳尖。',
+  sb:'落地同 heelside 屈膝時膝頭穩定，減少扭膝風險。'},
 ski_stance: {cat:'ski', name:'滑雪預備站姿 Ski Stance Hold', view:'side', hold:true, tempoTxt:'撐 30–45 秒，重量喺腳掌中間。',
   A: P(SKI),
   mus:{quads:[3,'iso'], glutes:[2,'iso'], tib:[2,'iso'], erec:[2,'iso'], hams:[1,'iso'], calves:[1,'iso'], core:[1,'iso']},
@@ -490,7 +592,7 @@ ski_sl_squat: {cat:'ski', name:'單腿蹲落凳 Single-Leg Squat to Bench', view
   ski:'外腳承受大部分負荷時，屈膝位置要食住雪面嘅力。3 秒落，練嘅係控制，唔係彈走。',
   sb:'前腳或後腳單獨承重（例如落葉飄、單腳推行）時控制屈膝。'}
 };
-const CATS = [['mach','🏋️ 器械'], ['warm','🔥 熱身'], ['core','🧱 核心'], ['ski','⛷️🏂 滑雪專項']];
+const CATS = [['mach','🏋️ 器械'], ['str','💪 腿力'], ['warm','🔥 熱身'], ['core','🧱 核心'], ['ski','⛷️🏂 專項']];
 
 /* ================= renderer / scene ================= */
 const cv = $('cv'), stage = $('stage');
@@ -581,6 +683,7 @@ function fk(p){
   // support
   const T = new V();
   if (p.Tref){ T.copy(fk(p.Tref).T); }
+  else if (p.sup === 'fixed'){ T.set(...p.pos); }
   else if (p.sup === 'seat') T.set(0, (p.y0 || .5) + (p.lift || 0), 0);
   else if (p.sup === 'feet' || p.sup === 'toes'){
     const legs = p.anchor === 'L' ? ['L'] : p.anchor === 'R' ? ['R'] : ['L','R'];
@@ -591,16 +694,31 @@ function fk(p){
       else { minY = Math.min(minY, lg.heel.y, lg.ball.y, lg.toe.y + .01); c.add(lg.ankle); }
     }
     c.multiplyScalar(1/legs.length);
-    T.set(-c.x, (p.sup === 'toes' ? (p.step || 0) : 0) - minY, -c.z);
+    T.set(-c.x, (p.step || 0) - minY, -c.z);
   } else if (p.sup === 'floor'){
     let m = Infinity;
     const chk = (v, r) => { m = Math.min(m, v.y - r); };
-    for (const S of ['L','R']){ const lg = g.leg[S], am = g.arm[S]; chk(lg.heel, 0); chk(lg.toe, 0); chk(lg.ball, 0); chk(lg.knee, .055); chk(am.el, .045); chk(am.hand, .03); chk(am.sh, .07); }
+    for (const S of ['L','R']){ const lg = g.leg[S], am = g.arm[S], rz = -(p[S].raise || 0); chk(lg.heel, rz); chk(lg.toe, rz); chk(lg.ball, rz); chk(lg.knee, .055 + rz); chk(am.el, .045); chk(am.hand, .03); chk(am.sh, .07); }
     chk(new V(), .1); chk(g.head, .1); chk(g.upP.clone().multiplyScalar(LEN.hipsUp).addScaledVector(g.upT, LEN.trunk*.6), .1);
     T.set(0, -m, 0);
   }
   T.add(toRig(new V(p.off[0], p.off[1], p.off[2])));
   g.T = T;
+  // legs pinned to a world point (e.g. rear foot on a bench): solve after the support translation is known
+  for (const [S, sg] of [['L', 1], ['R', -1]]){
+    const lg = p[S]; if (!lg.aw) continue;
+    const L = g.leg[S], hip = L.hip, ankle = new V(...lg.aw).sub(T);
+    const dv = ankle.clone().sub(hip), dist = Math.min(dv.length(), LEN.th + LEN.sh - .003), dn = dv.clone().normalize();
+    const ca = clamp((LEN.th*LEN.th + dist*dist - LEN.sh*LEN.sh)/(2*LEN.th*dist), -1, 1), sa = Math.sqrt(1 - ca*ca);
+    const bend = new V(...(lg.bend || [0, -1, .35])); const n = bend.addScaledVector(dn, -bend.dot(dn)).normalize();
+    const knee = hip.clone().addScaledVector(dn, LEN.th*ca).addScaledVector(n, LEN.th*sa);
+    knee.x -= sg*Math.sin((lg.kin || 0)*D)*LEN.th*.6;
+    // foot: 'bench' = top of the foot resting on a bench, toes back; 'flat' = sole on the floor; 'toes' = heel up, on the ball of the foot
+    const fm = lg.foot || 'bench';
+    const fF = fm === 'flat' ? new V(0, 0, 1) : fm === 'toes' ? new V(0, -.55, .83) : toRig(new V(-1, -.25, 0)).normalize();
+    const fU = fm === 'flat' ? new V(0, 1, 0) : fm === 'toes' ? new V(0, .83, .55) : toRig(new V(-.2, 1, 0)).normalize();
+    Object.assign(L, {knee, ankle, fF, fU, toe:ankle.clone().addScaledVector(fF, LEN.foot), heel:ankle.clone(), ball:ankle.clone()});
+  }
   return g;
 }
 
@@ -634,6 +752,9 @@ function applyMis(p, d, q, tt){
   if (d.elbowBend){ p.aL.fa[0] = p.aL.ar[0] + d.elbowBend; p.aL.fa[1] = p.aL.ar[1] - d.elbowBend*.7; p.roll += 7; }
   if (d.hipOff){ p.L.th[1] = 4; p.L.sh[1] = 4; p.R.th[1] = 4; p.R.sh[1] = 4; }
   if (d.follow) p.ty = p.hy;
+  if (d.hinge){ p.t += d.hinge; legs.forEach(l => { l.th[0] -= d.hinge*.55; }); }
+  if (d.kneeFwd){ legs.forEach(l => { if (l.th[0] > 40){ l.th[0] -= d.kneeFwd*.6; l.sh[0] -= d.kneeFwd; } }); }
+  if (d.pos && p.pos) p.pos = p.pos.map((v, i) => v + d.pos[i]);
   if (d.deepCurl){ const b = 1 - q; p.pt -= 22*b; p.lift += .05*b; p.t += 10*b; p.L.ak = p.L.ak && [p.L.ak[0] - .06*b, p.L.ak[1] - .06*b]; p.R.ak = p.R.ak && [p.R.ak[0] - .06*b, p.R.ak[1] - .06*b]; }
   if (d.standUp){ legs.forEach(l => { l.th[0] *= .3; l.sh[0] *= .3; }); p.t *= .35; }
   return p;
@@ -1182,6 +1303,20 @@ function buildProps(m, ref){
     if (k === 'wall'){ const hx = Math.max(o.hipL.x, pc.x) + .11; const w = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.4), M_WALL); w.position.set(hx, 1.2, pc.z); w.rotation.y = -Math.PI/2; w.receiveShadow = true; propG.add(w); }
     if (k === 'bench'){ const b = addBox(M_PAD), lg = addBox(M_FRAME); const hip = ref.bench;
       setBox(b, new V(hip.x, hip.y/2 + .02, hip.z - .12), UP, FWD, .4, hip.y - .02, .38); b.visible = true; lg.visible = false; }
+    if (k === 'rearBench'){ const aw = m.A.R.aw; const b = addBox(M_PAD); setBox(b, new V(aw[0], (aw[1] - .07)/2, aw[2] - .05), UP, FWD, .38, aw[1] - .07, .42);
+      const f = addBox(M_FRAME); setBox(f, new V(aw[0], .02, aw[2] - .05), UP, FWD, .42, .04, .46); }
+    if (k === 'stepBox'){ const a = ref.o.ankleR; const b = addBox(M_FRAME); setBox(b, new V(a.x, (m.A.step || .25)/2, a.z + .04), UP, FWD, .4, m.A.step || .25, .45); }
+    if (k === 'bandPost'){ const post = addBox(M_FRAME); setBox(post, new V(0, .55, .95), UP, FWD, .1, 1.1, .1);
+      const bL = addCyl(M_BAND), bR = addCyl(M_BAND);
+      props.push(({o}) => { for (const [S, b] of [['L', bL], ['R', bR]]){ const kn = o['knee'+S].clone().addScaledVector(o['pole'+S], -.06); setCylAB(b, new V(0, .5, .92), kn, .012); } }); }
+    if (k === 'dumbbell'){ const bar = addCyl(M_METAL), d1 = addCyl(M_FRAME), d2 = addCyl(M_FRAME);
+      props.push(({o}) => { const h = o.handR, ax = new V(1, 0, 0); setCylAB(bar, h.clone().addScaledVector(ax, -.1), h.clone().addScaledVector(ax, .1), .015);
+        setCylAB(d1, h.clone().addScaledVector(ax, -.13), h.clone().addScaledVector(ax, -.08), .05); setCylAB(d2, h.clone().addScaledVector(ax, .08), h.clone().addScaledVector(ax, .13), .05); }); }
+    if (k === 'wallFront'){ const w = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4), M_WALL); w.position.set(0, 1.2, o.ankleL.z + .26); w.rotation.y = Math.PI; propG.add(w); }
+    if (k === 'wallBack'){ const z = Math.min(o.shL.z, o.shR.z, pc.z) - .13; const w = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4), M_WALL); w.position.set(0, 1.2, z); propG.add(w); }
+    if (k === 'copBench'){ const aL = o.ankleL, kL = o.kneeL; const c = aL.clone().lerp(kL, .3); const top = c.y - .07;
+      const pad = addBox(M_PAD); setBox(pad, new V(c.x, top - .03, c.z), UP, FWD, .5, .06, .32);
+      const leg1 = addBox(M_FRAME); setBox(leg1, new V(c.x + .22, (top - .06)/2, c.z), UP, FWD, .05, top - .06, .28); }
     if (k === 'marks'){ for (const x of [-.55, .55]){ const mk = addBox(M_BAND, false); setBox(mk, new V(x, .004, 0), UP, FWD, .26, .006, .12); } }
   }
 }
@@ -1311,7 +1446,7 @@ function prepMove(){
   const p0 = m.seq ? m.seq[0]._p : (m.startB ? m.B : m.A);
   if (m.pinHands){ pinned = null; const r = pose3D(p0); pinned = {L:r.o.handL.clone(), R:r.o.handR.clone()}; }
   const ref = pose3D(m.A || p0);
-  if (m.props && m.props.includes('sled')){ const rb = pose3D(m.B); ref.B = rb; }
+  if (m.props && (m.props.includes('sled') || m.props.includes('wallFront'))){ const rb = pose3D(m.B); ref.B = rb; }
   if (m.props && m.props.includes('bench')){ const a = pose3D(m.A); ref.bench = a.g.T.clone().add(new V(0, -.12, 0)); ref.bench.y = Math.max(.3, ref.bench.y); }
   buildProps(m, ref);
   setGrip(!!(m.handAt || m.handRel || m.grip));
