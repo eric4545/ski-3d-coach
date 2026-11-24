@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3D 健身動作參考：肌肉・節奏・正確 vs 錯誤</title>
+<style>
+:root{--bg:#0f1419;--panel:#171e26;--line:#2a3440;--text:#e6edf3;--muted:#8b98a5;--accent:#4cc9f0;--good:#3ddc84;--warn:#ffb020;--con:#3ddc84;--ecc:#ff4d6d;--iso:#4cc9f0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang HK","Noto Sans TC","Microsoft JhengHei",sans-serif}
+header{padding:12px 16px 8px;max-width:900px;margin:0 auto}
+h1{font-size:17px;margin:0}
+header p{margin:2px 0 0;color:var(--muted);font-size:12px}
+#stage{position:relative;height:58vh;min-height:330px;max-height:640px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#cfdbe6;overflow:hidden}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.hud{position:absolute;top:8px;left:8px;z-index:2;background:rgba(15,20,25,.86);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;pointer-events:none;max-width:70%;line-height:1.45}
+.hud b{font-size:14px;color:var(--accent)}
+.cmp .hud{max-width:47%;font-size:11px;padding:4px 7px}.cmp .hud b{font-size:12px}
+#phaseBar{height:5px;background:#26303a;border-radius:3px;margin-top:5px;overflow:hidden}#phaseBar i{display:block;height:100%;width:0}
+.cmpLbl{position:absolute;bottom:8px;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;pointer-events:none;display:none;max-width:48%}
+#lblL{left:8px;background:rgba(61,220,132,.92);color:#0f1419}#lblR{right:8px;background:rgba(255,77,109,.94);color:#fff}
+#divider{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#0f1419;display:none}
+.hint{position:absolute;bottom:8px;right:8px;color:#3b4a58;font-size:10px;pointer-events:none}
+#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#3b4a58;font-size:13px;pointer-events:none}
+main{padding:12px 16px 28px;max-width:900px;margin:0 auto}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+button{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font:inherit;font-size:13px;cursor:pointer}
+button.on{border-color:var(--accent);color:var(--accent)}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%}
+.seg button{padding:8px 2px;font-size:12px}
+.seg button.on{background:var(--accent);color:#0f1419;font-weight:600}
+.wrap{display:flex;flex-wrap:wrap;gap:6px}.wrap button{font-size:12px;padding:6px 9px}
+.wrap button.on{background:var(--accent);color:#0f1419;font-weight:600}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+.card h2{font-size:15px;margin:0 0 6px}
+.card p{margin:4px 0;color:#c9d3dc}
+.note{color:var(--muted)!important;font-size:12px}
+.key{font-size:14px;padding:8px 10px;border-radius:8px;background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.35)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--muted);font-weight:500;font-size:12px}
+td small{display:block;color:var(--muted);font-size:11px;line-height:1.3}
+.mode{font-size:11px;font-weight:600;padding:1px 6px;border-radius:4px;white-space:nowrap}
+.m-con{color:#0f1419;background:var(--con)}.m-ecc{color:#fff;background:var(--ecc)}.m-iso{color:#0f1419;background:var(--iso)}.m-off{color:var(--muted);background:#26303a}
+.dots{letter-spacing:1px;color:var(--warn);white-space:nowrap}.dots i{color:#3a4652;font-style:normal}
+.delta{color:var(--ecc);font-size:11px;font-weight:600}.delta.dn{color:var(--muted)}
+ol.how{margin:4px 0 6px 18px;padding:0}ol.how li{margin:3px 0;color:#c9d3dc}
+.tips p{padding-left:2px}
+.sport{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:start}
+.sport b{white-space:nowrap}
+.disc{color:var(--muted);font-size:11px;margin-top:16px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🏋️ 3D 健身動作參考</h1>
+  <p>器械同滑雪／單板輔助動作：邊條肌肉發力、向心／離心／等長、節奏、正確 vs 錯誤</p>
+</header>
+
+<div id="stage">
+  <canvas id="cv"></canvas>
+  <div id="divider"></div>
+  <div class="hud" id="hud"></div>
+  <div class="cmpLbl" id="lblL">✅ 正確</div>
+  <div class="cmpLbl" id="lblR"></div>
+  <div id="loading">載入 3D 模型中…</div>
+  <div class="hint">拖動旋轉・雙指縮放</div>
+</div>
+
+<main>
+  <div class="row">
+    <button id="play">⏸ 暫停</button>
+    <input type="range" id="scrub" min="0" max="1000" value="0">
+    <button id="musBtn" class="on">💪 肌肉</button>
+  </div>
+  <div class="seg" id="views" style="grid-template-columns:repeat(5,1fr)">
+    <button data-v="side" class="on">側面</button><button data-v="diag">斜</button><button data-v="front">正面</button><button data-v="back">後面</button><button data-v="top">上面</button>
+  </div>
+
+  <div class="card">
+    <div class="seg" id="cats"></div>
+    <div class="wrap" id="moves" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card" id="tempoCard">
+    <h2>⏱ 節奏</h2>
+    <div class="seg" id="tempos" style="grid-template-columns:repeat(3,1fr)"></div>
+    <p id="tempoTxt"></p>
+  </div>
+
+  <div class="card">
+    <h2>⇆ 正確 vs 錯誤</h2>
+    <div class="wrap" id="mis"></div>
+    <p id="misWhy" class="key" style="display:none;margin-top:8px"></p>
+  </div>
+
+  <div class="card">
+    <h2>💪 邊度發力</h2>
+    <p class="note"><span class="mode m-con">向心</span> 肌肉縮短發力・<span class="mode m-ecc">離心</span> 肌肉拉長仲要控制・<span class="mode m-iso">等長</span> 長度唔變撐住・●●● 越多越主力</p>
+    <table><thead><tr><th>肌肉</th><th>主力</th><th>而家</th></tr></thead><tbody id="musList"></tbody></table>
+  </div>
+
+  <div class="card">
+    <h2>📋 點做</h2>
+    <p id="gear" class="note"></p>
+    <ol class="how" id="how"></ol>
+    <div class="tips">
+      <p id="tDo"></p><p id="tDont"></p><p id="tStop"></p><p id="tNote" class="note"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⛷️🏂 滑雪點用得著</h2>
+    <div class="sport"><b>⛷️ 雙板</b><span id="skiTxt"></span><b>🏂 單板</b><span id="sbTxt"></span></div>
+  </div>
+
+  <p class="disc">⚠️ 肌肉發力係根據運動生物力學原理做嘅示意（相對值），唔係實測 EMG。公仔動作係程式產生嘅理想化示範，用嚟理解做法同錯誤，唔係醫療或者復康建議；有痛就停，有傷患請先問醫生或者物理治療師。</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="rig.js"></script>
+<script>
+(() => {
+const D = Math.PI/180, V = THREE.Vector3, Q = THREE.Quaternion;
+const $ = id => document.getElementById(id);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const ease = u => u*u*(3 - 2*u);
+
+/* ================= data ================= */
+const MUS = {
+  quads:'股四頭肌 Quads', hams:'腿後腱 Hamstrings', glutes:'臀大肌 Glute max', abductors:'臀中肌 Glute med',
+  adductors:'內收肌 Adductors', calves:'小腿 Calves', tib:'脛前肌 Tibialis', hipflex:'髂腰肌 Hip flexors',
+  core:'腹直肌 Abs', obliques:'腹斜肌 Obliques', erec:'豎脊肌 Erectors', chest:'胸肌 Pecs', lats:'背闊肌 Lats',
+  midback:'中背 Rhomboids', traps:'上斜方肌 Upper traps', delts:'三角肌 Delts', rearDelts:'後三角肌 Rear delts',
+  biceps:'二頭肌 Biceps', triceps:'三頭肌 Triceps'
+};
+const TEMPO = {
+  strength: {name:'Strength 力量', up:1.2, hold:.4, down:3.0, rest:.5, txt:'發力穩定約 1–1.5 秒，返回慢慢 3 秒。重量大、次數少（1–6 下）。'},
+  power:    {name:'Power 爆發',    up:.35, hold:.15, down:2.0, rest:.6, txt:'發力盡快（<0.5 秒），返回控制 2 秒。中等重量（3–5 下），每下都要快。'},
+  endurance:{name:'Endurance 耐力', up:1.5, hold:0,  down:1.5, rest:.2, txt:'穩定 1.5 秒上、1.5 秒落，唔爆發。輕重量、多次數（15 下以上）。'}
+};
+const PH = {con:['向心','m-con','🟢 發力（向心）・呼氣'], ecc:['離心','m-ecc','🔴 返回（離心）・吸氣・控制住'], iso:['等長','m-iso','🔵 停住（等長）'], rest:['放鬆','m-off','放鬆・準備下一下'], air:['騰空','m-off','騰空']};
+
+// pose shorthand: leg/arm apply to both sides; L/R/aL/aR override
+const BASE = {psi:0, roll:0, yaw:0, t:0, l:0, ty:0, hy:0, pt:0, hp:0, clav:0, fr:0, lift:0, off:[0,0,0],
+  L:{th:[0,4], sh:[0,4], ft:null, fy:0, kin:0}, R:{th:[0,4], sh:[0,4], ft:null, fy:0, kin:0},
+  aL:{ar:[0,8], fa:[10,8]}, aR:{ar:[0,8], fa:[10,8]}};
+const clone = o => JSON.parse(JSON.stringify(o));
+function P(o){
+  const p = clone(BASE);
+  for (const k in o){
+    if (k === 'leg'){ Object.assign(p.L, clone(o.leg)); Object.assign(p.R, clone(o.leg)); }
+    else if (k === 'arm'){ Object.assign(p.aL, clone(o.arm)); Object.assign(p.aR, clone(o.arm)); }
+    else if (['L','R','aL','aR'].includes(k)) Object.assign(p[k], clone(o[k]));
+    else p[k] = clone(o[k]);
+  }
+  for (const k of ['leg','arm']) if (o[k]) delete p[k];
+  return p;
+}
+function mirror(p){
+  const m = clone(p);
+  [m.L, m.R] = [clone(p.R), clone(p.L)]; [m.aL, m.aR] = [clone(p.aR), clone(p.aL)];
+  m.l = -p.l; m.ty = -p.ty; m.hy = -p.hy; m.roll = -p.roll; m.yaw = -p.yaw; m.off = [p.off[0], p.off[1], -p.off[2]];
+  if (p.anchor === 'L') m.anchor = 'R'; else if (p.anchor === 'R') m.anchor = 'L';
+  return m;
+}
+const SEATED = {sup:'seat', y0:.5, leg:{th:[95,6], sh:[0,6]}};
+const STAND = {sup:'feet', anchor:'both', leg:{th:[0,5], sh:[0,5]}};
+const SKI = {sup:'feet', anchor:'both', t:38, leg:{th:[40,7], sh:[-20,7]}, arm:{ar:[30,14], fa:[72,10]}};
+const STANCE1R = {sup:'feet', anchor:'R', t:36, R:{th:[40,4], sh:[-20,4]}, L:{th:[38,6], sh:[-48,6]}, arm:{ar:[30,16], fa:[70,12]}};
+
+const MOVES = {
+/* ---------- machines ---------- */
+leg_press: {cat:'mach', name:'腿推 Leg Press', view:'side', props:['seatRecline','plate'], tempo:true,
+  A: P({sup:'seat', y0:.55, psi:50, leg:{th:[100,8], sh:[-10,8], ft:170}, arm:{ar:[25,20], fa:[60,20]}}),
+  B: P({sup:'seat', y0:.55, psi:50, leg:{th:[88,8], sh:[78,8], ft:170}, arm:{ar:[25,20], fa:[60,20]}}),
+  mus:{quads:[3], glutes:[2], adductors:[1], hams:[1], calves:[1,'iso'], core:[1,'iso']},
+  how:['調座位：背同臀貼實椅背，雙腳放踏板中間，與肩同寬，腳尖微向外','起始：膝微屈，唔好鎖死','落：吸氣，慢慢屈膝約 3 秒，落到大腿接近與地面平行，下背唔好離開椅背','推：呼氣，用成隻腳掌（特別係腳踭）推，推到膝近伸直但唔鎖死'],
+  do:'腳掌與肩同寬，落到大腿與地面平行或以下，膝頭方向跟腳尖一致', dont:'膝內扣、腳踭離地、落得太快冇控制', stop:'膝側／後方銳痛、腰離開椅背',
+  mis:[{name:'膝內扣', why:'推嗰下膝向內塌，膝內側受壓，臀中肌冇幫手。跟住腳尖方向推。', d:{kneeIn:16}, mark:'knee', view:'top', mus:{abductors:-1, adductors:1}},
+       {name:'腰離開椅背', why:'落得太深，盆骨捲起、下背離椅。減細幅度，下背貼實。', d:{lift:.06, pt:-18, tadd:-8}, mark:'pelvis', mus:{erec:1}}],
+  ski:'外腳承重嘅主力：彎中股四頭肌同臀大肌要頂住離心力（離心＋等長）。腿推練基礎力量，令你屈膝都撐得住。',
+  sb:'屈膝吸收同加壓都靠呢組肌肉；heelside 長時間屈膝坐低，股四頭肌尤其食力。'},
+leg_curl: {cat:'mach', name:'腿後腱 Leg Curl', view:'side', props:['seat','thighPad','roller'], tempo:true,
+  A: P({...SEATED, t:-12, leg:{th:[90,4], sh:[86,4]}, arm:{ar:[10,20], fa:[40,20]}}),
+  B: P({...SEATED, t:-12, leg:{th:[90,4], sh:[-8,4]}, arm:{ar:[10,20], fa:[40,20]}}),
+  mus:{hams:[3], calves:[1], core:[1,'iso']},
+  how:['調座位：膝蓋對正機器轉軸，滾軸壓喺小腿下端（腳踭上面），大腿墊壓實大腿','向後屈膝：呼氣，將滾軸拉到最底，停 1 秒','返回：吸氣，慢慢返回約 3 秒，唔好俾重量彈返去','盆骨貼實座墊，唔好用腰借力'],
+  do:'落返嚟（離心）嗰下控制住，唔靠慣性擺動', dont:'盆骨離開座墊、用扯力做', stop:'膝窩（膝蓋背面）銳痛',
+  mis:[{name:'盆骨離開座墊', why:'用腰／臀頂住借力，腿後腱食力少咗。大腿墊壓實，速度放慢。', d:{lift:.06, pt:-10}, mark:'pelvis', mus:{hams:-1, erec:1}},
+       {name:'上身擺動扯力', why:'靠上身後仰扯動滾軸。用輕啲重量，落返嗰下控制 3 秒。', d:{swing:18}, mark:'trunk', mus:{erec:1, core:1}}],
+  ski:'腿後腱同股四頭肌平衡，保護膝頭（ACL）；重心偏後時亦靠佢拉返身體向前。',
+  sb:'平衡股四頭肌，減低跌倒扭膝風險；toeside 時腿後腱幫手穩住膝頭。'},
+chest_press: {cat:'mach', name:'胸推 Chest Press', view:'diag', props:['seat','back','handles'], tempo:true,
+  A: P({...SEATED, t:-4, arm:{ar:[-40,50], fa:[92,4]}}),
+  B: P({...SEATED, t:-4, arm:{ar:[85,16], fa:[88,6]}}),
+  mus:{chest:[3], delts:[2], triceps:[2], core:[1,'iso']},
+  how:['調座位：令把手同胸口中線（乳頭位置）大約同高，背貼實椅背','肩胛向後夾實，保持成個動作','推：呼氣，推到手臂近伸直，手肘唔鎖死','返回：吸氣，慢慢返到手肘約 90 度，唔好令肩膊向前聳'],
+  do:'肩胛收緊夾實，落到胸口高度，推直但唔鎖死手肘', dont:'肩胛唔收（肩膀頂晒力）、手肘外展 90 度', stop:'肩前側銳痛',
+  mis:[{name:'聳肩／肩胛唔收', why:'肩膀頂高，前肩受力多。肩胛向後下收實先推。', d:{shrug:22}, mark:'shoulder', mus:{traps:2, chest:-1}},
+       {name:'手肘外展 90°', why:'手肘同肩平行向外，肩前側壓力大。手肘收到約 45–60°。', d:{flare:28}, mark:'elbow', mus:{delts:1}}],
+  ski:'撐雪杖同跌低撐起身用得着；胸同三頭肌亦幫上身保持穩定。',
+  sb:'跌低用手撐地、由坐地推起身都靠胸同三頭肌。'},
+lat_pulldown: {cat:'mach', name:'高位下拉 Lat Pulldown', view:'diag', props:['seat','kneePad','bar','pulley'], tempo:true,
+  A: P({...SEATED, t:-12, arm:{ar:[165,38], fa:[172,30]}}),
+  B: P({...SEATED, t:-12, arm:{ar:[18,58], fa:[150,24]}}),
+  mus:{lats:[3], biceps:[2], midback:[2], rearDelts:[1], core:[1,'iso']},
+  how:['調大腿墊：壓實大腿，令身體唔會被拉起','握把：雙手略闊過肩，上身微向後傾約 10–15 度，挺胸','拉：呼氣，將橫槓拉到下巴至上胸高度，手肘向下同向後帶，肩胛下沉','返回：吸氣，慢慢放到手臂全伸直，唔好俾重量拉起肩膊'],
+  do:'拉到下巴／上胸高度，頂部手臂全伸直，感覺背闊肌發力', dont:'向後仰借力（swing）、只郁手唔郁肩胛下沉', stop:'手腕／手肘內側痛',
+  mis:[{name:'後仰借力（swing）', why:'身體擺返後面扯槓，背闊肌食力少。上身固定，用手肘向下帶。', d:{swing:24}, mark:'trunk', mus:{lats:-1, erec:1}},
+       {name:'聳肩，肩胛冇下沉', why:'只係手掙扎。拉之前先將肩胛向下沉，再拉手肘。', d:{shrug:22}, mark:'shoulder', mus:{traps:2, lats:-1}}],
+  ski:'撐杖推進（平地、排隊）主要用背闊肌同三頭肌；背闊肌亦連住盆骨，幫上身穩定。',
+  sb:'由坐地拉起身、抬板都用到；背闊肌幫上身保持穩定。'},
+seated_row: {cat:'mach', name:'坐姿划船 Seated Row', view:'side', props:['seat','chestPad','handles'], tempo:true,
+  A: P({...SEATED, t:4, arm:{ar:[80,10], fa:[86,8]}}),
+  B: P({...SEATED, t:4, arm:{ar:[-32,16], fa:[86,8]}}),
+  mus:{midback:[3], lats:[2], rearDelts:[2], biceps:[2], core:[1,'iso'], erec:[1,'iso']},
+  how:['調座位：胸口貼實胸墊，背打直，雙手握把手，手臂向前伸直','開始：肩胛先向後收，再拉手肘','拉：呼氣，手肘向後過身體側，停 1 秒','返回：吸氣，慢慢伸返直手臂，唔好前後搖晃身體'],
+  do:'胸貼緊墊、背打直，拉到手肘超過身體側', dont:'上身前後搖晃借力、聳肩', stop:'下背痛',
+  mis:[{name:'上身前後搖晃', why:'用身體慣性代替背肌。胸貼住墊，慢啲拉。', d:{swing:22}, mark:'trunk', mus:{midback:-1, erec:1}},
+       {name:'聳肩', why:'上斜方肌搶晒力。肩膊保持向下，拉嗰下肩胛向後夾。', d:{shrug:22}, mark:'shoulder', mus:{traps:2, midback:-1}}],
+  ski:'肩胛收穩，雙手先可以一直保持喺前面、上身唔塌落去。',
+  sb:'上身挺直、肩膊唔向前縮，toeside 唔會屈腰。'},
+shoulder_press: {cat:'mach', name:'肩推 Shoulder Press', view:'diag', props:['seat','back','handles'], tempo:true,
+  A: P({...SEATED, t:-4, arm:{ar:[4,76], fa:[178,4]}}),
+  B: P({...SEATED, t:-4, arm:{ar:[168,28], fa:[178,12]}}),
+  mus:{delts:[3], triceps:[2], traps:[1], core:[1,'iso']},
+  how:['調座位：令把手大約同肩膊高度，背貼實椅背，核心收緊','推：呼氣，向上推到手臂近伸直，手肘唔鎖死','返回：吸氣，慢慢放到手肘約 90 度','唔好拱腰或聳肩，感覺肩前側卡住就即刻停'],
+  do:'核心收緊，推到手臂近全伸直（頂部唔鎖死）', dont:'腰過度後仰借力、聳肩', stop:'肩峰下卡住感／銳痛，呢個動作要求最高，痛就即刻停',
+  mis:[{name:'腰過度後仰', why:'用腰拱起借力，下背壓力大。核心收緊，減重量。', d:{tadd:22, pt:12}, mark:'trunk', mus:{erec:2, core:-1}},
+       {name:'聳肩', why:'肩峰下空間縮窄，易卡住。肩膊保持向下。', d:{shrug:24}, mark:'shoulder', mus:{traps:2}}],
+  ski:'托雪板上膊頭、放上架；肩膊穩定亦減低跌倒時受傷機會。',
+  sb:'抬板、拎板上纜車架；肩膊穩定，跌倒用手撐都冇咁易傷。'},
+hip_abduction: {cat:'mach', name:'髖外展 Hip Abduction', view:'front', props:['seat','back','kneePadsOut'], tempo:true,
+  A: P({...SEATED, leg:{th:[92,8], sh:[-2,8]}, arm:{ar:[20,30], fa:[60,10]}}),
+  B: P({...SEATED, leg:{th:[92,38], sh:[-2,38]}, arm:{ar:[20,30], fa:[60,10]}}),
+  mus:{abductors:[3], glutes:[2], core:[1,'iso']},
+  how:['坐直，背貼實椅背，雙腳放踏板，膝外側抵住墊','開始幅度調到舒適範圍，唔好一開始調太闊','向外打開：呼氣，打開到最大，停 1 秒','返回：吸氣，慢慢返，上身保持中立唔好側傾'],
+  do:'上身保持中立，動作幅度控制', dont:'上身側傾借力、速度太快', stop:'髖關節前側／內側夾緊感',
+  mis:[{name:'上身側傾借力', why:'身體向一側擺代替臀部發力。上身保持中立。', d:{lean:10}, mark:'trunk', mus:{obliques:2, abductors:-1}},
+       {name:'速度太快', why:'靠慣性彈開，離心冇練到。回程控制 2–3 秒。', d:{fast:true}, mark:null}],
+  ski:'臀中肌令外腳膝頭唔向內塌，入彎時外腳更穩，亦唔容易變 A-frame。',
+  sb:'膝頭對準腳尖先控制到 edge；臀中肌弱，heelside 膝頭好易塌入去。'},
+hip_adduction: {cat:'mach', name:'髖內收 Hip Adduction', view:'front', props:['seat','back','kneePadsIn'], tempo:true,
+  A: P({...SEATED, leg:{th:[92,38], sh:[-2,38]}, arm:{ar:[20,30], fa:[60,10]}}),
+  B: P({...SEATED, leg:{th:[92,8], sh:[-2,8]}, arm:{ar:[20,30], fa:[60,10]}}),
+  mus:{adductors:[3], core:[1,'iso']},
+  how:['坐直，背貼實椅背，雙腳放踏板，膝內側抵住墊','開始幅度調到舒適範圍，唔好一開始調太闊','向內夾緊：呼氣，夾埋，停 1 秒','返回：吸氣，慢慢返，唔好瞬間夾埋'],
+  do:'動作平穩，感覺大腿內側收縮', dont:'用盆骨傾斜借力、瞬間夾埋', stop:'腹股溝（鼠蹊部）拉扯感',
+  mis:[{name:'盆骨傾斜借力', why:'用腰扭動代替內收肌。背貼椅背，盆骨保持穩定。', d:{lean:9, tadd:8}, mark:'pelvis', mus:{obliques:1, adductors:-1}},
+       {name:'瞬間夾埋', why:'用彈力夾。夾緊後停 1 秒再慢慢返。', d:{fast:true}, mark:null}],
+  ski:'內收肌令雙板唔會散開（剪刀腳），短彎時雙腳一齊郁；亦係保護膝內側嘅重要肌肉。',
+  sb:'兩隻腳鎖喺板上，內收肌幫你穩住雙膝，跳完落地唔會散。'},
+calf_raise: {cat:'mach', name:'小腿提踵 Calf Raise', view:'side', props:['step','shoulderPads'], tempo:true,
+  A: P({sup:'toes', step:.14, leg:{th:[3,5], sh:[0,5], ft:112}, arm:{ar:[40,30], fa:[150,10]}}),
+  B: P({sup:'toes', step:.14, leg:{th:[3,5], sh:[0,5], ft:52}, arm:{ar:[40,30], fa:[150,10]}}),
+  mus:{calves:[3], tib:[1,'iso'], quads:[1,'iso'], core:[1,'iso']},
+  how:['肩膊壓實墊，腳掌前半放平台，腳踭懸空','膝微屈唔鎖死，身體保持直','落到腳踭低過踏板，再踮到最高，頂點停 1 秒','慢慢落返，感覺小腿拉長'],
+  do:'全幅度：落到底先上到頂，頂點停 1 秒', dont:'幅度太短、膝鎖死、彈住做', stop:'跟腱或者小腿抽筋、刺痛',
+  mis:[{name:'幅度太短', why:'只郁一小段，小腿冇拉伸到。要落到底先上到頂。', d:{range:.35}, mark:'foot', mus:{calves:-1}},
+       {name:'膝鎖死', why:'膝鎖死會令關節受壓。保持微屈。（姿勢上差別細，見文字）', d:{lockKnee:1}, mark:'knee'}],
+  ski:'小腿同腳踝喺雪鞋入面微調前後重心；屈膝時嘅比目魚肌特別重要。',
+  sb:'toeside 用前腳掌加壓主要靠小腿；ollie 起跳亦用到。'},
+
+/* ---------- warm-up ---------- */
+wu_squat: {cat:'warm', name:'徒手深蹲 Bodyweight Squat', view:'side', startB:true, tempoD:{up:1.4, hold:.6, down:2.2, rest:.4}, tempoTxt:'落 2 秒、起 1.5 秒；熱身用，唔使負重。',
+  A: P({sup:'feet', anchor:'both', t:45, leg:{th:[100,12], sh:[-30,12]}, arm:{ar:[85,8], fa:[88,6]}}),
+  B: P({sup:'feet', anchor:'both', t:5, leg:{th:[3,8], sh:[-2,8]}, arm:{ar:[80,8], fa:[85,6]}}),
+  mus:{quads:[3], glutes:[3], adductors:[2], hams:[1], calves:[1,'iso'], erec:[1,'iso'], core:[1,'iso']},
+  do:'腳與肩同寬，慢慢蹲到大腿接近與地面平行，膝蓋同腳尖同方向，重量放中足，雙手向前', dont:'膝蓋內塌、腳踭離地、背彎', stop:'膝蓋前側刺痛或腰痛就停',
+  mis:[{name:'膝蓋內塌', why:'膝頭向內跌，膝內側受壓，臀中肌冇做嘢。膝頭跟住腳尖方向。', d:{kneeIn:14}, mark:'knee', mus:{abductors:-1}},
+       {name:'腳踭離地', why:'重心太前，壓力去晒膝頭同腳趾。坐後少少，腳踭踩實。', d:{heelUp:28}, mark:'foot', mus:{quads:1, glutes:-1}},
+       {name:'背彎', why:'腰背拱起，下背受壓。挺胸、背打直，幅度細啲。', d:{round:22}, mark:'trunk', mus:{erec:1}}],
+  ski:'屈髖屈膝嘅基本模式＝滑雪姿勢嘅基礎；練好膝頭同腳尖一致。',
+  sb:'單板站姿本身就係半蹲；蹲得穩，heelside 坐低都穩。'},
+wu_bridge: {cat:'warm', name:'臀橋 Glute Bridge', view:'side', props:['mat'], tempoD:{up:1, hold:1, down:2, rest:.5}, tempoTxt:'頂上去 1 秒、停 1 秒、慢慢放低 2 秒。',
+  A: P({sup:'floor', psi:90, leg:{th:[50,8], sh:[-62,8], ft:0}, arm:{ar:[0,14], fa:[0,14]}}),
+  B: P({sup:'floor', psi:90, t:-30, pt:-6, leg:{th:[20,8], sh:[-75,8], ft:0}, arm:{ar:[0,14], fa:[0,14]}}),
+  mus:{glutes:[3], hams:[2], erec:[1,'iso'], core:[1,'iso']},
+  do:'仰臥屈膝，腳掌踩實。用臀部發力將髖頂高，由肩膊到膝成一條直線，頂部停 1 秒，慢慢放低', dont:'用腰拱起代替臀部發力、腳尖離地', stop:'腰痛或大腿後側抽筋就停',
+  mis:[{name:'用腰拱起', why:'頂得太高、腰拱起，下背代替臀部做嘢。頂到肩膊到膝一直線就夠，夾臀。', d:{archBack:16}, mark:'pelvis', mus:{glutes:-1, erec:2}},
+       {name:'腳尖離地', why:'用腳踭頂，腿後腱搶晒力、易抽筋。成隻腳掌踩實。', d:{toesUp:35}, mark:'foot', mus:{hams:1, glutes:-1}}],
+  ski:'先啟動臀部，避免滑雪時只係用大腿頂。',
+  sb:'heelside 推髖向前（唔好坐馬桶）主要靠臀部。'},
+wu_band: {cat:'warm', name:'彈力帶拉開 Band Pull-Apart', view:'front', props:['band'], tempoD:{up:1, hold:1, down:1.5, rest:.3}, tempoTxt:'拉開 1 秒、停 1 秒、慢慢返 1.5 秒。',
+  A: P({...STAND, arm:{ar:[90,4], fa:[90,2]}}),
+  B: P({...STAND, arm:{ar:[90,84], fa:[90,88]}}),
+  mus:{rearDelts:[3], midback:[3], traps:[1], delts:[1,'iso'], triceps:[1,'iso']},
+  do:'雙手握彈力帶，手臂伸直放胸前高度，向兩邊拉開到成一條直線，肩胛向後夾', dont:'聳肩、拱腰、用手臂扯', stop:'肩膊前側刺痛就停', note:'冇彈力帶可以空手做：雙手伸直向兩邊打開，肩胛向後夾。',
+  mis:[{name:'聳肩', why:'上斜方肌搶力，肩胛冇向後夾。肩膊向下沉先拉。', d:{shrug:22}, mark:'shoulder', mus:{traps:2, midback:-1}},
+       {name:'拱腰', why:'用腰後仰代替肩胛發力。收肚，肋骨唔好頂出。', d:{arch:14}, mark:'trunk', mus:{erec:1}}],
+  ski:'肩胛收好，雙手先自然保持喺前面。',
+  sb:'肩膊打開、上身唔向前縮，視線望得前。'},
+wu_catcow: {cat:'warm', name:'貓牛式 Cat-Cow', view:'side', props:['mat'], pinHands:true, tempoTxt:'跟呼吸：呼氣拱背 2 秒、吸氣下沉 2 秒，慢慢轉換。',
+  seq:[{p:P({sup:'floor', psi:-90, t:18, pt:-14, hp:-10, leg:{th:[90,6], sh:[0,6], ft:0}, arm:{ar:[90,6], fa:[90,6]}}), d:2, ph:'con', say:'貓：呼氣，拱起背'},
+       {same:0, d:.6, ph:'iso', say:'停一停'},
+       {p:P({sup:'floor', psi:-90, t:-14, pt:12, hp:22, leg:{th:[90,6], sh:[0,6], ft:0}, arm:{ar:[90,6], fa:[90,6]}}), d:2, ph:'ecc', say:'牛：吸氣，放鬆下沉'},
+       {same:2, d:.6, ph:'iso', say:'停一停'}],
+  mus:{core:[2, ['con','iso','ecc','iso']], erec:[2, ['ecc','iso','con','iso']], delts:[1,'iso'], triceps:[1,'iso']},
+  do:'四點支撐，呼氣時拱起背（貓），吸氣時放鬆下沉（牛），配合呼吸慢慢轉換', dont:'動作太快、頸部硬撐', stop:'手腕或下背有刺痛就停',
+  mis:[{name:'動作太快', why:'一下拱一下塌，冇跟呼吸，脊椎冇逐節郁。放慢到 2 秒一個方向。', d:{fast:true}, mark:null},
+       {name:'頸部硬撐', why:'頭死命向上仰，頸後受壓。頭跟住脊椎一齊郁。', d:{hp:30}, mark:'head'}],
+  ski:'脊椎靈活，屈曲伸展時唔會僵硬，吸收地形更順。',
+  sb:'脊椎靈活，吸收地形起伏；跌倒時背部冇咁易受傷。'},
+wu_hip_circle: {cat:'warm', name:'髖關節繞圈 Hip Circles', view:'diag', tempoTxt:'慢慢畫大圈，每圈約 4 秒；左右各 8 下。',
+  seq:[{p:P({...STAND, anchor:'R', L:{th:[8,4], sh:[-12,4]}, arm:{ar:[60,22], fa:[70,10]}}), d:1, ph:'ecc', say:'返到下面'},
+       {p:P({...STAND, anchor:'R', L:{th:[95,4], sh:[-5,4]}, arm:{ar:[60,22], fa:[70,10]}}), d:1.1, ph:'con', say:'膝頭向前提高'},
+       {p:P({...STAND, anchor:'R', L:{th:[70,62], sh:[-10,55]}, arm:{ar:[60,22], fa:[70,10]}}), d:1, ph:'con', say:'向外打開'},
+       {p:P({...STAND, anchor:'R', L:{th:[5,40], sh:[-35,38]}, arm:{ar:[60,22], fa:[70,10]}}), d:1, ph:'ecc', say:'向後向下收返'}],
+  mus:{hipflex_L:[3], abductors_L:[2], glutes_L:[1], adductors_L:[1], abductors_R:[2,'iso'], quads_R:[1,'iso'], core:[1,'iso']},
+  do:'單腳站穩（可扶住架或牆），另一隻腳提起，膝蓋向前再向外畫大圈，慢慢做', dont:'上身跟住擺動、用腰借力', stop:'髖關節前側或內側有銳痛就停', note:'左右兩邊各做 8 下。',
+  mis:[{name:'上身跟住擺動', why:'髖冇真正轉到，係上身擺。上身企定，淨係大腿郁。', d:{sway:12}, mark:'trunk', mus:{obliques:2}},
+       {name:'用腰借力', why:'盆骨後傾、腰拱起嚟提腳。收肚、盆骨企直，幅度細啲都得。', d:{pt:-14, tadd:8}, mark:'pelvis', mus:{core:1, hipflex_L:-1}}],
+  ski:'髖關節活動度夠，上下身分離同屈體先做得出。',
+  sb:'髖靈活，heelside 坐低同 toeside 推髖入彎都容易啲。'},
+
+/* ---------- core ---------- */
+plank: {cat:'core', name:'平板支撐 Plank', view:'side', props:['mat'], hold:true, tempoTxt:'撐 20–40 秒，正常呼吸；質素跌就停。',
+  A: P({sup:'floor', psi:-82, leg:{th:[0,3], sh:[0,3], ft:82}, arm:{ar:[82,8], fa:[172,8]}}),
+  mus:{core:[3,'iso'], obliques:[2,'iso'], glutes:[2,'iso'], quads:[1,'iso'], delts:[1,'iso'], chest:[1,'iso'], erec:[1,'iso']},
+  do:'腰背一直線，唔好拱起或塌腰，肩膊對正手肘，正常呼吸', dont:'閉氣、塌腰', stop:'下背開始痛',
+  mis:[{name:'塌腰', why:'腰向下塌，壓力去晒下背，腹肌冇做嘢。收肚、夾臀，由頭到腳成一直線。', d:{sag:17}, mark:'pelvis', mus:{core:-1, erec:1}},
+       {name:'屁股翹高', why:'髖頂得太高，腹肌冇負重，練唔到。降低髖到一直線。', d:{sag:-14}, mark:'pelvis', mus:{core:-1, delts:1}}],
+  ski:'核心穩定，下半身轉彎時上身唔亂郁。',
+  sb:'換刃時上下身連成一塊，力量由核心傳去塊板。'},
+side_plank: {cat:'core', name:'側平板支撐 Side Plank', view:'front', props:['mat'], hold:true, tempoTxt:'每邊撐 15–30 秒，正常呼吸。',
+  A: P({sup:'floor', roll:-78, leg:{th:[0,0], sh:[0,0], ft:90}, aR:{ar:[0,78], fa:[90,0]}, aL:{ar:[180,78], fa:[180,78]}}),
+  mus:{obliques:[3,'iso'], abductors:[2,'iso'], core:[1,'iso'], delts_R:[2,'iso'], glutes:[1,'iso'], adductors:[1,'iso']},
+  do:'身體側向一直線，唔好前傾或後仰，髖部盡量頂高', dont:'髖部下墜、肩膊聳起', stop:'肩膊或手腕痛',
+  mis:[{name:'髖部下墜', why:'髖跌落地，側腹冇撐住。頂高髖，頭到腳成一直線。', d:{hipDrop:16}, mark:'pelvis', mus:{obliques:-1}},
+       {name:'肩膊聳起', why:'肩膊頂向耳仔，肩關節受壓。手肘對正肩膊，肩胛向下沉。', d:{shrug:24}, mark:'shoulder', mus:{traps:2}}],
+  ski:'側腹同臀中肌撐住屈體（angulation），外腳先咬得實。',
+  sb:'傾斜入彎時側腹撐住身體，唔會塌腰；heelside、toeside 都用到。'},
+pallof_press: {cat:'core', name:'抗旋轉推舉 Pallof Press', view:'front', props:['cable'], tempoD:{up:1, hold:2, down:1.5, rest:.5}, tempoTxt:'推出去 1 秒、停 1–2 秒對抗扭力、慢慢收返。',
+  A: P({sup:'feet', anchor:'both', t:10, leg:{th:[18,9], sh:[-10,9]}, arm:{ar:[-8,22], fa:[95,-38]}}),
+  B: P({sup:'feet', anchor:'both', t:10, leg:{th:[18,9], sh:[-10,9]}, arm:{ar:[88,-8], fa:[90,-8]}}),
+  mus:{obliques:[3,'iso'], core:[2,'iso'], chest:[1], delts:[1], triceps:[1], glutes:[1,'iso'], abductors:[1,'iso']},
+  do:'雙手推直後停 1–2 秒，對抗想扭轉你身體嘅力，核心收緊、身體保持正面', dont:'身體被拉到轉向、腰扭動借力', stop:'下背或肩膀痛', gear:'用具：cable 機或者彈力帶（cable 喺你右邊）',
+  mis:[{name:'身體被拉到轉向', why:'cable 將你扭向佢嗰邊，核心冇抗住。推出去之前先收緊肚，胸口對正前面。', d:{twist:-18}, mark:'trunk', mus:{obliques:-1}},
+       {name:'腰扭動借力', why:'用腰扭嚟推，唔係抗旋轉。盆骨對正前面，只係手郁。', d:{hipYaw:-14, twist:-6}, mark:'pelvis', mus:{obliques:-1, core:-1}}],
+  ski:'下身轉、上身唔轉＝上下身分離所需嘅核心能力。',
+  sb:'抗旋轉令你唔會用上身甩轉塊板，轉彎更穩定。'},
+pallof_sl: {cat:'core', name:'單腳抗旋轉推舉 Pallof Press（單腳）', view:'front', props:['cable'], tempoD:{up:1, hold:2, down:1.5, rest:.5}, tempoTxt:'推出去 1 秒、停 1–2 秒、慢慢收返；企唔穩就改返雙腳。',
+  A: P({sup:'feet', anchor:'R', t:10, R:{th:[18,4], sh:[-10,4]}, L:{th:[30,6], sh:[-30,6]}, arm:{ar:[-8,22], fa:[95,-38]}}),
+  B: P({sup:'feet', anchor:'R', t:10, R:{th:[18,4], sh:[-10,4]}, L:{th:[30,6], sh:[-30,6]}, arm:{ar:[88,-8], fa:[90,-8]}}),
+  mus:{obliques:[3,'iso'], core:[2,'iso'], abductors_R:[2,'iso'], glutes_R:[1,'iso'], calves_R:[1,'iso'], quads_R:[1,'iso'], chest:[1], delts:[1]},
+  do:'側身企喺 cable 旁，先企近 cable 嗰隻腳（較易），另一隻腳提起離地；骨盆同胸口全程對正前面，雙手推直停 1–2 秒', dont:'腰扭動借力、企唔穩仲死撐', stop:'下背或肩膀痛；單腳企唔穩就改返雙腳站', gear:'用具：cable 機或者彈力帶（cable 喺你右邊）',
+  mis:[{name:'腰扭動借力', why:'骨盆跟住 cable 轉，冇抗旋轉。盆骨同胸口對正前面。', d:{hipYaw:-14, twist:-8}, mark:'pelvis', mus:{obliques:-1}},
+       {name:'企唔穩仲死撐', why:'身體側傾、膝頭塌入去。企唔穩就放低隻腳，質素先。', d:{lean:-10, kneeIn:10}, mark:'knee', mus:{abductors_R:1}}],
+  ski:'轉彎時下身帶住雪板轉，上身面向山下：骨盆穩定、胸口唔跟住轉，就係呢個感覺。',
+  sb:'前後腳承重時骨盆唔歪；練單腳穩定兼抗旋轉。'},
+dead_bug: {cat:'core', name:'死蟲式 Dead Bug', view:'side', props:['mat'], tempoTxt:'每邊伸出 2 秒、收返 1.5 秒，腰全程貼地。',
+  seq:[{p:P({sup:'floor', psi:90, leg:{th:[90,8], sh:[0,8], ft:90}, arm:{ar:[90,10], fa:[90,10]}}), d:1.5, ph:'con', say:'收返中間'},
+       {same:0, d:.4, ph:'iso', say:'腰貼地，準備'},
+       {p:P({sup:'floor', psi:90, R:{th:[90,8], sh:[0,8], ft:90}, L:{th:[15,8], sh:[15,8], ft:100}, aL:{ar:[90,10], fa:[90,10]}, aR:{ar:[168,10], fa:[168,10]}}), d:2, ph:'ecc', say:'右手同左腳慢慢伸出'},
+       {same:2, d:.4, ph:'iso', say:'停一停'},
+       {same:0, d:1.5, ph:'con', say:'收返中間'},
+       {same:0, d:.4, ph:'iso', say:'腰貼地，準備'},
+       {mirrorOf:2, d:2, ph:'ecc', say:'左手同右腳慢慢伸出'},
+       {same:6, d:.4, ph:'iso', say:'停一停'}],
+  mus:{core:[3,'iso'], obliques:[2,'iso'], hipflex:[2], delts:[1]},
+  do:'仰臥，雙手向上，髖同膝屈成 90 度。腰貼實地面，慢慢放低一邊手同對邊腳，返回，再換邊', dont:'腰拱起離地、動作太快、閉氣', stop:'腰痛或頸痛就停',
+  mis:[{name:'腰拱起離地', why:'腳放得太低、腹肌撐唔住，腰離地。腳唔使放咁低，腰貼實先。', d:{archBack:14}, mark:'pelvis', mus:{core:-1, erec:1}},
+       {name:'動作太快', why:'快就用慣性，核心冇做嘢。每邊 2 秒慢慢伸。', d:{fast:true}, mark:null}],
+  ski:'四肢郁嘅時候核心穩住，令上半身喺髖部轉動時保持穩定。',
+  sb:'ollie、跳台、換刃時身體唔散，力量傳得到塊板。'},
+
+/* ---------- ski / snowboard specific ---------- */
+ski_stance: {cat:'ski', name:'滑雪預備站姿 Ski Stance Hold', view:'side', hold:true, tempoTxt:'撐 30–45 秒，重量喺腳掌中間。',
+  A: P(SKI),
+  mus:{quads:[3,'iso'], glutes:[2,'iso'], tib:[2,'iso'], erec:[2,'iso'], hams:[1,'iso'], calves:[1,'iso'], core:[1,'iso']},
+  do:'腳與肩同寬，膝同髖微屈，小腿向前輕貼靴舌（冇靴就想像），重量放喺腳掌中間，背平，雙手向前', dont:'坐後（重量跌去腳踭）、背彎、膝蓋向內塌', stop:'膝前側刺痛或腰痛就停',
+  mis:[{name:'坐後', why:'重量跌去腳踭，雪板就難控制；大腿好快攰。小腿前傾、重量返去中足。', d:{sitBack:1}, mark:'pelvis', mus:{quads:1, tib:-1}},
+       {name:'背彎', why:'上身塌落去，下背受壓，雙手跌低。挺胸、背平。', d:{round:22}, mark:'trunk', mus:{erec:1}},
+       {name:'膝蓋向內塌', why:'膝頭向內跌，雪板內刃亂咬。膝頭對準腳尖。', d:{kneeIn:12}, mark:'knee', mus:{abductors:-1}}],
+  ski:'後坐係最常見嘅問題：重量跌去腳踭，雪板就難控制。要習慣小腿前傾、重量喺中足。',
+  sb:'單板一樣要屈膝屈踝、重心喺兩腳中間；坐後板頭會飄，轉唔到彎。'},
+ski_stance_sl: {cat:'ski', name:'單腳滑雪站姿 Single-Leg Ski Stance', view:'diag', hold:true, tempoTxt:'每邊撐 20–30 秒。',
+  A: P(STANCE1R),
+  mus:{quads_R:[3,'iso'], abductors_R:[3,'iso'], glutes_R:[2,'iso'], tib_R:[2,'iso'], calves_R:[1,'iso'], erec:[1,'iso'], core:[1,'iso']},
+  do:'同滑雪預備站姿一樣，但另一隻腳輕輕離地。支撐腳膝蓋同腳尖朝同一方向，重量喺中足', dont:'身體向側面倒、鎖死膝蓋、重量跌去腳踭', stop:'失去平衡就放低隻腳，旁邊要有牆或椅可扶',
+  mis:[{name:'身體向側面倒', why:'臀中肌冇撐住，上身倒去一邊。盆骨保持水平。', d:{lean:-12}, mark:'trunk', mus:{abductors_R:-1, obliques:1}},
+       {name:'鎖死膝蓋', why:'膝頭伸直鎖死，冇得吸收。保持屈膝。', d:{lockKnee:1}, mark:'knee', mus:{quads_R:-1}},
+       {name:'坐後', why:'重量跌去腳踭。小腿前傾，重量返中足。', d:{sitBack:1}, mark:'pelvis', mus:{quads_R:1}}],
+  ski:'轉彎時大部分壓力喺外腳。練單腳令外腳承重更穩。',
+  sb:'單腳推行、上落纜車都要單腳承重；單腳穩，前腳控制都穩。'},
+ski_sl_stand: {cat:'ski', name:'閉眼單腿站 Single-Leg Stand', view:'diag', hold:true, tempoTxt:'先開眼 30 秒，再閉眼 15–30 秒。',
+  A: P({sup:'feet', anchor:'R', t:4, R:{th:[8,3], sh:[-4,3]}, L:{th:[30,4], sh:[-55,4]}, arm:{ar:[15,26], fa:[25,26]}}),
+  mus:{calves_R:[2,'iso'], tib_R:[2,'iso'], abductors_R:[2,'iso'], quads_R:[1,'iso'], hipflex_L:[1,'iso'], core:[1,'iso']},
+  do:'先睜眼站穩，再閉眼。腳掌平均落力，膝蓋微屈，靠腳底同小腿嘅感覺保持平衡', dont:'鎖死膝蓋、郁嚟郁去借力、腳趾抓地過猛', stop:'失去平衡就放低隻腳，唔使死撐；旁邊要有牆或架可以扶',
+  mis:[{name:'鎖死膝蓋', why:'膝頭伸直鎖死，平衡靠關節唔靠肌肉。保持微屈。', d:{lockKnee:1}, mark:'knee'},
+       {name:'郁嚟郁去借力', why:'上身大幅擺動嚟平衡。細微調整用腳踝，唔好用上身。', d:{sway:10}, mark:'trunk', mus:{obliques:1}}],
+  ski:'雪靴包住腳踝，靠腳底同脛骨對靴舌嘅感覺判斷重心前後，而唔係用眼睇。',
+  sb:'板上靠腳底感覺控制前後重心同 edge；閉眼練本體感覺。'},
+ankle_edge: {cat:'ski', name:'腳掌內外側承重轉換 Ankle Edge Rocking', view:'front', tempoTxt:'每邊停約 2 秒，慢慢轉換。',
+  seq:[{p:P({...STAND, t:10, leg:{th:[16,7], sh:[-8,7]}, arm:{ar:[20,16], fa:[40,16]}}), d:1, ph:'ecc', say:'返中間'},
+       {p:P({...STAND, t:10, fr:11, leg:{th:[16,7], sh:[-8,7], kin:7}, arm:{ar:[20,16], fa:[40,16]}}), d:1, ph:'con', say:'重量去內側（腳掌內緣）'},
+       {same:1, d:2, ph:'iso', say:'停住感受內側'},
+       {same:0, d:1, ph:'ecc', say:'返中間'},
+       {p:P({...STAND, t:10, fr:-11, leg:{th:[16,7], sh:[-8,7], kin:-7}, arm:{ar:[20,16], fa:[40,16]}}), d:1, ph:'con', say:'重量去外側（腳掌外緣）'},
+       {same:4, d:2, ph:'iso', say:'停住感受外側'}],
+  mus:{calves:[2], tib:[2], abductors:[1], adductors:[1], quads:[1,'iso']},
+  do:'膝微屈，慢慢將重量喺腳掌內緣同外緣之間轉換，每邊停約 2 秒，感受重量點樣移動', dont:'彎腰、用身體擺動借力、腳趾抓地', stop:'腳踝或膝蓋有刺痛就停', note:'有雪靴就著住做更貼近實際，冇就著硬底鞋。',
+  mis:[{name:'彎腰', why:'上身向前塌，重量變咗去前面而唔係內外側。上身企直。', d:{round:24}, mark:'trunk', mus:{erec:1}},
+       {name:'用身體擺動借力', why:'成個人左右擺，腳底冇真正感受。上身企定，淨係腳踝同膝頭郁。', d:{sway:9}, mark:'trunk'}],
+  ski:'雪靴鎖住腳踝，edge 角度主要靠膝同髖帶動。呢個練習係令你認得重量落咗內側定外側，唔係練腳踝轉動。',
+  sb:'單板 edge 直接由腳踝同膝頭控制；分得清腳趾邊同腳跟邊壓力最重要。'},
+door_lean: {cat:'ski', name:'門框傾斜 Door-Frame Lean', view:'front', props:['doorPost'], hold:true, tempoTxt:'傾到手臂伸直、身體成一直線，撐 15–20 秒。',
+  A: P({...STAND, roll:-14, leg:{th:[0,2], sh:[0,2]}, aL:{ar:[35,80], fa:[35,80]}, aR:{ar:[0,12], fa:[15,12]}}),
+  mus:{abductors_R:[2,'iso'], obliques:[2,'iso'], core:[2,'iso'], adductors_L:[1,'iso'], delts_L:[1,'iso'], lats_L:[1,'iso'], calves:[1,'iso'], glutes:[1,'iso']},
+  do:'企喺門框旁，內側手握住門框，雙腳打穩。由腳踝到頭成一條直線，慢慢傾離門框，手臂伸直撐住，感受外腳壓力增加', dont:'屈腰（髖突出）、手臂彎曲、膝蓋鎖死', stop:'手指或肩膊痛、門框唔穩就停', note:'確認門框穩陣先做。左右代表門框喺你邊一邊。', gear:'用具：門框（喺你左邊）',
+  mis:[{name:'屈腰（髖突出）', why:'變咗屈體而唔係整體傾斜。由腳踝到頭保持一直線。', d:{hipOut:1}, mark:'pelvis', mus:{obliques:1}},
+       {name:'手臂彎曲', why:'手臂屈埋，身體冇真正傾出去。手臂伸直撐住。', d:{elbowBend:55}, mark:'elbow', mus:{biceps_L:2}}],
+  ski:'呢個係整體傾斜（inclination）：成個身體成一條線斜出去，對抗轉彎嘅離心力。同牆邊屈體唔同，要分清。',
+  sb:'速度快時成個人斜入彎（inclination），身體成一直線先撐得住。'},
+wall_hip_in: {cat:'ski', name:'牆邊髖入肩出 Wall Hip-In Shoulder-Out', view:'front', props:['wall'], hold:true, tempoTxt:'撐 15–20 秒，雙肩保持水平。',
+  A: P({...STAND, l:-16, L:{th:[14,-11], sh:[-8,-11]}, R:{th:[14,11], sh:[-8,11]}, aL:{ar:[20,22], fa:[45,22]}, aR:{ar:[20,30], fa:[45,30]}}),
+  mus:{obliques_R:[3,'iso'], abductors:[2,'iso'], glutes:[1,'iso'], core:[1,'iso'], quads:[1,'iso']},
+  do:'側身企喺牆邊，近牆嗰邊髖貼住牆，膝微屈。保持髖貼牆，上半身同肩膊向遠離牆嗰邊傾出，身體成 C 字形，雙肩保持水平', dont:'髖離牆、肩膊歪斜、整個人向牆倚', stop:'腰側或髖有刺痛就停', note:'左右代表牆喺你邊一邊。', gear:'用具：牆（喺你左邊）',
+  mis:[{name:'髖離牆', why:'冇屈體，變咗成個人斜。髖推入去貼住牆，上身先向外。', d:{hipOff:1}, mark:'pelvis', mus:{obliques_R:-1}},
+       {name:'肩膊歪斜', why:'上身傾得太盡，肩膊一高一低。傾少啲，雙肩保持水平。', d:{lean:-16}, mark:'shoulder', mus:{obliques_R:1}}],
+  ski:'呢個係屈體（angulation）：髖向山坡內側推入，上半身向外平衡，令 edge 咬雪而身體唔會倒。',
+  sb:'toeside 推髖入彎、上身保持較直；heelside 盆骨向前推，同樣係屈體概念。'},
+ski_counter_rot: {cat:'ski', name:'上下身分離 Upper-Lower Separation', view:'top', tempoTxt:'髖轉去一邊 1.2 秒、停半秒、返中間，再轉另一邊。',
+  seq:[{p:P(SKI), d:1.2, ph:'ecc', say:'返中間'},
+       {p:P({...SKI, hy:-28}), d:1.2, ph:'con', say:'髖向右轉，肩膊朝前'},
+       {same:1, d:.5, ph:'iso', say:'停住'},
+       {same:0, d:1.2, ph:'ecc', say:'返中間'},
+       {p:P({...SKI, hy:28}), d:1.2, ph:'con', say:'髖向左轉，肩膊朝前'},
+       {same:4, d:.5, ph:'iso', say:'停住'}],
+  mus:{obliques:[3], glutes:[2], adductors:[1], quads:[2,'iso'], core:[2,'iso'], erec:[1,'iso']},
+  do:'企好滑雪預備站姿，雙手向前當握住雪杖。髖慢慢向左右轉，肩膊同胸口保持朝前不動，轉完返中間', dont:'肩膊跟住髖轉、膝蓋內塌、郁嘅時候企直', stop:'腰痛就停，幅度細啲',
+  mis:[{name:'肩膊跟住髖轉', why:'上下身一齊轉，冇分離。胸口一直朝前，淨係髖同腳轉。', d:{follow:1}, mark:'shoulder', mus:{obliques:-2}},
+       {name:'郁嘅時候企直', why:'一轉就企高，冇咗滑雪姿勢。保持屈膝屈髖。', d:{standUp:1}, mark:'pelvis', mus:{quads:-1}}],
+  ski:'轉彎時雙腳同髖帶動雪板轉向，上半身保持面向山下，避免整個人扭曲。',
+  sb:'單板多數係上下身一齊轉（肩膀帶），但呢個練習幫你控制上身唔亂甩，換刃時更穩。'},
+ski_skater_hop: {cat:'ski', name:'側跳停穩 Skater Hop', view:'front', props:['marks'], tempoTxt:'跳過去、單腳落地停穩 3 秒，再跳返；左右各 5 下。',
+  seq:[{p:P({sup:'feet', anchor:'R', off:[0,0,-.55], t:36, R:{th:[55,-4], sh:[-28,-4]}, L:{th:[22,-16], sh:[-58,-16]}, aL:{ar:[40,10], fa:[65,10]}, aR:{ar:[-25,12], fa:[-10,12]}}), d:.28, ph:'ecc', say:'右腳落地，屈膝吸收'},
+       {same:0, d:2.6, ph:'iso', say:'停穩 3 秒'},
+       {p:P({sup:'feet', anchor:'R', off:[0,0,-.55], t:42, R:{th:[68,-4], sh:[-32,-4]}, L:{th:[25,-16], sh:[-60,-16]}, aL:{ar:[-20,10], fa:[0,10]}, aR:{ar:[30,12], fa:[60,12]}}), d:.5, ph:'ecc', say:'蹲低準備'},
+       {p:P({sup:'air', t:22, R:{th:[25,-10], sh:[-25,-10]}, L:{th:[35,12], sh:[-25,12]}, aL:{ar:[30,12], fa:[60,12]}, aR:{ar:[20,10], fa:[45,10]}}), d:.32, ph:'con', say:'向左邊蹬出去'},
+       {mirrorOf:0, d:.32, ph:'ecc', say:'左腳落地，屈膝吸收'},
+       {same:4, d:2.6, ph:'iso', say:'停穩 3 秒'},
+       {mirrorOf:2, d:.5, ph:'ecc', say:'蹲低準備'},
+       {mirrorOf:3, d:.32, ph:'con', say:'向右邊蹬出去'}],
+  mus:{quads:[3], glutes:[3], abductors:[2], calves:[2], adductors:[1], core:[1,'iso']},
+  do:'熱身完先做。向側面跳 1–1.5 米，單腳落地，膝蓋對準腳尖，停穩 3 秒先跳去另一邊', dont:'落地膝蓋內塌、未停穩就跳下一下、疲勞咗仲硬做', stop:'膝蓋或腳踝痛；落地開始唔穩就收工', note:'一組＝左右各 5 下，共 10 下。空地跳，唔使器材。',
+  mis:[{name:'落地膝蓋內塌', why:'落地時膝頭向內跌，膝蓋韌帶受壓。膝頭對準腳尖，臀部收力。', d:{kneeIn:15}, mark:'knee', mus:{abductors:-1}},
+       {name:'企直落地', why:'落地冇屈膝吸收，衝擊直接去關節。落地屈膝屈髖。', d:{standUp:1}, mark:'knee', mus:{quads:-1, glutes:-1}}],
+  ski:'轉彎轉換時，負荷由舊外腳交去新外腳。落地停穩 3 秒，就係練喺外腳上面接住重心。',
+  sb:'跳台同 ollie 落地都要膝頭對準腳尖、屈膝吸收衝擊。'},
+ski_sl_squat: {cat:'ski', name:'單腿蹲落凳 Single-Leg Squat to Bench', view:'side', props:['bench'], startB:true, tempoD:{up:1.5, hold:.5, down:3, rest:.4}, tempoTxt:'3 秒慢慢坐落、輕輕點一下、站返起身；每邊 5 下。',
+  A: P({sup:'feet', anchor:'R', t:42, R:{th:[92,4], sh:[-24,4]}, L:{th:[72,4], sh:[66,4]}, arm:{ar:[75,10], fa:[85,10]}}),
+  B: P({sup:'feet', anchor:'R', t:6, R:{th:[5,4], sh:[-3,4]}, L:{th:[40,4], sh:[34,4]}, arm:{ar:[70,10], fa:[80,10]}}),
+  mus:{quads_R:[3], glutes_R:[3], abductors_R:[2,'iso'], hams_R:[1], adductors_R:[1], calves_R:[1,'iso'], core:[1,'iso'], hipflex_L:[1,'iso']},
+  do:'背向凳企好，企一隻腳，另一隻腳伸前。用 3 秒慢慢坐落凳面，輕輕點一下，再站返起身。膝蓋對準腳尖', dont:'彈起身借力、膝蓋內塌、坐落去撻一聲', stop:'膝蓋前側銳痛；企唔穩就扶住架', note:'起步用自重，穩定咗先手持啞鈴。', gear:'用具：長凳',
+  mis:[{name:'膝蓋內塌', why:'臀中肌冇撐住，膝頭向內跌。膝蓋對準腳尖。', d:{kneeIn:14}, mark:'knee', mus:{abductors_R:-1}},
+       {name:'坐落去撻一聲', why:'落得太快冇控制，離心冇練到，膝頭仲受衝擊。3 秒慢慢落，輕輕點凳。', d:{fast:true}, mark:null}],
+  ski:'外腳承受大部分負荷時，屈膝位置要食住雪面嘅力。3 秒落，練嘅係控制，唔係彈走。',
+  sb:'前腳或後腳單獨承重（例如落葉飄、單腳推行）時控制屈膝。'}
+};
+const CATS = [['mach','🏋️ 器械'], ['warm','🔥 熱身'], ['core','🧱 核心'], ['ski','⛷️🏂 滑雪專項']];
+
+/* ================= renderer / scene ================= */
+const cv = $('cv'), stage = $('stage');
+const renderer = new THREE.WebGLRenderer({canvas:cv, antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0xcfdbe6);
+scene.fog = new THREE.Fog(0xcfdbe6, 7, 16);
+const camera = new THREE.PerspectiveCamera(38, 1, .05, 60);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a96a3, .85));
+const sun = new THREE.DirectionalLight(0xffffff, .75); sun.position.set(2.5, 5, 3.5); sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, {left:-2.5, right:2.5, top:2.5, bottom:-2.5, near:.5, far:15}); scene.add(sun);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshStandardMaterial({color:0xe9eef3, roughness:1}));
+floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
+const grid = new THREE.GridHelper(8, 32, 0xb9c5d1, 0xd5dee7); grid.position.y = .001; scene.add(grid);
+const fig = new THREE.Group(); scene.add(fig);
+const propG = new THREE.Group(); scene.add(propG);
+const musG = new THREE.Group(); scene.add(musG);
+const markG = new THREE.Group(); scene.add(markG);
+
+/* ================= kinematics ================= */
+let LEN = null;
+const Yv = new V(0,1,0), Xv = new V(1,0,0);
+const dirv = (f, a, sg) => { f *= D; a *= D; return new V(Math.sin(f)*Math.cos(a), -Math.cos(f)*Math.cos(a), sg*Math.sin(a)); };
+const pitchB = (v, a) => { a *= D; const c = Math.cos(a), s = Math.sin(a); return new V(v.x*c - v.y*s, v.x*s + v.y*c, v.z); };
+const rollB = (v, a) => { a *= D; const c = Math.cos(a), s = Math.sin(a); return new V(v.x, v.y*c - v.z*s, v.y*s + v.z*c); };
+const yawB = (v, a) => { a *= D; const c = Math.cos(a), s = Math.sin(a); return new V(v.x*c - v.z*s, v.y, v.x*s + v.z*c); };
+const toRig = v => new V(v.z, v.y, v.x);
+function basis(up, fwd){
+  const y = up.clone().normalize(), z = fwd.clone().addScaledVector(y, -fwd.dot(y)).normalize(), x = new V().crossVectors(y, z);
+  return new Q().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x, y, z));
+}
+function lerpPose(a, b, u){
+  if (typeof a === 'number') return a + (b - a)*u;
+  if (a === null || b === null || a === undefined || b === undefined) return u < .5 ? a : b;
+  if (Array.isArray(a)) return a.map((x, i) => lerpPose(x, b[i], u));
+  if (typeof a === 'object'){ const o = {}; for (const k in a) o[k] = lerpPose(a[k], b[k], u); return o; }
+  return u < .5 ? a : b;
+}
+
+// pose -> geometry relative to the pelvis centre (rig space) + support translation
+function fk(p){
+  const root = v => yawB(rollB(pitchB(v, p.psi), p.roll), p.yaw);
+  const Rg = v => toRig(root(v));
+  const tB = v => yawB(rollB(pitchB(v, -p.t), p.l), p.ty);
+  const pB = v => yawB(rollB(pitchB(v, -(p.t*.35 + p.pt)), p.l*.3), p.hy);
+  const hB = v => yawB(rollB(pitchB(v, -(p.t*.45 + p.hp)), p.l*.5), p.ty);
+  const g = {upT:Rg(tB(Yv)), fwdT:Rg(tB(Xv)), upP:Rg(pB(Yv)), fwdP:Rg(pB(Xv)), upH:Rg(hB(Yv)), fwdH:Rg(hB(Xv))};
+  g.latP = new V().crossVectors(g.upP, g.fwdP).normalize(); g.latT = new V().crossVectors(g.upT, g.fwdT).normalize();
+  g.leg = {}; g.arm = {};
+  for (const [S, sg] of [['L', 1], ['R', -1]]){
+    const lg = p[S], ft = lg.ft === null || lg.ft === undefined ? lg.sh[0] + 90 : lg.ft;
+    const hip = g.latP.clone().multiplyScalar(sg*LEN.hw);
+    const knee = hip.clone().addScaledVector(Rg(yawB(dirv(lg.th[0], lg.th[1] - lg.kin*.7, sg), p.hy)), LEN.th);
+    const ankle = knee.clone().addScaledVector(Rg(yawB(dirv(lg.sh[0], lg.sh[1] + lg.kin*.7, sg), p.hy*.5)), LEN.sh);
+    const fF = Rg(yawB(dirv(ft, 0, 1), lg.fy)), fU = Rg(yawB(rollB(dirv(ft + 90, 0, 1), sg*p.fr), lg.fy));
+    const toe = ankle.clone().addScaledVector(fF, LEN.foot).addScaledVector(fU, -LEN.ankH*.75);
+    const heel = ankle.clone().addScaledVector(fU, -LEN.ankH).addScaledVector(fF, -.04);
+    const ball = ankle.clone().addScaledVector(fF, LEN.foot*.7).addScaledVector(fU, -LEN.ankH);
+    g.leg[S] = {hip, knee, ankle, toe, heel, ball, fF, fU};
+    const am = p['a' + S];
+    const sh = g.upP.clone().multiplyScalar(LEN.hipsUp).addScaledVector(g.upT, LEN.trunk).addScaledVector(g.latT, sg*LEN.sw);
+    const ud = Rg(yawB(dirv(am.ar[0], am.ar[1], sg), p.ty)), fd = Rg(yawB(dirv(am.fa[0], am.fa[1], sg), p.ty));
+    const el = sh.clone().addScaledVector(ud, LEN.ua), hand = el.clone().addScaledVector(fd, LEN.fa);
+    g.arm[S] = {sh, el, hand, ud, fd};
+  }
+  g.head = g.upP.clone().multiplyScalar(LEN.hipsUp).addScaledVector(g.upT, LEN.trunk + .2);
+  // support
+  const T = new V();
+  if (p.sup === 'seat') T.set(0, (p.y0 || .5) + (p.lift || 0), 0);
+  else if (p.sup === 'feet' || p.sup === 'toes'){
+    const legs = p.anchor === 'L' ? ['L'] : p.anchor === 'R' ? ['R'] : ['L','R'];
+    let minY = Infinity; const c = new V();
+    for (const S of legs){
+      const lg = g.leg[S];
+      if (p.sup === 'toes'){ minY = Math.min(minY, lg.ball.y); c.add(lg.ball); }
+      else { minY = Math.min(minY, lg.heel.y, lg.ball.y, lg.toe.y + .01); c.add(lg.ankle); }
+    }
+    c.multiplyScalar(1/legs.length);
+    T.set(-c.x, (p.sup === 'toes' ? (p.step || 0) : 0) - minY, -c.z);
+  } else if (p.sup === 'floor'){
+    let m = Infinity;
+    const chk = (v, r) => { m = Math.min(m, v.y - r); };
+    for (const S of ['L','R']){ const lg = g.leg[S], am = g.arm[S]; chk(lg.heel, 0); chk(lg.toe, 0); chk(lg.ball, 0); chk(lg.knee, .055); chk(am.el, .045); chk(am.hand, .03); chk(am.sh, .07); }
+    chk(new V(), .1); chk(g.head, .1); chk(g.upP.clone().multiplyScalar(LEN.hipsUp).addScaledVector(g.upT, LEN.trunk*.6), .1);
+    T.set(0, -m, 0);
+  }
+  T.add(toRig(new V(p.off[0], p.off[1], p.off[2])));
+  g.T = T;
+  return g;
+}
+
+/* ================= mistakes -> pose ================= */
+function applyMis(p, d, q, tt){
+  if (!d) return p;
+  p = clone(p);
+  const legs = [p.L, p.R];
+  if (d.kneeIn) legs.forEach(l => l.kin += d.kneeIn);
+  if (d.lift) p.lift += d.lift;
+  if (d.pt) p.pt += d.pt;
+  if (d.tadd) p.t -= d.tadd;
+  if (d.swing) p.t -= d.swing*q;
+  if (d.shrug) p.clav += d.shrug;
+  if (d.flare){ p.aL.ar[1] += d.flare; p.aR.ar[1] += d.flare; }
+  if (d.lean) p.l += d.lean;
+  if (d.sag){ p.t -= d.sag; legs.forEach(l => { l.th[0] -= d.sag; l.sh[0] -= d.sag; if (l.ft !== null) l.ft -= d.sag; }); }
+  if (d.hipDrop){ p.l += d.hipDrop; p.L.th[1] += d.hipDrop; p.L.sh[1] += d.hipDrop; p.R.th[1] -= d.hipDrop; p.R.sh[1] -= d.hipDrop; }
+  if (d.twist) p.ty += d.twist;
+  if (d.hipYaw) p.hy += d.hipYaw;
+  if (d.heelUp) legs.forEach(l => { l.ft = (l.ft === null ? l.sh[0] + 90 : l.ft) - d.heelUp; l.sh[0] += d.heelUp*.3; });
+  if (d.toesUp) legs.forEach(l => { l.ft = (l.ft === null ? l.sh[0] + 90 : l.ft) + d.toesUp; });
+  if (d.archBack){ p.t -= d.archBack; p.pt += d.archBack*.8; legs.forEach(l => { l.th[0] -= d.archBack*.4; }); }
+  if (d.arch){ p.t -= d.arch; p.pt += d.arch; }
+  if (d.hp) p.hp += d.hp;
+  if (d.round){ p.t += d.round; p.pt -= d.round*.6; p.hp -= d.round*.5; }
+  if (d.lockKnee) legs.forEach(l => { if (l.th[0] < 60 && Math.abs(l.th[0] - l.sh[0]) < 40){ const m = (l.th[0] + l.sh[0])/2; l.th[0] = m; l.sh[0] = m; } });
+  if (d.sway) p.l += d.sway*Math.sin(tt*2.6);
+  if (d.sitBack){ legs.forEach(l => { if (l.th[0] > 15){ l.th[0] += 20; l.sh[0] += 14; } }); p.t += 6; }
+  if (d.hipOut){ p.l += 16; p.L.th[1] += 13; p.L.sh[1] += 13; p.R.th[1] -= 13; p.R.sh[1] -= 13; }
+  if (d.elbowBend){ p.aL.fa[0] = p.aL.ar[0] + d.elbowBend; p.aL.fa[1] = p.aL.ar[1] - d.elbowBend*.7; p.roll += 7; }
+  if (d.hipOff){ p.L.th[1] = 4; p.L.sh[1] = 4; p.R.th[1] = 4; p.R.sh[1] = 4; }
+  if (d.follow) p.ty = p.hy;
+  if (d.standUp){ legs.forEach(l => { l.th[0] *= .3; l.sh[0] *= .3; }); p.t *= .35; }
+  return p;
+}
+
+/* ================= timeline ================= */
+let cur = null, curId = null, tempoKey = 'strength', misIdx = -1, cmpOn = false;
+function buildTimeline(m){
+  const segs = [];
+  if (m.seq){
+    const keys = m.seq.map(k => k);
+    const poseOf = i => { const k = keys[i]; if (k.p) return k.p; if (k.same !== undefined) return poseOf(k.same); if (k.mirrorOf !== undefined) return mirror(poseOf(k.mirrorOf)); };
+    keys.forEach((k, i) => { k._p = poseOf(i); });
+    for (let i = 0; i < keys.length; i++){
+      const to = keys[i], from = keys[(i - 1 + keys.length) % keys.length];
+      segs.push({from:from._p, to:to._p, d:to.d, ph:to.ph, say:to.say, idx:i});
+    }
+  } else if (m.hold){
+    const A = m.A, B = clone(A); B.t += 1.5; B.hp -= 1;
+    segs.push({from:A, to:B, d:2.5, ph:'iso', say:'撐住・正常呼吸', idx:0, q0:0, q1:0});
+    segs.push({from:B, to:A, d:2.5, ph:'iso', say:'撐住・正常呼吸', idx:1, q0:0, q1:0});
+  } else {
+    const t = m.tempo ? TEMPO[tempoKey] : m.tempoD;
+    const s = [{from:m.A, to:m.B, d:t.up, ph:'con', q0:0, q1:1}, {from:m.B, to:m.B, d:Math.max(t.hold, .05), ph:'iso', q0:1, q1:1},
+               {from:m.B, to:m.A, d:t.down, ph:'ecc', q0:1, q1:0}, {from:m.A, to:m.A, d:Math.max(t.rest, .05), ph:'rest', q0:0, q1:0}];
+    s.forEach((x, i) => x.idx = i);
+    if (m.startB) segs.push(s[1], s[2], s[3], s[0]); else segs.push(...s);
+  }
+  let acc = 0; segs.forEach(s => { s.t0 = acc; acc += s.d; });
+  return {segs, dur:acc};
+}
+// air keyframes: support from neighbours
+function supportOf(g, p){ return g.T; }
+function evalAt(m, tl, time, mis){
+  const tt = ((time % tl.dur) + tl.dur) % tl.dur;
+  let s = tl.segs[tl.segs.length - 1];
+  for (const x of tl.segs) if (tt >= x.t0 && tt < x.t0 + x.d){ s = x; break; }
+  let u = clamp((tt - s.t0)/s.d, 0, 1);
+  if (mis && mis.d && mis.d.fast && (s.ph === 'ecc' || s.ph === 'con')) u = clamp(u/.3, 0, 1);
+  const ue = ease(u);
+  const q = s.q0 !== undefined ? s.q0 + (s.q1 - s.q0)*ue : 0;
+  let p;
+  if (m.A && m.B && !m.seq){
+    const qq = mis && mis.d && mis.d.range ? q*mis.d.range + (1 - mis.d.range)*0 : q;
+    p = lerpPose(m.A, m.B, qq);
+  } else p = lerpPose(s.from, s.to, ue);
+  // mixed supports (jump): interpolate the root translation between the two keyframe solutions
+  let Tfix = null;
+  if (s.from.sup !== s.to.sup || s.from.anchor !== s.to.anchor || s.from.sup === 'air' || s.to.sup === 'air'){
+    const ga = solveT(s.from, m, tl, s, 'from', mis), gb = solveT(s.to, m, tl, s, 'to', mis);
+    Tfix = ga.clone().lerp(gb, ue);
+    if (s.from.sup === 'air' || s.to.sup === 'air') Tfix.y += 0;
+  }
+  if (mis) p = applyMis(p, mis.d, q, time);
+  return {p, s, u, q, Tfix, tt};
+}
+const airCache = new Map();
+function solveT(p, m, tl, seg, which, mis){
+  if (p.sup !== 'air'){ const pp = mis ? applyMis(p, mis.d, 0, 0) : p; return fk(pp).T; }
+  // airborne: midpoint of the neighbouring ground keyframes, raised
+  const i = tl.segs.findIndex(x => x.to === p);
+  const prev = tl.segs[(i) % tl.segs.length].from, next = tl.segs[(i + 1) % tl.segs.length].to;
+  const a = fk(mis ? applyMis(prev, mis.d, 0, 0) : prev).T, b = fk(mis ? applyMis(next, mis.d, 0, 0) : next).T;
+  return a.clone().lerp(b, .5).add(new V(0, .22, 0));
+}
+
+/* ================= rig drive ================= */
+let pinned = null;
+function pose3D(p, Tfix){
+  const g = fk(p), T = Tfix || g.T;
+  const qT = basis(g.upT, g.fwdT), qP = basis(g.upP, g.fwdP), qH = basis(g.upH, g.fwdH);
+  const W = v => v.clone().add(T);
+  const legs = {}, arms = {};
+  for (const S of ['L','R']){
+    const lg = g.leg[S], mid = lg.hip.clone().add(lg.ankle).multiplyScalar(.5);
+    let pole = lg.knee.clone().sub(mid); if (pole.lengthSq() < 1e-6) pole = g.fwdP.clone(); pole.normalize();
+    legs[S] = {ankle:W(lg.ankle), pole, qFoot:basis(lg.fU, lg.fF)};
+    arms[S] = {hand:W(g.arm[S].hand), pole:new V().subVectors(g.arm[S].el, g.arm[S].sh.clone().add(g.arm[S].hand).multiplyScalar(.5)).normalize()};
+  }
+  const spec = {pelvis:W(g.upP.clone().multiplyScalar(LEN.hipsUp)), qP, qT, qH, legs, arms, clav:p.clav*D};
+  let o = Rig.drive(spec);
+  // pass 2: arms from the real shoulders
+  for (const S of ['L','R']){
+    const am = g.arm[S], Sh = o['sh'+S];
+    const el = Sh.clone().addScaledVector(am.ud, LEN.ua), hand = el.clone().addScaledVector(am.fd, LEN.fa);
+    if (pinned && pinned[S]){ arms[S].hand = pinned[S].clone(); }
+    else arms[S].hand = hand;
+    let pole = el.clone().sub(Sh.clone().add(hand).multiplyScalar(.5)); if (pole.lengthSq() < 1e-6) pole = g.fwdT.clone().negate();
+    arms[S].pole = pole.normalize();
+  }
+  o = Rig.drive(spec);
+  return {g, T, o};
+}
+
+/* ================= muscles ================= */
+const sph = new THREE.SphereGeometry(1, 16, 12);
+const musMeshes = {};
+function musMesh(key){
+  if (!musMeshes[key]){ const m = new THREE.Mesh(sph, new THREE.MeshStandardMaterial({color:0x888888, roughness:.5, emissive:0x000000})); musG.add(m); musMeshes[key] = m; }
+  return musMeshes[key];
+}
+function placeSeg(m, a, b, r, off){
+  const d = new V().subVectors(b, a), len = d.length() || 1e-4;
+  m.position.copy(a).addScaledVector(d, .5); if (off) m.position.add(off);
+  m.quaternion.setFromUnitVectors(Yv, d.normalize()); m.scale.set(r, len/2, r); m.visible = true;
+}
+function placeBall(m, c, r){ m.position.copy(c); m.quaternion.identity(); m.scale.set(r[0], r[1], r[2]); m.visible = true; }
+const COL = {con:new THREE.Color(0x3ddc84), ecc:new THREE.Color(0xff4d6d), iso:new THREE.Color(0x4cc9f0), rest:new THREE.Color(0x6b7a88), air:new THREE.Color(0x6b7a88)};
+function musLevels(m, mis){
+  const lv = {};
+  for (const k in m.mus) lv[k] = {lv:m.mus[k][0], role:m.mus[k][1]};
+  if (mis && mis.mus) for (const k in mis.mus){ if (!lv[k]) lv[k] = {lv:0}; lv[k] = {...lv[k], base:lv[k].lv, lv:clamp(lv[k].lv + mis.mus[k], 0, 3), delta:mis.mus[k]}; }
+  return lv;
+}
+function typeOf(role, s){
+  if (role === 'iso') return 'iso';
+  if (Array.isArray(role)) return role[s.idx] || s.ph;
+  return s.ph;
+}
+function drawMuscles(m, st, o, g, mis){
+  Object.values(musMeshes).forEach(x => x.visible = false);
+  if (!showMus) return;
+  const lvs = musLevels(m, mis);
+  const pc = g.T.clone();
+  const upP = g.upP, fwdP = g.fwdP, latP = g.latP, upT = g.upT, fwdT = g.fwdT, latT = g.latT;
+  const sm = o.shL.clone().add(o.shR).multiplyScalar(.5);
+  const L = (a, b, t) => a.clone().lerp(b, t);
+  for (const key in lvs){
+    const [base, side] = key.split('_');
+    const {lv, role} = lvs[key]; if (!lv) continue;
+    const ty = typeOf(role, st.s), a = ty === 'rest' || ty === 'air' ? .3 : ty === 'iso' && role !== 'iso' ? .85 : 1;
+    const col = new THREE.Color(0x56606b).lerp(COL[ty] || COL.rest, Math.min(1, .35 + .65*(lv/3)*a));
+    for (const S of side ? [side] : ['L','R']){
+      const sg = S === 'L' ? 1 : -1, latS = latP.clone().multiplyScalar(sg), latTS = latT.clone().multiplyScalar(sg);
+      const hip = o['hip'+S], knee = o['knee'+S], ank = o['ankle'+S], pole = o['pole'+S] || fwdP;
+      const sh = o['sh'+S], el = o['el'+S], hand = o['hand'+S], ap = o['apole'+S] || fwdT.clone().negate();
+      const mm = musMesh(key + '#' + S); mm.material.color.copy(col); mm.material.emissive.copy(col).multiplyScalar(.25);
+      switch (base){
+        case 'quads': placeSeg(mm, L(hip, knee, .15), L(hip, knee, .85), .058, pole.clone().multiplyScalar(.035)); break;
+        case 'hams': placeSeg(mm, L(hip, knee, .18), L(hip, knee, .85), .052, pole.clone().multiplyScalar(-.035)); break;
+        case 'adductors': placeSeg(mm, L(hip, knee, .08), L(hip, knee, .6), .042, latS.clone().multiplyScalar(-.035)); break;
+        case 'glutes': placeBall(mm, pc.clone().addScaledVector(fwdP, -.085).addScaledVector(latS, .07).addScaledVector(upP, .0), [.075, .085, .06]); mm.quaternion.copy(basis(upP, fwdP)); break;
+        case 'abductors': placeBall(mm, pc.clone().addScaledVector(latS, .13).addScaledVector(upP, .06).addScaledVector(fwdP, -.02), [.035, .06, .06]); mm.quaternion.copy(basis(upP, fwdP)); break;
+        case 'hipflex': placeSeg(mm, pc.clone().addScaledVector(upP, .1).addScaledVector(latS, .05), L(hip, knee, .18), .035, fwdP.clone().multiplyScalar(.05)); break;
+        case 'calves': placeSeg(mm, L(knee, ank, .08), L(knee, ank, .55), .048, pole.clone().multiplyScalar(-.035)); break;
+        case 'tib': placeSeg(mm, L(knee, ank, .12), L(knee, ank, .8), .028, pole.clone().multiplyScalar(.032).addScaledVector(latS, .012)); break;
+        case 'core': if (S === 'L') placeSeg(mm, pc.clone().addScaledVector(upP, .04), pc.clone().addScaledVector(upP, .1).addScaledVector(upT, .32), .07, fwdT.clone().multiplyScalar(.075)); else mm.visible = false; break;
+        case 'obliques': placeSeg(mm, pc.clone().addScaledVector(upP, .08).addScaledVector(latS, .11), pc.clone().addScaledVector(upT, .36).addScaledVector(latTS, .12), .05, fwdT.clone().multiplyScalar(.035)); break;
+        case 'erec': placeSeg(mm, pc.clone().addScaledVector(upP, .06).addScaledVector(latS, .035), L(pc, sm, .7).addScaledVector(latTS, .035), .035, fwdT.clone().multiplyScalar(-.08)); break;
+        case 'chest': placeSeg(mm, sm.clone().addScaledVector(upT, -.12).addScaledVector(latTS, .03), sh.clone().addScaledVector(upT, -.05), .06, fwdT.clone().multiplyScalar(.075)); break;
+        case 'lats': placeSeg(mm, pc.clone().addScaledVector(upT, .2).addScaledVector(latTS, .07), sh.clone().addScaledVector(upT, -.07), .06, fwdT.clone().multiplyScalar(-.055)); break;
+        case 'midback': placeSeg(mm, sm.clone().addScaledVector(upT, -.2).addScaledVector(latTS, .05), sh.clone().addScaledVector(upT, -.02).addScaledVector(latTS, -.05), .05, fwdT.clone().multiplyScalar(-.08)); break;
+        case 'traps': placeSeg(mm, sm.clone().addScaledVector(upT, .1), sh, .04, upT.clone().multiplyScalar(.02).addScaledVector(fwdT, -.02)); break;
+        case 'delts': placeBall(mm, sh.clone().addScaledVector(latTS, .03).addScaledVector(upT, -.01), [.058, .06, .058]); break;
+        case 'rearDelts': placeBall(mm, sh.clone().addScaledVector(fwdT, -.05).addScaledVector(latTS, .01), [.042, .045, .042]); break;
+        case 'biceps': placeSeg(mm, L(sh, el, .2), L(sh, el, .85), .036, ap.clone().multiplyScalar(-.028)); break;
+        case 'triceps': placeSeg(mm, L(sh, el, .2), L(sh, el, .85), .036, ap.clone().multiplyScalar(.028)); break;
+      }
+    }
+  }
+}
+
+/* ================= props ================= */
+const PM = c => new THREE.MeshStandardMaterial({color:c, roughness:.7, metalness:.1});
+const M_PAD = PM(0x37414c), M_FRAME = PM(0x8e9aa6), M_METAL = PM(0xc9d1d9), M_MAT = PM(0x3b82f6), M_BAND = PM(0xf59e0b), M_WOOD = PM(0xb08968), M_WALL = new THREE.MeshStandardMaterial({color:0xf3f4f6, roughness:1, transparent:true, opacity:.55, side:THREE.DoubleSide});
+const boxG = new THREE.BoxGeometry(1,1,1), cylG = new THREE.CylinderGeometry(1,1,1,16);
+function addBox(mat, cast = true){ const m = new THREE.Mesh(boxG, mat); m.castShadow = cast; m.receiveShadow = true; propG.add(m); return m; }
+function addCyl(mat){ const m = new THREE.Mesh(cylG, mat); m.castShadow = true; propG.add(m); return m; }
+function setBox(m, c, up, fwd, sx, sy, sz){ m.position.copy(c); m.quaternion.copy(basis(up, fwd)); m.scale.set(sx, sy, sz); }
+function setCylAB(m, a, b, r){ const d = new V().subVectors(b, a), len = d.length() || 1e-4; m.position.copy(a).addScaledVector(d, .5); m.quaternion.setFromUnitVectors(Yv, d.normalize()); m.scale.set(r, len, r); }
+let props = [];
+function buildProps(m, ref){
+  while (propG.children.length) propG.remove(propG.children[0]);
+  props = [];
+  const {g, o} = ref, pc = g.T.clone(), UP = new V(0,1,0), FWD = new V(0,0,1);
+  const sm = o.shL.clone().add(o.shR).multiplyScalar(.5);
+  for (const k of m.props || []){
+    if (k === 'seat' || k === 'seatRecline'){
+      const pan = addBox(M_PAD), back = addBox(M_PAD), base = addBox(M_FRAME);
+      const upB = k === 'seatRecline' ? g.upT : new V(0,1,0), fwdB = k === 'seatRecline' ? g.fwdT : new V(0,0,1);
+      setBox(pan, pc.clone().addScaledVector(upB, -.13).addScaledVector(fwdB, .1), upB, fwdB, .46, .07, .44);
+      if (k === 'seatRecline' || m.props.includes('back') || m.props.includes('chestPad') === false && !m.props.includes('kneePad'))
+        setBox(back, pc.clone().addScaledVector(g.upT, .34).addScaledVector(g.fwdT, -.16), g.upT, g.fwdT, .44, .66, .07);
+      else back.visible = false;
+      const panC = pan.position.clone();
+      setBox(base, new V(panC.x, (panC.y - .1)/2, panC.z), UP, FWD, .2, Math.max(.05, panC.y - .1), .3);
+    }
+    if (k === 'plate'){
+      const plate = addBox(new THREE.MeshStandardMaterial({color:0x8e9aa6, roughness:.7, transparent:true, opacity:.45, depthWrite:false})), r1 = addCyl(M_METAL), r2 = addCyl(M_METAL);
+      props.push(({o, g}) => {
+        const c = o.ankleL.clone().add(o.ankleR).multiplyScalar(.5), lf = g.leg.L;
+        const sole = c.clone().addScaledVector(lf.fU, -LEN.ankH - .015).addScaledVector(lf.fF, .06).add(g.T.clone().sub(g.T));
+        setBox(plate, sole, lf.fU, lf.fF, .62, .025, .5);
+        const dir = lf.fU.clone().negate();
+        setCylAB(r1, sole.clone().addScaledVector(new V(1,0,0), .26), sole.clone().addScaledVector(new V(1,0,0), .26).addScaledVector(dir, .9), .02);
+        setCylAB(r2, sole.clone().addScaledVector(new V(1,0,0), -.26), sole.clone().addScaledVector(new V(1,0,0), -.26).addScaledVector(dir, .9), .02);
+      });
+    }
+    if (k === 'thighPad'){ const t = addCyl(M_PAD); const kn = o.kneeL.clone().add(o.kneeR).multiplyScalar(.5);
+      setCylAB(t, kn.clone().add(new V(.25, .09, -.1)), kn.clone().add(new V(-.25, .09, -.1)), .05); }
+    if (k === 'kneePad'){ const t = addCyl(M_PAD); const kn = o.kneeL.clone().add(o.kneeR).multiplyScalar(.5);
+      setCylAB(t, kn.clone().add(new V(.28, .1, -.06)), kn.clone().add(new V(-.28, .1, -.06)), .05); }
+    if (k === 'roller'){ const r = addCyl(M_PAD);
+      props.push(({o}) => { const a = o.ankleL.clone().add(o.ankleR).multiplyScalar(.5), pl = o.poleL.clone();
+        const c = a.clone().addScaledVector(pl, -.07).addScaledVector(o.kneeL.clone().sub(o.ankleL).normalize(), .06);
+        setCylAB(r, c.clone().add(new V(.25,0,0)), c.clone().add(new V(-.25,0,0)), .05); }); }
+    if (k === 'back'){ /* handled with seat */ }
+    if (k === 'handles'){ const hL = addCyl(M_METAL), hR = addCyl(M_METAL), lL = addCyl(M_FRAME), lR = addCyl(M_FRAME);
+      props.push(({o}) => {
+        for (const [S, h, l, sg] of [['L', hL, lL, 1], ['R', hR, lR, -1]]){
+          const c = o['hand'+S]; setCylAB(h, c.clone().add(new V(0, -.07, 0)), c.clone().add(new V(0, .07, 0)), .018);
+          // short machine arm running from the grip out to the side of the machine
+          setCylAB(l, c.clone().add(new V(0, -.07, 0)), c.clone().add(new V(sg*.12, -.07, -.18)), .018);
+        } }); }
+    if (k === 'bar' || k === 'band'){ const b = k === 'bar' ? addCyl(M_METAL) : addCyl(M_BAND), cab = k === 'bar' ? addCyl(M_FRAME) : null;
+      const top = sm.clone().add(new V(0, 1.4, .1));
+      props.push(({o}) => { const a = o.handL, c = o.handR, dv = c.clone().sub(a).normalize();
+        if (k === 'bar'){ setCylAB(b, a.clone().addScaledVector(dv, -.22), c.clone().addScaledVector(dv, .22), .015); setCylAB(cab, a.clone().add(c).multiplyScalar(.5), top, .006); }
+        else { const dist = a.distanceTo(c); setCylAB(b, a, c, clamp(.016 - dist*.008, .005, .016)); } }); }
+    if (k === 'pulley'){ const col = addBox(M_FRAME); setBox(col, sm.clone().setY(1.25).add(new V(0, 0, -.55)), UP, FWD, .12, 2.5, .12);
+      const arm = addBox(M_FRAME); setBox(arm, sm.clone().setY(2.42).add(new V(0, 0, -.2)), UP, FWD, .08, .08, .75); }
+    if (k === 'chestPad'){ const c = addBox(M_PAD); setBox(c, sm.clone().addScaledVector(g.upT, -.22).addScaledVector(g.fwdT, .2), g.upT, g.fwdT, .34, .34, .07);
+      const s = addBox(M_FRAME); setBox(s, c.position.clone().setY(c.position.y/2).add(new V(0, 0, .05)), UP, FWD, .08, c.position.y, .08); }
+    if (k === 'kneePadsOut' || k === 'kneePadsIn'){ const out = k === 'kneePadsOut' ? 1 : -1, pL = addCyl(M_PAD), pR = addCyl(M_PAD);
+      props.push(({o}) => { for (const [S, pp, sg] of [['L', pL, 1], ['R', pR, -1]]){ const kn = o['knee'+S], dir = o['hip'+S].clone().sub(kn).normalize();
+        const c = kn.clone().add(new V(sg*out*.075, 0, 0)).addScaledVector(dir, .05); setCylAB(pp, c.clone().addScaledVector(dir, -.08), c.clone().addScaledVector(dir, .12), .035); } }); }
+    if (k === 'step'){ const s = addBox(M_FRAME); const b = o.ankleL.clone().add(o.ankleR).multiplyScalar(.5); setBox(s, new V(b.x, .07, b.z + .1), UP, FWD, .7, .14, .24); }
+    if (k === 'shoulderPads'){ const pL = addBox(M_PAD), pR = addBox(M_PAD), col = addBox(M_FRAME);
+      setBox(col, new V(0, 1.2, sm.z - .35), UP, FWD, .12, 2.4, .1);
+      props.push(({o, g}) => { for (const [S, pp] of [['L', pL], ['R', pR]]) setBox(pp, o['sh'+S].clone().add(new V(0, .07, 0)), UP, FWD, .12, .06, .2); }); }
+    if (k === 'mat'){ const mt = addBox(M_MAT, false); setBox(mt, new V(pc.x, .005, pc.z), UP, FWD, 1.1, .01, 2.0); mt.material.opacity = .9; }
+    if (k === 'cable'){ const col = addBox(M_FRAME), cab = addCyl(M_FRAME), hd = addCyl(M_METAL);
+      const anchor = new V(-.95, sm.y - .25, sm.z + .25);
+      setBox(col, new V(anchor.x - .06, 1.1, anchor.z), UP, FWD, .12, 2.2, .14);
+      props.push(({o}) => { const h = o.handL.clone().add(o.handR).multiplyScalar(.5); setCylAB(cab, h, anchor, .006); setCylAB(hd, h.clone().add(new V(.05,0,0)), h.clone().add(new V(-.05,0,0)), .02); }); }
+    if (k === 'doorPost'){ const h = o.handL; const p1 = addBox(M_WOOD); setBox(p1, new V(h.x + .04, 1.05, h.z), UP, FWD, .08, 2.1, .12);
+      const p2 = addBox(M_WOOD); setBox(p2, new V(h.x + .04, 1.05, h.z - .9), UP, FWD, .08, 2.1, .12);
+      const top = addBox(M_WOOD); setBox(top, new V(h.x + .04, 2.12, h.z - .45), UP, FWD, .08, .08, 1.0); }
+    if (k === 'wall'){ const hx = Math.max(o.hipL.x, pc.x) + .11; const w = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.4), M_WALL); w.position.set(hx, 1.2, pc.z); w.rotation.y = -Math.PI/2; w.receiveShadow = true; propG.add(w); }
+    if (k === 'bench'){ const b = addBox(M_PAD), lg = addBox(M_FRAME); const hip = ref.bench;
+      setBox(b, new V(hip.x, hip.y/2 + .02, hip.z - .12), UP, FWD, .4, hip.y - .02, .38); b.visible = true; lg.visible = false; }
+    if (k === 'marks'){ for (const x of [-.55, .55]){ const mk = addBox(M_BAND, false); setBox(mk, new V(x, .004, 0), UP, FWD, .26, .006, .12); } }
+  }
+}
+
+/* ================= camera ================= */
+let fitBox = null;
+function fitCam(){
+  if (!fitBox) return;
+  const size = fitBox.getSize(new V()), asp = Math.max(.4, (stage.clientWidth/(cmpOn ? 2 : 1))/stage.clientHeight), tf = Math.tan(19*D);
+  const halfH = size.y/2 + .08, halfW = Math.max(size.x, size.z)/2 + .08;
+  dist = clamp(Math.max(halfH/tf, halfW/(tf*asp))*1.2 + .45, 2.2, 9);
+}
+const VIEWS = {side:[90, 10], diag:[40, 14], front:[0, 8], back:[180, 10], top:[20, 68]};
+let az = 90, el = 12, dist = 3.6, target = new V(0, .8, 0), viewKey = 'side';
+function setView(v){ viewKey = v; [az, el] = VIEWS[v]; document.querySelectorAll('[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
+function placeCam(aspect){
+  camera.aspect = aspect; camera.updateProjectionMatrix();
+  const a = az*D, e = el*D;
+  camera.position.set(target.x + dist*Math.cos(e)*Math.sin(a), target.y + dist*Math.sin(e), target.z + dist*Math.cos(e)*Math.cos(a));
+  camera.lookAt(target);
+}
+{ let drag = null, pinch = null;
+  cv.addEventListener('pointerdown', e => { drag = {x:e.clientX, y:e.clientY, az, el}; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', e => { if (!drag || pinch) return; az = drag.az - (e.clientX - drag.x)*.4; el = clamp(drag.el + (e.clientY - drag.y)*.3, -5, 85); });
+  cv.addEventListener('pointerup', () => drag = null);
+  cv.addEventListener('wheel', e => { e.preventDefault(); dist = clamp(dist*(1 + e.deltaY*.001), 1.4, 8); }, {passive:false});
+  cv.addEventListener('touchstart', e => { if (e.touches.length === 2){ pinch = {d:Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY), dist}; drag = null; } }, {passive:true});
+  cv.addEventListener('touchmove', e => { if (pinch && e.touches.length === 2){ const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); dist = clamp(pinch.dist*pinch.d/d, 1.4, 8); } }, {passive:true});
+  cv.addEventListener('touchend', () => { pinch = null; });
+}
+
+/* ================= marks ================= */
+const markMesh = new THREE.Mesh(new THREE.TorusGeometry(.11, .012, 8, 32), new THREE.MeshBasicMaterial({color:0xff2d55, depthTest:false}));
+markMesh.renderOrder = 20; markG.add(markMesh);
+function placeMark(mark, o, g){
+  markMesh.visible = !!mark;
+  if (!mark) return;
+  const sm = o.shL.clone().add(o.shR).multiplyScalar(.5);
+  const pos = {knee:o.kneeL.clone().add(o.kneeR).multiplyScalar(.5), pelvis:g.T.clone(), trunk:g.T.clone().lerp(sm, .55), shoulder:sm.clone().add(new V(0, .05, 0)),
+    elbow:o.elL.clone().add(o.elR).multiplyScalar(.5), foot:o.ankleL.clone().add(o.ankleR).multiplyScalar(.5), head:o.head}[mark];
+  if (!pos){ markMesh.visible = false; return; }
+  markMesh.position.copy(pos); markMesh.quaternion.copy(camera.quaternion);
+  const s = mark === 'trunk' || mark === 'pelvis' ? 1.6 : mark === 'knee' ? 1.6 : 1.1; markMesh.scale.setScalar(s);
+}
+
+/* ================= UI ================= */
+let playing = true, clock = 0, last = performance.now(), tl = null, showMus = true, ready = false;
+$('cats').innerHTML = CATS.map(([k, n]) => `<button data-c="${k}">${n}</button>`).join('');
+let catKey = 'mach';
+function renderMoves(){
+  document.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === catKey));
+  $('moves').innerHTML = Object.entries(MOVES).filter(([, m]) => m.cat === catKey).map(([k, m]) => `<button data-m="${k}" class="${k === curId ? 'on' : ''}">${m.name}</button>`).join('');
+  document.querySelectorAll('[data-m]').forEach(b => b.onclick = () => setMove(b.dataset.m));
+}
+document.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { catKey = b.dataset.c; renderMoves(); const first = Object.keys(MOVES).find(k => MOVES[k].cat === catKey); setMove(first); });
+$('tempos').innerHTML = Object.entries(TEMPO).map(([k, t]) => `<button data-t="${k}">${t.name}</button>`).join('');
+document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { tempoKey = b.dataset.t; renderTempo(); tl = buildTimeline(cur); clock = 0; });
+function renderTempo(){
+  const m = cur;
+  $('tempos').style.display = m.tempo ? '' : 'none';
+  document.querySelectorAll('[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === tempoKey));
+  $('tempoTxt').textContent = m.tempo ? TEMPO[tempoKey].txt : (m.tempoTxt || '');
+}
+document.querySelectorAll('[data-v]').forEach(b => b.onclick = () => setView(b.dataset.v));
+$('play').onclick = () => { playing = !playing; $('play').textContent = playing ? '⏸ 暫停' : '▶ 播放'; };
+$('scrub').oninput = () => { playing = false; $('play').textContent = '▶ 播放'; clock = $('scrub').value/1000*tl.dur; };
+$('musBtn').onclick = () => { showMus = !showMus; $('musBtn').classList.toggle('on', showMus); Rig.setOpacity(showMus ? .55 : 1); };
+
+function renderMis(){
+  const m = cur;
+  $('mis').innerHTML = `<button data-mi="-1" class="${misIdx < 0 ? 'on' : ''}">只睇正確</button>` + (m.mis || []).map((x, i) => `<button data-mi="${i}" class="${i === misIdx ? 'on' : ''}">❌ ${x.name}</button>`).join('');
+  document.querySelectorAll('[data-mi]').forEach(b => b.onclick = () => {
+    misIdx = +b.dataset.mi; cmpOn = misIdx >= 0; renderMis(); renderMuscles(null);
+    const v = misIdx >= 0 ? misView(m.mis[misIdx]) : (m.view || 'side'); if (v) setView(v);
+    fitCam();
+  });
+  const mi = misIdx >= 0 ? m.mis[misIdx] : null;
+  $('misWhy').style.display = mi ? '' : 'none';
+  if (mi) $('misWhy').innerHTML = `<b>❌ ${mi.name}</b>：${mi.why}`;
+  $('lblR').textContent = mi ? '❌ ' + mi.name : '';
+  ['lblL','lblR','divider'].forEach(id => $(id).style.display = cmpOn ? 'block' : 'none');
+  stage.classList.toggle('cmp', cmpOn);
+}
+// best camera for seeing each kind of error
+const FRONTAL = ['kneeIn','lean','hipDrop','shrug','flare','hipOut','hipOff','elbowBend','sway'], AXIAL = ['twist','hipYaw','follow'];
+function misView(mi){
+  if (mi.view) return mi.view;
+  const ks = Object.keys(mi.d || {});
+  if (ks.some(k => AXIAL.includes(k))) return 'top';
+  if (ks.some(k => FRONTAL.includes(k))) return 'front';
+  if (ks.length && !ks.includes('fast')) return 'side';
+  return null;
+}
+function dots(n){ return '●'.repeat(n) + `<i>${'●'.repeat(3 - n)}</i>`; }
+let lastMusSig = '';
+function renderMuscles(s){
+  const m = cur, mi = cmpOn && misIdx >= 0 ? m.mis[misIdx] : null;
+  const lv = musLevels(m, mi);
+  const rows = Object.entries(lv).filter(([, x]) => x.lv > 0 || x.delta).sort((a, b) => ((b[1].base ?? b[1].lv) - (a[1].base ?? a[1].lv)));
+  const sig = rows.map(([k, x]) => k + x.lv + (s ? typeOf(x.role, s) : '')).join('|') + misIdx;
+  if (sig === lastMusSig) return; lastMusSig = sig;
+  $('musList').innerHTML = rows.map(([k, x]) => {
+    const [base, side] = k.split('_'), ty = s ? typeOf(x.role, s) : 'rest', ph = PH[ty] || PH.rest;
+    const b = x.base !== undefined ? x.base : x.lv;
+    const d = x.delta ? `<span class="delta ${x.delta < 0 ? 'dn' : ''}">錯誤時 ${x.delta > 0 ? '多咗' : '少咗'}${Math.abs(x.lv - b) || ''}</span>` : '';
+    return `<tr><td>${MUS[base]}${side ? `（${side === 'L' ? '左' : '右'}）` : ''}${x.role === 'iso' ? '<small>穩定肌：全程撐住</small>' : ''}</td><td><span class="dots">${dots(b)}</span> ${d}</td><td><span class="mode ${ph[1]}">${ph[0]}</span></td></tr>`;
+  }).join('');
+}
+function setMove(id){
+  curId = id; cur = MOVES[id]; catKey = cur.cat; misIdx = -1; cmpOn = false; pinned = null;
+  renderMoves(); renderTempo(); renderMis();
+  const m = cur;
+  $('gear').textContent = m.gear || '';
+  $('how').innerHTML = (m.how || []).map(x => `<li>${x}</li>`).join('');
+  $('how').style.display = m.how ? '' : 'none';
+  $('tDo').innerHTML = '✅ <b>要做：</b>' + m.do; $('tDont').innerHTML = '❌ <b>唔好：</b>' + m.dont; $('tStop').innerHTML = '🛑 <b>即刻停：</b>' + m.stop;
+  $('tNote').textContent = m.note || '';
+  $('skiTxt').textContent = m.ski; $('sbTxt').textContent = m.sb;
+  tl = buildTimeline(m); clock = 0; lastMusSig = '';
+  setView(m.view || 'side');
+  if (ready) prepMove();
+  renderMuscles(null);
+}
+function prepMove(){
+  const m = cur;
+  const p0 = m.seq ? m.seq[0]._p : (m.startB ? m.B : m.A);
+  if (m.pinHands){ pinned = null; const r = pose3D(p0); pinned = {L:r.o.handL.clone(), R:r.o.handR.clone()}; }
+  const ref = pose3D(m.A || p0);
+  if (m.props && m.props.includes('bench')){ const a = pose3D(m.A); ref.bench = a.g.T.clone().add(new V(0, -.12, 0)); ref.bench.y = Math.max(.3, ref.bench.y); }
+  buildProps(m, ref);
+  // camera: fit the whole motion (sample the timeline)
+  const pts = [];
+  for (let i = 0; i < 16; i++){
+    const st = evalAt(m, tl, (i + .5)/16*tl.dur, null), r = pose3D(st.p, st.Tfix), o = r.o;
+    pts.push(o.head, o.ankleL, o.ankleR, o.handL, o.handR, o.kneeL, o.kneeR, r.T, o.head.clone().add(new V(0, .12, 0)));
+  }
+  propG.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromPoints(pts); box.getCenter(target);
+  fitBox = box;
+  fitCam();
+}
+
+/* ================= loop ================= */
+let lastSize = '';
+function resize(){ const w = stage.clientWidth, h = stage.clientHeight, k = w + 'x' + h; if (k !== lastSize){ renderer.setSize(w, h, false); lastSize = k; } return [w, h]; }
+function renderOne(st, mis, x, w, h, H){
+  const r = pose3D(st.p, st.Tfix);
+  props.forEach(f => f(r));
+  drawMuscles(cur, st, r.o, r.g, mis);
+  placeCam(w/h);
+  placeMark(mis ? mis.mark : null, r.o, r.g);
+  renderer.setViewport(x, 0, w, h); renderer.setScissor(x, 0, w, h); renderer.render(scene, camera);
+}
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - last)/1000); last = now;
+  if (!ready || !tl) return;
+  if (playing) clock += dt;
+  const [W, H] = resize();
+  renderer.setScissorTest(true);
+  const st = evalAt(cur, tl, clock, null);
+  if (cmpOn && misIdx >= 0){
+    const mi = cur.mis[misIdx], st2 = evalAt(cur, tl, clock, mi);
+    renderOne(st, null, 0, Math.floor(W/2), H);
+    renderOne(st2, mi, Math.floor(W/2), W - Math.floor(W/2), H);
+  } else renderOne(st, null, 0, W, H);
+  if (playing) $('scrub').value = Math.round(st.tt/tl.dur*1000);
+  // HUD
+  const s = st.s, ph = PH[s.ph] || PH.rest, left = Math.max(0, s.d - (st.tt - s.t0));
+  const say = s.say && !cur.hold ? '・' + s.say : '';
+  $('hud').innerHTML = `<b>${cur.name}</b><br>${cur.hold ? '🔵 撐住（等長）・正常呼吸' : ph[2]}${say}<br><span style="color:#8b98a5">${cur.hold ? '' : '呢段 ' + s.d.toFixed(1) + ' 秒・一下共 ' + tl.dur.toFixed(1) + ' 秒'}</span><div id="phaseBar"><i style="width:${(st.u*100).toFixed(0)}%;background:${s.ph === 'con' ? '#3ddc84' : s.ph === 'ecc' ? '#ff4d6d' : s.ph === 'iso' ? '#4cc9f0' : '#6b7a88'}"></i></div>`;
+  renderMuscles(s);
+}
+
+/* ================= boot ================= */
+renderMoves();
+setMove('leg_press');
+Rig.load('xbot.json', fig, {color:0xb8c4d0}).then(R => {
+  Rig.setHeight(1.75);
+  const s = R.sM, rs = R.rest, len = k => R.len[k]*s;
+  let minY = Infinity; for (const k in rs) minY = Math.min(minY, rs[k].p.y);
+  LEN = {th:len('ulL'), sh:len('llL'), ua:len('arL'), fa:len('faL'), foot:len('ftL'),
+    hw:Math.abs(rs.ulL.p.x - rs.ulR.p.x)/2*s, sw:Math.abs(rs.arL.p.x - rs.arR.p.x)/2*s,
+    hipsUp:(rs.hips.p.y - (rs.ulL.p.y + rs.ulR.p.y)/2)*s, trunk:(rs.arL.p.y - rs.hips.p.y)*s, ankH:(rs.ftL.p.y - minY)*s};
+  R.root.traverse(x => { if (x.isMesh) x.castShadow = true; });
+  Rig.setOpacity(.55);
+  ready = true; $('loading').style.display = 'none';
+  prepMove();
+}).catch(e => { $('loading').textContent = '3D 模型載入失敗：' + e; });
+requestAnimationFrame(frame);
+window.__gym = {MOVES, setMove, get cur(){ return cur; }, evalAt, get tl(){ return tl; }, pose3D, fk, get cam(){ return {target:target.toArray().map(x => +x.toFixed(2)), dist, az, el}; }};
+})();
+</script>
+</body>
+</html>
