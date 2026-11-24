@@ -166,6 +166,8 @@ function mirror(p){
   if (p.anchor === 'L') m.anchor = 'R'; else if (p.anchor === 'R') m.anchor = 'L';
   return m;
 }
+const QUAD0 = P({sup:'floor', psi:-90, leg:{th:[90,6], sh:[0,6], ft:0}, arm:{ar:[90,6], fa:[90,6]}});
+const QUAD = {sup:'floor', psi:-90, leg:{th:[90,6], sh:[0,6], ft:0}, arm:{ar:[90,6], fa:[90,6]}, Tref:QUAD0, keepSh:QUAD0};
 const SEATED = {sup:'seat', y0:.5, leg:{th:[95,6], sh:[0,6]}};
 const STAND = {sup:'feet', anchor:'both', leg:{th:[0,5], sh:[0,5]}};
 const SKI = {sup:'feet', anchor:'both', t:38, leg:{th:[40,7], sh:[-20,7]}, arm:{ar:[30,14], fa:[72,10]}};
@@ -294,15 +296,15 @@ wu_band: {cat:'warm', name:'彈力帶拉開 Band Pull-Apart', view:'front', prop
        {name:'拱腰', why:'用腰後仰代替肩胛發力。收肚，肋骨唔好頂出。', d:{arch:14}, mark:'trunk', mus:{erec:1}}],
   ski:'肩胛收好，雙手先自然保持喺前面。',
   sb:'肩膊打開、上身唔向前縮，視線望得前。'},
-wu_catcow: {cat:'warm', name:'貓牛式 Cat-Cow', view:'side', props:['mat'], pinHands:true, tempoTxt:'跟呼吸：呼氣拱背 2 秒、吸氣下沉 2 秒，慢慢轉換。',
-  seq:[{p:P({sup:'floor', psi:-90, t:18, pt:-14, hp:-10, leg:{th:[90,6], sh:[0,6], ft:0}, arm:{ar:[90,6], fa:[90,6]}}), d:2, ph:'con', say:'貓：呼氣，拱起背'},
+wu_catcow: {cat:'warm', name:'貓牛式 Cat-Cow', view:'side', props:['mat'], tempoTxt:'跟呼吸：呼氣拱背 2 秒、吸氣下沉 2 秒，慢慢轉換。',
+  seq:[{p:P({...QUAD, t:24, pt:-34, hp:22}), d:2, ph:'con', say:'貓：呼氣，拱起背'},
        {same:0, d:.6, ph:'iso', say:'停一停'},
-       {p:P({sup:'floor', psi:-90, t:-14, pt:12, hp:22, leg:{th:[90,6], sh:[0,6], ft:0}, arm:{ar:[90,6], fa:[90,6]}}), d:2, ph:'ecc', say:'牛：吸氣，放鬆下沉'},
+       {p:P({...QUAD, t:-20, pt:26, hp:-24}), d:2, ph:'ecc', say:'牛：吸氣，放鬆下沉'},
        {same:2, d:.6, ph:'iso', say:'停一停'}],
   mus:{core:[2, ['con','iso','ecc','iso']], erec:[2, ['ecc','iso','con','iso']], delts:[1,'iso'], triceps:[1,'iso']},
   do:'四點支撐，呼氣時拱起背（貓），吸氣時放鬆下沉（牛），配合呼吸慢慢轉換', dont:'動作太快、頸部硬撐', stop:'手腕或下背有刺痛就停',
   mis:[{name:'動作太快', why:'一下拱一下塌，冇跟呼吸，脊椎冇逐節郁。放慢到 2 秒一個方向。', d:{fast:true}, mark:null},
-       {name:'頸部硬撐', why:'頭死命向上仰，頸後受壓。頭跟住脊椎一齊郁。', d:{hp:30}, mark:'head'}],
+       {name:'頸部硬撐', why:'頭死命向上仰，頸後受壓。頭跟住脊椎一齊郁。', d:{hp:-32}, mark:'head'}],
   ski:'脊椎靈活，屈曲伸展時唔會僵硬，吸收地形更順。',
   sb:'脊椎靈活，吸收地形起伏；跌倒時背部冇咁易受傷。'},
 wu_hip_circle: {cat:'warm', name:'髖關節繞圈 Hip Circles', view:'diag', tempoTxt:'慢慢畫大圈，每圈約 4 秒；左右各 8 下。',
@@ -438,14 +440,14 @@ ski_counter_rot: {cat:'ski', name:'上下身分離 Upper-Lower Separation', view
   ski:'轉彎時雙腳同髖帶動雪板轉向，上半身保持面向山下，避免整個人扭曲。',
   sb:'單板多數係上下身一齊轉（肩膀帶），但呢個練習幫你控制上身唔亂甩，換刃時更穩。'},
 ski_skater_hop: {cat:'ski', name:'側跳停穩 Skater Hop', view:'front', props:['marks'], tempoTxt:'跳過去、單腳落地停穩 3 秒，再跳返；左右各 5 下。',
-  seq:[{p:P({sup:'feet', anchor:'R', off:[0,0,-.55], t:36, R:{th:[55,-4], sh:[-28,-4]}, L:{th:[22,-16], sh:[-58,-16]}, aL:{ar:[40,10], fa:[65,10]}, aR:{ar:[-25,12], fa:[-10,12]}}), d:.28, ph:'ecc', say:'右腳落地，屈膝吸收'},
-       {same:0, d:2.6, ph:'iso', say:'停穩 3 秒'},
-       {p:P({sup:'feet', anchor:'R', off:[0,0,-.55], t:42, R:{th:[68,-4], sh:[-32,-4]}, L:{th:[25,-16], sh:[-60,-16]}, aL:{ar:[-20,10], fa:[0,10]}, aR:{ar:[30,12], fa:[60,12]}}), d:.5, ph:'ecc', say:'蹲低準備'},
-       {p:P({sup:'air', t:22, R:{th:[25,-10], sh:[-25,-10]}, L:{th:[35,12], sh:[-25,12]}, aL:{ar:[30,12], fa:[60,12]}, aR:{ar:[20,10], fa:[45,10]}}), d:.32, ph:'con', say:'向左邊蹬出去'},
-       {mirrorOf:0, d:.32, ph:'ecc', say:'左腳落地，屈膝吸收'},
-       {same:4, d:2.6, ph:'iso', say:'停穩 3 秒'},
-       {mirrorOf:2, d:.5, ph:'ecc', say:'蹲低準備'},
-       {mirrorOf:3, d:.32, ph:'con', say:'向右邊蹬出去'}],
+  seq:[{p:P({sup:'feet', anchor:'R', off:[0,0,-.6], t:42, R:{th:[64,10], sh:[-32,10]}, L:{th:[14,-20], sh:[-66,-20]}, aL:{ar:[55,-18], fa:[75,-28]}, aR:{ar:[-35,16], fa:[-15,16]}}), d:.3, ph:'ecc', say:'右腳落地，屈膝屈髖吸收'},
+       {same:0, d:2.6, ph:'iso', say:'停穩 3 秒，膝頭對準腳尖'},
+       {p:P({sup:'feet', anchor:'R', off:[0,0,-.6], t:46, roll:-6, R:{th:[78,8], sh:[-36,8]}, L:{th:[20,-8], sh:[-55,-8]}, aL:{ar:[-20,15], fa:[-5,15]}, aR:{ar:[35,-12], fa:[55,-20]}}), d:.55, ph:'ecc', say:'再蹲低，準備向左蹬'},
+       {p:P({sup:'air', t:28, roll:16, R:{th:[-2,28], sh:[-18,28]}, L:{th:[48,16], sh:[-8,16]}, aR:{ar:[50,-14], fa:[70,-24]}, aL:{ar:[-30,20], fa:[-12,20]}}), d:.34, ph:'con', say:'右腳發力，向左蹬出去'},
+       {mirrorOf:0, d:.34, ph:'ecc', say:'左腳落地，屈膝屈髖吸收'},
+       {same:4, d:2.6, ph:'iso', say:'停穩 3 秒，膝頭對準腳尖'},
+       {mirrorOf:2, d:.55, ph:'ecc', say:'再蹲低，準備向右蹬'},
+       {mirrorOf:3, d:.34, ph:'con', say:'左腳發力，向右蹬出去'}],
   mus:{quads:[3], glutes:[3], abductors:[2], calves:[2], adductors:[1], core:[1,'iso']},
   do:'熱身完先做。向側面跳 1–1.5 米，單腳落地，膝蓋對準腳尖，停穩 3 秒先跳去另一邊', dont:'落地膝蓋內塌、未停穩就跳下一下、疲勞咗仲硬做', stop:'膝蓋或腳踝痛；落地開始唔穩就收工', note:'一組＝左右各 5 下，共 10 下。空地跳，唔使器材。',
   mis:[{name:'落地膝蓋內塌', why:'落地時膝頭向內跌，膝蓋韌帶受壓。膝頭對準腳尖，臀部收力。', d:{kneeIn:15}, mark:'knee', mus:{abductors:-1}},
@@ -543,7 +545,8 @@ function fk(p){
   g.head = g.upP.clone().multiplyScalar(LEN.hipsUp).addScaledVector(g.upT, LEN.trunk + .2);
   // support
   const T = new V();
-  if (p.sup === 'seat') T.set(0, (p.y0 || .5) + (p.lift || 0), 0);
+  if (p.Tref){ T.copy(fk(p.Tref).T); }
+  else if (p.sup === 'seat') T.set(0, (p.y0 || .5) + (p.lift || 0), 0);
   else if (p.sup === 'feet' || p.sup === 'toes'){
     const legs = p.anchor === 'L' ? ['L'] : p.anchor === 'R' ? ['R'] : ['L','R'];
     let minY = Infinity; const c = new V();
@@ -659,12 +662,30 @@ function solveT(p, m, tl, seg, which, mis){
   const i = tl.segs.findIndex(x => x.to === p);
   const prev = tl.segs[(i) % tl.segs.length].from, next = tl.segs[(i + 1) % tl.segs.length].to;
   const a = fk(mis ? applyMis(prev, mis.d, 0, 0) : prev).T, b = fk(mis ? applyMis(next, mis.d, 0, 0) : next).T;
-  return a.clone().lerp(b, .5).add(new V(0, .22, 0));
+  return a.clone().lerp(b, .5).add(new V(0, .3, 0));
 }
 
 /* ================= rig drive ================= */
 let pinned = null;
+const shCache = new WeakMap();
+function shoulderY(p, T){
+  const g = fk(p), o = Rig.drive({pelvis:g.upP.clone().multiplyScalar(LEN.hipsUp).add(T), qP:basis(g.upP, g.fwdP), qT:basis(g.upT, g.fwdT), qH:basis(g.upH, g.fwdH),
+    legs:{L:{ankle:g.leg.L.ankle.clone().add(T), pole:g.fwdP, qFoot:new Q()}, R:{ankle:g.leg.R.ankle.clone().add(T), pole:g.fwdP, qFoot:new Q()}},
+    arms:{L:{hand:g.arm.L.hand.clone().add(T), pole:g.fwdT}, R:{hand:g.arm.R.hand.clone().add(T), pole:g.fwdT}}, clav:0});
+  return (o.shL.y + o.shR.y)/2;
+}
 function pose3D(p, Tfix){
+  if (p.keepSh){
+    const T0 = fk(p).T;
+    let target = shCache.get(p.keepSh); if (target === undefined){ target = shoulderY(p.keepSh, fk(p.keepSh).T); shCache.set(p.keepSh, target); }
+    let r = 0;
+    for (let i = 0; i < 4; i++){
+      const q = {...p, t:p.t + r, pt:p.pt + .65*r};
+      const e = shoulderY(q, T0) - target; if (Math.abs(e) < .003) break;
+      r += e/(.45*D);
+    }
+    p = {...p, t:p.t + r, pt:p.pt + .65*r, keepSh:null};
+  }
   const g = fk(p), T = Tfix || g.T;
   const qT = basis(g.upT, g.fwdT), qP = basis(g.upP, g.fwdP), qH = basis(g.upH, g.fwdH);
   const W = v => v.clone().add(T);
