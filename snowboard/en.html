@@ -123,11 +123,20 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
 <main>
   <div class="card" id="path">
     <details id="pathD"><summary>🔰 New here? Start here (in order)</summary>
-      <ol><li data-k="bal"><button data-go="slip" data-k="bal"><b>1</b><span>Find your balance<small>You should feel: both feet roughly even, knees slightly bent. Rock forward and back to find the steadiest point.</small></span></button></li><li data-k="slip"><button data-go="slip" data-k="slip"><b>2</b><span>Side slip<small>You should feel: lift your toes (heel slip) to stop, relax a little to slide.</small></span></button></li><li data-k="leaf"><button data-go="leaf" data-k="leaf"><b>3</b><span>Falling leaf<small>You should feel: press the foot on the side you want to go: front foot toward the nose, back foot toward the tail.</small></span></button></li><li data-k="trav"><button data-go="trav" data-k="trav"><b>4</b><span>Traverse + garland<small>You should feel: eyes on where you’re going, front foot leading.</small></span></button></li><li data-k="beg"><button data-go="beg" data-k="beg"><b>5</b><span>Beginner · Skid<small>You should feel: flatten the board first when switching sides, then ease onto the new edge.</small></span></button></li></ol>
-      <p class="note">After that: intermediate turns, carving, ollies, butters.</p>
+      <ol><li data-k="bal"><button data-go="slip" data-k="bal"><b>1</b><span>Find your balance<small>You should feel: both feet roughly even, knees slightly bent. Rock forward and back to find the steadiest point.</small></span></button></li><li data-k="slip"><button data-go="slip" data-k="slip"><b>2</b><span>Side slip<small>You should feel: lift your toes (heel slip) to stop, relax a little to slide.</small></span></button></li><li data-k="leaf"><button data-go="leaf" data-k="leaf"><b>3</b><span>Falling leaf<small>You should feel: press the foot on the side you want to go: front foot toward the nose, back foot toward the tail.</small></span></button></li><li data-k="trav"><button data-go="trav" data-k="trav"><b>4</b><span>Traverse + garland<small>You should feel: eyes on where you’re going, front foot leading.</small></span></button></li><li data-k="jturn"><button data-go="jturn" data-k="jturn"><b>5</b><span>J-turn<small>You should feel: glide straight for two seconds, the front foot steers the nose uphill, and you stop by yourself.</small></span></button></li><li data-k="eroll"><button data-go="eroll" data-k="eroll"><b>6</b><span>Edge roll<small>You should feel: heel → flat for an instant → toe; at the flat moment, weight even and knees soft.</small></span></button></li><li data-k="beg"><button data-go="beg" data-k="beg"><b>7</b><span>Beginner · Skid<small>You should feel: flatten the board first when switching sides, then ease onto the new edge.</small></span></button></li></ol>
+      <p class="note">Once falling leaf lets you stop, move on — don’t drill it too long (it never changes edges). Then: front-foot steering → intermediate → carved traverse → carving; give switch a little time every day; then Ollie and Butter.</p>
     </details>
     <p id="feel1"></p>
     <p class="note">📖 CoM = your body’s centre of mass · Edge = the board’s edge gripping the snow · Toeside = toe edge · Heelside = heel edge · Front foot = the foot nearer the nose</p>
+  </div>
+  <div class="card">
+    <details><summary>🩹 Lesson one: how to fall without getting hurt</summary>
+      <table><tr><th>Falling</th><th>Do</th><th>Don’t</th></tr>
+      <tr><td>Forward (toeside)</td><td>Knees first, then catch yourself on your forearms and roll with it</td><td>Catch yourself on your palms (wrists break easily)</td></tr>
+      <tr><td>Backward (heelside)</td><td>Tuck your chin, bend your knees and sit down, bottom first, then roll to one side</td><td>Reach back with your hands, or hit the back of your head</td></tr>
+      <tr><td>Stopped and want a rest</td><td>Just sit down (heelside facing downhill)</td><td>Stand and struggle in the middle of the slope</td></tr></table>
+      <p class="note">As you fall, make fists and keep your hands by your sides. A helmet and impact shorts help a lot when you’re learning.</p>
+    </details>
   </div>
   <div class="row">
     <button data-mode="simple" class="on">👀 Simple</button>
@@ -138,12 +147,17 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-l="slip">Side slip</button>
     <button data-l="leaf">Falling leaf</button>
     <button data-l="trav">Traverse + garland</button>
+    <button data-l="jturn">J-turn</button>
+    <button data-l="eroll">Edge roll</button>
     <button data-l="beg">Beginner · Skid</button>
+    <button data-l="ffs">Front-foot steering</button>
     <button data-l="mid">Intermediate · Dynamic</button>
+    <button data-l="pencil">Carved traverse (pencil line)</button>
     <button data-l="carve" class="on">Carving</button>
     <button data-l="euro">Euro carve</button>
     <button data-l="ollie">Ollie／Nollie</button>
     <button data-l="butter">Butter／Press</button>
+    <button data-l="swb">Switch turns</button>
   </div>
 
   <div class="row">
@@ -179,6 +193,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-st="waist">Waist bend / toilet sit</button>
     <button data-st="look">Looking at the board</button>
     <button data-st="rot">Upper-body rotation</button>
+    <button data-st="rudder">Ruddering (back foot)</button>
   </div>
   <div class="row">
     <span class="label">Camera</span>
@@ -306,6 +321,11 @@ const LV = {
   butter:{name:'Butter／Press 360', kind:'butter', v:8, slope:6, boardOff:-22, R:7.5, cap:10*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.3},
   leaf: {kind:'slip', name:'Falling leaf', leaf:true, v:0, slope:12, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.5, slip:true},
   slip: {kind:'slip', name:'Side slip', v:0, slope:12, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.5, slip:true},
+  jturn:{name:'J-turn', kind:'jturn', v:12, slope:8, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.45, T:9},
+  eroll:{name:'Edge roll drill', kind:'eroll', v:8, slope:6, boardOff:-20, R:7.5, cap:20*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.4, T:5},
+  pencil:{name:'Carved traverse (pencil line)', kind:'pencil', v:18, slope:12, boardOff:-18, R:7.8, cap:40*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.35, T:7},
+  ffs:  {name:'Front-foot steering drill', v:14, slope:10, boardOff:-20, R:7.5, cap:25*D, skid:20*D, Rbase:6, psiB:10, h0:.8, minDrive:.5, ffs:true},
+  swb:  {name:'Switch turns', v:13, slope:9, boardOff:-20, R:7.5, cap:22*D, skid:25*D, Rbase:6, psiB:10, h0:.8, minDrive:.5, sw:true},
   beg:  {name:'Beginner · Skidded turns', v:15, slope:10, boardOff:-20, R:7.5, cap:25*D, skid:25*D, Rbase:6, psiB:10, h0:.8, minDrive:.5},
   mid:  {name:'Intermediate · Dynamic turns', v:25, slope:15, boardOff:-17, R:7.8, cap:45*D, skid:10*D, Rbase:8, psiB:5, h0:.8, minDrive:.4},
   carve:{name:'Carving', v:25, slope:18, boardOff:-14, R:8, cap:65*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:0, carve:true},
@@ -318,6 +338,11 @@ const REC = {
   slip: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[0,99]},
   leaf: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[0,99]},
   beg:  {b:[-25,-15], R:[6.5,8],  slope:[6,12],  v:[8,20]},
+  jturn:{b:[-25,-15], R:[6.5,8],  slope:[5,10],  v:[6,15]},
+  eroll:{b:[-25,-15], R:[6.5,8],  slope:[4,8],   v:[5,12]},
+  pencil:{b:[-22,-12], R:[7,9],   slope:[8,15],  v:[12,25]},
+  ffs:  {b:[-25,-15], R:[6.5,8],  slope:[6,12],  v:[8,20]},
+  swb:  {b:[-25,-15], R:[6.5,8],  slope:[6,10],  v:[8,16]},
   mid:  {b:[-22,-12], R:[7,8.5],  slope:[12,20], v:[15,35]},
   carve:{b:[-20,-8],  R:[7.5,10], slope:[15,28], v:[18,40]},
   euro: {b:[-18,-6],  R:[7,10],   slope:[15,25], v:[32,50]}
@@ -328,17 +353,62 @@ const STANCE = {
   front:{fx:{skid:10, ph:'comp', edge:.85, r:.95, bend:.6}, name:'Too much on the front foot', dw:.25, dz:.1, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'No pressure on the tail, so it washes out at the end of the turn and you can catch an edge and fall forward when switching edges; the front quad and calf hold on and tire quickly.'},
   look: {fx:{skid:10, ph:'all', edge:.8, r:1.2, bend:.6}, name:'Looking at the board', dw:-.1, dz:-.05, dt:0, dh:-.03, tp:.25, rot:0, look:.75, add:{erec:.15}, txt:'The board follows your eyes: look at it and you won’t turn where you want to go, and your weight ends up on the back foot; head down and upper body bent leads to folding at the waist on toeside. Look where you want to go and lead with your head and shoulders.'},
   waist:{fx:{skid:8, ph:'all', edge:.75, r:1.2, bend:.6}, name:'Waist bend / toilet sit', dw:0, dz:0, dt:-.09, dh:-.06, tp:.5, rot:0, add:{erec:.2, quad:.15}, txt:'Toeside bending at the waist: the butt sticks out and the CoM leaves the edge, so you slip. Heelside ’toilet sit’: the butt sits behind the board and you fall back. Flex your knees and ankles instead of your waist.'},
+  rudder:{fx:{skid:24, ph:'comp', edge:.75, r:1.15, bend:.4}, name:'Ruddering (back foot)', dw:-.2, dz:-.05, dt:0, dh:0, tp:0, rot:0, add:{quad:.1}, txt:'Turning by kicking the tail out with the back foot (ruddering): the nose isn’t steering, the tail scrapes sideways, so turns are big, skiddy and hard to control for speed; on steeper terrain it gets out of control. Twist the board into the turn with the front foot; the back foot just follows. Watch the snow mark: it gets very wide in the second half of the turn.'},
   rot:  {fx:{skid:15, ph:'comp', edge:.85, r:.9, bend:.4}, name:'Upper-body rotation', dw:0, dz:0, dt:0, dh:0, tp:0, rot:30*D, add:{obl:.3}, txt:'Twisting the upper body to turn the board makes the tail wash out and the skid uncontrolled; upper and lower body get out of sync at the edge change and you fall easily. Turns should be driven by the lower body (ankles, knees).'}
 };
 const DIR = () => cfg.dir*(cfg.sw ? -1 : 1);
 const ANG = () => cfg.sw ? [6, -15] : [15, -6];
-const cfg = {trick:'ollie', butter:'nose', sw:false, level:'carve', H:175, board:161, R:8, slope:18, v:25, dir:1, stance:'ok', slipSide:'heel'};
+const cfg = {trick:'ollie', butter:'nose', pen:'hc', sw:false, level:'carve', H:175, board:161, R:8, slope:18, v:25, dir:1, stance:'ok', slipSide:'heel'};
 let C = {};
 
+
+const DRILLK = ['jturn','eroll','pencil'];
+// drill paths, written for dir = +1: h = board heading (deg, + = toward the heel-traverse side), tl = toe lean (deg, + = toe edge),
+// sk = extra board yaw beyond the heading (skid), sp = speed factor, w = front-foot share
+const DRILL = {
+  jturn: u => {
+    const a = sm(.12,.33,u)*(1-sm(.42,.5,u)), b = sm(.62,.83,u)*(1-sm(.92,1,u));
+    const ent = sm(.1,.18,u)*(1-sm(.24,.33,u)) + sm(.6,.68,u)*(1-sm(.74,.83,u));
+    const ph = u < .12 || (u >= .5 && u < .62) ? 'glide' : u < .33 ? 'jh' : u < .42 ? 'stopH' : u < .5 ? 'rel' : u < .83 ? 'jt' : u < .92 ? 'stopT' : 'rel';
+    return {h: 85*a - 85*b, tl: -24*a + 24*b, sk: 0, sp: .08 + .92*Math.pow(1 - Math.max(a, b), .6), w: .5 + .15*ent - .05*Math.max(a,b), ph};
+  },
+  eroll: u => {
+    const x = Math.sin(W*u), e = Math.sign(x)*Math.min(1, Math.abs(x)*1.7);
+    return {h: -14*Math.cos(W*u), tl: -14*e, sk: 0, sp: 1, w: .5, ph: Math.abs(e) < .35 ? 'flat' : e > 0 ? 'heel' : 'toe'};
+  },
+  pencil: u => {
+    const heel = cfg.pen[0] === 'h', skid = cfg.pen[1] === 's', g = heel ? 1 : -1;
+    const bump = sm(.35,.6,u)*(1-sm(.72,.97,u));
+    const ph = bump < .1 ? 'line' : u < .66 ? 'up' : 'rel';
+    return {h: g*(58 + 26*bump), tl: -g*(skid ? .55 : 1)*(22 + 14*bump), sk: skid ? g*(14 + 8*bump) : 0, sp: 1 - .35*bump, w: .52, ph};
+  }
+};
+function buildDrill(lv){
+  const f = DRILL[lv.kind], N = 400, T = lv.T, tab = []; let x = 0, z = 0;
+  for (let i = 0; i <= N; i++){
+    const d = f(i/N); d.x = x; d.z = z; tab.push(d);
+    const ds = C.v*d.sp*T/N; x += Math.sin(d.h*D)*ds; z += Math.cos(d.h*D)*ds;
+  }
+  Object.assign(C, {tab, dX: tab[N].x, dZ: tab[N].z, period: T, L: z});
+}
+function poseDrill(s){
+  const dir = DIR(), cyc = Math.floor(s), u = s - cyc, fi = u*400, i0 = Math.floor(fi), t = fi - i0;
+  const a = C.tab[i0], b = C.tab[Math.min(400, i0+1)], L = k => a[k] + (b[k]-a[k])*t;
+  const mid = new V(dir*(L('x') + cyc*C.dX), 0, L('z') + cyc*C.dZ);
+  const psi = dir*L('h')*D, tl = L('tl')*D, phi = tl*dir, sg = phi >= 0 ? 1 : -1, nsh = clamp(Math.abs(tl)/(22*D), 0, 1);
+  return finish({s, sn: sg*Math.max(.25, nsh), cs: 0, mid, psi, sg, phi, phiMag: Math.abs(phi), nsh, yawB: psi + dir*L('sk')*D, kap: 0, u, ph: a.ph, wF: L('w')});
+}
 function build(){
   Cok = null;
   const lv = LV[cfg.level], v = cfg.v/3.6;
   let Rt, phiApex, warn = '';
+  if (DRILLK.includes(lv.kind)){
+    C = {v: Math.max(v, .5), Rt: 0, phiApex: lv.cap, k: cfg.H/175, S: cfg.H*.0031, inten: .35, warn: ''};
+    buildDrill(lv);
+    slopeG.rotation.x = cfg.slope*D;
+    buildBoard(); rescale(); placeLegMuscles(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch(); renderJumps();
+    return;
+  }
   if (lv.kind === 'trav' || lv.kind === 'ollie' || lv.kind === 'butter'){
     C = {v: Math.max(v, 1), Rt: 0, phiApex: lv.cap, k: cfg.H/175, S: cfg.H*.0031, inten: .35, warn: ''};
     if (lv.kind === 'trav'){
@@ -529,6 +599,7 @@ function ankleAngles(ankle, knee, q, inside){
 function pose(s){
   const lv = LV[cfg.level];
   if (lv.slip) return poseSlip(s);
+  if (DRILLK.includes(lv.kind)) return poseDrill(s);
   if (lv.kind === 'trav') return poseTrav(s);
   if (lv.kind === 'ollie') return poseOllie(s);
   if (lv.kind === 'butter') return poseButter(s);
@@ -700,7 +771,7 @@ function weightF(p){
   if (p.wF !== undefined) return clamp(p.wF + STANCE[cfg.stance].dw, .1, .9);
   if (LV[cfg.level].slip) return clamp(.5 + (LV[cfg.level].leaf ? .2*Math.cos(W*p.s)*Math.sign(p.fB.x||1) : 0) + STANCE[cfg.stance].dw, .15, .85);
   const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
-  return clamp(.52 + .1*init - .14*comp + STANCE[cfg.stance].dw, .15, .85);
+  return clamp(.52 + (LV[cfg.level].ffs ? .16 : .1)*init - .14*comp + STANCE[cfg.stance].dw, .15, .85);
 }
 function activations(p){
   const lv = LV[cfg.level], st = STANCE[cfg.stance];
@@ -752,6 +823,41 @@ const MODE_TXT = {con:'Concentric', ecc:'Eccentric', iso:'Isometric', off:'Relax
 
 /* ---------- phases & watch ---------- */
 const PH = {
+  jturn: {
+    glide:['Straight glide','Nose down the fall line, weight even, knees slightly bent, eyes ahead. Start on a gentle slope with a flat run-out.'],
+    jh:['Heel J: front foot leads uphill','The front foot lifts its toes first and the nose turns heelside, the back foot follows; add edge gradually and the turn curls further uphill.'],
+    stopH:['Stop (heelside)','Board across the hill on the heel edge — speed simply bleeds away. Sitting down for a rest is fine.'],
+    rel:['Release, nose back to the fall line','Flatten the edge slowly, let the front foot ease the nose back downhill, then glide.'],
+    jt:['Toe J: knees forward, uphill','Front knee and ankle press forward, toes push, the nose turns toeside uphill; the back foot follows.'],
+    stopT:['Stop (toeside)','Back to the hill, toe edge holding. Look downhill over your shoulder before you set off again.'],
+    trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
+  eroll: {
+    heel:['Heel edge','Lift the toes a little and the board drifts heelside; small movement, not a turn.'],
+    flat:['Flat for an instant','Weight even, knees soft, board fully flat: this is the real edge-change moment. The downhill edge must not bite.'],
+    toe:['Toe edge','Knees and ankles forward, light toe pressure, the board drifts toeside.'],
+    trans:['',''], init:['',''], comp:['','']
+  },
+  pencil: {
+    line:['Traverse: hold the edge','Cross the slope on one edge without letting the board slide sideways; look back at the track: thinner than a finger = a real carve.'],
+    up:['Carve uphill','More edge, get lower, let the board’s sidecut turn you uphill; the tail follows the nose’s line.'],
+    rel:['Release back to the traverse','Ease off the edge back to the traverse angle; repeat. Once it’s solid, link both sides into a carved turn.'],
+    trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
+  ffs: {
+    trans:['Edge change (flatten the board)','Weight even, board flat; get ready to start with the front foot.'],
+    init:['Front foot twists the board in','The front foot turns first: toeside, push the front knee into the turn; heelside, lift the front toes; the nose enters first. Don’t kick with the back foot at all.'],
+    toe:['Toeside: back foot just follows','The nose leads the whole board; the back foot follows the same arc — don’t kick the tail out.'],
+    heel:['Heelside: back foot just follows','Front toes lift to lead the nose, the back foot relaxes and follows; the front foot draws the turn shape.'],
+    comp:['Completion: control speed','Control speed with edge angle and turn shape, not by scraping with the back foot.']
+  },
+  swb: {
+    trans:['Edge change (flatten the board)','In switch everything is mirrored: your usual back foot is now in front. Flatten the board first.'],
+    init:['Initiation: the new front foot leads','Your usual back foot now leads the nose, weight slightly forward (55%); it feels awkward on day one — that’s normal.'],
+    toe:['Toeside (mirrored)','Knees forward, toes press — same as regular, just the other side.'],
+    heel:['Heelside (mirrored)','Like sitting on a tall stool, toes lifted; hands in front for balance.'],
+    comp:['Completion: control speed','Turn the board a bit more across to skid and slow down; drift back to centre ready for the edge change.']
+  },
   trav: {
     trav:['Traverse','Cross the slope on the uphill edge: heel traverse facing downhill, toe traverse facing uphill. Look where you want to go.'],
     down:['Garland: release and drop','Flatten the edge slightly and the nose turns toward the fall line — like the start of half a turn.'],
@@ -816,6 +922,7 @@ const PH = {
 };
 function phaseOf(p){
   const kind = LV[cfg.level].kind;
+  if (DRILLK.includes(kind)) return p.ph;
   if (kind === 'trav') return p.down > .35 ? 'down' : p.up > .35 ? 'up' : 'trav';
   if (kind === 'ollie') return p.u < .3 ? 'ride' : p.u < .44 ? 'pre' : p.u < .52 ? 'pop' : p.u < .73 ? 'air' : p.u < .9 ? 'land' : 'ride';
   if (kind === 'butter') return p.u < .2 ? 'ride' : p.u < .35 ? 'press' : p.u < .8 ? 'spin' : 'out';
@@ -830,6 +937,38 @@ function phaseOf(p){
 const sToe = () => DIR() > 0 ? .25 : .75, sHeel = () => DIR() > 0 ? .75 : .25;
 const JUMP = {trans:() => 0, init:() => .11, toe:sToe, heel:sHeel};
 const WATCH = {
+  jturn: [
+    {w:'J-shaped path', v:'top', j:0, t:'Bird’s-eye map: straight down, then curve uphill to a stop — a J; once on the heel side, once on the toe side.'},
+    {w:'Front foot turns first', v:'top', j:.2, t:'At initiation there’s more weight on the front foot, the nose turns first and the back foot follows: watch the front-foot red dot on the foot map.'},
+    {w:'Heel J stop', v:'front', j:.38, t:'Facing downhill, the heel edge holds you stopped.'},
+    {w:'Toe J stop', v:'back', j:.88, t:'Back to the hill on the toe edge; look over your shoulder first.'},
+    {w:'Snow mark', v:'top', j:.24, t:'The light-blue band is the snow mark: wider in the J’s curve (skidding to slow), a single line on the straight glide.'}
+  ],
+  eroll: [
+    {w:'The flat moment', v:'back', j:.5, t:'Gauge: heel → 0° → toe. The 0° moment is when catching an edge is most likely — weight even, knees soft.'},
+    {w:'Small range', v:'front', j:.25, t:'Only about 14° of edge and a shallow S path; it isn’t about turning, just about changing edges.'},
+    {w:'Upper body still', v:'front', j:.75, t:'Only the ankles and knees move; keep the upper body and hands still.'},
+    {w:'Take it slow', v:'top', j:.5, t:'Gentle slope, low speed; speed up the rhythm only once it’s smooth.'}
+  ],
+  pencil: [
+    {w:'Pencil line vs wide smear', v:'top', j:.15, t:'Switch between Heel pencil line / Heel smear: the width of the light-blue mark = how sideways the board is.'},
+    {w:'Board not sideways', v:'top', j:'hc', t:'Pencil line: the nose points where you’re travelling and the tail follows the nose’s line.'},
+    {w:'Carve uphill', v:'back', j:.55, t:'Add edge, get lower, let the sidecut turn you uphill — don’t twist your body.'},
+    {w:'Toeside', v:'back', j:'tc', t:'Same on the toe edge, knees and ankles pressing uphill.'},
+    {w:'Next', v:null, j:null, t:'Once both sides draw a pencil line, link heel and toe into carved turns (the Carving level).'}
+  ],
+  ffs: [
+    {w:'Front foot initiates', v:'top', j:'init', t:'More weight on the front foot at initiation (bigger front red dot on the foot map); the nose turns first.'},
+    {w:'Compare with ruddering', v:'top', j:'toe', t:'Tap “⇆ Correct vs wrong”: with ruddering the tail swings out, the snow mark gets wide and the turn gets bigger.'},
+    {w:'Snow mark', v:'top', j:'comp', t:'Correct: the snow mark doesn’t suddenly widen at the end of the turn. Widening = the back foot is kicking the tail.'},
+    {w:'Drill', v:null, j:null, t:'Strap in only the front foot, rest the back foot on the board unstrapped, and do J-turns: the back foot can’t kick even if it wants to.'}
+  ],
+  swb: [
+    {w:'Mirror image', v:'front', j:'toe', t:'Everything is the same as regular, just left-right swapped; your usual back leg now does the front leg’s job.'},
+    {w:'New front foot leads', v:'heelV', j:'init', t:'Weight slightly forward at initiation: the front red dot on the foot map. It’s easy to sit back the first few times.'},
+    {w:'Green runs first', v:null, j:null, t:'On the easiest green run, J-turns first, then linked skidded turns; AASI Level 1 also requires switch skidded turns.'},
+    {w:'Why practise it', v:null, j:null, t:'Snowboarding is asymmetric by nature: without switch you’ll always have a weak side, and if you spin around you can’t recover.'}
+  ],
   trav: [
     {w:'Heel traverse', v:'front', j:'heel', s:0, t:'Face downhill and cross the slope on the heel edge; lift the toes slightly to hold the edge.'},
     {w:'Toe traverse', v:'back', j:'toe', s:0, t:'Back to the hill, on the toe edge; knees push uphill.'},
@@ -926,6 +1065,20 @@ function rebuildTrails(c){
   const mk = (pts, color, op) => new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color, transparent:true, opacity:op}));
   comTrail = mk(cp, 0xe0a800, .9);
   trails = [comTrail, mk(tr, 0x7f93a8, .85)];
+  { // snow mark: a carve leaves a pencil line, a skid smears a band as wide as the board is sideways
+    const Lb = cfg.board/100, pos = [], idx = [];
+    for (let i = -200; i < 400; i++){
+      const p = pose(c + i/200), q = pose(c + (i+1)/200);
+      const dx = q.mid.x - p.mid.x, dz = q.mid.z - p.mid.z, dl = Math.hypot(dx, dz);
+      let hw = .02;
+      if (dl > 1e-4 && !(p.lift > .02)) hw = Math.max(.02, .5*Lb*Math.abs(Math.sin(p.yawB - Math.atan2(dx, dz))));
+      const nx = dl > 1e-4 ? -dz/dl : 1, nz = dl > 1e-4 ? dx/dl : 0;
+      pos.push(p.mid.x + nx*hw, .006, p.mid.z + nz*hw, p.mid.x - nx*hw, .006, p.mid.z - nz*hw);
+    }
+    for (let i = 0; i < pos.length/6 - 1; i++){ const a = 2*i; idx.push(a, a+1, a+2, a+1, a+3, a+2); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx);
+    trails.push(new THREE.Mesh(g, new THREE.MeshBasicMaterial({color:0x9fb6cc, transparent:true, opacity:.35, side:THREE.DoubleSide, depthWrite:false})));
+  }
   trails.forEach(t => slopeG.add(t));
   comTrail.visible = show.com; trailCycle = c;
   buildMap(c);
@@ -1117,7 +1270,7 @@ function applyPose(p){
     bStrip.position.x = x;
     paintStrip(bStrip, z => fn(z*Lb));
     const press = Math.max(p.press || 0, Math.min(1, Math.abs(pit)/(12*D)));
-    const carveF = ({euro:1, carve:1, mid:.6, beg:.3, trav:.4, slip:.1, leaf:.1}[cfg.level] ?? 0)*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1);
+    const carveF = ({euro:1, carve:1, mid:.6, beg:.3, ffs:.3, swb:.3, trav:.4, jturn:.3, eroll:.1, pencil:.8, slip:.1, leaf:.1}[cfg.level] ?? 0)*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1);
     const kRaw = lift > .02 ? 0 : carveF*Math.tan(Math.min(Math.abs(p.edge), 80*D))/cfg.R + press/3;
     const kap = bendMul*kRaw;
     if (bParts){
@@ -1232,13 +1385,17 @@ const JUMPS = {
   slip: [['Slide',() => .25],['Steady',() => 0],['Stop',() => 1/12]],
   trav: [['Traverse',() => 0],['Release and drop',() => .25],['Re-edge and climb',() => .75]],
   ollie:[['Preload',() => .42],['Pop',() => .48],['Air',() => .6],['Land',() => .76]],
-  butter:[['Press',() => .3],['Start turning',() => .45],['Halfway',() => .575],['Finish',() => .85]]
+  butter:[['Press',() => .3],['Start turning',() => .45],['Halfway',() => .575],['Finish',() => .85]],
+  jturn:[['Straight run',() => .05],['Heel J',() => .24],['Stop',() => .38],['Toe J',() => .74]],
+  eroll:[['Heel',() => .25],['Flatten',() => .5],['Toe',() => .75]],
+  pencil:[['Traverse',() => .15],['Carve uphill',() => .55],['Release',() => .85]]
 };
 const SUBS = {
   slip: ['slipSide', [['heel','Heelside'],['toe','Toeside']]],
   trav: ['slipSide', [['heel','Heelside'],['toe','Toeside']]],
   ollie:['trick', [['ollie','Ollie (pop off the tail)'],['nollie','Nollie (pop off the nose)']]],
-  butter:['butter', [['nose','Nose butter'],['tail','Tail butter']]]
+  butter:['butter', [['nose','Nose butter'],['tail','Tail butter']]],
+  pencil:['pen', [['hc','Heel pencil line'],['hs','Heel smear'],['tc','Toe pencil line'],['ts','Toe smear']]]
 };
 const kindOf = () => LV[cfg.level].kind || 'turn';
 function setSub(key, val){ cfg[key] = val; lastPhase = ''; rebuildTrails(Math.floor(sT)); renderJumps(); }
@@ -1253,7 +1410,7 @@ function renderJumps(){
 }
 function goWatch(j){
   const sub = SUBS[kindOf()];
-  if (sub && (j === 'toe' || j === 'heel' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail')){ setSub(sub[0], j); return; }
+  if (sub && (j === 'toe' || j === 'heel' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail' || sub[1].some(x => x[0] === j))){ setSub(sub[0], j); return; }
   if (typeof j === 'number') return jump(j);
   if (kindOf() === 'slip') return jump(j === 'trans' ? 1/12 : .25);
   jump(JUMP[j]());
@@ -1265,7 +1422,8 @@ function syncSliders(){ for (const id in sl){ sl[id].value = cfg[id]; document.g
 for (const id in sl) sl[id].oninput = () => { cfg[id] = +sl[id].value; syncSliders(); build(); };
 let lastPhase = '';
 function setLevel(l){
-  cfg.level = l; setTimeout(() => renderPath(), 0); const lv = LV[l];
+  const was = LV[cfg.level]; cfg.level = l; setTimeout(() => renderPath(), 0); const lv = LV[l];
+  if (!!lv.sw !== cfg.sw && (lv.sw || (was && was.sw))){ cfg.sw = !!lv.sw; document.getElementById('swBtn').classList.toggle('on', cfg.sw); document.getElementById('swNote').style.display = cfg.sw ? '' : 'none'; }
   Object.assign(cfg, {v:lv.v, slope:lv.slope, R:lv.R, board:cfg.H + lv.boardOff});
   document.querySelectorAll('[data-l]').forEach(b => b.classList.toggle('on', b.dataset.l === l));
   syncSliders(); build(); lastPhase = '';
@@ -1327,11 +1485,14 @@ function drawBal(p){
 function renderSpec(){
   const r = REC[cfg.level], H = cfg.H;
   const kk = kindOf();
-  if (kk === 'trav' || kk === 'ollie' || kk === 'butter'){
+  if (kk === 'trav' || kk === 'ollie' || kk === 'butter' || DRILLK.includes(kk)){
     const ok = (x, a) => x >= a[0] && x <= a[1] ? '<span class="ok">✓</span>' : '<span class="bad">⚠</span>';
     const why = {trav:'Garlands are the step before linked turns: you only practise the top half (release and drop) and bottom half (re-edge and climb) of a turn, with no edge change.',
       ollie:'An ollie uses the flex of the tail (or nose): the preload bends the board to store energy, the pop releases it, then you tuck your legs so the board rises with you.',
-      butter:'A butter presses the nose (or tail) into the snow as a pivot while the rest of the board lifts off, so friction is low and it can spin. Soft boards with less camber make it easier.'}[kk];
+      butter:'A butter presses the nose (or tail) into the snow as a pivot while the rest of the board lifts off, so friction is low and it can spin. Soft boards with less camber make it easier.',
+      jturn:'A J-turn is only the second half of a turn: after a straight glide you turn uphill on one edge and speed bleeds away. Learn to stop on both sides before linking turns.',
+      eroll:'At the edge change the board is flat; if the downhill edge bites you catch an edge. Practise the flat instant slowly until it feels natural.',
+      pencil:'If the board isn’t sideways and the tail follows the nose, the track is a pencil line; sideways, it scrapes a wide smear. Use the track as instant feedback.'}[kk];
     document.getElementById('spec').innerHTML = `<tr><td>Slope</td><td>${cfg.slope}°</td><td>${r.slope[0]}–${r.slope[1]}°</td><td>${ok(cfg.slope, r.slope)}</td></tr><tr><td>Ski length</td><td>${cfg.board} cm</td><td>${H+r.b[0]}–${H+r.b[1]} cm</td><td>${ok(cfg.board, [H+r.b[0], H+r.b[1]])}</td></tr><tr><td>→ Principle</td><td colspan="3">${why}</td></tr>`;
     document.getElementById('warn').innerHTML = ''; return;
   }
@@ -1442,7 +1603,10 @@ function updateUI(p, act, md, now){
   const ph = phaseOf(p), P = PH[cfg.level][ph];
   const tt = p.nsh < .05 ? '' : (p.toeLean > 0 ? 'Toeside' : 'Heelside');
   const kd = kindOf();
-  if (kd === 'trav' || kd === 'ollie' || kd === 'butter'){
+  if (DRILLK.includes(kd)){
+    const sub = SUBS[kd], subName = sub ? sub[1].find(x => x[0] === cfg[sub[0]])[1] + '・' : '';
+    hud.innerHTML = `<b>${subName}${P[0]}</b><br>Board heading ${Math.abs(p.psi/D).toFixed(0)}° (0° = fall line) · Edge ${Math.abs(p.edge/D).toFixed(0)}° ${tt}<br>Front ${Math.round(weightF(p)*100)}%・Back ${Math.round((1-weightF(p))*100)}%<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
+  } else if (kd === 'trav' || kd === 'ollie' || kd === 'butter'){
     const sub = SUBS[kd], subName = sub[1].find(x => x[0] === cfg[sub[0]])[1];
     const extra = kd === 'trav' ? `Board heading ${Math.abs(p.psi/D).toFixed(0)}° (0° = fall line)・Edge ${Math.abs(p.edge/D).toFixed(0)}°`
       : kd === 'ollie' ? `Board height ${Math.round((p.lift||0)*100)} cm・Board pitch ${Math.abs((p.pitch||0)/D).toFixed(0)}°`
@@ -1495,9 +1659,10 @@ function updateUI(p, act, md, now){
 
 /* ---------- learning: simple mode, compare, guide ---------- */
 const GUIDE = {"leaf": {"q": [["To go nose-first, which foot takes the weight?", "The front foot. With the nose pointing slightly downhill, you slide diagonally nose-first."], ["Do you change edges to change direction?", "No. Same edge throughout; you only shift weight between front and back foot."]], "sum": "Same edge, back and forth: front foot leads toward the nose, back foot toward the tail; add edge to stop at each end.", "snow": "Start heelside: 3–5 m diagonally nose-first, stop, then back tail-first; then repeat toeside. Once solid, it is the step before J-turns and linked turns."}, "slip": {"q": [["To stop, do you increase or decrease the edge angle?", "Increase it — close to the slope angle you stop."], ["Where should you look?", "Look ahead (downhill), not at the board."]], "sum": "Control the edge angle with your ankles: big = stop, small = slide.", "snow": "Heel slip: lift your toes to stop, lower them to slide; repeat 5 times, then try a toe slip."}, "trav": {"q": [["How do you turn from a traverse toward the fall line?", "Flatten the edge slightly and press lightly with the front foot."], ["What brings you back uphill?", "Re-edge: heel side lift the toes, toe side drive the knees."]], "sum": "Release and drop, re-edge and climb — the step before linked turns.", "snow": "Do 3–4 garlands per run before stopping; practise both heel and toe."}, "beg": {"q": [["At initiation, should your weight be on the front or back foot?", "Slightly more on the front foot (about 55–60%)."], ["Where should you look?", "Look where you want to go; head and shoulders lead the body."]], "sum": "Look where you’re going, front foot leads, back foot follows.", "snow": "Before each turn, turn your head toward the next direction first, then press the front foot lightly."}, "mid": {"q": [["Which muscles do the main work on heelside?", "The tibialis anterior lifts the toes; the quads and abs hold the position."], ["Should the upper body rotate the board?", "No — control it with your ankles and knees."]], "sum": "Extend to change edges, flex to load, keep the upper body quiet.", "snow": "Say ’up, press’ for every turn; try a few turns with your hands on your knees to feel the lower body steering."}, "carve": {"q": [["How does a snowboard’s edge angle compare with body lean?", "About the same."], ["Should the hips push back on toeside?", "No — the body leans into the turn in one straight line."]], "sum": "Tip early, let the board turn itself, leave a single thin line in the snow.", "snow": "On a gentle slope do a carved traverse: use one edge across the run, then look back to see if it left a single thin line."}, "euro": {"q": [["Is the hand on the snow there to hold you up?", "No. Your weight is still over the edge; the hand only touches lightly."], ["What do you need most to get really low?", "Enough speed and an edge that bites; too slow and you can’t get low."]], "sum": "Speed and the edge hold you up, not your hand.", "snow": "Pick a wide, well-groomed run, start with heelside and increase the lean gradually; protect your knees and wrists."}, "ollie": {"q": [["What should your body do before the pop?", "Crouch down with weight over the tail, like loading a spring."], ["In the air, how do you make the board come up with you?", "Pull the knees to the chest; the front foot levels the board."]], "sum": "Load the tail, pop, tuck, land with bent knees.", "snow": "Practise in place on flat ground first, then slowly on a gentle slope; land on both feet at the same time."}, "butter": {"q": [["Where is your weight in a nose butter?", "Front foot, about 80–90%."], ["Where does the rotation come from?", "The upper body winds up first, then leads the spin, and the lower body follows."]], "sum": "Press the nose, wind up, lead with the upper body.", "snow": "First practise a nose press on flat ground and hold for 3 seconds, then add a 180, and only then try a 360."}};
-const STANCE_SHORT = {"look": "Looking at the board: you can’t turn where you want to go.", "front": "Front foot too heavy: tail washes out, easy to catch an edge.", "back": "Back foot too heavy: the nose floats and you have to twist the upper body to turn.", "waist": "Waist bend / toilet sit: the CoM leaves the edge and you fall easily.", "rot": "Upper-body rotation: the tail swings out and upper and lower body are out of sync."};
+Object.assign(GUIDE, {"jturn": {"q": [["To stop, which way should the turn go?", "Uphill. Once the board is across the slope, speed simply bleeds away."], ["Which foot moves first?", "The front foot. It steers the nose; the back foot just follows."]], "sum": "Glide for two seconds, steer the nose uphill with the front foot and stop on one edge; do both heel and toe sides.", "snow": "Pick a gentle slope with a flat run-out: 5 on the heel side, 5 on the toe side. Only link turns once you can stop solidly on both."}, "eroll": {"q": [["What is the board doing at the edge change?", "Flat. Weight even, knees soft; the downhill edge must not bite."], ["Why drill this?", "Most snowboard edge catches happen at the edge change, not in the middle of the turn."]], "sum": "Heel → flat for an instant → toe, small and slow; you’re training the flat moment.", "snow": "Gentlest slope, nose roughly down the fall line, sliding slowly: a little heel → flat → a little toe, 10 times. Smooth, not fast."}, "pencil": {"q": [["How do you know it’s a real carve?", "Look back at the track: pencil line = carve; wide smear = board sideways (skid)."], ["For a clean carve, what should the board do?", "Not go sideways: the nose points where you travel and the tail follows the nose’s line."]], "sum": "Traverse on one edge leaving a pencil line; only then link heel and toe into carved turns.", "snow": "On a smooth blue run, traverse 20–30 m on the heel edge, stop and look back at the track; then the toe edge. Try linked carving only once both are pencil lines. Rushing before you control one edge just trains edge catches."}, "ffs": {"q": [["Which foot starts the turn?", "The front foot. It twists the board into the turn; the back foot just follows."], ["How do you know if you’re ruddering?", "If the track suddenly widens in the second half of the turn and the tail swings out, the back foot is kicking."]], "sum": "Weight forward at initiation, the front foot twists the board; don’t kick the tail with the back foot (ruddering).", "snow": "On a gentle slope: strap in only the front foot, rest the back foot on the board, and do J-turns; then strap both in and link turns thinking “the back foot is a passenger”."}, "swb": {"q": [["How do muscles and fore–aft pressure differ in switch?", "No difference, just mirrored: your usual back leg now does the front leg’s job."], ["Where should you practise it?", "The easiest green run, starting with J-turns, then linked skidded turns."]], "sum": "Ride with your usual back foot in front, every movement mirrored; the new front foot leads, weight slightly forward.", "snow": "Spend about a fifth of each day on switch: green-run J-turns first, then linked turns. Snowboarding is asymmetric; skip it and one side stays weak forever."}});
+const STANCE_SHORT = {"look": "Looking at the board: you can’t turn where you want to go.", "front": "Front foot too heavy: tail washes out, easy to catch an edge.", "back": "Back foot too heavy: the nose floats and you have to twist the upper body to turn.", "waist": "Waist bend / toilet sit: the CoM leaves the edge and you fall easily.", "rot": "Upper-body rotation: the tail swings out and upper and lower body are out of sync.", "rudder": "Ruddering: the nose isn’t steering; the tail scrapes the turn."};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
-const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {slip:'look', leaf:'look', trav:'look'};
+const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {slip:'look', leaf:'look', trav:'look', jturn:'look', ffs:'rudder', swb:'back', eroll:'look', pencil:'look'};
 let cmpOn = false, lastCyc = null;
 const toastDone = {};
 function renderGuide(){
@@ -1561,7 +1726,7 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
-const FEEL1 = {"slip": "Lift your toes (heel slip) to stop, relax a little to slide.", "leaf": "Press the foot on the side you want to go.", "trav": "Eyes on where you’re going, front foot leading.", "beg": "Flatten the board first when switching sides, then ease onto the new edge.", "mid": "Sink and press into the turn, rise and release when switching edges.", "carve": "Load the edge and let the board turn itself; don’t twist your upper body.", "euro": "You can get lower than the board without falling only because speed holds you up; don’t try it slowly.", "ollie": "Load the tail first, then pop and pull your feet up.", "butter": "Press the nose (or tail) and lead the spin with your upper body."};
+const FEEL1 = {"jturn": "Glide two seconds, steer the nose uphill with the front foot, and you’ll stop by yourself.", "eroll": "At the flat moment: weight even, knees soft.", "pencil": "Look back at your track: only a pencil line is a carve.", "ffs": "Front foot twists the board; the back foot is a passenger.", "swb": "Everything mirrored; the new front foot leads.", "slip": "Lift your toes (heel slip) to stop, relax a little to slide.", "leaf": "Press the foot on the side you want to go.", "trav": "Eyes on where you’re going, front foot leading.", "beg": "Flatten the board first when switching sides, then ease onto the new edge.", "mid": "Sink and press into the turn, rise and release when switching edges.", "carve": "Load the edge and let the board turn itself; don’t twist your upper body.", "euro": "You can get lower than the board without falling only because speed holds you up; don’t try it slowly.", "ollie": "Load the tail first, then pop and pull your feet up.", "butter": "Press the nose (or tail) and lead the spin with your upper body."};
 let pathDone = {}; try { pathDone = JSON.parse(localStorage.getItem('pathDone') || '{}'); } catch(e){}
 function renderPath(curK){
   document.querySelectorAll('#path li').forEach(li => { li.classList.toggle('done', !!pathDone[li.dataset.k]); li.classList.toggle('cur', li.dataset.k === curK); });

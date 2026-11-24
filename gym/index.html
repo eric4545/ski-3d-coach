@@ -567,6 +567,32 @@ ski_counter_rot: {cat:'ski', name:'上下身分離 Upper-Lower Separation', view
        {name:'郁嘅時候企直', why:'一轉就企高，冇咗滑雪姿勢。保持屈膝屈髖。', d:{standUp:1}, mark:'pelvis', mus:{quads:-1}}],
   ski:'轉彎時雙腳同髖帶動雪板轉向，上半身保持面向山下，避免整個人扭曲。',
   sb:'單板多數係上下身一齊轉（肩膀帶），但呢個練習幫你控制上身唔亂甩，換刃時更穩。'},
+sb_balance: {cat:'ski', name:'平衡板單板站姿 Balance Board (Snowboard)', view:'front', props:['bboard'], tempoTxt:'每個方向 2–3 秒；30–45 秒 × 3 組，前腳左右都做一次。',
+  seq:[{p:P({sup:'feet', anchor:'both', step:.13, t:30, ty:18, leg:{th:[38,13], sh:[-20,13]}, arm:{ar:[15,38], fa:[25,30]}}), d:1.2, ph:'iso', say:'側身企，望過前膊頭，板保持平'},
+       {p:P({sup:'feet', anchor:'both', step:.13, t:38, ty:18, leg:{th:[58,13], sh:[-34,13]}, arm:{ar:[25,38], fa:[35,30]}}), d:1.2, ph:'ecc', say:'細細蹲低，板唔好掂地'},
+       {same:0, d:1, ph:'con', say:'企返起身'},
+       {p:P({sup:'feet', anchor:'both', step:.13, t:32, ty:18, l:6, L:{th:[46,7], sh:[-26,7]}, R:{th:[30,19], sh:[-14,19]}, arm:{ar:[15,38], fa:[25,30]}}), d:1.4, ph:'iso', say:'重量移去前腳（左），停住'},
+       {same:0, d:1, ph:'iso', say:'返中間'},
+       {p:P({sup:'feet', anchor:'both', step:.13, t:32, ty:18, l:-6, L:{th:[30,19], sh:[-14,19]}, R:{th:[46,7], sh:[-26,7]}, arm:{ar:[15,38], fa:[25,30]}}), d:1.4, ph:'iso', say:'重量移去後腳（右），停住'}],
+  mus:{tib:[2,'iso'], calves:[2,'iso'], abductors:[2,'iso'], adductors:[2,'iso'], quads:[2,'iso'], glutes:[1,'iso'], core:[2,'iso'], obliques:[1,'iso']},
+  do:'側身企喺平衡板上（腳闊過肩，好似企喺單板上），屈膝屈踝，望過前膊頭。先保持塊板平，再做細蹲同左右移重量', dont:'鎖死膝頭、望住塊板、用上身大幅擺動', stop:'失去平衡就落地；身邊要有牆或者扶手，地下鋪墊', gear:'用具：平衡板（滾筒式）；初學先用 balance pad 或者墊住滾筒',
+  note:'Regular 同 goofy 兩個方向都要做（前腳左右各一次）。熟咗可以喺板上輕輕前後移重量（toe／heel）。',
+  mis:[{name:'望住塊板', why:'頭一低，重心就向前跌，上身變彎。望前膊頭方向。', d:{hp:30, round:14}, mark:'trunk'},
+       {name:'鎖死膝頭', why:'企直咗冇緩衝，塊板一郁就跌。膝頭同腳踝保持屈。', d:{lockKnee:1}, mark:'knee', mus:{quads:-1}}],
+  ski:'雙板用嚟練唔穩定嘅平衡，屬輔助。',
+  sb:'單板本身就係側身企一塊板：用髖同核心控制塊板保持平同上 edge，轉移最直接，係單板陸上主菜。'},
+drop_land: {cat:'ski', name:'雙腳軟落地 Drop Landing', view:'side', props:['dropBox'], tempoTxt:'由 20–30 cm 箱向前踏落，雙腳一齊落地停穩 2 秒；3 組 × 5 下。',
+  seq:[{p:P({sup:'feet', anchor:'both', step:.3, t:4, leg:{th:[4,6], sh:[-3,6]}, arm:{ar:[10,8], fa:[20,8]}}), d:1, ph:'iso', say:'企喺箱上，雙腳同肩寬'},
+       {p:P({sup:'air', t:18, leg:{th:[22,7], sh:[-12,7]}, arm:{ar:[-25,10], fa:[-5,10]}}), d:.35, ph:'con', say:'向前踏出，雙腳一齊落'},
+       {p:P({sup:'feet', anchor:'both', off:[.42,0,0], t:42, leg:{th:[72,7], sh:[-42,7]}, arm:{ar:[55,10], fa:[70,10]}}), d:.3, ph:'ecc', say:'前腳掌先著地，屈腳踝、膝、髖吸收'},
+       {same:2, d:2, ph:'iso', say:'停穩 2 秒，膝頭對準腳尖'},
+       {p:P({sup:'feet', anchor:'both', off:[.42,0,0], t:4, leg:{th:[4,6], sh:[-3,6]}, arm:{ar:[10,8], fa:[20,8]}}), d:.9, ph:'con', say:'企返直，行返上箱'}],
+  mus:{quads:[3], glutes:[3], calves:[2], hams:[1], tib:[1], core:[1,'iso']},
+  do:'由矮箱向前踏落（唔係跳高），雙腳一齊落地；前腳掌先著，然後腳踝、膝頭、髖一齊屈低吸收，冇聲咁落地，停穩先起身', dont:'企直落地（大聲「啪」一下）、膝頭內塌、腳踭先落', stop:'膝頭或者腳踝痛；落地開始唔穩就收工', note:'熟咗先試細 box jump（跳上箱再踏落），高度唔使高。',
+  mis:[{name:'企直落地', why:'冇屈膝吸收，衝擊直接去膝頭同腰。落地要冇聲。', d:{standUp:1}, mark:'knee', mus:{quads:-1, glutes:-1}},
+       {name:'膝頭內塌', why:'落地膝頭向內跌，十字韌帶受壓。膝頭對準腳尖。', d:{kneeIn:14}, mark:'knee', view:'front', mus:{abductors:-1}}],
+  ski:'雙板多數係單腳受力，練單腳落地（側跳停穩）更貼。',
+  sb:'Ollie、跳台同 park 落地都係雙腳一齊落：腳踝、膝、髖一齊屈低吸收，同呢個動作一樣。'},
 ski_skater_hop: {cat:'ski', name:'側跳停穩 Skater Hop', view:'front', props:['marks'], tempoTxt:'跳過去、單腳落地停穩 3 秒，再跳返；左右各 5 下。',
   seq:[{p:P({sup:'feet', anchor:'R', off:[0,0,-.6], t:42, R:{th:[64,10], sh:[-32,10]}, L:{th:[14,-20], sh:[-66,-20]}, aL:{ar:[55,-18], fa:[75,-28]}, aR:{ar:[-35,16], fa:[-15,16]}}), d:.3, ph:'ecc', say:'右腳落地，屈膝屈髖吸收'},
        {same:0, d:2.6, ph:'iso', say:'停穩 3 秒，膝頭對準腳尖'},
@@ -803,7 +829,7 @@ function evalAt(m, tl, time, mis){
   } else p = lerpPose(s.from, s.to, ue);
   // mixed supports (jump): interpolate the root translation between the two keyframe solutions
   let Tfix = null;
-  if (s.from.sup !== s.to.sup || s.from.anchor !== s.to.anchor || s.from.sup === 'air' || s.to.sup === 'air'){
+  if (s.from.sup !== s.to.sup || s.from.anchor !== s.to.anchor || s.from.sup === 'air' || s.to.sup === 'air' || (s.from.step || 0) !== (s.to.step || 0) || String(s.from.off) !== String(s.to.off)){
     const ga = solveT(s.from, m, tl, s, 'from', mis), gb = solveT(s.to, m, tl, s, 'to', mis);
     Tfix = ga.clone().lerp(gb, ue);
     if (s.from.sup === 'air' || s.to.sup === 'air') Tfix.y += 0;
@@ -1317,6 +1343,8 @@ function buildProps(m, ref){
     if (k === 'copBench'){ const aL = o.ankleL, kL = o.kneeL; const c = aL.clone().lerp(kL, .3); const top = c.y - .07;
       const pad = addBox(M_PAD); setBox(pad, new V(c.x, top - .03, c.z), UP, FWD, .5, .06, .32);
       const leg1 = addBox(M_FRAME); setBox(leg1, new V(c.x + .22, (top - .06)/2, c.z), UP, FWD, .05, top - .06, .28); }
+    if (k === 'bboard'){ const b = addBox(M_PAD); setBox(b, new V(0, .115, .03), UP, FWD, .85, .03, .3); const r = addCyl(M_METAL); setCylAB(r, new V(0, .05, -.14), new V(0, .05, .2), .05); }
+    if (k === 'dropBox'){ const b = addBox(M_FRAME); setBox(b, new V(0, .15, -.02), UP, FWD, .6, .3, .42); }
     if (k === 'marks'){ for (const x of [-.55, .55]){ const mk = addBox(M_BAND, false); setBox(mk, new V(x, .004, 0), UP, FWD, .26, .006, .12); } }
   }
 }

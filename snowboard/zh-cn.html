@@ -123,11 +123,20 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
 <main>
   <div class="card" id="path">
     <details id="pathD"><summary>🔰 新手从这里开始（按顺序学）</summary>
-      <ol><li data-k="bal"><button data-go="slip" data-k="bal"><b>1</b><span>找重心<small>你应该感觉到：两只脚差不多平均，膝盖微弯：前后摇，找到最稳的那一点。</small></span></button></li><li data-k="slip"><button data-go="slip" data-k="slip"><b>2</b><span>推坡<small>你应该感觉到：勾起脚趾（后刃推坡）就停，稍微放松就滑。</small></span></button></li><li data-k="leaf"><button data-go="leaf" data-k="leaf"><b>3</b><span>落叶飘<small>你应该感觉到：想往哪边就压那边的脚：压前脚往板头，压后脚往板尾。</small></span></button></li><li data-k="trav"><button data-go="trav" data-k="trav"><b>4</b><span>斜滑降＋Garland<small>你应该感觉到：眼睛看要去的方向，前脚带路。</small></span></button></li><li data-k="beg"><button data-go="beg" data-k="beg"><b>5</b><span>入门・搓雪<small>你应该感觉到：换边时先把板放平，再慢慢压到新的那边。</small></span></button></li></ol>
-      <p class="note">之后：中级、刻滑、豚跳、平花。</p>
+      <ol><li data-k="bal"><button data-go="slip" data-k="bal"><b>1</b><span>找重心<small>你应该感觉到：两只脚差不多平均，膝盖微弯：前后摇，找到最稳的那一点。</small></span></button></li><li data-k="slip"><button data-go="slip" data-k="slip"><b>2</b><span>推坡<small>你应该感觉到：勾起脚趾（后刃推坡）就停，稍微放松就滑。</small></span></button></li><li data-k="leaf"><button data-go="leaf" data-k="leaf"><b>3</b><span>落叶飘<small>你应该感觉到：想往哪边就压那边的脚：压前脚往板头，压后脚往板尾。</small></span></button></li><li data-k="trav"><button data-go="trav" data-k="trav"><b>4</b><span>斜滑降＋Garland<small>你应该感觉到：眼睛看要去的方向，前脚带路。</small></span></button></li><li data-k="jturn"><button data-go="jturn" data-k="jturn"><b>5</b><span>J-turn<small>你应该感觉到：直落两秒，前脚带板头转上坡，自己会停下。</small></span></button></li><li data-k="eroll"><button data-go="eroll" data-k="eroll"><b>6</b><span>Edge roll 换刃<small>你应该感觉到：heel → 放平一瞬 → toe，放平那下两脚平均、膝盖放软。</small></span></button></li><li data-k="beg"><button data-go="beg" data-k="beg"><b>7</b><span>入门・搓雪<small>你应该感觉到：换边时先把板放平，再慢慢压到新的那边。</small></span></button></li></ol>
+      <p class="note">落叶飘学会停就好，不要练太久（它永远不换刃）。之后：前脚带转 → 中级 → Carved traverse 细线 → Carving；Switch 每天留一点时间练；再到 Ollie、Butter。</p>
     </details>
     <p id="feel1"></p>
     <p class="note">📖 CoM＝身体重心・Edge＝板刃咬住雪・前刃＝脚趾那边・后刃＝脚跟那边・前脚＝靠板头那只脚</p>
+  </div>
+  <div class="card">
+    <details><summary>🩹 第一课：怎样跌倒才不受伤</summary>
+      <table><tr><th>跌倒方向</th><th>做法</th><th>不要</th></tr>
+      <tr><td>向前（toeside）</td><td>膝盖先着地，再用前臂接住，顺势滚</td><td>用手掌撑地（手腕最容易受伤）</td></tr>
+      <tr><td>向后（heelside）</td><td>收下巴、屈膝坐下，屁股先着地，再滚向一边</td><td>伸手向后撑、后脑撞地</td></tr>
+      <tr><td>停下想休息</td><td>直接坐下（heelside 面向下坡）</td><td>站在斜坡中间硬撑</td></tr></table>
+      <p class="note">跌倒时手握拳、收在身边。安全帽和护臀对初学很有用。</p>
+    </details>
   </div>
   <div class="row">
     <button data-mode="simple" class="on">👀 简易</button>
@@ -138,12 +147,17 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-l="slip">推坡</button>
     <button data-l="leaf">落叶飘 Falling leaf</button>
     <button data-l="trav">斜滑降＋Garland</button>
+    <button data-l="jturn">J-turn</button>
+    <button data-l="eroll">Edge roll 换刃</button>
     <button data-l="beg">入门・搓雪</button>
+    <button data-l="ffs">前脚带转</button>
     <button data-l="mid">中级・动态</button>
+    <button data-l="pencil">Carved traverse 细线</button>
     <button data-l="carve" class="on">刻滑</button>
     <button data-l="euro">低姿态刻滑</button>
     <button data-l="ollie">豚跳 Ollie／Nollie</button>
     <button data-l="butter">平花 Butter／Press</button>
+    <button data-l="swb">Switch 转弯</button>
   </div>
 
   <div class="row">
@@ -179,6 +193,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-st="waist">弯腰／坐马桶</button>
     <button data-st="look">盯着板看</button>
     <button data-st="rot">上半身带转</button>
+    <button data-st="rudder">后脚扫尾</button>
   </div>
   <div class="row">
     <span class="label">镜头</span>
@@ -306,6 +321,11 @@ const LV = {
   butter:{name:'Butter／Press 360', kind:'butter', v:8, slope:6, boardOff:-22, R:7.5, cap:10*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.3},
   leaf: {kind:'slip', name:'落叶飘 Falling leaf', leaf:true, v:0, slope:12, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.5, slip:true},
   slip: {kind:'slip', name:'Side slip', v:0, slope:12, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.5, slip:true},
+  jturn:{name:'J-turn', kind:'jturn', v:12, slope:8, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.45, T:9},
+  eroll:{name:'Edge roll 换刃练习', kind:'eroll', v:8, slope:6, boardOff:-20, R:7.5, cap:20*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.4, T:5},
+  pencil:{name:'Carved traverse 细线', kind:'pencil', v:18, slope:12, boardOff:-18, R:7.8, cap:40*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.35, T:7},
+  ffs:  {name:'前脚带转 drill', v:14, slope:10, boardOff:-20, R:7.5, cap:25*D, skid:20*D, Rbase:6, psiB:10, h0:.8, minDrive:.5, ffs:true},
+  swb:  {name:'Switch 转弯', v:13, slope:9, boardOff:-20, R:7.5, cap:22*D, skid:25*D, Rbase:6, psiB:10, h0:.8, minDrive:.5, sw:true},
   beg:  {name:'入门・搓雪转弯', v:15, slope:10, boardOff:-20, R:7.5, cap:25*D, skid:25*D, Rbase:6, psiB:10, h0:.8, minDrive:.5},
   mid:  {name:'中级・动态转弯', v:25, slope:15, boardOff:-17, R:7.8, cap:45*D, skid:10*D, Rbase:8, psiB:5, h0:.8, minDrive:.4},
   carve:{name:'Carving', v:25, slope:18, boardOff:-14, R:8, cap:65*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:0, carve:true},
@@ -318,6 +338,11 @@ const REC = {
   slip: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[0,99]},
   leaf: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[0,99]},
   beg:  {b:[-25,-15], R:[6.5,8],  slope:[6,12],  v:[8,20]},
+  jturn:{b:[-25,-15], R:[6.5,8],  slope:[5,10],  v:[6,15]},
+  eroll:{b:[-25,-15], R:[6.5,8],  slope:[4,8],   v:[5,12]},
+  pencil:{b:[-22,-12], R:[7,9],   slope:[8,15],  v:[12,25]},
+  ffs:  {b:[-25,-15], R:[6.5,8],  slope:[6,12],  v:[8,20]},
+  swb:  {b:[-25,-15], R:[6.5,8],  slope:[6,10],  v:[8,16]},
   mid:  {b:[-22,-12], R:[7,8.5],  slope:[12,20], v:[15,35]},
   carve:{b:[-20,-8],  R:[7.5,10], slope:[15,28], v:[18,40]},
   euro: {b:[-18,-6],  R:[7,10],   slope:[15,25], v:[32,50]}
@@ -328,17 +353,62 @@ const STANCE = {
   front:{fx:{skid:10, ph:'comp', edge:.85, r:.95, bend:.6}, name:'前脚太重', dw:.25, dz:.1, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'板尾没有压力，出弯板尾会甩出（打滑），换刃时容易吃刃往前摔；前脚股四头肌和小腿死撑，很快就累。'},
   look: {fx:{skid:10, ph:'all', edge:.8, r:1.2, bend:.6}, name:'盯着板看', dw:-.1, dz:-.05, dt:0, dh:-.03, tp:.25, rot:0, look:.75, add:{erec:.15}, txt:'板会跟着你眼睛看的方向走：盯着板就转不到要去的方向，还会变成后脚太重；低头弯腰，前刃容易折腰。眼睛看要去的方向，用头和肩膀带。'},
   waist:{fx:{skid:8, ph:'all', edge:.75, r:1.2, bend:.6}, name:'弯腰／坐马桶', dw:0, dz:0, dt:-.09, dh:-.06, tp:.5, rot:0, add:{erec:.2, quad:.15}, txt:'前刃弯腰：屁股往外翘，重心离开刃，容易打滑。后刃「坐马桶」：屁股坐到雪板后面，容易往后坐倒。应该用屈膝、屈脚踝来代替弯腰。'},
+  rudder:{fx:{skid:24, ph:'comp', edge:.75, r:1.15, bend:.4}, name:'后脚扫尾', dw:-.2, dz:-.05, dt:0, dh:0, tp:0, rot:0, add:{quad:.1}, txt:'用后脚把板尾踢出去（ruddering）来转：板头没带到，靠板尾打横刮雪，所以弯形大、搓雪多、速度控制不了；陡一点就失控。前脚先扭板入弯，后脚只是跟。看雪痕：弯的下半段变得很宽。'},
   rot:  {fx:{skid:15, ph:'comp', edge:.85, r:.9, bend:.4}, name:'上半身带转', dw:0, dz:0, dt:0, dh:0, tp:0, rot:30*D, add:{obl:.3}, txt:'用上半身扭去带雪板转，会让板尾甩出、搓雪失控，换刃时上下半身不同步，很容易摔。转弯应该由下半身（脚踝、膝盖）带。'}
 };
 const DIR = () => cfg.dir*(cfg.sw ? -1 : 1);
 const ANG = () => cfg.sw ? [6, -15] : [15, -6];
-const cfg = {trick:'ollie', butter:'nose', sw:false, level:'carve', H:175, board:161, R:8, slope:18, v:25, dir:1, stance:'ok', slipSide:'heel'};
+const cfg = {trick:'ollie', butter:'nose', pen:'hc', sw:false, level:'carve', H:175, board:161, R:8, slope:18, v:25, dir:1, stance:'ok', slipSide:'heel'};
 let C = {};
 
+
+const DRILLK = ['jturn','eroll','pencil'];
+// drill paths, written for dir = +1: h = board heading (deg, + = toward the heel-traverse side), tl = toe lean (deg, + = toe edge),
+// sk = extra board yaw beyond the heading (skid), sp = speed factor, w = front-foot share
+const DRILL = {
+  jturn: u => {
+    const a = sm(.12,.33,u)*(1-sm(.42,.5,u)), b = sm(.62,.83,u)*(1-sm(.92,1,u));
+    const ent = sm(.1,.18,u)*(1-sm(.24,.33,u)) + sm(.6,.68,u)*(1-sm(.74,.83,u));
+    const ph = u < .12 || (u >= .5 && u < .62) ? 'glide' : u < .33 ? 'jh' : u < .42 ? 'stopH' : u < .5 ? 'rel' : u < .83 ? 'jt' : u < .92 ? 'stopT' : 'rel';
+    return {h: 85*a - 85*b, tl: -24*a + 24*b, sk: 0, sp: .08 + .92*Math.pow(1 - Math.max(a, b), .6), w: .5 + .15*ent - .05*Math.max(a,b), ph};
+  },
+  eroll: u => {
+    const x = Math.sin(W*u), e = Math.sign(x)*Math.min(1, Math.abs(x)*1.7);
+    return {h: -14*Math.cos(W*u), tl: -14*e, sk: 0, sp: 1, w: .5, ph: Math.abs(e) < .35 ? 'flat' : e > 0 ? 'heel' : 'toe'};
+  },
+  pencil: u => {
+    const heel = cfg.pen[0] === 'h', skid = cfg.pen[1] === 's', g = heel ? 1 : -1;
+    const bump = sm(.35,.6,u)*(1-sm(.72,.97,u));
+    const ph = bump < .1 ? 'line' : u < .66 ? 'up' : 'rel';
+    return {h: g*(58 + 26*bump), tl: -g*(skid ? .55 : 1)*(22 + 14*bump), sk: skid ? g*(14 + 8*bump) : 0, sp: 1 - .35*bump, w: .52, ph};
+  }
+};
+function buildDrill(lv){
+  const f = DRILL[lv.kind], N = 400, T = lv.T, tab = []; let x = 0, z = 0;
+  for (let i = 0; i <= N; i++){
+    const d = f(i/N); d.x = x; d.z = z; tab.push(d);
+    const ds = C.v*d.sp*T/N; x += Math.sin(d.h*D)*ds; z += Math.cos(d.h*D)*ds;
+  }
+  Object.assign(C, {tab, dX: tab[N].x, dZ: tab[N].z, period: T, L: z});
+}
+function poseDrill(s){
+  const dir = DIR(), cyc = Math.floor(s), u = s - cyc, fi = u*400, i0 = Math.floor(fi), t = fi - i0;
+  const a = C.tab[i0], b = C.tab[Math.min(400, i0+1)], L = k => a[k] + (b[k]-a[k])*t;
+  const mid = new V(dir*(L('x') + cyc*C.dX), 0, L('z') + cyc*C.dZ);
+  const psi = dir*L('h')*D, tl = L('tl')*D, phi = tl*dir, sg = phi >= 0 ? 1 : -1, nsh = clamp(Math.abs(tl)/(22*D), 0, 1);
+  return finish({s, sn: sg*Math.max(.25, nsh), cs: 0, mid, psi, sg, phi, phiMag: Math.abs(phi), nsh, yawB: psi + dir*L('sk')*D, kap: 0, u, ph: a.ph, wF: L('w')});
+}
 function build(){
   Cok = null;
   const lv = LV[cfg.level], v = cfg.v/3.6;
   let Rt, phiApex, warn = '';
+  if (DRILLK.includes(lv.kind)){
+    C = {v: Math.max(v, .5), Rt: 0, phiApex: lv.cap, k: cfg.H/175, S: cfg.H*.0031, inten: .35, warn: ''};
+    buildDrill(lv);
+    slopeG.rotation.x = cfg.slope*D;
+    buildBoard(); rescale(); placeLegMuscles(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch(); renderJumps();
+    return;
+  }
   if (lv.kind === 'trav' || lv.kind === 'ollie' || lv.kind === 'butter'){
     C = {v: Math.max(v, 1), Rt: 0, phiApex: lv.cap, k: cfg.H/175, S: cfg.H*.0031, inten: .35, warn: ''};
     if (lv.kind === 'trav'){
@@ -529,6 +599,7 @@ function ankleAngles(ankle, knee, q, inside){
 function pose(s){
   const lv = LV[cfg.level];
   if (lv.slip) return poseSlip(s);
+  if (DRILLK.includes(lv.kind)) return poseDrill(s);
   if (lv.kind === 'trav') return poseTrav(s);
   if (lv.kind === 'ollie') return poseOllie(s);
   if (lv.kind === 'butter') return poseButter(s);
@@ -700,7 +771,7 @@ function weightF(p){
   if (p.wF !== undefined) return clamp(p.wF + STANCE[cfg.stance].dw, .1, .9);
   if (LV[cfg.level].slip) return clamp(.5 + (LV[cfg.level].leaf ? .2*Math.cos(W*p.s)*Math.sign(p.fB.x||1) : 0) + STANCE[cfg.stance].dw, .15, .85);
   const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
-  return clamp(.52 + .1*init - .14*comp + STANCE[cfg.stance].dw, .15, .85);
+  return clamp(.52 + (LV[cfg.level].ffs ? .16 : .1)*init - .14*comp + STANCE[cfg.stance].dw, .15, .85);
 }
 function activations(p){
   const lv = LV[cfg.level], st = STANCE[cfg.stance];
@@ -752,6 +823,41 @@ const MODE_TXT = {con:'向心收缩', ecc:'离心收缩', iso:'等长收缩', of
 
 /* ---------- phases & watch ---------- */
 const PH = {
+  jturn: {
+    glide:['直滑 Straight glide','板头朝向 fall line，两脚平均，膝盖微弯，眼看前方。先在缓坡、有平地可以停的地方练。'],
+    jh:['Heel J：前脚带上坡','前脚先擡起脚趾、板头转向 heelside，后脚跟着；edge 慢慢加，弯越转越往上坡。'],
+    stopH:['停住（heelside）','板打横、heel edge 咬住，速度自然没了。坐下休息也可以。'],
+    rel:['放刃、板头回到 fall line','Edge 慢慢放平，前脚轻轻带板头转回下坡，再直滑。'],
+    jt:['Toe J：膝盖推前上坡','前脚膝盖和脚踝推前、脚趾压，板头转向 toeside 上坡；后脚跟着。'],
+    stopT:['停住（toeside）','背向下坡，toe edge 咬住停住。转头看清下面再出发。'],
+    trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
+  eroll: {
+    heel:['Heel edge','擡起脚趾一点，板向 heelside 微微转；幅度小，不求转弯。'],
+    flat:['放平一瞬','两脚平均、膝盖放软、板完全平：这一下就是真正换刃的时刻。下坡那条 edge 不可以咬住雪。'],
+    toe:['Toe edge','膝盖脚踝推前、脚趾轻压，板向 toeside 微微转。'],
+    trans:['',''], init:['',''], comp:['','']
+  },
+  pencil: {
+    line:['横行：edge 站稳','用一条 edge 横过斜坡，板不可以打横；回头看雪痕：比一根手指细 = 真 carve。'],
+    up:['Carve 上坡','多一点 edge、蹲低，让板的弧度带你转上坡；板尾走回板头那条线。'],
+    rel:['放刃回到横行','慢慢减 edge，回到横行角度；再做几次。熟练后把两边连起来，变成 carved turn。'],
+    trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
+  ffs: {
+    trans:['换刃（雪板放平）','双脚平均、板放平；准备用前脚发动。'],
+    init:['前脚扭板入弯','前脚先转：toeside 前膝推向弯内、heelside 前脚趾擡起；板头先入弯。后脚完全不要踢。'],
+    toe:['Toeside：后脚只是跟','板头带着整块板转，后脚跟着同一条弧线，不要把板尾踢出去。'],
+    heel:['Heelside：后脚只是跟','前脚脚趾擡起带板头，后脚放松跟着；弯形是由前脚画出来的。'],
+    comp:['出弯：控速','用 edge 角度和弯形控速，不是用后脚刮雪。']
+  },
+  swb: {
+    trans:['换刃（雪板放平）','反脚之后一切左右镜像：平时的后脚现在是前脚。先放平板。'],
+    init:['入弯：新的前脚带','平时的后脚当前脚带板头，重量稍微放前（55%）；第一天会觉得很不顺，正常。'],
+    toe:['Toeside（镜像）','膝盖推前、脚趾压，和正脚一样，只是另一边。'],
+    heel:['Heelside（镜像）','像坐高凳，脚趾擡起；手放前面平衡。'],
+    comp:['出弯：控速','板多打横一点就 skid 减速；慢慢回到中间准备换刃。']
+  },
   trav: {
     trav:['斜滑降 Traverse','用上坡侧的刃横越斜坡：后刃斜滑降面向下坡、前刃斜滑降面向上坡。眼睛看要去的方向。'],
     down:['Garland：放刃下滑','立刃稍微放平，板头转向滚落线下滑，像半个弯的开头。'],
@@ -816,6 +922,7 @@ const PH = {
 };
 function phaseOf(p){
   const kind = LV[cfg.level].kind;
+  if (DRILLK.includes(kind)) return p.ph;
   if (kind === 'trav') return p.down > .35 ? 'down' : p.up > .35 ? 'up' : 'trav';
   if (kind === 'ollie') return p.u < .3 ? 'ride' : p.u < .44 ? 'pre' : p.u < .52 ? 'pop' : p.u < .73 ? 'air' : p.u < .9 ? 'land' : 'ride';
   if (kind === 'butter') return p.u < .2 ? 'ride' : p.u < .35 ? 'press' : p.u < .8 ? 'spin' : 'out';
@@ -830,6 +937,38 @@ function phaseOf(p){
 const sToe = () => DIR() > 0 ? .25 : .75, sHeel = () => DIR() > 0 ? .75 : .25;
 const JUMP = {trans:() => 0, init:() => .11, toe:sToe, heel:sHeel};
 const WATCH = {
+  jturn: [
+    {w:'J 字路线', v:'top', j:0, t:'鸟瞰图：直落一段，再弯上坡停住，像个 J 字；heel 和 toe 两边各做一次。'},
+    {w:'前脚先转', v:'top', j:.2, t:'入弯那下前脚重量多一点，板头先转、后脚跟着：看脚掌图前脚红点。'},
+    {w:'Heel J 停', v:'front', j:.38, t:'面向下坡，heel edge 咬住停住。'},
+    {w:'Toe J 停', v:'back', j:.88, t:'背向下坡，toe edge 停住；之前要转头看清楚。'},
+    {w:'雪痕', v:'top', j:.24, t:'浅蓝色是雪痕：J 的弯位会宽一点（skid 减速），直滑那段是一条线。'}
+  ],
+  eroll: [
+    {w:'放平那一下', v:'back', j:.5, t:'Gauge：heel → 0° → toe。0° 那下就是最容易 catch edge 的时刻，两脚平均、膝盖放软。'},
+    {w:'幅度小', v:'front', j:.25, t:'Edge 只有大约 14°，路线是浅浅的 S；不是要转弯，只是练换刃。'},
+    {w:'上半身不动', v:'front', j:.75, t:'只有脚踝和膝盖动，上半身和手保持稳定。'},
+    {w:'慢慢来', v:'top', j:.5, t:'缓坡、慢速；做到流畅才加快节奏。'}
+  ],
+  pencil: [
+    {w:'细线 vs 宽痕', v:'top', j:.15, t:'切换「Heel 细线／Heel 宽痕」比较：浅蓝雪痕的宽度 = 板打横的程度。'},
+    {w:'板不打横', v:'top', j:'hc', t:'细线：板头指的方向和行进方向一样，板尾走回板头那条线。'},
+    {w:'Carve 上坡', v:'back', j:.55, t:'加 edge、蹲低，让板的弧度带你转上坡，不要扭身。'},
+    {w:'前刃', v:'back', j:'tc', t:'Toe 边一样做，膝盖脚踝推向上坡。'},
+    {w:'之后', v:null, j:null, t:'两边都画到细线，才把 heel 和 toe 连起来，变成 carved turn（Carving 那级）。'}
+  ],
+  ffs: [
+    {w:'前脚发动', v:'top', j:'init', t:'入弯时前脚重量多一点（脚掌图前脚红点大），板头先转。'},
+    {w:'后脚扫尾比较', v:'top', j:'toe', t:'按「⇆ 正确 vs 错误」：后脚扫尾那个，板尾甩出、雪痕很宽、弯变大。'},
+    {w:'雪痕', v:'top', j:'comp', t:'正确：出弯雪痕不会突然变宽。变宽 = 后脚在踢板尾。'},
+    {w:'练法', v:null, j:null, t:'只扣前脚、后脚放在板上不扣，练 J-turn：后脚想踢也踢不到。'}
+  ],
+  swb: [
+    {w:'镜像', v:'front', j:'toe', t:'一切和正脚一样，只是左右对调；平时后脚的肌肉现在做前脚的工作。'},
+    {w:'新前脚带', v:'heelV', j:'init', t:'入弯时重量稍微放前：脚掌图前脚红点。第一次做很容易坐后。'},
+    {w:'先绿线', v:null, j:null, t:'在最容易的绿线先做 J-turn、再到连续 skid 转弯；AASI Level 1 也要求 switch skidded turns。'},
+    {w:'为什么要练', v:null, j:null, t:'单板天生不对称：不练 switch，你永远有一边转弯弱，打滑转了身就救不回来。'}
+  ],
   trav: [
     {w:'Heel traverse', v:'front', j:'heel', s:0, t:'面向下坡，用后刃横越斜坡；脚趾稍微勾起保持立刃。'},
     {w:'Toe traverse', v:'back', j:'toe', s:0, t:'背向下坡，用前刃；膝盖推向上坡。'},
@@ -926,6 +1065,20 @@ function rebuildTrails(c){
   const mk = (pts, color, op) => new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color, transparent:true, opacity:op}));
   comTrail = mk(cp, 0xe0a800, .9);
   trails = [comTrail, mk(tr, 0x7f93a8, .85)];
+  { // snow mark: a carve leaves a pencil line, a skid smears a band as wide as the board is sideways
+    const Lb = cfg.board/100, pos = [], idx = [];
+    for (let i = -200; i < 400; i++){
+      const p = pose(c + i/200), q = pose(c + (i+1)/200);
+      const dx = q.mid.x - p.mid.x, dz = q.mid.z - p.mid.z, dl = Math.hypot(dx, dz);
+      let hw = .02;
+      if (dl > 1e-4 && !(p.lift > .02)) hw = Math.max(.02, .5*Lb*Math.abs(Math.sin(p.yawB - Math.atan2(dx, dz))));
+      const nx = dl > 1e-4 ? -dz/dl : 1, nz = dl > 1e-4 ? dx/dl : 0;
+      pos.push(p.mid.x + nx*hw, .006, p.mid.z + nz*hw, p.mid.x - nx*hw, .006, p.mid.z - nz*hw);
+    }
+    for (let i = 0; i < pos.length/6 - 1; i++){ const a = 2*i; idx.push(a, a+1, a+2, a+1, a+3, a+2); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx);
+    trails.push(new THREE.Mesh(g, new THREE.MeshBasicMaterial({color:0x9fb6cc, transparent:true, opacity:.35, side:THREE.DoubleSide, depthWrite:false})));
+  }
   trails.forEach(t => slopeG.add(t));
   comTrail.visible = show.com; trailCycle = c;
   buildMap(c);
@@ -1117,7 +1270,7 @@ function applyPose(p){
     bStrip.position.x = x;
     paintStrip(bStrip, z => fn(z*Lb));
     const press = Math.max(p.press || 0, Math.min(1, Math.abs(pit)/(12*D)));
-    const carveF = ({euro:1, carve:1, mid:.6, beg:.3, trav:.4, slip:.1, leaf:.1}[cfg.level] ?? 0)*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1);
+    const carveF = ({euro:1, carve:1, mid:.6, beg:.3, ffs:.3, swb:.3, trav:.4, jturn:.3, eroll:.1, pencil:.8, slip:.1, leaf:.1}[cfg.level] ?? 0)*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1);
     const kRaw = lift > .02 ? 0 : carveF*Math.tan(Math.min(Math.abs(p.edge), 80*D))/cfg.R + press/3;
     const kap = bendMul*kRaw;
     if (bParts){
@@ -1232,13 +1385,17 @@ const JUMPS = {
   slip: [['下滑',() => .25],['稳定',() => 0],['刹停',() => 1/12]],
   trav: [['斜滑降',() => 0],['放刃下滑',() => .25],['入刃回升',() => .75]],
   ollie:[['预压',() => .42],['Pop',() => .48],['空中',() => .6],['落地',() => .76]],
-  butter:[['Press',() => .3],['开始转',() => .45],['转一半',() => .575],['完成',() => .85]]
+  butter:[['Press',() => .3],['开始转',() => .45],['转一半',() => .575],['完成',() => .85]],
+  jturn:[['直滑',() => .05],['Heel J',() => .24],['停住',() => .38],['Toe J',() => .74]],
+  eroll:[['Heel',() => .25],['放平',() => .5],['Toe',() => .75]],
+  pencil:[['横行',() => .15],['Carve 上坡',() => .55],['放刃',() => .85]]
 };
 const SUBS = {
   slip: ['slipSide', [['heel','后刃'],['toe','前刃']]],
   trav: ['slipSide', [['heel','后刃'],['toe','前刃']]],
   ollie:['trick', [['ollie','Ollie（板尾起跳）'],['nollie','Nollie（板头起跳）']]],
-  butter:['butter', [['nose','Nose butter'],['tail','Tail butter']]]
+  butter:['butter', [['nose','Nose butter'],['tail','Tail butter']]],
+  pencil:['pen', [['hc','Heel 细线'],['hs','Heel 宽痕'],['tc','Toe 细线'],['ts','Toe 宽痕']]]
 };
 const kindOf = () => LV[cfg.level].kind || 'turn';
 function setSub(key, val){ cfg[key] = val; lastPhase = ''; rebuildTrails(Math.floor(sT)); renderJumps(); }
@@ -1253,7 +1410,7 @@ function renderJumps(){
 }
 function goWatch(j){
   const sub = SUBS[kindOf()];
-  if (sub && (j === 'toe' || j === 'heel' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail')){ setSub(sub[0], j); return; }
+  if (sub && (j === 'toe' || j === 'heel' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail' || sub[1].some(x => x[0] === j))){ setSub(sub[0], j); return; }
   if (typeof j === 'number') return jump(j);
   if (kindOf() === 'slip') return jump(j === 'trans' ? 1/12 : .25);
   jump(JUMP[j]());
@@ -1265,7 +1422,8 @@ function syncSliders(){ for (const id in sl){ sl[id].value = cfg[id]; document.g
 for (const id in sl) sl[id].oninput = () => { cfg[id] = +sl[id].value; syncSliders(); build(); };
 let lastPhase = '';
 function setLevel(l){
-  cfg.level = l; setTimeout(() => renderPath(), 0); const lv = LV[l];
+  const was = LV[cfg.level]; cfg.level = l; setTimeout(() => renderPath(), 0); const lv = LV[l];
+  if (!!lv.sw !== cfg.sw && (lv.sw || (was && was.sw))){ cfg.sw = !!lv.sw; document.getElementById('swBtn').classList.toggle('on', cfg.sw); document.getElementById('swNote').style.display = cfg.sw ? '' : 'none'; }
   Object.assign(cfg, {v:lv.v, slope:lv.slope, R:lv.R, board:cfg.H + lv.boardOff});
   document.querySelectorAll('[data-l]').forEach(b => b.classList.toggle('on', b.dataset.l === l));
   syncSliders(); build(); lastPhase = '';
@@ -1327,11 +1485,14 @@ function drawBal(p){
 function renderSpec(){
   const r = REC[cfg.level], H = cfg.H;
   const kk = kindOf();
-  if (kk === 'trav' || kk === 'ollie' || kk === 'butter'){
+  if (kk === 'trav' || kk === 'ollie' || kk === 'butter' || DRILLK.includes(kk)){
     const ok = (x, a) => x >= a[0] && x <= a[1] ? '<span class="ok">✓</span>' : '<span class="bad">⚠</span>';
     const why = {trav:'Garland 是连续转弯前的一步：只练转弯的上半（放刃下滑）和下半（入刃回升），不用换刃。',
       ollie:'豚跳（Ollie）是利用板尾（或板头）的弹性：预压让雪板弯曲储能，pop 时释放，再收脚让雪板跟着身体起来。',
-      butter:'Butter 是把板头（或板尾）压在雪面当支点，其余部分离雪，所以摩擦小、转得动。软板和 camber 少的板比较容易做。'}[kk];
+      butter:'Butter 是把板头（或板尾）压在雪面当支点，其余部分离雪，所以摩擦小、转得动。软板和 camber 少的板比较容易做。',
+      jturn:'J-turn 只做转弯的下半：直滑之后用一条 edge 转上坡，速度自然没了。学会两边停，才连续转弯。',
+      eroll:'换刃那刻板是平的，下坡那条 edge 一咬住雪就会 catch edge。慢速练「放平一瞬」，让这个时刻变得自然。',
+      pencil:'板不打横、板尾走回板头那条线，雪痕就是一条细线；打横就会刮出一条宽痕。用雪痕做即时 feedback。'}[kk];
     document.getElementById('spec').innerHTML = `<tr><td>坡度</td><td>${cfg.slope}°</td><td>${r.slope[0]}–${r.slope[1]}°</td><td>${ok(cfg.slope, r.slope)}</td></tr><tr><td>板长</td><td>${cfg.board} cm</td><td>${H+r.b[0]}–${H+r.b[1]} cm</td><td>${ok(cfg.board, [H+r.b[0], H+r.b[1]])}</td></tr><tr><td>→ 原理</td><td colspan="3">${why}</td></tr>`;
     document.getElementById('warn').innerHTML = ''; return;
   }
@@ -1442,7 +1603,10 @@ function updateUI(p, act, md, now){
   const ph = phaseOf(p), P = PH[cfg.level][ph];
   const tt = p.nsh < .05 ? '' : (p.toeLean > 0 ? '前刃' : '后刃');
   const kd = kindOf();
-  if (kd === 'trav' || kd === 'ollie' || kd === 'butter'){
+  if (DRILLK.includes(kd)){
+    const sub = SUBS[kd], subName = sub ? sub[1].find(x => x[0] === cfg[sub[0]])[1] + '・' : '';
+    hud.innerHTML = `<b>${subName}${P[0]}</b><br>板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = fall line）・Edge ${Math.abs(p.edge/D).toFixed(0)}° ${tt}<br>前脚 ${Math.round(weightF(p)*100)}%・后脚 ${Math.round((1-weightF(p))*100)}%<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
+  } else if (kd === 'trav' || kd === 'ollie' || kd === 'butter'){
     const sub = SUBS[kd], subName = sub[1].find(x => x[0] === cfg[sub[0]])[1];
     const extra = kd === 'trav' ? `雪板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = 滚落线）・立刃 ${Math.abs(p.edge/D).toFixed(0)}°`
       : kd === 'ollie' ? `雪板离雪 ${Math.round((p.lift||0)*100)} cm・雪板角度 ${Math.abs((p.pitch||0)/D).toFixed(0)}°`
@@ -1495,9 +1659,10 @@ function updateUI(p, act, md, now){
 
 /* ---------- learning: simple mode, compare, guide ---------- */
 const GUIDE = {"leaf": {"q": [["想往板头方向去，重心放哪只脚？", "前脚。板头微微指向下坡就会往板头方向斜滑。"], ["换方向要不要换刃？", "不用，全程同一个刃，只是前后脚转移重心。"]], "sum": "同一个刃左右来回：前脚带往板头、后脚带往板尾，两端加大立刃停稳。", "snow": "先用后刃：往板头斜滑 3–5 公尺，停，再往板尾滑回来；之后用前刃再做。熟练后就是学 J 型转弯和 S 弯的前一步。"}, "slip": {"q": [["想停下，立刃要加大还是减小？", "加大，接近坡度就会停。"], ["眼睛应该看哪里？", "看前方（下坡方向），不要看雪板。"]], "sum": "用脚踝控制立刃角度：大就停，小就滑。", "snow": "后刃推坡：勾起脚趾停、放低脚趾滑，重复 5 次；之后再试前刃推坡。"}, "trav": {"q": [["想从斜滑降转向滚落线，要怎么做？", "立刃稍微放平，前脚轻轻加压。"], ["转回上坡靠什么？", "重新加立刃：后刃勾脚趾，前刃推膝盖。"]], "sum": "放刃下滑、入刃回升，是连续转弯前的一步。", "snow": "一条雪道做 3–4 个 garland 再停，后刃和前刃两边都要练。"}, "beg": {"q": [["入弯时重心应该放前脚还是后脚？", "前脚多一点（大约 55–60%）。"], ["眼睛应该看哪里？", "看要去的方向，头和肩膀带动身体。"]], "sum": "看要去哪里，前脚带，后脚跟。", "snow": "每个弯之前先转头看下一个方向，再轻轻压前脚。"}, "mid": {"q": [["后刃主要靠哪些肌肉？", "胫骨前肌勾起脚趾，股四头肌和腹肌撑住。"], ["上半身应该带转雪板吗？", "不应该，靠脚踝和膝盖控制。"]], "sum": "伸展换刃、屈曲加压、上半身稳定。", "snow": "每个弯喊「起、压」；试着把手放在膝盖上做几个弯，感觉下半身带转。"}, "carve": {"q": [["单板的立刃角度和身体倾倒相比是怎样？", "差不多一样。"], ["前刃时髋部应该往后顶吗？", "不应该，身体成一直线往弯内倾。"]], "sum": "早点倾倒，让雪板自己转，雪上只留一条细线。", "snow": "在缓坡做刻滑横越：只用一边刃横过雪道，再回头看雪上是不是一条细线。"}, "euro": {"q": [["手扫雪是用来撑住身体的吗？", "不是。重心仍然在刃上，手只是轻轻碰。"], ["想倒得低，最需要什么？", "速度够、刃咬得牢；太慢就倒不下去。"]], "sum": "靠速度和立刃撑住身体，不是靠手。", "snow": "选压雪好的宽雪道，先练后刃，逐步加大倾倒；记得保护膝盖和手腕。"}, "ollie": {"q": [["Pop 之前身体要做什么？", "蹲低，重心移到板尾，像压弹簧一样。"], ["在空中怎么让雪板跟着起来？", "膝盖往胸口收，前脚把雪板拉平。"]], "sum": "压尾、起跳、收脚、屈膝落地。", "snow": "先在平地原地练，再到缓坡慢速做；落地时双脚要同时着地。"}, "butter": {"q": [["Nose butter 重心放哪里？", "前脚，大约 80–90%。"], ["转动的力量从哪里来？", "上半身先预扭，再带头转，下半身跟着。"]], "sum": "压板头、预扭、上半身带转。", "snow": "先在平地练 nose press 站稳 3 秒，再加 180，最后才试 360。"}};
-const STANCE_SHORT = {"look": "盯着板看：转不到要去的方向。", "front": "前脚太重：板尾甩出，容易吃刃。", "back": "后脚太重：板头飘，要靠上半身扭才转得过去。", "waist": "弯腰／坐马桶：重心离开刃，容易摔。", "rot": "上半身带转：板尾甩出，上下半身不同步。"};
+Object.assign(GUIDE, {"jturn": {"q": [["想停，弯要转向哪里？", "转上坡。板一打横对着斜坡，速度自然会没了。"], ["哪只脚先动？", "前脚。前脚带板头转，后脚只是跟。"]], "sum": "直滑两秒，前脚带板头转上坡，用一条 edge 停住；heel 和 toe 两边都要做。", "snow": "选有平地可停的缓坡：heel 边做 5 次、toe 边做 5 次。两边都停得稳，才去连续转弯。"}, "eroll": {"q": [["换刃那刻板是怎样？", "平的。两脚平均、膝盖放软，下坡那条 edge 不可以咬住雪。"], ["为什么要练这下？", "单板大部分 catch edge 都是在换刃那刻发生，不是在弯里面。"]], "sum": "Heel → 放平一瞬 → toe，幅度小、慢速；练的是放平那一下。", "snow": "最缓的坡，板头大约朝向 fall line 慢慢滑：heel 一点 → 平 → toe 一点，来回 10 次。不求速度，求流畅。"}, "pencil": {"q": [["怎么知道自己是不是真 carve？", "回头看雪痕：细线 = carve；宽痕 = 板正在打横（skid）。"], ["想 carve 得干净，板要怎样？", "不要打横：板头指的方向和行进方向一样，板尾走回板头那条线。"]], "sum": "一条 edge 横行，留下一条细线；做到才把 heel 和 toe 连起来变 carved turn。", "snow": "在蓝线平整的位置，heel 边横行 20–30 公尺，停下回头看雪痕；再 toe 边。两边都是细线，才试连续 carving。还没控制好一边 edge 就急着练，只会练出 catch edge。"}, "ffs": {"q": [["转弯由哪只脚发动？", "前脚。前脚扭板入弯，后脚只是跟。"], ["怎么知道自己是不是后脚扫尾？", "雪痕在弯的下半段突然变宽、板尾甩出去，就是后脚在踢。"]], "sum": "入弯重量放前、前脚扭板；后脚不要踢板尾（ruddering）。", "snow": "缓坡：只扣前脚、后脚放在板上不扣，做 J-turn；之后扣回两只脚，想着「后脚是乘客」做连续转弯。"}, "swb": {"q": [["Switch 的肌肉和前后脚压力有什么不同？", "没有不同，只是左右镜像：平时的后脚现在做前脚的工作。"], ["应该在哪里练？", "最容易的绿线，从 J-turn 开始，再到连续 skid 转弯。"]], "sum": "用平时的后脚当前脚，所有动作镜像；新前脚带、重量稍微放前。", "snow": "每天留大约两成时间练 switch：先绿线 J-turn，再连续转弯。单板天生不对称，不练就永远有一边弱。"}});
+const STANCE_SHORT = {"look": "盯着板看：转不到要去的方向。", "front": "前脚太重：板尾甩出，容易吃刃。", "back": "后脚太重：板头飘，要靠上半身扭才转得过去。", "waist": "弯腰／坐马桶：重心离开刃，容易摔。", "rot": "上半身带转：板尾甩出，上下半身不同步。", "rudder": "后脚扫尾：板头没带到，靠板尾刮雪转。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
-const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {slip:'look', leaf:'look', trav:'look'};
+const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {slip:'look', leaf:'look', trav:'look', jturn:'look', ffs:'rudder', swb:'back', eroll:'look', pencil:'look'};
 let cmpOn = false, lastCyc = null;
 const toastDone = {};
 function renderGuide(){
@@ -1561,7 +1726,7 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
-const FEEL1 = {"slip": "勾起脚趾（后刃推坡）就停，稍微放松就滑。", "leaf": "想往哪边就压那边的脚。", "trav": "眼睛看要去的方向，前脚带路。", "beg": "换边时先把板放平，再慢慢压到新的那边。", "mid": "入弯压低加压，换刃时站高放松。", "carve": "压实板刃，让板自己转，不要扭上半身。", "euro": "身体比板还低也不会倒，是靠速度撑住；速度不够别尝试。", "ollie": "先压板尾蓄力，再弹起收脚。", "butter": "压实板头（或板尾），上半身带转。"};
+const FEEL1 = {"jturn": "直落两秒，前脚带板头转上坡，自己会停下。", "eroll": "放平那一下两脚平均、膝盖放软。", "pencil": "回头看雪痕：一条细线才是 carve。", "ffs": "前脚扭板，后脚是乘客。", "swb": "全部镜像，新前脚带路。", "slip": "勾起脚趾（后刃推坡）就停，稍微放松就滑。", "leaf": "想往哪边就压那边的脚。", "trav": "眼睛看要去的方向，前脚带路。", "beg": "换边时先把板放平，再慢慢压到新的那边。", "mid": "入弯压低加压，换刃时站高放松。", "carve": "压实板刃，让板自己转，不要扭上半身。", "euro": "身体比板还低也不会倒，是靠速度撑住；速度不够别尝试。", "ollie": "先压板尾蓄力，再弹起收脚。", "butter": "压实板头（或板尾），上半身带转。"};
 let pathDone = {}; try { pathDone = JSON.parse(localStorage.getItem('pathDone') || '{}'); } catch(e){}
 function renderPath(curK){
   document.querySelectorAll('#path li').forEach(li => { li.classList.toggle('done', !!pathDone[li.dataset.k]); li.classList.toggle('cur', li.dataset.k === curK); });
