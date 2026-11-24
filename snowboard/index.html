@@ -35,6 +35,15 @@ button.primary{background:var(--accent);color:#0f1419;border-color:var(--accent)
 input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
 .card h2{font-size:15px;margin:0 0 6px}
+#path ol{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}
+#path li button{width:100%;text-align:left;display:flex;gap:8px;align-items:flex-start;white-space:normal;line-height:1.35}
+#path li button b{min-width:22px}#path li button small{display:block;color:#9fb0bf;font-weight:normal}
+#path li.done button b::after{content:" ✓";color:#22c55e}#path li.cur button{border-color:var(--accent)}
+#feel1{font-size:15px;margin:8px 0 2px;padding:8px 10px;border-radius:8px;background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.35)}
+#path summary{cursor:pointer;color:var(--accent);font-size:14px}
+#balSvg{width:100%;height:auto;display:block;margin:6px 0}
+#balCard details{margin-top:6px;color:#c9d3dc;font-size:13px}#balCard summary{cursor:pointer;color:var(--accent)}
+#balCard ol{margin:6px 0 0 18px;padding:0}#balCard li{margin:3px 0}
 .card p{margin:4px 0;color:#c9d3dc}
 .slider{display:grid;grid-template-columns:62px 1fr 64px;gap:8px;align-items:center;margin:6px 0}
 .slider span{font-size:13px}.slider output{font-variant-numeric:tabular-nums;text-align:right;font-size:13px;color:var(--accent)}
@@ -112,6 +121,14 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
 </div>
 
 <main>
+  <div class="card" id="path">
+    <details id="pathD"><summary>🔰 新手由呢度開始（按次序學）</summary>
+      <ol><li data-k="bal"><button data-go="slip" data-k="bal"><b>1</b><span>搵重心<small>你應該感覺到：兩隻腳差唔多平均，膝頭微屈：前後搖，搵最穩嗰點。</small></span></button></li><li data-k="slip"><button data-go="slip" data-k="slip"><b>2</b><span>Side slip<small>你應該感覺到：拉起腳趾（heel slip）就停，放鬆少少就滑。</small></span></button></li><li data-k="leaf"><button data-go="leaf" data-k="leaf"><b>3</b><span>落葉飄<small>你應該感覺到：想去邊就壓嗰邊隻腳：前腳壓就向板頭，後腳壓就向板尾。</small></span></button></li><li data-k="trav"><button data-go="trav" data-k="trav"><b>4</b><span>斜滑降＋Garland<small>你應該感覺到：眼望要去嘅方向，前腳帶路。</small></span></button></li><li data-k="beg"><button data-go="beg" data-k="beg"><b>5</b><span>入門・Skid<small>你應該感覺到：換邊時先將塊板放平，再慢慢壓去新嗰邊。</small></span></button></li></ol>
+      <p class="note">之後：中級、Carving、Ollie、Butter。</p>
+    </details>
+    <p id="feel1"></p>
+    <p class="note">📖 CoM＝身體重心・Edge＝板邊咬住雪・Toeside＝腳趾嗰邊・Heelside＝腳跟嗰邊・前腳＝板頭嗰隻腳</p>
+  </div>
   <div class="row">
     <button data-mode="simple" class="on">👀 簡易</button>
     <button data-mode="detail">🔬 詳細</button>
@@ -158,7 +175,9 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <span class="label">站位</span>
     <button class="on" data-st="ok">正常</button>
     <button data-st="back">後腳太重</button>
+    <button data-st="front">前腳太重</button>
     <button data-st="waist">屈腰／坐馬桶</button>
+    <button data-st="look">望住塊板</button>
     <button data-st="rot">上身帶轉</button>
   </div>
   <div class="row">
@@ -195,6 +214,16 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
       <span><span class="sw" style="background:#3a7bd5"></span>重力</span>
       <span><span class="sw" style="background:#4cc9f0"></span>受力 edge</span>
     </div>
+  </div>
+
+  <div class="card" id="balCard">
+    <h2>⚖️ 重心喺邊？</h2>
+    <p class="note">黃色波 = 重心（CoM），大約喺肚臍後面、盆骨中間。直線 = 重心沿身體傾斜方向落到雪面，圓圈係佢踩落嘅位置（綠＝啱位、橙＝開始偏、紅＝偏咗）：應該喺兩隻腳中間。</p>
+    <svg id="balSvg" viewBox="0 0 300 64"><rect x="10" y="22" width="98" height="14" fill="#ef4444" opacity=".55"/><text x="59" y="50" fill="#c9d3dc" font-size="9" text-anchor="middle">後腳太重</text><rect x="108" y="22" width="28" height="14" fill="#f59e0b" opacity=".55"/><rect x="136" y="22" width="56" height="14" fill="#22c55e" opacity=".55"/><text x="164" y="50" fill="#c9d3dc" font-size="9" text-anchor="middle">啱位</text><rect x="192" y="22" width="28" height="14" fill="#f59e0b" opacity=".55"/><rect x="220" y="22" width="70" height="14" fill="#ef4444" opacity=".55"/><text x="255" y="50" fill="#c9d3dc" font-size="9" text-anchor="middle">前腳太重</text><text x="10" y="14" fill="#8b98a5" font-size="9">◀ 板尾・後腳</text><text x="290" y="14" fill="#8b98a5" font-size="9" text-anchor="end">前腳・板頭 ▶</text><g id="balMk"><line x1="0" y1="16" x2="0" y2="42" stroke="#ffd23f" stroke-width="2"/><circle cx="0" cy="16" r="5" fill="#ffd23f"/></g><text id="balPct" x="150" y="62" fill="#e6edf3" font-size="9" text-anchor="middle"></text></svg>
+    <div class="row" style="margin:4px 0 0"><span class="label">前後腳</span><input type="range" id="balU" min="-100" max="100" step="5" value="0"><b id="balV" style="min-width:64px;text-align:right">正中</b></div>
+    <p class="note">拉去兩邊試下：公仔、軌跡同肌肉都會跟住變，同上面「站位」掣一樣。</p>
+    <p id="balFeel" class="key"></p>
+    <details><summary>點樣搵到自己嘅重心（屋企／雪上練習）</summary><ol><li>著住板喺平地，膝頭腳踝微屈，前後慢慢搖：搖去後腳板頭會翹、搖去前腳板尾會翹；兩腳差唔多平均最穩嗰點就係起點。</li><li>閉埋眼再搖一次，專心感受兩隻腳底嘅壓力點樣移。</li><li>直滑時屈前膝、眼望前面（唔好望塊板）：望落塊板通常即係重心走咗去後腳。</li><li>手放鬆喺身兩側前面少少；手跌咗去後面，多數即係坐後。</li><li>雪上試：直滑時輕輕提起板尾再放低，再提起板頭：做到就知道自己點樣移前移後。</li></ol></details>
   </div>
 
   <div class="card">
@@ -296,6 +325,8 @@ const REC = {
 const STANCE = {
   ok:   {name:'正常', dw:0, dz:0, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'理想：入彎前腳稍重（約 55–60%），出彎移去後腳。Toeside 壓力喺前腳掌，heelside 喺腳跟。上身跟住板，眼望行嘅方向，用腳踝同膝頭控制 edge。'},
   back: {fx:{skid:12, ph:'init', edge:.8, r:1.3, bend:.5}, name:'後腳太重', dw:-.25, dz:-.1, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'板頭冇壓力，入彎慢、板頭會飄，結果要用上身扭先轉到。後腳股四頭肌負荷爆煲，容易打滑或者 catch edge。'},
+  front:{fx:{skid:10, ph:'comp', edge:.85, r:.95, bend:.6}, name:'前腳太重', dw:.25, dz:.1, dt:0, dh:0, tp:0, rot:0, add:{}, txt:'板尾冇壓力，出彎板尾會甩出（skid），換刃時容易 catch edge 向前跌；前腳股四頭肌同小腿死撐，好快攰。'},
+  look: {fx:{skid:10, ph:'all', edge:.8, r:1.2, bend:.6}, name:'望住塊板', dw:-.1, dz:-.05, dt:0, dh:-.03, tp:.25, rot:0, look:.75, add:{erec:.15}, txt:'塊板會跟住你眼望嘅方向走：望住塊板就轉唔到去要去嘅方向，仲會變成後腳太重；頭低上身彎，toeside 容易屈腰。眼望要去嘅方向，用頭同肩膀帶。'},
   waist:{fx:{skid:8, ph:'all', edge:.75, r:1.2, bend:.6}, name:'屈腰／坐馬桶', dw:0, dz:0, dt:-.09, dh:-.06, tp:.5, rot:0, add:{erec:.2, quad:.15}, txt:'Toeside 彎腰：屁股伸出去，CoM 離開 edge，容易打滑。Heelside 坐馬桶：屁股坐咗喺板後面，容易向後坐低跌。應該用屈膝、屈腳踝代替屈腰。'},
   rot:  {fx:{skid:15, ph:'comp', edge:.85, r:.9, bend:.4}, name:'上身帶轉', dw:0, dz:0, dt:0, dh:0, tp:0, rot:30*D, add:{obl:.3}, txt:'用上身扭去帶板轉，會令板尾甩出、skid 失控，換刃時上下身唔同步，好容易跌。轉彎應該由下半身（腳踝、膝頭）帶。'}
 };
@@ -607,7 +638,7 @@ function finish(b){
   const hP = (lv.h0 + .05 + toeUp - .06*b.phiMag/(60*D) - heelSit + st.dh + (b.dh || 0))*k;
   const P = (b.base || b.mid).clone().addScaledVector(upLean, hP).addScaledVector(fB, (st.dz + (b.dz || 0))*k).addScaledVector(t, st.dt*k).add(new V(0, b.blift || 0, 0));
   const com = P.clone().addScaledVector(upLean, .1*k);
-  return Object.assign(b, {right, t, toeLean, fB, edge, qB, gpos, footF, footB, P, com});
+  return Object.assign(b, {right, t, toeLean, fB, edge, qB, gpos, footF, footB, P, com, upLean});
 }
 
 function twoBone(H, T, pole, a, b){
@@ -1032,6 +1063,11 @@ const normLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new V(
 normLine.renderOrder = 12; slopeG.add(normLine);
 const comBall = new THREE.Mesh(new THREE.SphereGeometry(.085,18,12), new THREE.MeshBasicMaterial({color:0xffd23f, depthTest:false, transparent:true}));
 comBall.renderOrder = 10; slopeG.add(comBall);
+const balGeo = new THREE.BufferGeometry().setFromPoints([new V(), new V()]);
+const balLine = new THREE.Line(balGeo, new THREE.LineBasicMaterial({color:0xffd23f, depthTest:false, transparent:true, opacity:.85}));
+balLine.renderOrder = 9; balLine.frustumCulled = false; slopeG.add(balLine);
+const balRing = new THREE.Mesh(new THREE.RingGeometry(.05, .08, 24), new THREE.MeshBasicMaterial({color:0xffd23f, side:THREE.DoubleSide, depthTest:false, transparent:true}));
+balRing.renderOrder = 9; slopeG.add(balRing);
 const grf = new THREE.ArrowHelper(UP, new V(), 1, 0xa855f7, .14, .08); slopeG.add(grf);
 const grav = new THREE.ArrowHelper(new V(0,-1,0), new V(), .5, 0x3a7bd5, .1, .06); slopeG.add(grav);
 for (const a of [grf, grav]) a.traverse(o => { if (o.material){ o.material.depthTest = false; o.material.transparent = true; o.renderOrder = 11; } });
@@ -1113,7 +1149,7 @@ function applyPose(p){
     const qF = p.qB.clone().multiply(new Q().setFromAxisAngle(UP, bootF.rotation.y));
     const qBk = p.qB.clone().multiply(new Q().setFromAxisAngle(UP, bootB.rotation.y));
     const outF = shF.clone().sub(J.tBase).setY(0).normalize(), outB = shB.clone().sub(J.tBase).setY(0).normalize();
-    const qH = qYZX(p.yawB - dir*10*D + (p.tx || 0)*.5, 0, .08);
+    const qH = qYZX(p.yawB - dir*10*D + (p.tx || 0)*.5, 0, .08 + (STANCE[cfg.stance].look || 0));
     const legs = {}, arms = {};
     legs[Fs] = {ankle: p.footF, pole: J.legF.nrm, qFoot: qF}; legs[Bs] = {ankle: p.footB, pole: J.legB.nrm, qFoot: qBk};
     arms[Fs] = {hand: hF, pole: outF.clone().add(down).addScaledVector(face, -.4).normalize()};
@@ -1130,6 +1166,9 @@ function applyPose(p){
   }
 
   comBall.position.copy(p.com);
+  { const fy = Math.min(p.footF.y, p.footB.y) - .03*k, len = Math.max(0, (p.com.y - fy)/Math.max(.2, p.upLean.y));
+    const hit = p.com.clone().addScaledVector(p.upLean, -len);
+    balGeo.setFromPoints([p.com, hit]); balRing.position.copy(hit); balRing.quaternion.setFromUnitVectors(new V(0,0,1), p.upLean); }
   const base = p.mid.clone(); base.y = .02;
   const gv = p.com.clone().sub(base);
   grf.position.copy(base); grf.setDirection(gv.clone().normalize()); grf.setLength(gv.length(), .14, .08);
@@ -1165,7 +1204,7 @@ function heat(a){
 /* ---------- UI ---------- */
 const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:true};
 function applyVis(){
-  comBall.visible = show.com; if (comTrail) comTrail.visible = show.com;
+  comBall.visible = balLine.visible = balRing.visible = show.com; if (comTrail) comTrail.visible = show.com;
   grf.visible = grav.visible = arcLine.visible = normLine.visible = show.force;
   for (const m of [jacket, pants]){ m.opacity = show.xray ? .5 : 1; m.depthWrite = !show.xray; m.needsUpdate = true; }
   if (Rig.ready) Rig.setOpacity(show.xray ? .42 : 1);
@@ -1226,7 +1265,7 @@ function syncSliders(){ for (const id in sl){ sl[id].value = cfg[id]; document.g
 for (const id in sl) sl[id].oninput = () => { cfg[id] = +sl[id].value; syncSliders(); build(); };
 let lastPhase = '';
 function setLevel(l){
-  cfg.level = l; const lv = LV[l];
+  cfg.level = l; setTimeout(() => renderPath(), 0); const lv = LV[l];
   Object.assign(cfg, {v:lv.v, slope:lv.slope, R:lv.R, board:cfg.H + lv.boardOff});
   document.querySelectorAll('[data-l]').forEach(b => b.classList.toggle('on', b.dataset.l === l));
   syncSliders(); build(); lastPhase = '';
@@ -1251,7 +1290,39 @@ function setStance(k){
   if (typeof cmpOn !== 'undefined') updCmpLbl();
   if (C.L) build();
 }
-document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => setStance(b.dataset.st));
+document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => { setStance(b.dataset.st); setBalSlider(({back:-1, front:1})[b.dataset.st] || 0); });
+function mixFx(fx, w){
+  const o = {};
+  for (const k in fx) o[k] = typeof fx[k] !== 'number' ? fx[k] : k === 'skid' ? Math.round(fx[k]*w) : +(1 + (fx[k] - 1)*w).toFixed(2);
+  return o;
+}
+function mixStance(u){
+  const w = Math.abs(u), a = STANCE.ok, b = u < 0 ? STANCE.back : STANCE.front, L = (x, y) => x + (y - x)*w;
+  const add = {}; for (const k in b.add) add[k] = b.add[k]*w;
+  const st = {name: w < .05 ? a.name : `${u < 0 ? '後腳' : '前腳'}偏重 ${Math.round(w*100)}%`, dw: L(a.dw, b.dw), dz: L(a.dz, b.dz), dt: 0, dh: 0, tp: 0, rot: 0, add,
+    txt: w < .3 ? a.txt : b.txt, short: b.short};
+  if (w >= .3) st.fx = mixFx(b.fx, w);
+  return st;
+}
+const balU = document.getElementById('balU'), balV = document.getElementById('balV');
+function setBalSlider(u){ balU.value = Math.round(u*100); balV.textContent = u === 0 ? '正中' : `${u < 0 ? '後腳' : '前腳'} ${Math.abs(Math.round(u*100))}%`; }
+balU.oninput = () => {
+  const u = balU.value/100;
+  setBalSlider(u);
+  if (Math.abs(u) < .05){ setStance('ok'); return; }
+  STANCE.bal = mixStance(u); setStance('bal');
+};
+let lastFeel = '';
+function drawBal(p){
+  const sdw = STANCE[cfg.stance].dw || 0, wF = weightF(p), avg = clamp(.52 + sdw, 0, 1), x = avg + .5*(wF - avg);  // marker = average balance + half the in-turn swing
+  document.getElementById('balMk').setAttribute('transform', `translate(${(10 + 280*clamp(x, 0, 1)).toFixed(1)},0)`);
+  document.getElementById('balPct').textContent = `平均：前腳 ${Math.round(avg*100)}%・後腳 ${100 - Math.round(avg*100)}%（而家前腳 ${Math.round(wF*100)}%）`;
+  const zc = x < .35 || x > .75 ? 0xef4444 : x < .45 || x > .65 ? 0xf59e0b : 0x22c55e; balLine.material.color.setHex(zc); balRing.material.color.setHex(zc);
+  const f = x < .4 ? '🔴 後腳太重：板頭飄、轉唔到彎，要用上身扭先轉到。→ 屈前膝、眼望要去嘅方向。'
+    : x > .65 ? '🟠 前腳太重：板尾甩出、換刃容易 catch edge 向前跌。→ 返中間，後膝都要屈。'
+    : '🟢 啱位：兩腳差唔多平均，入彎前腳稍重（55–60%）；兩隻膝頭都屈，上身企直。';
+  if (f !== lastFeel){ document.getElementById('balFeel').textContent = f; lastFeel = f; }
+}
 
 function renderSpec(){
   const r = REC[cfg.level], H = cfg.H;
@@ -1412,7 +1483,7 @@ function updateUI(p, act, md, now){
   const al = document.getElementById('arcLbl');
   if (show.force && arcDeg > 3){ const v = arcAt.clone().project(camera); al.style.display = 'block'; al.style.left = ((v.x+1)/2*w)+'px'; al.style.top = ((1-v.y)/2*h)+'px'; al.textContent = arcDeg.toFixed(0)+'°'; }
   else al.style.display = 'none';
-  drawFeet(p);
+  drawFeet(p); drawBal(p);
   if (now - tableT > 150){ updateTable(act, md); tableT = now; }
   if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
   if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
@@ -1424,9 +1495,9 @@ function updateUI(p, act, md, now){
 
 /* ---------- learning: simple mode, compare, guide ---------- */
 const GUIDE = {"leaf": {"q": [["想向板頭方向去，重心放邊隻腳？", "前腳。板頭微微指向下坡就會向板頭斜落。"], ["轉方向要唔要換刃？", "唔使，全程同一條 edge，只係前後腳轉重心。"]], "sum": "同一條 edge 左右來回：前腳帶就向板頭、後腳帶就向板尾，兩端 edge 加大停定。", "snow": "先 heelside：向板頭斜落 3–5 米，停，再向板尾返轉頭；之後 toeside 再做。熟咗就係學 J-turn 同 S 彎嘅前一步。"}, "slip": {"q": [["想停，edge 要加大定放細？", "加大，接近坡度就會停。"], ["眼應該望邊？", "望前面（下坡方向），唔好望塊板。"]], "sum": "用腳踝控制 edge 角度：大就停，細就滑。", "snow": "Heel slip：拉起腳趾停、放低腳趾滑，重複 5 次；之後再試 toe slip。"}, "trav": {"q": [["想由斜滑降轉向 fall line，要點做？", "放平少少 edge，前腳輕輕加壓。"], ["轉返上坡靠乜？", "重新加 edge：heel 拉腳趾，toe 推膝頭。"]], "sum": "放刃落、入刃上，係連續轉彎之前嘅一步。", "snow": "一條雪道做 3–4 個 garland 先停，heel 同 toe 兩邊都要練。"}, "beg": {"q": [["入彎時重心應該放前腳定後腳？", "前腳多少少（大約 55–60%）。"], ["眼應該望邊？", "望住要去嘅方向，頭同肩膀帶身體。"]], "sum": "望去邊，前腳帶，後腳跟住。", "snow": "每個彎之前先轉頭望去下一個方向，再輕輕壓前腳。"}, "mid": {"q": [["Heelside 主要靠邊組肌肉？", "脛前肌拉起腳趾，股四頭肌同腹肌撐住。"], ["上身應該帶轉塊板嗎？", "唔應該，靠腳踝同膝頭控制。"]], "sum": "伸展換刃、屈曲加壓、上身穩定。", "snow": "每個彎講「起、壓」；試吓手放喺膝頭上面做幾個彎，感覺下半身帶轉。"}, "carve": {"q": [["單板 edge 角度同身體傾斜比較係點？", "差唔多一樣。"], ["Toeside 時髖應該向後頂嗎？", "唔應該，身體成條直線向彎內傾。"]], "sum": "早啲傾斜，畀塊板自己轉，雪上只留一條幼線。", "snow": "喺緩坡做 carve traverse：只用一邊 edge 橫過雪道，再回頭睇雪上係咪一條幼線。"}, "euro": {"q": [["手掃雪係用嚟撐住身體嗎？", "唔係。重心仍然喺 edge 上面，手只係輕輕掂。"], ["想倒得低，最需要乜？", "夠速度同埋 edge 咬實；太慢就倒唔落。"]], "sum": "靠速度同 edge 撐住身體，唔係靠隻手。", "snow": "揀壓雪好嘅闊雪道，先練 heelside，逐步加大傾斜；記得保護膝頭同手腕。"}, "ollie": {"q": [["Pop 之前身體要做乜？", "蹲低，重心移去板尾，好似壓彈弓。"], ["喺空中點樣令塊板跟住起？", "膝頭向胸口收，前腳拉平塊板。"]], "sum": "壓尾、彈起、收腳、屈膝著地。", "snow": "先喺平地原地練，再喺緩坡慢速做；著地時雙腳要同時落。"}, "butter": {"q": [["Nose butter 重心放邊？", "前腳，大約 80–90%。"], ["轉嘅力量由邊度嚟？", "上身先預扭，再帶頭轉，下半身跟住。"]], "sum": "壓板頭、預扭、上身帶轉。", "snow": "先喺平地練 nose press 企定 3 秒，再加 180，最後先試 360。"}};
-const STANCE_SHORT = {"back": "後腳太重：板頭飄，要靠上身扭先轉到。", "waist": "屈腰／坐馬桶：重心離開 edge，容易跌。", "rot": "上身帶轉：板尾甩出，上下身唔同步。"};
+const STANCE_SHORT = {"look": "望住塊板：轉唔到去要去嘅方向。", "front": "前腳太重：板尾甩出，容易 catch edge。", "back": "後腳太重：板頭飄，要靠上身扭先轉到。", "waist": "屈腰／坐馬桶：重心離開 edge，容易跌。", "rot": "上身帶轉：板尾甩出，上下身唔同步。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
-const CMP_DEFAULT = 'back';
+const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {slip:'look', leaf:'look', trav:'look'};
 let cmpOn = false, lastCyc = null;
 const toastDone = {};
 function renderGuide(){
@@ -1456,7 +1527,7 @@ function updCmpLbl(){
 function setCmp(on){
   cmpOn = on; document.body.classList.toggle('cmp', on);
   document.getElementById('cmpBtn').classList.toggle('on', on);
-  if (on && cfg.stance === 'ok') setStance(CMP_DEFAULT);
+  if (on && cfg.stance === 'ok') setStance(CMP_BY_LEVEL[cfg.level] || CMP_DEFAULT);
   if (on) setView('heelV');
   updCmpLbl();
 }
@@ -1490,7 +1561,26 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
+const FEEL1 = {"slip": "拉起腳趾（heel slip）就停，放鬆少少就滑。", "leaf": "想去邊就壓嗰邊隻腳。", "trav": "眼望要去嘅方向，前腳帶路。", "beg": "換邊時先將塊板放平，再慢慢壓去新嗰邊。", "mid": "入彎屈低加壓，換邊時企高放鬆。", "carve": "壓實板邊，等塊板自己彎，唔好扭上身。", "euro": "身體低過塊板都唔跌，係靠速度撐住；速度唔夠唔好試。", "ollie": "先壓板尾儲力，再彈起收腳。", "butter": "壓實板頭（或板尾），上身帶轉。"};
+let pathDone = {}; try { pathDone = JSON.parse(localStorage.getItem('pathDone') || '{}'); } catch(e){}
+function renderPath(curK){
+  document.querySelectorAll('#path li').forEach(li => { li.classList.toggle('done', !!pathDone[li.dataset.k]); li.classList.toggle('cur', li.dataset.k === curK); });
+  const f = FEEL1[cfg.level];
+  document.getElementById('feel1').innerHTML = f ? '🎯 呢個動作只記一樣：<b>' + f + '</b>' : '';
+}
+document.querySelectorAll('#path [data-go]').forEach(b => b.onclick = () => {
+  const k = b.dataset.k;
+  setMode('simple'); setLevel(b.dataset.go);
+  pathDone[k] = 1; try { localStorage.setItem('pathDone', JSON.stringify(pathDone)); } catch(e){}
+  renderPath(k);
+  (k === 'bal' ? document.getElementById('balCard') : document.getElementById('stage')).scrollIntoView({behavior:'smooth', block:'start'});
+});
+let firstVisit = false; try { firstVisit = !localStorage.getItem('seen'); localStorage.setItem('seen', '1'); } catch(e){}
 setStance('ok'); setLevel('carve'); setMode('simple');
+if (firstVisit){
+  setLevel('slip'); document.getElementById('pathD').open = true;
+  setTimeout(() => showToast('第一次嚟？跟住「🔰 新手由呢度開始」一步步做；想睇錯誤做法就㩒「⇆ 正確 vs 錯誤」。'), 1500);
+}
 Rig.load('xbot.json', slopeG, {color:0x5fb38c, jointColor:0x263238}).then(() => {
   limbs.forEach(g => { g.children[0].visible = g.children[1].visible = false; });
   [armF, armB].forEach(a => { a.up.visible = a.fo.visible = false; });

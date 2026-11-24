@@ -35,6 +35,15 @@ button.primary{background:var(--accent);color:#0f1419;border-color:var(--accent)
 input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
 .card h2{font-size:15px;margin:0 0 6px}
+#path ol{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}
+#path li button{width:100%;text-align:left;display:flex;gap:8px;align-items:flex-start;white-space:normal;line-height:1.35}
+#path li button b{min-width:22px}#path li button small{display:block;color:#9fb0bf;font-weight:normal}
+#path li.done button b::after{content:" ✓";color:#22c55e}#path li.cur button{border-color:var(--accent)}
+#feel1{font-size:15px;margin:8px 0 2px;padding:8px 10px;border-radius:8px;background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.35)}
+#path summary{cursor:pointer;color:var(--accent);font-size:14px}
+#balSvg{width:100%;height:auto;display:block;margin:6px 0}
+#balCard details{margin-top:6px;color:#c9d3dc;font-size:13px}#balCard summary{cursor:pointer;color:var(--accent)}
+#balCard ol{margin:6px 0 0 18px;padding:0}#balCard li{margin:3px 0}
 .card p{margin:4px 0;color:#c9d3dc}
 .slider{display:grid;grid-template-columns:62px 1fr 64px;gap:8px;align-items:center;margin:6px 0}
 .slider span{font-size:13px}.slider output{font-variant-numeric:tabular-nums;text-align:right;font-size:13px;color:var(--accent)}
@@ -105,6 +114,14 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
 </div>
 
 <main>
+  <div class="card" id="path">
+    <details id="pathD"><summary>🔰 New here? Start here (in order)</summary>
+      <ol><li data-k="bal"><button data-go="beg" data-k="bal"><b>1</b><span>Find your balance<small>You should feel: your whole foot planted, shins lightly touching the boot tongues. Rock forward and back to find the steadiest point.</small></span></button></li><li data-k="beg"><button data-go="beg" data-k="beg"><b>2</b><span>Beginner · Wedge<small>You should feel: to turn right, stand firmly on your left foot (the one on the outside of the turn); clear pressure under the middle of that foot.</small></span></button></li><li data-k="slip"><button data-go="slip" data-k="slip"><b>3</b><span>Side slip<small>You should feel: push knees and ankles toward the hill to stop, relax a little to slide.</small></span></button></li><li data-k="mid"><button data-go="mid" data-k="mid"><b>4</b><span>Intermediate · Parallel<small>You should feel: rise slightly as you change direction, then sink gradually into the turn.</small></span></button></li></ol>
+      <p class="note">After that: Carving, short turns, moguls, pivot slips.</p>
+    </details>
+    <p id="feel1"></p>
+    <p class="note">📖 CoM = your body’s centre of mass · Edge = the ski’s edge gripping the snow · Outside foot = the foot on the outside of the turn (the one doing the work) · Inside foot = the other one</p>
+  </div>
   <div class="row">
     <button data-mode="simple" class="on">👀 Simple</button>
     <button data-mode="detail">🔬 Detailed</button>
@@ -152,6 +169,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-st="back">Back seat</button>
     <button data-st="fwd">Too far forward</button>
     <button data-st="even">Even weight</button>
+    <button data-st="look">Looking at your feet</button>
   </div>
   <div class="row">
     <span class="label">Camera</span>
@@ -186,6 +204,16 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
       <span><span class="sw" style="background:#3a7bd5"></span>Gravity</span>
       <span><span class="sw" style="background:#4cc9f0"></span>Loaded edge</span>
     </div>
+  </div>
+
+  <div class="card" id="balCard">
+    <h2>⚖️ Where is your balance?</h2>
+    <p class="note">Yellow ball = centre of mass (CoM), roughly behind your belly button in the middle of the pelvis. The line drops from the CoM to the snow along your body’s lean; the ring is where it lands (green = right, orange = drifting, red = off). It should be near your feet, mid-foot.</p>
+    <svg id="balSvg" viewBox="0 0 300 64"><rect x="10" y="22" width="70" height="14" fill="#ef4444" opacity=".55"/><text x="45" y="50" fill="#c9d3dc" font-size="9" text-anchor="middle">Heel</text><rect x="80" y="22" width="42" height="14" fill="#f59e0b" opacity=".55"/><rect x="122" y="22" width="112" height="14" fill="#22c55e" opacity=".55"/><text x="178" y="50" fill="#c9d3dc" font-size="9" text-anchor="middle">Arch → ball of foot</text><rect x="234" y="22" width="28" height="14" fill="#f59e0b" opacity=".55"/><rect x="262" y="22" width="28" height="14" fill="#ef4444" opacity=".55"/><text x="276" y="50" fill="#c9d3dc" font-size="9" text-anchor="middle">Toes</text><text x="10" y="14" fill="#8b98a5" font-size="9">◀ Heel</text><text x="290" y="14" fill="#8b98a5" font-size="9" text-anchor="end">Toes ▶</text><g id="balMk"><line x1="0" y1="16" x2="0" y2="42" stroke="#ffd23f" stroke-width="2"/><circle cx="0" cy="16" r="5" fill="#ffd23f"/></g><text id="balPct" x="150" y="62" fill="#e6edf3" font-size="9" text-anchor="middle"></text></svg>
+    <div class="row" style="margin:4px 0 0"><span class="label">Fore/aft balance</span><input type="range" id="balU" min="-100" max="100" step="5" value="0"><b id="balV" style="min-width:64px;text-align:right">Centred</b></div>
+    <p class="note">Drag it either way: the figure, the track and the muscles all change, just like the Stance buttons above.</p>
+    <p id="balFeel" class="key"></p>
+    <details><summary>How to find your own balance point (at home / on snow)</summary><ol><li>Stand in your boots, knees and ankles slightly bent, and rock slowly forward and back: at the heels or toes you feel about to fall; the steadiest point in between is right (mid-foot, shins lightly on the tongues).</li><li>Close your eyes and rock again, feeling the pressure move from heel to toe.</li><li>Hop lightly on the spot: if you land without grabbing anything or sitting back, your balance is right.</li><li>While skiing keep your hands in front where you can see them; hands drifting behind usually means you are sitting back.</li><li>On flat terrain, lift one ski’s tail while the tip stays on the snow: if you are sitting back you can’t.</li></ol></details>
   </div>
 
   <div class="card">
@@ -284,6 +312,7 @@ const STANCE = {
   ok:   {name:'Normal', fa:0, dz:0, dh:0, kk:1, add:{}, txt:'Ideal: press the forefoot (around the ball of the big toe) entering the turn with shins against the boot tongues; move back to mid-foot at the apex; drift slightly back at the exit, but never onto the heels. Outside foot presses on its inside (big-toe side), inside foot lightly on its outside (little-toe side).'},
   back: {fx:{skid:6, ph:'comp', edge:.85, r:1.25, bend:.5}, name:'Back seat (on the heels)', fa:-.75, dz:-.13, dh:-.05, kk:1, add:{quad:.25, tib:-.15, calf:-.1, abs:.1}, txt:'No pressure on the tips: slow initiation and the tips don’t bite; at the end of the turn the tails push you out and you speed up. The quads have to hold eccentrically for a long time so the thighs burn fast. In moguls you’ll get bucked off.'},
   fwd:  {fx:{skid:8, ph:'comp', edge:.9, r:.9, bend:.6}, name:'Too far forward (on the toes)', fa:.8, dz:.1, dh:0, kk:1, add:{calf:.25, erec:.15, quad:-.05}, txt:'Too much pressure on the tips and none on the tails: the tails skid out and you can’t carve a clean arc; you can’t release at the end of the turn and the tips can trip you at the edge change.'},
+  look: {fx:{skid:6, ph:'all', edge:.85, r:1.15, bend:.6}, name:'Looking at your feet', fa:-.15, dz:-.05, dh:-.05, kk:1, tp:.3, look:.75, add:{erec:.2, quad:.1}, txt:'Drop your head and the upper body folds forward while the hips push back: effectively sitting back. You can’t see ahead, so turns start late, lose shape, and you get more nervous. Look 2–3 turns ahead and your feet will follow.'},
   even: {fx:{skid:5, ph:'all', edge:.8, inner:.3, r:1.15, bend:.7}, name:'Even weight', fa:0, dz:0, dh:0, kk:.25, add:{}, txt:'The inside ski steals pressure from the outside ski, so the outside edge doesn’t hold and slips; the inside ski catches the wrong edge, giving an A-frame or scissored skis.'}
 };
 const SHARE = {slip:.5, beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
@@ -552,7 +581,7 @@ function finish(b){
     else { footL.y += .14*k*liftAmt; edgeL *= 1 - liftAmt; pitchL += .15*liftAmt; }
   }
   const edgeOuter = sg > 0 ? edgeL : edgeR;
-  return Object.assign(b, {skidX, f, right, P, com, footR, footL, edgeR, edgeL, yawR, yawL, pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
+  return Object.assign(b, {skidX, f, right, P, com, upLean, footR, footL, edgeR, edgeL, yawR, yawL, pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
 }
 
 function twoBone(H, T, pole, a, b){
@@ -574,7 +603,7 @@ function solve(p){
   poleR.normalize(); poleL.normalize();
   const legR = twoBone(hipR, p.footR, poleR, .45*k, .45*k);
   const legL = twoBone(hipL, p.footL, poleL, .45*k, .45*k);
-  const qT = qYZX(p.psi*lv.tyaw, p.phi*lv.tr, lv.tp);
+  const qT = qYZX(p.psi*lv.tyaw, p.phi*lv.tr, lv.tp + (STANCE[cfg.stance].tp || 0));
   const tBase = p.P.clone().add(new V(0,.07*k,0).applyQuaternion(qP));
   const qSkiR = qYZX(p.yawR, p.edgeR, p.pitchR), qSkiL = qYZX(p.yawL, p.edgeL, p.pitchL);
   // angles
@@ -957,6 +986,11 @@ const skiR = makeSki(), skiL = makeSki();
 skiR.cuff = makeCuff(0x2563eb); skiL.cuff = makeCuff(0x2563eb);
 const comBall = new THREE.Mesh(new THREE.SphereGeometry(.085,18,12), new THREE.MeshBasicMaterial({color:0xffd23f, depthTest:false, transparent:true}));
 comBall.renderOrder = 10; slopeG.add(comBall);
+const balGeo = new THREE.BufferGeometry().setFromPoints([new V(), new V()]);
+const balLine = new THREE.Line(balGeo, new THREE.LineBasicMaterial({color:0xffd23f, depthTest:false, transparent:true, opacity:.85}));
+balLine.renderOrder = 9; balLine.frustumCulled = false; slopeG.add(balLine);
+const balRing = new THREE.Mesh(new THREE.RingGeometry(.05, .08, 24), new THREE.MeshBasicMaterial({color:0xffd23f, side:THREE.DoubleSide, depthTest:false, transparent:true}));
+balRing.renderOrder = 9; slopeG.add(balRing);
 const grf = new THREE.ArrowHelper(UP, new V(), 1, 0xa855f7, .14, .08); slopeG.add(grf);
 const grav = new THREE.ArrowHelper(new V(0,-1,0), new V(), .5, 0x3a7bd5, .1, .06); slopeG.add(grav);
 for (const a of [grf, grav]) a.traverse(o => { if (o.material){ o.material.depthTest = false; o.material.transparent = true; o.renderOrder = 11; } });
@@ -1028,7 +1062,7 @@ function applyPose(p){
       bendText = bendMul && kk > 1e-4 ? `Outside ski reverse camber ${sagCm(kk, L).toFixed(1)} cm・bend radius ${(1/kk).toFixed(1)} m` : (bendMul ? 'Ski not flexed (flat / no edge)' : ''); }
     const S = p.sg > 0 ? 'L' : 'R'; bpText = `Board pressure: ${p.nsh < .05 ? 'both skis even・' : 'outside ski '}${bpLabel(pr[S].fa*.25)}`; }
   if (Rig.ready){
-    const qH = qYZX(p.psi*lv.tyaw, p.phi*lv.tr*.4, .05);
+    const qH = qYZX(p.psi*lv.tyaw, p.phi*lv.tr*.4, .05 + (STANCE[cfg.stance].look || 0));
     const o = Rig.drive({pelvis: p.P, qP: J.qP, qT: J.qT, qH,
       legs: {R: {ankle: p.footR, pole: J.legR.nrm, qFoot: J.qSkiR}, L: {ankle: p.footL, pole: J.legL.nrm, qFoot: J.qSkiL}},
       arms: {R: {hand: aR.hand, pole: aR.pole}, L: {hand: aL.hand, pole: aL.pole}}});
@@ -1042,6 +1076,9 @@ function applyPose(p){
   }
 
   comBall.position.copy(p.com);
+  { const fy = Math.min(p.footL.y, p.footR.y) - .1*k, len = Math.max(0, (p.com.y - fy)/Math.max(.2, p.upLean.y));
+    const hit = p.com.clone().addScaledVector(p.upLean, -len);
+    balGeo.setFromPoints([p.com, hit]); balRing.position.copy(hit); balRing.quaternion.setFromUnitVectors(new V(0,0,1), p.upLean); }
   const outer = (p.sg > 0 ? p.footL : p.footR).clone(); outer.y -= .08*k;
   const gv = p.com.clone().sub(outer);
   grf.position.copy(outer); grf.setDirection(gv.clone().normalize()); grf.setLength(gv.length(), .14, .08);
@@ -1072,7 +1109,7 @@ function heat(a){
 /* ---------- UI ---------- */
 const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:false};
 function applyVis(){
-  comBall.visible = show.com; if (comTrail) comTrail.visible = show.com;
+  comBall.visible = balLine.visible = balRing.visible = show.com; if (comTrail) comTrail.visible = show.com;
   grf.visible = grav.visible = show.force;
   for (const m of [jacket, pants]){ m.opacity = show.xray ? .32 : 1; m.depthWrite = !show.xray; m.needsUpdate = true; }
   if (Rig.ready) Rig.setOpacity(show.xray ? .42 : 1);
@@ -1109,7 +1146,7 @@ const unit = {H:'cm', ski:'cm', R:'m', slope:'°', v:'km/h', Hm:'m'};
 function syncSliders(){ for (const id in sl){ sl[id].value = cfg[id]; document.getElementById('o'+id).textContent = cfg[id] + ' ' + unit[id]; } }
 for (const id in sl) sl[id].oninput = () => { cfg[id] = +sl[id].value; syncSliders(); build(); };
 function setLevel(l){
-  cfg.level = l; const lv = LV[l];
+  cfg.level = l; setTimeout(() => renderPath(), 0); const lv = LV[l];
   Object.assign(cfg, {v:lv.v, slope:lv.slope, R:lv.R, ski:cfg.H + lv.skiOff});
   document.querySelectorAll('[data-l]').forEach(b => b.classList.toggle('on', b.dataset.l === l));
   document.getElementById('HmRow').style.display = l === 'mogul' ? '' : 'none';
@@ -1125,7 +1162,39 @@ function setStance(k){
   if (typeof cmpOn !== 'undefined') updCmpLbl();
   if (C.L) build();
 }
-document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => setStance(b.dataset.st));
+document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => { setStance(b.dataset.st); setBalSlider(({back:-1, fwd:1})[b.dataset.st] || 0); });
+function mixFx(fx, w){
+  const o = {};
+  for (const k in fx) o[k] = typeof fx[k] !== 'number' ? fx[k] : k === 'skid' ? Math.round(fx[k]*w) : +(1 + (fx[k] - 1)*w).toFixed(2);
+  return o;
+}
+function mixStance(u){
+  const w = Math.abs(u), a = STANCE.ok, b = u < 0 ? STANCE.back : STANCE.fwd, L = (x, y) => x + (y - x)*w;
+  const add = {}; for (const k in b.add) add[k] = b.add[k]*w;
+  const st = {name: w < .05 ? a.name : `CoM ${u < 0 ? 'back' : 'forward'} ${Math.round(w*100)}%`, fa: L(a.fa, b.fa), dz: L(a.dz, b.dz), dh: L(a.dh, b.dh), kk: L(a.kk, b.kk), add,
+    txt: w < .3 ? a.txt : b.txt, short: b.short};
+  if (w >= .3) st.fx = mixFx(b.fx, w);
+  return st;
+}
+const balU = document.getElementById('balU'), balV = document.getElementById('balV');
+function setBalSlider(u){ balU.value = Math.round(u*100); balV.textContent = u === 0 ? 'Centred' : `${u < 0 ? 'Back seat' : 'Too far forward'} ${Math.abs(Math.round(u*100))}%`; }
+balU.oninput = () => {
+  const u = balU.value/100;
+  setBalSlider(u);
+  if (Math.abs(u) < .05){ setStance('ok'); return; }
+  STANCE.bal = mixStance(u); setStance('bal');
+};
+let lastFeel = '';
+function drawBal(p){
+  const sfa = STANCE[cfg.stance].fa || 0, pr = pressure(p)[p.sg > 0 ? 'L' : 'R'], x = clamp((sfa + .1 + .5*(pr.fa - sfa - .1) + 1)/2, 0, 1);  // average + half the in-turn swing
+  document.getElementById('balMk').setAttribute('transform', `translate(${(10 + 280*clamp(x, 0, 1)).toFixed(1)},0)`);
+  document.getElementById('balPct').textContent = `Outside-foot pressure (average): ${x < .25 ? 'Heel' : x < .4 ? 'heel, slightly forward' : x < .8 ? 'Arch → ball of foot' : x < .9 ? 'toes, slightly back' : 'Toes'}`;
+  const zc = x < .25 || x > .9 ? 0xef4444 : x < .4 || x > .8 ? 0xf59e0b : 0x22c55e; balLine.material.color.setHex(zc); balRing.material.color.setHex(zc);
+  const f = x < .4 ? '🔴 Sitting back: heavy heels, shins off the tongues, thighs burn fast, tips won’t grip. → Flex the ankles forward, hands in front.'
+    : x > .8 ? '🟠 Too far forward: toes jammed, calves tire, tails feel light and wash out. → Flatten onto the whole foot, don’t bend at the waist.'
+    : '🟢 Right: whole foot planted, shins lightly on the tongues; move to the ball of the foot entering the turn, back to mid-foot on exit.';
+  if (f !== lastFeel){ document.getElementById('balFeel').textContent = f; lastFeel = f; }
+}
 const footEl = {L: document.getElementById('footL'), R: document.getElementById('footR')};
 function drawFeet(p){
   const pr = pressure(p);
@@ -1255,7 +1324,7 @@ function updateUI(p, act, md, now){
     b.style.display = 'flex'; b.style.left = ((v.x+1)/2*w)+'px'; b.style.top = ((1-v.y)/2*h)+'px';
     b.style.borderColor = x.m === 'ecc' ? '#ff4d6d' : x.m === 'con' ? '#3ddc84' : '#4cc9f0';
   });
-  drawFeet(p);
+  drawFeet(p); drawBal(p);
   if (now - tableT > 150){ updateTable(act, md); tableT = now; }
   if (document.body.classList.contains('simple')) hud.innerHTML = hud.innerHTML.split('<br>')[0];
   if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
@@ -1267,9 +1336,9 @@ function updateUI(p, act, md, now){
 
 /* ---------- learning: simple mode, compare, guide ---------- */
 const GUIDE = {"slip": {"q": [["To stop, do you increase or decrease the uphill edge?", "Increase it. Push knees and ankles toward the hill; when the edge nears the slope angle you stop."], ["Which way should the upper body face?", "Downhill, not across with the skis."]], "sum": "Skis across, slide straight down, control speed with the edges: more to stop, less to slide.", "snow": "Pick a smooth 10–20° run, skis across: slide 2 m, stop, slide 2 m again. Then move on to pivot slips and hockey stops."}, "beg": {"q": [["Turning right, which foot should carry more force?", "The left foot (the outside of the turn). Pressing the outside ski makes it turn."], ["Should your weight be on the heels or the middle of the feet?", "Mid-foot. Sitting back burns your thighs quickly and you lose control of the skis."]], "sum": "Hold the wedge, weight over the middle of the feet; to turn one way, press the opposite ski.", "snow": "On a gentle slope slowly make 4–5 turns, saying ’press left’ / ’press right’ out loud each time; feel the pressure in the middle of the foot, not the heel."}, "mid": {"q": [["At the edge change, should the body extend up or press down?", "Extend gently to unweight so the skis change edges easily; then flex to load in the turn."], ["Should the upper body turn with the skis?", "No. The upper body roughly faces downhill; the lower body does the turning."]], "sum": "Extend to change edges, flex to load, upper body faces downhill.", "snow": "Say ’up, press’ in your head for each turn; look at a point far ahead and make sure your shoulders don’t turn with the skis."}, "carve": {"q": [["At initiation, which foot should carry the most pressure?", "The outside ski, about 80–90%."], ["Should the edge angle be greater than, equal to, or less than the body lean?", "Greater. The difference comes from knee and hip angulation."]], "sum": "Tip in early, hold with the outside ski, keep the upper body level and let the skis do the turning.", "snow": "On a gentle slope do ’railroad tracks’: no skidding, just two thin lines in the snow; feel constant pressure on the outside boot tongue."}, "mogul": {"q": [["When you hit the face of a mogul, should your legs straighten or flex?", "Flex to absorb, like suspension."], ["Should your head move up and down with the moguls?", "No. Keep the head and upper body on as smooth a line as possible."]], "sum": "Absorb when you hit the bump, extend into the trough, keep the upper body smooth.", "snow": "Start at the edge of the mogul field with single bumps — ’hit, absorb, extend’; then practise planting the pole on the top of the bump."}, "short": {"q": [["In short turns, which way should the upper body face?", "Always straight down the fall line."], ["When do you plant the pole?", "Just before each edge change, drawing the body forward into the next turn."]], "sum": "Upper body faces down the hill, legs swing underneath, pole plants set the rhythm.", "snow": "Pick a narrow run and imagine walls on both sides; count ’plant, turn, plant, turn’ in your head."}, "pivot": {"q": [["When pivoting, which part of the body should turn?", "The thighs rotate in the hip sockets; the upper body stays still."], ["Before turning, should you increase the edge angle or flatten it?", "Flatten first, then the skis turn smoothly."]], "sum": "Flatten the edges, rotate the thighs, keep the upper body still, slide straight down the fall line.", "snow": "Do it on a medium slope, lining up start and finish on one straight line (e.g. a lift tower) to check you’re not drifting sideways."}, "trav": {"q": [["In a traverse, which ski carries more weight?", "The downhill ski."], ["Should knees and hips push toward the hill or down the hill?", "Uphill; the upper body then faces downhill, creating angulation."]], "sum": "Weight on the downhill ski, knees to the hill, upper body faces down; release to drop, re-edge to climb.", "snow": "While crossing the run, try lifting the uphill ski — if you stay balanced you’re doing it right; in the garland feel the difference between ’release’ and ’bite’."}, "lift": {"q": [["With the inside ski lifted, where on the outside foot should your weight be?", "Mid-foot, slightly forward — not on the heel."], ["Which muscles lift the inside ski?", "The hamstrings bend the knee to lift it, not the waist."]], "sum": "Hand all your weight to the outside ski; you’re only really standing on it if you can stay balanced.", "snow": "On a gentle slope, start by lifting for 1 second per turn and gradually extend it to the whole turn."}};
-const STANCE_SHORT = {"back": "Back seat: no pressure on the tips, thighs tire quickly.", "fwd": "Too far forward: tails skid and you can’t release at the exit.", "even": "Even weight: the outside ski doesn’t grip, easily turning into an A-frame."};
+const STANCE_SHORT = {"look": "Looking at your feet: upper body folds, hips back, late turns.", "back": "Back seat: no pressure on the tips, thighs tire quickly.", "fwd": "Too far forward: tails skid and you can’t release at the exit.", "even": "Even weight: the outside ski doesn’t grip, easily turning into an A-frame."};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
-const CMP_DEFAULT = 'back';
+const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {beg:'even', slip:'look', trav:'look'};
 let cmpOn = false, lastCyc = null;
 const toastDone = {};
 function renderGuide(){
@@ -1299,7 +1368,7 @@ function updCmpLbl(){
 function setCmp(on){
   cmpOn = on; document.body.classList.toggle('cmp', on);
   document.getElementById('cmpBtn').classList.toggle('on', on);
-  if (on && cfg.stance === 'ok') setStance(CMP_DEFAULT);
+  if (on && cfg.stance === 'ok') setStance(CMP_BY_LEVEL[cfg.level] || CMP_DEFAULT);
   if (on) setView('side');
   updCmpLbl();
 }
@@ -1333,7 +1402,26 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
+const FEEL1 = {"beg": "To turn right, stand firmly on your left foot (the one on the outside of the turn).", "slip": "Knees toward the hill to stop, relax a little to slide.", "mid": "As you change direction, rise up slightly.", "carve": "Load the outside ski and let it carry you round; don’t twist.", "mogul": "Knees are your suspension: pull your feet up over the bump, extend down the back.", "short": "Upper body keeps facing downhill; only the legs turn side to side.", "pivot": "Both skis pivot across together, steered by ankles and thighs, not the upper body.", "trav": "Stand tall, weight on the downhill foot, skis parallel across the slope.", "lift": "Put all your weight on the outside foot; you stay steady even with the inside ski lifted."};
+let pathDone = {}; try { pathDone = JSON.parse(localStorage.getItem('pathDone') || '{}'); } catch(e){}
+function renderPath(curK){
+  document.querySelectorAll('#path li').forEach(li => { li.classList.toggle('done', !!pathDone[li.dataset.k]); li.classList.toggle('cur', li.dataset.k === curK); });
+  const f = FEEL1[cfg.level];
+  document.getElementById('feel1').innerHTML = f ? '🎯 For this move, remember one thing: <b>' + f + '</b>' : '';
+}
+document.querySelectorAll('#path [data-go]').forEach(b => b.onclick = () => {
+  const k = b.dataset.k;
+  setMode('simple'); setLevel(b.dataset.go);
+  pathDone[k] = 1; try { localStorage.setItem('pathDone', JSON.stringify(pathDone)); } catch(e){}
+  renderPath(k);
+  (k === 'bal' ? document.getElementById('balCard') : document.getElementById('stage')).scrollIntoView({behavior:'smooth', block:'start'});
+});
+let firstVisit = false; try { firstVisit = !localStorage.getItem('seen'); localStorage.setItem('seen', '1'); } catch(e){}
 setLevel('carve'); setStance('ok'); setMode('simple');
+if (firstVisit){
+  setLevel('beg'); document.getElementById('pathD').open = true;
+  setTimeout(() => showToast('First time here? Follow “🔰 New here? Start here” step by step; tap “⇆ Right vs wrong” to see the common mistakes.'), 1500);
+}
 Rig.load('xbot.json', slopeG, {color:0x7fa6cf, jointColor:0x2b3442}).then(() => {
   limbs.forEach(g => { g.children[0].visible = g.children[1].visible = false; });
   [armR, armL].forEach(a => { a.up.visible = a.fo.visible = false; });
