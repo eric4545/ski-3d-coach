@@ -24,3 +24,156 @@
 {"src": "落葉飄（左右移）", "en": "Falling leaf (side to side)", "tw": "落葉飄（左右移動）"}
 {"src": "落葉飄", "en": "Falling leaf", "tw": "落葉飄"}
 {"src": "學識直落同停之後先做：前腳多啲壓力就向板頭斜落，後腳多啲就向板尾，睇腳掌圖兩粒紅點。", "en": "Do this after you can slide straight down and stop: more front-foot pressure drifts you diagonally toward the nose, more back-foot pressure toward the tail — watch the two red dots in the foot map.", "tw": "學會直直往下滑和停下之後再做：前腳壓力多一點就往板頭斜下，後腳多一點就往板尾，看腳掌圖的兩個紅點。"}
+{"src": "Side slip 橫滑", "en": "Side slip", "tw": "側滑 Side slip"}
+{"src": "橫滑：edge 放細", "en": "Side slip: release the edge", "tw": "側滑：減少立刃"}
+{"src": "雙板打橫，uphill edge 放細少少（膝頭同腳踝向下坡輕輕放），雙板就會直直咁向下滑。上身面向下坡。", "en": "Skis across the hill; flatten the uphill edges a little (knees and ankles ease toward the valley) and the skis slide straight down. Upper body faces downhill.", "tw": "雙板橫在坡上，上坡刃稍微放平（膝蓋和腳踝輕輕往下坡放），雙板就會筆直往下滑。上半身面向下坡。"}
+{"src": "橫滑：保持 edge", "en": "Side slip: hold the edge", "tw": "側滑：保持立刃"}
+{"src": "維持同一個 edge 角度就會穩定咁滑；用腳踝同膝頭微調，唔好用上身。", "en": "Keep the same edge angle for a steady slide; fine-tune with ankles and knees, not the upper body.", "tw": "維持同一個立刃角度就會穩定下滑；用腳踝和膝蓋微調，不要用上半身。"}
+{"src": "橫滑：edge 加大停", "en": "Side slip: more edge to stop", "tw": "側滑：加大立刃停下"}
+{"src": "膝頭同腳踝推向上坡，uphill edge 加大到接近坡度，雙板就會停。下坡腳承重。", "en": "Push knees and ankles toward the hill; raise the uphill edges close to the slope angle and the skis stop. Weight on the downhill foot.", "tw": "膝蓋和腳踝推向上坡，上坡刃加大到接近坡度，雙板就會停。重心在下坡腳。"}
+{"src": "直線落", "en": "Straight down", "tw": "直線下滑"}
+{"src": "雙板打橫，沿 fall line 直直咁滑落嚟；鳥瞰圖應該係一條直線，冇左右移。", "en": "Skis across, sliding straight down the fall line; the top-down map should be one straight line with no sideways drift.", "tw": "雙板橫向，沿著滾落線筆直滑下；俯視圖應該是一條直線，沒有左右移動。"}
+{"src": "Edge 控速", "en": "Edge controls speed", "tw": "用立刃控速"}
+{"src": "Edge 加大（膝頭腳踝推向上坡）就停，放細就滑；睇 HUD 嘅狀態。", "en": "More edge (knees and ankles toward the hill) stops you, less edge slides; watch the HUD status.", "tw": "立刃加大（膝蓋腳踝推向上坡）就停，放小就滑；看 HUD 的狀態。"}
+{"src": "上身面向下坡，雙板打橫：上下身分離。", "en": "Upper body faces downhill while the skis are across: upper/lower body separation.", "tw": "上半身面向下坡，雙板橫向：上下半身分離。"}
+{"src": "下坡腳承受多啲重量，睇腳掌圖。", "en": "The downhill foot carries more weight; see the foot map.", "tw": "下坡腳承受較多重量，看腳掌圖。"}
+{"src": "重心喺腳掌中間；坐後會令板尾先滑，變成斜住落。", "en": "Keep weight mid-foot; sitting back lets the tails slide first and you drift diagonally.", "tw": "重心在腳掌中間；坐後會讓板尾先滑，變成斜著下去。"}
+{"src": "坡度 ${cfg.slope}°・Uphill edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°", "en": "Slope ${cfg.slope}° · Uphill edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°", "tw": "坡度 ${cfg.slope}°・上坡刃 ${Math.abs(p.edgeOuter/D).toFixed(0)}°"}
+{"src": "想停，雙板嘅 uphill edge 要加大定放細？", "en": "To stop, do you increase or decrease the uphill edge?", "tw": "想停下，上坡刃要加大還是放小？"}
+{"src": "加大。膝頭同腳踝推向上坡，edge 接近坡度就停。", "en": "Increase it. Push knees and ankles toward the hill; when the edge nears the slope angle you stop.", "tw": "加大。膝蓋和腳踝推向上坡，立刃接近坡度就停。"}
+{"src": "上身應該面向邊？", "en": "Which way should the upper body face?", "tw": "上半身應該面向哪裡？"}
+{"src": "面向下坡，唔好跟住雙板打橫。", "en": "Downhill, not across with the skis.", "tw": "面向下坡，不要跟著雙板轉成橫向。"}
+{"src": "雙板打橫直直滑落，用 edge 控速：加大就停，放細就滑。", "en": "Skis across, slide straight down, control speed with the edges: more to stop, less to slide.", "tw": "雙板橫向筆直下滑，用立刃控速：加大就停，放小就滑。"}
+{"src": "揀 10–20° 嘅平滑雪道，雙板打橫，滑 2 米、停、再滑 2 米；之後練 pivot slip 同 hockey stop。", "en": "Pick a smooth 10–20° run, skis across: slide 2 m, stop, slide 2 m again. Then move on to pivot slips and hockey stops.", "tw": "選 10–20° 的平整雪道，雙板橫向，滑 2 公尺、停、再滑 2 公尺；之後練側滑轉向和急停。"}
+{"src": "踭", "en": "Heel", "tw": "跟"}
+{"src": "落葉飄 Falling leaf", "en": "Falling leaf", "tw": "落葉飄 Falling leaf"}
+{"src": "向板頭方向斜落", "en": "Diagonal toward the nose", "tw": "往板頭方向斜滑"}
+{"src": "前腳多啲重量（約 70%），板頭微微指向下坡，塊板就向板頭方向斜住滑；edge 一直保持住。", "en": "More weight on the front foot (about 70%), nose pointing slightly downhill, and the board slides diagonally nose-first; keep the edge on the whole time.", "tw": "前腳多一點重量（約 70%），板頭微微指向下坡，雪板就往板頭方向斜滑；立刃一直保持。"}
+{"src": "向板尾方向斜落", "en": "Diagonal toward the tail", "tw": "往板尾方向斜滑"}
+{"src": "重心移去後腳，板尾微微指向下坡，塊板就向板尾方向倒返轉頭滑；唔使換刃。", "en": "Shift weight to the back foot, tail pointing slightly downhill, and the board slides back tail-first; no edge change.", "tw": "重心移到後腳，板尾微微指向下坡，雪板就往板尾方向倒滑回去；不用換刃。"}
+{"src": "停定換方向", "en": "Stop, then change direction", "tw": "停穩再換方向"}
+{"src": "兩腳返平均、edge 加大到接近坡度先停定，再將重心移去另一隻腳。", "en": "Even out both feet and raise the edge close to the slope angle to stop, then shift weight to the other foot.", "tw": "兩腳回到平均、立刃加大到接近坡度先停穩，再把重心移到另一隻腳。"}
+{"src": "Z 字軌跡", "en": "Zig-zag track", "tw": "Z 字軌跡"}
+{"src": "鳥瞰圖：左右來回、慢慢向下，好似樹葉跌落咁；全程都係同一條 edge，唔使換刃。", "en": "Top-down map: back and forth while slowly descending, like a falling leaf; the same edge throughout, no edge change.", "tw": "俯視圖：左右來回、慢慢往下，像樹葉飄落；全程同一個刃，不用換刃。"}
+{"src": "向板頭方向去：前腳多重量，板頭微微指向下坡。睇腳掌圖紅點喺前腳。", "en": "Heading nose-first: more weight on the front foot, nose slightly downhill. The red dot on the foot map is on the front foot.", "tw": "往板頭方向：前腳多重量，板頭微微指向下坡。看腳掌圖紅點在前腳。"}
+{"src": "後腳帶", "en": "Back foot leads", "tw": "後腳帶"}
+{"src": "向板尾方向去：重心移去後腳，板尾帶頭（即係 switch 方向）。", "en": "Heading tail-first: weight to the back foot, tail leading (i.e. riding switch).", "tw": "往板尾方向：重心移到後腳，板尾帶頭（也就是反腳方向）。"}
+{"src": "兩端停定", "en": "Stop at each end", "tw": "兩端停穩"}
+{"src": "去到盡頭 edge 加大停定，兩腳平均，先轉方向。", "en": "At each end, add edge to stop with even weight, then change direction.", "tw": "到盡頭時加大立刃停穩，兩腳平均，再換方向。"}
+{"src": "Heel／Toe", "en": "Heel／Toe", "tw": "後刃／前刃"}
+{"src": "Heelside 做完再揀「Toeside」做一次。", "en": "After heelside, pick “Toeside” and do it again.", "tw": "後刃做完再選「前刃」做一次。"}
+{"src": "學識直落同停之後，揀上面「落葉飄」嗰個掣練：塊板會左右移。", "en": "Once you can slide straight and stop, use the “Falling leaf” button above: the board moves side to side.", "tw": "學會直線下滑和停下後，選上面「落葉飄」按鈕練習：雪板會左右移動。"}
+{"src": "落葉飄・", "en": "Falling leaf · ", "tw": "落葉飄・"}
+{"src": "下坡 →", "en": "downhill →", "tw": "下坡 →"}
+{"src": "← 下坡", "en": "← downhill", "tw": "← 下坡"}
+{"src": "想向板頭方向去，重心放邊隻腳？", "en": "To go nose-first, which foot takes the weight?", "tw": "想往板頭方向去，重心放哪隻腳？"}
+{"src": "前腳。板頭微微指向下坡就會向板頭斜落。", "en": "The front foot. With the nose pointing slightly downhill, you slide diagonally nose-first.", "tw": "前腳。板頭微微指向下坡就會往板頭方向斜滑。"}
+{"src": "轉方向要唔要換刃？", "en": "Do you change edges to change direction?", "tw": "換方向要不要換刃？"}
+{"src": "唔使，全程同一條 edge，只係前後腳轉重心。", "en": "No. Same edge throughout; you only shift weight between front and back foot.", "tw": "不用，全程同一個刃，只是前後腳轉移重心。"}
+{"src": "同一條 edge 左右來回：前腳帶就向板頭、後腳帶就向板尾，兩端 edge 加大停定。", "en": "Same edge, back and forth: front foot leads toward the nose, back foot toward the tail; add edge to stop at each end.", "tw": "同一個刃左右來回：前腳帶往板頭、後腳帶往板尾，兩端加大立刃停穩。"}
+{"src": "先 heelside：向板頭斜落 3–5 米，停，再向板尾返轉頭；之後 toeside 再做。熟咗就係學 J-turn 同 S 彎嘅前一步。", "en": "Start heelside: 3–5 m diagonally nose-first, stop, then back tail-first; then repeat toeside. Once solid, it is the step before J-turns and linked turns.", "tw": "先用後刃：往板頭斜滑 3–5 公尺，停，再往板尾滑回來；之後用前刃再做。熟練後就是學 J 型轉彎和 S 彎的前一步。"}
+{"src": "🔰 新手由呢度開始（按次序學）", "en": "🔰 New here? Start here (in order)", "tw": "🔰 新手從這裡開始（按順序學）"}
+{"src": "搵重心", "en": "Find your balance", "tw": "找重心"}
+{"src": "你應該感覺到：成個腳掌踩實，脛骨輕輕貼住鞋舌：前後搖，搵最穩嗰點。", "en": "You should feel: your whole foot planted, shins lightly touching the boot tongues. Rock forward and back to find the steadiest point.", "tw": "你應該感覺到：整個腳掌踩實，脛骨輕輕貼著鞋舌：前後搖，找到最穩的那一點。"}
+{"src": "你應該感覺到：想轉右，就踩實左腳（彎外面嗰隻）：轉彎時嗰隻腳鞋底中間有明顯壓力。", "en": "You should feel: to turn right, stand firmly on your left foot (the one on the outside of the turn); clear pressure under the middle of that foot.", "tw": "你應該感覺到：想右轉，就踩實左腳（彎外側那隻）：轉彎時那隻腳鞋底中間有明顯壓力。"}
+{"src": "你應該感覺到：膝頭同腳踝推向山就停，放鬆少少就滑。", "en": "You should feel: push knees and ankles toward the hill to stop, relax a little to slide.", "tw": "你應該感覺到：膝蓋和腳踝推向山就停，稍微放鬆就滑。"}
+{"src": "你應該感覺到：換方向嗰下身體輕輕企高少少，入彎再慢慢屈低。", "en": "You should feel: rise slightly as you change direction, then sink gradually into the turn.", "tw": "你應該感覺到：換方向時身體輕輕站高一點，入彎再慢慢壓低。"}
+{"src": "之後：Carving、短彎、蘑菇、Pivot slip。", "en": "After that: Carving, short turns, moguls, pivot slips.", "tw": "之後：刻滑、短彎、猫跳、側滑轉向。"}
+{"src": "📖 CoM＝身體重心・Edge＝板邊咬住雪・外腳＝彎外面嗰隻腳（負責轉彎嗰隻）・內腳＝彎裏面嗰隻", "en": "📖 CoM = your body’s centre of mass · Edge = the ski’s edge gripping the snow · Outside foot = the foot on the outside of the turn (the one doing the work) · Inside foot = the other one", "tw": "📖 CoM＝身體重心・Edge＝板刃咬住雪・外腳＝彎外側那隻腳（負責轉彎那隻）・內腳＝彎內側那隻"}
+{"src": "望住對腳", "en": "Looking at your feet", "tw": "盯著腳看"}
+{"src": "⚖️ 重心喺邊？", "en": "⚖️ Where is your balance?", "tw": "⚖️ 重心在哪裡？"}
+{"src": "黃色波 = 重心（CoM），大約喺肚臍後面、盆骨中間。直線 = 重心沿身體傾斜方向落到雪面，圓圈係佢踩落嘅位置（綠＝啱位、橙＝開始偏、紅＝偏咗）：應該喺雙腳附近、腳掌中間。", "en": "Yellow ball = centre of mass (CoM), roughly behind your belly button in the middle of the pelvis. The line drops from the CoM to the snow along your body’s lean; the ring is where it lands (green = right, orange = drifting, red = off). It should be near your feet, mid-foot.", "tw": "黃色球 = 重心（CoM），大約在肚臍後面、骨盆中間。直線 = 重心沿身體傾斜方向落到雪面，圓圈是落點（綠＝正確、橙＝開始偏、紅＝偏掉）：應該在雙腳附近、腳掌中間。"}
+{"src": "腳跟", "en": "Heel", "tw": "腳跟"}
+{"src": "足弓→前腳掌", "en": "Arch → ball of foot", "tw": "足弓→前腳掌"}
+{"src": "腳趾", "en": "Toes", "tw": "腳趾"}
+{"src": "◀ 腳跟", "en": "◀ Heel", "tw": "◀ 腳跟"}
+{"src": "腳趾 ▶", "en": "Toes ▶", "tw": "腳趾 ▶"}
+{"src": "正中", "en": "Centred", "tw": "正中"}
+{"src": "拉去兩邊試下：公仔、軌跡同肌肉都會跟住變，同上面「站位」掣一樣。", "en": "Drag it either way: the figure, the track and the muscles all change, just like the Stance buttons above.", "tw": "拉到兩邊試試：人偶、軌跡和肌肉都會跟著變，和上面「站姿」按鈕一樣。"}
+{"src": "點樣搵到自己嘅重心（屋企／雪上練習）", "en": "How to find your own balance point (at home / on snow)", "tw": "怎麼找到自己的重心（在家／雪上練習）"}
+{"src": "著住雪鞋企定，膝頭腳踝微屈，前後慢慢搖：搖到腳跟或者腳趾都會覺得就快跌；中間最穩嗰點就係啱位（腳掌中間、脛骨輕輕貼住鞋舌）。", "en": "Stand in your boots, knees and ankles slightly bent, and rock slowly forward and back: at the heels or toes you feel about to fall; the steadiest point in between is right (mid-foot, shins lightly on the tongues).", "tw": "穿著雪鞋站好，膝蓋腳踝微彎，前後慢慢搖：搖到腳跟或腳趾都會覺得快跌；中間最穩的那一點就是正確位置（腳掌中間、脛骨輕貼鞋舌）。"}
+{"src": "閉埋眼再搖一次，專心感受腳底壓力由腳跟移去腳趾。", "en": "Close your eyes and rock again, feeling the pressure move from heel to toe.", "tw": "閉上眼再搖一次，專心感受腳底壓力從腳跟移到腳趾。"}
+{"src": "原地輕輕跳一下：落地唔使扶、唔會向後坐，就係重心喺啱位。", "en": "Hop lightly on the spot: if you land without grabbing anything or sitting back, your balance is right.", "tw": "原地輕輕跳一下：落地不用扶、不會往後坐，就是重心在正確位置。"}
+{"src": "滑行時雙手放喺前面望得到嘅位置；手跌咗去後面，多數即係坐後。", "en": "While skiing keep your hands in front where you can see them; hands drifting behind usually means you are sitting back.", "tw": "滑行時雙手放在前面看得到的位置；手掉到後面，多半就是坐後了。"}
+{"src": "平地直滑時輕輕提起一隻板尾（板頭仲貼雪）：坐後嘅話提唔到。", "en": "On flat terrain, lift one ski’s tail while the tip stays on the snow: if you are sitting back you can’t.", "tw": "在平地直滑時輕輕抬起一支板尾（板頭仍貼雪）：坐後的話抬不起來。"}
+{"src": "頭一低，上身就跟住向前彎、屁股向後頂，其實即係變相坐後；睇唔到前面，入彎會遲，彎形走樣，愈滑愈驚。眼望前面 2–3 個彎嘅位置，對腳會自己跟。", "en": "Drop your head and the upper body folds forward while the hips push back: effectively sitting back. You can’t see ahead, so turns start late, lose shape, and you get more nervous. Look 2–3 turns ahead and your feet will follow.", "tw": "頭一低，上半身就跟著向前彎、屁股往後頂，其實就是變相坐後；看不到前面，入彎會晚，彎形走樣，越滑越怕。眼睛看前方 2–3 個彎的位置，腳會自己跟上。"}
+{"src": "重心${u", "en": "CoM ${u", "tw": "重心${u"}
+{"src": "偏後", "en": "back", "tw": "偏後"}
+{"src": "偏前", "en": "forward", "tw": "偏前"}
+{"src": "外腳壓力（平均）：${x", "en": "Outside-foot pressure (average): ${x", "tw": "外腳壓力（平均）：${x"}
+{"src": "腳跟偏前", "en": "heel, slightly forward", "tw": "腳跟偏前"}
+{"src": "腳趾偏後", "en": "toes, slightly back", "tw": "腳趾偏後"}
+{"src": "🔴 坐後：腳跟好重、脛骨離開鞋舌、大腿好快攰，板頭咬唔到雪。→ 腳踝向前屈，手放前面。", "en": "🔴 Sitting back: heavy heels, shins off the tongues, thighs burn fast, tips won’t grip. → Flex the ankles forward, hands in front.", "tw": "🔴 坐後：腳跟很重、脛骨離開鞋舌、大腿很快就酸，板頭咬不住雪。→ 腳踝往前彎，手放前面。"}
+{"src": "🟠 太前：腳趾好壓、小腿好攰、板尾輕飄飄會甩出。→ 腳掌踩返平，唔好彎腰。", "en": "🟠 Too far forward: toes jammed, calves tire, tails feel light and wash out. → Flatten onto the whole foot, don’t bend at the waist.", "tw": "🟠 太前：腳趾很壓、小腿很累、板尾輕飄飄會甩出。→ 腳掌踩回平，不要彎腰。"}
+{"src": "🟢 啱位：成個腳掌踩實，脛骨輕輕貼住鞋舌；入彎移去前腳掌，出彎返腳掌中間。", "en": "🟢 Right: whole foot planted, shins lightly on the tongues; move to the ball of the foot entering the turn, back to mid-foot on exit.", "tw": "🟢 正確：整個腳掌踩實，脛骨輕貼鞋舌；入彎移到前腳掌，出彎回到腳掌中間。"}
+{"src": "望住對腳：上身彎、屁股向後，入彎遲。", "en": "Looking at your feet: upper body folds, hips back, late turns.", "tw": "盯著腳看：上半身彎、屁股往後，入彎晚。"}
+{"src": "想轉右，就踩實左腳（彎外面嗰隻腳）。", "en": "To turn right, stand firmly on your left foot (the one on the outside of the turn).", "tw": "想右轉，就踩實左腳（彎外側那隻腳）。"}
+{"src": "膝頭推向山就停，放鬆少少就滑。", "en": "Knees toward the hill to stop, relax a little to slide.", "tw": "膝蓋推向山就停，稍微放鬆就滑。"}
+{"src": "換方向嗰下，身體輕輕企高少少。", "en": "As you change direction, rise up slightly.", "tw": "換方向時，身體輕輕站高一點。"}
+{"src": "壓實彎外面嗰塊板，等塊板自己帶你轉，唔好扭。", "en": "Load the outside ski and let it carry you round; don’t twist.", "tw": "壓實彎外側那支板，讓板自己帶你轉，不要扭。"}
+{"src": "膝頭當避震：上包收腳，落包伸腳。", "en": "Knees are your suspension: pull your feet up over the bump, extend down the back.", "tw": "膝蓋當避震：上包收腳，下包伸腳。"}
+{"src": "上身一直面向下坡唔郁，淨係下半身左右轉。", "en": "Upper body keeps facing downhill; only the legs turn side to side.", "tw": "上半身一直面向下坡不動，只有下半身左右轉。"}
+{"src": "雙板一齊打橫，用腳踝同大腿扭，唔係用上身。", "en": "Both skis pivot across together, steered by ankles and thighs, not the upper body.", "tw": "雙板一起轉成橫向，用腳踝和大腿轉，不是用上半身。"}
+{"src": "上身企高，下坡腳承重，兩塊板平行斜住行。", "en": "Stand tall, weight on the downhill foot, skis parallel across the slope.", "tw": "上半身站高，下坡腳承重，兩支板平行斜著走。"}
+{"src": "全身重量放落彎外面嗰隻腳，內腳提起都企得穩。", "en": "Put all your weight on the outside foot; you stay steady even with the inside ski lifted.", "tw": "全身重量放在彎外側那隻腳，內腳抬起來也站得穩。"}
+{"src": "🎯 呢個動作只記一樣：", "en": "🎯 For this move, remember one thing: ", "tw": "🎯 這個動作只記一件事："}
+{"src": "第一次嚟？跟住「🔰 新手由呢度開始」一步步做；想睇錯誤做法就㩒「⇆ 正確 vs 錯誤」。", "en": "First time here? Follow “🔰 New here? Start here” step by step; tap “⇆ Right vs wrong” to see the common mistakes.", "tw": "第一次來？跟著「🔰 新手從這裡開始」一步步做；想看錯誤做法就點「⇆ 正確 vs 錯誤」。"}
+{"src": "你應該感覺到：兩隻腳差唔多平均，膝頭微屈：前後搖，搵最穩嗰點。", "en": "You should feel: both feet roughly even, knees slightly bent. Rock forward and back to find the steadiest point.", "tw": "你應該感覺到：兩隻腳差不多平均，膝蓋微彎：前後搖，找到最穩的那一點。"}
+{"src": "你應該感覺到：拉起腳趾（heel slip）就停，放鬆少少就滑。", "en": "You should feel: lift your toes (heel slip) to stop, relax a little to slide.", "tw": "你應該感覺到：勾起腳趾（後刃推坡）就停，稍微放鬆就滑。"}
+{"src": "你應該感覺到：想去邊就壓嗰邊隻腳：前腳壓就向板頭，後腳壓就向板尾。", "en": "You should feel: press the foot on the side you want to go: front foot toward the nose, back foot toward the tail.", "tw": "你應該感覺到：想往哪邊就壓那邊的腳：壓前腳往板頭，壓後腳往板尾。"}
+{"src": "你應該感覺到：眼望要去嘅方向，前腳帶路。", "en": "You should feel: eyes on where you’re going, front foot leading.", "tw": "你應該感覺到：眼睛看要去的方向，前腳帶路。"}
+{"src": "你應該感覺到：換邊時先將塊板放平，再慢慢壓去新嗰邊。", "en": "You should feel: flatten the board first when switching sides, then ease onto the new edge.", "tw": "你應該感覺到：換邊時先把板放平，再慢慢壓到新的那邊。"}
+{"src": "之後：中級、Carving、Ollie、Butter。", "en": "After that: intermediate turns, carving, ollies, butters.", "tw": "之後：中級、刻滑、豚跳、平花。"}
+{"src": "📖 CoM＝身體重心・Edge＝板邊咬住雪・Toeside＝腳趾嗰邊・Heelside＝腳跟嗰邊・前腳＝板頭嗰隻腳", "en": "📖 CoM = your body’s centre of mass · Edge = the board’s edge gripping the snow · Toeside = toe edge · Heelside = heel edge · Front foot = the foot nearer the nose", "tw": "📖 CoM＝身體重心・Edge＝板刃咬住雪・前刃＝腳趾那邊・後刃＝腳跟那邊・前腳＝靠板頭那隻腳"}
+{"src": "前腳太重", "en": "Too much on the front foot", "tw": "前腳太重"}
+{"src": "望住塊板", "en": "Looking at the board", "tw": "盯著板看"}
+{"src": "黃色波 = 重心（CoM），大約喺肚臍後面、盆骨中間。直線 = 重心沿身體傾斜方向落到雪面，圓圈係佢踩落嘅位置（綠＝啱位、橙＝開始偏、紅＝偏咗）：應該喺兩隻腳中間。", "en": "Yellow ball = centre of mass (CoM), roughly behind your belly button in the middle of the pelvis. The line drops from the CoM to the snow along your body’s lean; the ring is where it lands (green = right, orange = drifting, red = off). It should be between your feet.", "tw": "黃色球 = 重心（CoM），大約在肚臍後面、骨盆中間。直線 = 重心沿身體傾斜方向落到雪面，圓圈是落點（綠＝正確、橙＝開始偏、紅＝偏掉）：應該在兩腳中間。"}
+{"src": "啱位", "en": "Right", "tw": "正確"}
+{"src": "◀ 板尾・後腳", "en": "◀ Tail · back foot", "tw": "◀ 板尾・後腳"}
+{"src": "前腳・板頭 ▶", "en": "Front foot · nose ▶", "tw": "前腳・板頭 ▶"}
+{"src": "前後腳", "en": "Front/back", "tw": "前後腳"}
+{"src": "著住板喺平地，膝頭腳踝微屈，前後慢慢搖：搖去後腳板頭會翹、搖去前腳板尾會翹；兩腳差唔多平均最穩嗰點就係起點。", "en": "Strapped in on flat ground, knees and ankles slightly bent, rock slowly forward and back: lean back and the nose lifts, lean forward and the tail lifts. The steadiest point with both feet about even is your start position.", "tw": "穿著板在平地，膝蓋腳踝微彎，前後慢慢搖：搖到後腳板頭會翹、搖到前腳板尾會翹；兩腳差不多平均最穩的那一點就是起點。"}
+{"src": "閉埋眼再搖一次，專心感受兩隻腳底嘅壓力點樣移。", "en": "Close your eyes and rock again, feeling how the pressure moves between your feet.", "tw": "閉上眼再搖一次，專心感受兩腳腳底的壓力怎麼移動。"}
+{"src": "直滑時屈前膝、眼望前面（唔好望塊板）：望落塊板通常即係重心走咗去後腳。", "en": "When gliding straight, bend the front knee and look ahead, not at the board: looking down usually puts your weight on the back foot.", "tw": "直滑時彎前膝、眼睛看前面（不要看板）：低頭看板通常就是重心跑到後腳了。"}
+{"src": "手放鬆喺身兩側前面少少；手跌咗去後面，多數即係坐後。", "en": "Keep your hands relaxed, slightly in front at your sides; hands drifting behind usually means you are sitting back.", "tw": "手放鬆在身體兩側稍前方；手掉到後面，多半就是坐後了。"}
+{"src": "雪上試：直滑時輕輕提起板尾再放低，再提起板頭：做到就知道自己點樣移前移後。", "en": "On snow: while gliding, lift the tail and put it down, then lift the nose. Once you can, you know how to move fore and aft.", "tw": "雪上試試：直滑時輕輕抬起板尾再放下，再抬起板頭：做得到就知道自己怎麼前後移動。"}
+{"src": "板尾冇壓力，出彎板尾會甩出（skid），換刃時容易 catch edge 向前跌；前腳股四頭肌同小腿死撐，好快攰。", "en": "No pressure on the tail, so it washes out at the end of the turn and you can catch an edge and fall forward when switching edges; the front quad and calf hold on and tire quickly.", "tw": "板尾沒有壓力，出彎板尾會甩出（打滑），換刃時容易吃刃往前摔；前腳股四頭肌和小腿死撐，很快就累。"}
+{"src": "塊板會跟住你眼望嘅方向走：望住塊板就轉唔到去要去嘅方向，仲會變成後腳太重；頭低上身彎，toeside 容易屈腰。眼望要去嘅方向，用頭同肩膀帶。", "en": "The board follows your eyes: look at it and you won’t turn where you want to go, and your weight ends up on the back foot; head down and upper body bent leads to folding at the waist on toeside. Look where you want to go and lead with your head and shoulders.", "tw": "板會跟著你眼睛看的方向走：盯著板就轉不到要去的方向，還會變成後腳太重；低頭彎腰，前刃容易折腰。眼睛看要去的方向，用頭和肩膀帶。"}
+{"src": "偏重 ${Math.round(w*100)}%", "en": "heavy ${Math.round(w*100)}%", "tw": "偏重 ${Math.round(w*100)}%"}
+{"src": "平均：前腳 ${Math.round(avg*100)}%・後腳 ${100 - Math.round(avg*100)}%（而家前腳 ${Math.round(wF*100)}%）", "en": "Average: front ${Math.round(avg*100)}% · back ${100 - Math.round(avg*100)}% (front now ${Math.round(wF*100)}%)", "tw": "平均：前腳 ${Math.round(avg*100)}%・後腳 ${100 - Math.round(avg*100)}%（現在前腳 ${Math.round(wF*100)}%）"}
+{"src": "🔴 後腳太重：板頭飄、轉唔到彎，要用上身扭先轉到。→ 屈前膝、眼望要去嘅方向。", "en": "🔴 Too much on the back foot: the nose floats and won’t turn, so you twist your upper body. → Bend the front knee, look where you’re going.", "tw": "🔴 後腳太重：板頭飄、轉不了彎，要靠上半身扭才轉得過。→ 彎前膝、眼睛看要去的方向。"}
+{"src": "🟠 前腳太重：板尾甩出、換刃容易 catch edge 向前跌。→ 返中間，後膝都要屈。", "en": "🟠 Too much on the front foot: the tail washes out and you can catch an edge forward. → Back to centre, bend the back knee too.", "tw": "🟠 前腳太重：板尾甩出、換刃容易吃刃往前摔。→ 回到中間，後膝也要彎。"}
+{"src": "🟢 啱位：兩腳差唔多平均，入彎前腳稍重（55–60%）；兩隻膝頭都屈，上身企直。", "en": "🟢 Right: feet roughly even, a little more on the front foot entering the turn (55–60%); both knees bent, upper body tall.", "tw": "🟢 正確：兩腳差不多平均，入彎前腳稍重（55–60%）；兩邊膝蓋都彎，上半身挺直。"}
+{"src": "望住塊板：轉唔到去要去嘅方向。", "en": "Looking at the board: you can’t turn where you want to go.", "tw": "盯著板看：轉不到要去的方向。"}
+{"src": "前腳太重：板尾甩出，容易 catch edge。", "en": "Front foot too heavy: tail washes out, easy to catch an edge.", "tw": "前腳太重：板尾甩出，容易吃刃。"}
+{"src": "拉起腳趾（heel slip）就停，放鬆少少就滑。", "en": "Lift your toes (heel slip) to stop, relax a little to slide.", "tw": "勾起腳趾（後刃推坡）就停，稍微放鬆就滑。"}
+{"src": "想去邊就壓嗰邊隻腳。", "en": "Press the foot on the side you want to go.", "tw": "想往哪邊就壓那邊的腳。"}
+{"src": "眼望要去嘅方向，前腳帶路。", "en": "Eyes on where you’re going, front foot leading.", "tw": "眼睛看要去的方向，前腳帶路。"}
+{"src": "換邊時先將塊板放平，再慢慢壓去新嗰邊。", "en": "Flatten the board first when switching sides, then ease onto the new edge.", "tw": "換邊時先把板放平，再慢慢壓到新的那邊。"}
+{"src": "入彎屈低加壓，換邊時企高放鬆。", "en": "Sink and press into the turn, rise and release when switching edges.", "tw": "入彎壓低加壓，換刃時站高放鬆。"}
+{"src": "壓實板邊，等塊板自己彎，唔好扭上身。", "en": "Load the edge and let the board turn itself; don’t twist your upper body.", "tw": "壓實板刃，讓板自己轉，不要扭上半身。"}
+{"src": "身體低過塊板都唔跌，係靠速度撐住；速度唔夠唔好試。", "en": "You can get lower than the board without falling only because speed holds you up; don’t try it slowly.", "tw": "身體比板還低也不會倒，是靠速度撐住；速度不夠別嘗試。"}
+{"src": "先壓板尾儲力，再彈起收腳。", "en": "Load the tail first, then pop and pull your feet up.", "tw": "先壓板尾蓄力，再彈起收腳。"}
+{"src": "壓實板頭（或板尾），上身帶轉。", "en": "Press the nose (or tail) and lead the spin with your upper body.", "tw": "壓實板頭（或板尾），上半身帶轉。"}
+{"src": "你應該感覺到：新外腳喺彎一開始已經有壓力，彎轉到夠橫速度自然慢。", "en": "You should feel: pressure on the new outside foot right at the start of the turn; finish the turn across the hill and speed drops by itself.", "tw": "你應該感覺到：新外腳在彎一開始就有壓力，彎轉到夠橫速度自然會慢。"}
+{"src": "重量轉得太遲", "en": "Late weight transfer", "tw": "重心轉移太晚"}
+{"src": "等轉完彎先轉重量：彎頂冇外腳壓力，雙板打滑或者要用犁式煞先轉到；彎形變長變直，速度控制唔到，成日要靠煞。喺彎一開始就將重量移去新嘅外腳。", "en": "Waiting until the turn is finished to move your weight: no pressure on the outside ski at the top of the turn, so the skis skid or you need a wedge to get round; turns get long and straight, speed runs away and you keep braking. Move your weight to the new outside foot right as the turn begins.", "tw": "等轉完彎才轉移重心：彎頂外腳沒有壓力，雙板打滑或要用犁式煞車才轉得過；彎形變長變直，速度控制不住，常常要靠煞車。在彎一開始就把重心移到新的外腳。"}
+{"src": "想轉右邊嘅時候，應該把多啲重量放喺邊隻腳？", "en": "To turn right, which foot should take more weight?", "tw": "想右轉的時候，應該把較多重量放在哪隻腳？"}
+{"src": "左腳（彎外面嗰隻）。外腳加壓，板先會轉向。", "en": "The left foot (the one on the outside of the turn). Pressure on the outside foot is what turns the ski.", "tw": "左腳（彎外側那隻）。外腳加壓，板才會轉向。"}
+{"src": "兩隻腳平均用力會點？", "en": "What happens if both feet push equally?", "tw": "兩隻腳平均用力會怎樣？"}
+{"src": "轉唔到彎，或者轉得好慢。新手最常犯就係雙腳平均踩。", "en": "You can’t turn, or turn very slowly. Standing evenly on both feet is the most common beginner mistake.", "tw": "轉不了彎，或轉得很慢。新手最常犯的就是雙腳平均踩。"}
+{"src": "想轉邊，就早啲把重量踩落外腳（彎外面嗰隻），保持 A 字，重心喺腳掌中間。", "en": "Whichever way you want to turn, move your weight onto the outside foot early, keep the A shape, balance mid-foot.", "tw": "想往哪邊轉，就早點把重量踩到外腳（彎外側那隻），保持 A 字，重心在腳掌中間。"}
+{"src": "喺緩坡慢慢做 5–8 個彎，每個彎出聲講「壓左腳」或「壓右腳」，感覺壓力係喺腳掌中間，而唔係腳跟。", "en": "On a gentle slope, make 5–8 slow turns, saying “left foot” or “right foot” out loud each time; feel the pressure mid-foot, not in the heel.", "tw": "在緩坡慢慢做 5–8 個彎，每個彎說出「壓左腳」或「壓右腳」，感覺壓力在腳掌中間，而不是腳跟。"}
+{"src": "轉彎時，外腳鞋底中間有明顯壓力；如果大腿好快燒、板頭好輕，就係坐後咗。", "en": "Clear pressure under the middle of the outside foot while turning; if your thighs burn fast and the tips feel light, you are sitting back.", "tw": "轉彎時，外腳鞋底中間有明顯壓力；如果大腿很快就酸、板頭很輕，就是坐後了。"}
+{"src": "換刃嗰陣，應該等轉完彎先轉重量，定係早啲轉？", "en": "When changing edges, do you wait until the turn is finished to move your weight, or move it early?", "tw": "換刃時，應該等轉完彎才轉移重心，還是早點轉？"}
+{"src": "早啲轉。要喺 turn 頂部（剛開始轉嗰下）就開始把重量移去新嘅外腳。", "en": "Early. Start moving your weight to the new outside foot at the top of the turn, right as it begins.", "tw": "早點轉。要在彎頂（剛開始轉的時候）就開始把重心移到新的外腳。"}
+{"src": "點樣用彎嘅形狀控制速度，而唔係靠死命煞停？", "en": "How do you control speed with turn shape instead of braking hard?", "tw": "怎麼用彎的形狀控制速度，而不是拼命煞車？"}
+{"src": "把彎轉到夠橫（橫過山坡），完成成個 turn，速度自然會跌落嚟。", "en": "Finish each turn far enough across the hill; complete the whole turn and speed drops naturally.", "tw": "把彎轉到夠橫（橫過山坡），完成整個彎，速度自然會降下來。"}
+{"src": "每個彎一開始就轉重量去新嘅外腳，上身大致面向下坡，用 turn shape 控制速度，而唔係靠煞。", "en": "Move your weight to the new outside foot at the start of every turn, keep the upper body roughly facing downhill, and control speed with turn shape rather than braking.", "tw": "每個彎一開始就把重心轉到新的外腳，上半身大致面向下坡，用彎形控制速度，而不是靠煞車。"}
+{"src": "喺中緩坡做，心入面數「轉重量 → 轉彎 → 完成」，刻意把彎劃到橫啲，感覺速度自己慢落嚟。", "en": "On an easy-to-moderate slope, count in your head “shift weight → turn → finish”, deliberately carry each turn further across the hill, and feel the speed drop by itself.", "tw": "在中緩坡練，心裡數「轉重心 → 轉彎 → 完成」，刻意把彎畫得更橫，感覺速度自己慢下來。"}
+{"src": "新外腳喺彎開始時已經有壓力；如果成日要靠犁式煞停，就係彎轉得唔夠橫，或者重量轉得太遲。", "en": "The new outside foot already has pressure as the turn begins; if you keep needing a wedge to slow down, your turns are not finishing across the hill or your weight moves too late.", "tw": "新外腳在彎開始時就已經有壓力；如果常常要靠犁式煞車，就是彎轉得不夠橫，或重心轉移太晚。"}
+{"src": "重量轉得太遲：彎頂打滑，要靠煞控速。", "en": "Late weight transfer: skids at the top of the turn, braking to control speed.", "tw": "重心轉移太晚：彎頂打滑，要靠煞車控速。"}
+{"src": "👣 你應該感覺到：", "en": "👣 You should feel: ", "tw": "👣 你應該感覺到："}
+{"src": "每個彎一開始就將重量轉去新嘅外腳。", "en": "Move your weight to the new outside foot at the start of every turn.", "tw": "每個彎一開始就把重心轉到新的外腳。"}
+{"src": "🏋️ 健身動作參考 Gym", "en": "🏋️ Gym exercise reference", "tw": "🏋️ 健身動作參考 Gym"}
+{"src": "器械・熱身・核心・滑雪／單板輔助動作（只有廣東話）", "en": "Machines · warm-up · core · ski/snowboard drills (Cantonese only)", "tw": "器械・熱身・核心・滑雪／單板輔助動作（僅粵語）"}
