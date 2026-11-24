@@ -139,6 +139,11 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-l="pivot">Pivot slip</button>
     <button data-l="trav">Traverse + garland</button>
     <button data-l="lift">Inside-ski lift drill</button>
+    <button data-l="javelin">Javelin turn</button>
+    <button data-l="oneski">One-ski skiing</button>
+    <button data-l="rail">Railroad tracks</button>
+    <button data-l="leaf">Falling leaf</button>
+    <button data-l="shuffle">Shuffle</button>
   </div>
 
   <div class="row">
@@ -298,6 +303,11 @@ const LV = {
   pivot:{name:'Pivot slip', kind:'pivot', v:10, slope:15, skiOff:-12, R:13, cap:20*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.6, tr:.3, tp:0.44, tyaw:.15, pyaw:.6, knee:.3, minDrive:.45, plant:0, lead:0},
   trav: {name:'Traverse + garland', kind:'trav', v:15, slope:15, skiOff:-12, R:13, cap:35*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:0.46, tyaw:.45, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.12},
   lift: {name:'Inside-ski lift drill', kind:'turn', v:25, slope:15, skiOff:-10, R:14, cap:50*D, ang:1.15, skid:0, wedge:0, Rbase:10, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:.3, plant:0, lead:.1, lift:true},
+  javelin:{name:'Javelin turn', kind:'turn', v:20, slope:14, skiOff:-10, R:14, cap:42*D, ang:1.15, skid:0, wedge:0, Rbase:11, psiB:0, h0:.84, stance:.14, pr:.8, tr:.55, tp:0.46, tyaw:.15, pyaw:.65, knee:1, minDrive:.3, plant:0, lead:.1, lift:true, javelin:true},
+  oneski: {name:'One-ski skiing', kind:'turn', v:16, slope:12, skiOff:-10, R:14, cap:34*D, ang:1.15, skid:0, wedge:0, Rbase:12, psiB:0, h0:.84, stance:.14, pr:.8, tr:.55, tp:0.46, tyaw:.3, pyaw:.75, knee:.9, minDrive:.3, plant:0, lead:.06, lift:true, oneski:true},
+  rail:   {name:'Railroad tracks', kind:'turn', v:13, slope:8, skiOff:-8, R:14, cap:14*D, ang:2.2, skid:0, wedge:0, Rbase:0, psiB:0, psiFix:24*D, h0:.87, stance:.15, pr:.8, tr:.25, tp:0.42, tyaw:.85, pyaw:.9, knee:.25, minDrive:.3, plant:0, lead:.03, rail:true},
+  leaf:   {name:'Falling leaf', kind:'leaf', v:8, slope:15, skiOff:-12, R:13, cap:25*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:.44, tyaw:.4, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.05},
+  shuffle:{name:'Shuffle', kind:'shuffle', v:12, slope:8, skiOff:-10, R:13, cap:10*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.83, stance:.15, pr:.75, tr:.2, tp:.46, tyaw:.8, pyaw:.9, knee:.6, minDrive:.45, plant:0, lead:0},
   carve:{name:'Advanced · Carving', v:30, slope:18, skiOff:-6, R:15, cap:65*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1}
 };
 const REC = {
@@ -307,6 +317,11 @@ const REC = {
   short:{ski:[-15,-5],  R:[10,14], slope:[15,25], v:[15,30]},
   slip: {ski:[-15,-5],  R:[10,18], slope:[10,20], v:[0,99]},
   lslip: {ski:[-15,-5], R:[10,18], slope:[12,22], v:[0,99]},
+  javelin:{ski:[-15,-5], R:[10,18], slope:[8,18], v:[12,25]},
+  oneski: {ski:[-15,-5], R:[10,18], slope:[6,15], v:[10,22]},
+  rail:   {ski:[-15,-5], R:[10,18], slope:[5,10], v:[8,18]},
+  leaf:   {ski:[-15,-5], R:[10,18], slope:[10,20], v:[0,99]},
+  shuffle:{ski:[-15,-5], R:[10,18], slope:[5,12], v:[8,18]},
   lslipT:{ski:[-15,-5], R:[10,18], slope:[15,30], v:[0,99]},
   pivot:{ski:[-15,-5],  R:[10,18], slope:[12,20], v:[0,99]},
   trav: {ski:[-15,-5],  R:[10,18], slope:[12,22], v:[8,25]},
@@ -324,16 +339,18 @@ const STANCE = {
   late: {fx:{skid:7, ph:'init', edge:.85, r:1.2, bend:.7}, name:'Late weight transfer', lag:.12, fa:-.1, dz:-.03, dh:0, kk:1, add:{quad:.1}, txt:'Waiting until the turn is finished to move your weight: no pressure on the outside ski at the top of the turn, so the skis skid or you need a wedge to get round; turns get long and straight, speed runs away and you keep braking. Move your weight to the new outside foot right as the turn begins.'},
   even: {fx:{skid:5, ph:'all', edge:.8, inner:.3, r:1.15, bend:.7}, name:'Even weight', fa:0, dz:0, dh:0, kk:.25, add:{}, txt:'The inside ski steals pressure from the outside ski, so the outside edge doesn’t hold and slips; the inside ski catches the wrong edge, giving an A-frame or scissored skis.'}
 };
-const SHARE = {slip:.5, lslip:.6, lslipT:.7, beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
+const SHARE = {javelin:1, oneski:1, rail:.6, leaf:.5, shuffle:.2, slip:.5, lslip:.6, lslipT:.7, beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
 
 function build(){
   Cok = null;
   const lv = LV[cfg.level], v = cfg.v/3.6;
   let Rt, phiApex, warn = '';
-  if (lv.kind === 'pivot' || lv.kind === 'trav' || lv.kind === 'slip' || lv.kind === 'lslip'){
+  if (lv.kind === 'pivot' || lv.kind === 'trav' || lv.kind === 'slip' || lv.kind === 'lslip' || lv.kind === 'leaf' || lv.kind === 'shuffle'){
     C = {v: Math.max(v, 1), Rt: 0, phiApex: lv.cap, k: cfg.H/175, inten: .3, warn: '', mogul: false, P: 1, Sx: 1, Rb: 1, edgeApex: lv.cap*lv.ang};
     if (lv.kind === 'pivot'){ C.L = 1.6; C.period = 7; }
     else if (lv.kind === 'slip'){ C.L = 3.3; C.period = 9; }
+    else if (lv.kind === 'leaf'){ C.L = 2.4; C.A = 2.2; C.period = 10; }
+    else if (lv.kind === 'shuffle'){ C.period = 4; C.L = Math.max(1, cfg.v/3.6)*C.period; }
     else if (lv.kind === 'lslip'){
       // one cycle = two half-cycles (one to each side): release -> steer across the fall line -> grip
       const N = 400, Th = lv.turn ? 2.2 : 3.4, vpk = Math.max(2, cfg.v/3.6), vlo = lv.turn ? .55*vpk : .08*vpk;
@@ -365,6 +382,10 @@ function build(){
       phiApex = phi; Rt = cfg.R*Math.cos(Math.min(lv.ang*phi, 75*D));
       if (phi < 18*D) warn = `⚠️ Too slow: only ${(phi/D).toFixed(0)}° of lean is needed, GRF is too low to hold the edge in a pure carve and it will tend to skid.`;
     }
+  } else if (lv.rail){
+    // ankles tip the skis a little and the sidecut draws the arc: R ≈ sidecut radius × cos(edge)
+    Rt = cfg.R*Math.cos(10*D); phiApex = Math.atan(v*v/(G*Rt));
+    if (Math.tan(lv.cap) < v*v/(G*Rt)) warn = `⚠️ ${cfg.v} km/h is too fast for railroad tracks: you would need more than ${(lv.cap/D).toFixed(0)}° of lean, so it is no longer ankles only. Do it slowly on a gentle slope.`;
   } else {
     const need = v*v/(G*Math.tan(lv.cap));
     Rt = Math.max(lv.Rbase, need);
@@ -372,6 +393,7 @@ function build(){
     phiApex = Math.atan(v*v/(G*Rt));
   }
   const psiMax = lv.psiFix || clamp((28 + (cfg.slope-8)*1.4 + lv.psiB)*D, 22*D, 68*D);
+  if (lv.rail) phiApex = Math.min(Math.atan(v*v/(G*Rt)), lv.cap);
   const RtOk = Rt, fxS = turnish() ? STANCE[cfg.stance].fx : null;
   if (fxS) Rt *= fxS.r;
   const tp = Math.tan(psiMax), om = 1/(Rt*tp), A = Rt*tp*tp, L = W/om;
@@ -565,6 +587,17 @@ function pose(s){
     const phi = -e/lv.ang;
     return finish({s, sn: -.6, cs: 0, mid: new V(0, 0, zf*C.L), psi: 88*D, sg: -1, phi, phiMag: Math.abs(phi), nsh: 1, kap: 0, pulse});
   }
+  if (lv.kind === 'leaf'){
+    // skis across the hill; pressure forward -> drift tips-first, pressure back -> drift tails-first, slipping down slowly
+    const c = Math.cos(W*s), psi = (88 - 15*c)*D, e = cfg.slope*D*(.62 + .25*(1 - Math.abs(c)));
+    const mid = new V(C.A*Math.sin(W*s), 0, s*C.L);
+    return finish({s, sn: -.6, cs: 0, mid, psi, sg: -1, phi: -e/lv.ang, phiMag: e/lv.ang, nsh: 1, kap: 0, faDyn: .6*c, leafC: c});
+  }
+  if (lv.kind === 'shuffle'){
+    // straight run, feet slide forward/back alternately; sitting back kills the motion
+    const amp = (cfg.stance === 'back' ? .04 : .15)*C.k, sh = amp*Math.sin(W*2*s);
+    return finish({s, sn: 0, cs: 0, mid: new V(0, 0, s*C.L), psi: 0, sg: 1, phi: 0, phiMag: 0, nsh: 0, kap: 0, shuf: sh, faDyn: .15});
+  }
   if (lv.kind === 'lslip'){
     const cyc = Math.floor(s), u = s - cyc, st = lslipState(u, C.vpk, C.vlo, lv.turn);
     const fi = u*400, i0 = Math.floor(fi), t = fi - i0, a = C.tab[i0], b = C.tab[Math.min(400, i0 + 1)];
@@ -608,6 +641,7 @@ function finish(b){
   const footR = mid.clone().addScaledVector(right, lv.stance*k);
   const footL = mid.clone().addScaledVector(right, -lv.stance*k);
   (sg > 0 ? footR : footL).addScaledVector(f, lv.lead*k*nsh);
+  if (b.shuf){ footR.addScaledVector(f, b.shuf); footL.addScaledVector(f, -b.shuf); }
   footR.y = .1*k + hf(footR.x, footR.z); footL.y = .1*k + hf(footL.x, footL.z);
   let edgeR, edgeL;
   if (cfg.level === 'beg'){
@@ -623,12 +657,20 @@ function finish(b){
   let pitchR = skiPitch(footR, yawR), pitchL = skiPitch(footL, yawL);
   let liftAmt = 0;
   if (lv.lift){
-    liftAmt = clamp((nsh - .12)/.3, 0, 1); liftAmt = liftAmt*liftAmt*(3-2*liftAmt);
-    if (sg > 0){ footR.y += .14*k*liftAmt; edgeR *= 1 - liftAmt; pitchR += .15*liftAmt; }
-    else { footL.y += .14*k*liftAmt; edgeL *= 1 - liftAmt; pitchL += .15*liftAmt; }
+    liftAmt = lv.oneski ? 1 : clamp((nsh - .12)/.3, 0, 1); liftAmt = liftAmt*liftAmt*(3-2*liftAmt);
+    const liftR = lv.oneski ? true : sg > 0;
+    const up = (lv.javelin ? .2 : lv.oneski ? .12 : .14)*k*liftAmt;
+    if (liftR){ footR.y += up; edgeR *= 1 - liftAmt; pitchR += (lv.javelin ? .28 : .15)*liftAmt; }
+    else { footL.y += up; edgeL *= 1 - liftAmt; pitchL += (lv.javelin ? .28 : .15)*liftAmt; }
+    if (lv.javelin){
+      // inside ski lifted, its tip swung across in front of the outside ski
+      const ft = liftR ? footR : footL, out = right.clone().multiplyScalar(-sg);
+      ft.addScaledVector(out, .06*k*liftAmt).addScaledVector(f, .1*k*liftAmt);
+      if (liftR) b.javYawR = sg*28*D*liftAmt; else b.javYawL = sg*28*D*liftAmt;
+    }
   }
-  const edgeOuter = sg > 0 ? edgeL : edgeR;
-  return Object.assign(b, {skidX, f, right, P, com, upLean, footR, footL, edgeR, edgeL, yawR, yawL, pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
+  const edgeOuter = lv.oneski ? edgeL : sg > 0 ? edgeL : edgeR;
+  return Object.assign(b, {skidX, f, right, P, com, upLean, footR, footL, edgeR, edgeL, yawR: yawR + (b.javYawR || 0), yawL: yawL + (b.javYawL || 0), pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
 }
 
 function twoBone(H, T, pole, a, b){
@@ -696,14 +738,14 @@ function activations(p){
     : C.mogul ? {quad:.1+.35*c, glmax:.25*c, ham:.15*c, tib:.2}
     : cfg.level === 'short' ? {obl:.2, add:.08} : cfg.level === 'pivot' ? {obl:.3, add:.15, glmed:.15} : cfg.level === 'trav' ? {obl:.15} : {};
   const st = STANCE[cfg.stance];
-  const kk = clamp(wSplit(p)*3, -1, 1)*st.kk, oR = .5 - .5*kk, oL = .5 + .5*kk;
+  const kk = LV[cfg.level].oneski ? 1 : clamp(wSplit(p)*3, -1, 1)*st.kk, oR = .5 - .5*kk, oL = .5 + .5*kk;
   const r = {};
   for (const key in o){
     const b = (baseAdd[key] || 0) + (st.add[key] || 0);
     r[key] = {R: clamp(oR*o[key] + (1-oR)*i[key] + b, 0, 1), L: clamp(oL*o[key] + (1-oL)*i[key] + b, 0, 1)};
   }
   if (lv.lift && p.liftAmt > 0){
-    const S = p.sg > 0 ? 'R' : 'L', w = p.liftAmt;
+    const S = lv.oneski ? 'R' : p.sg > 0 ? 'R' : 'L', w = p.liftAmt;
     const lo = {quad:.15, ham:.2+.25*drive, glmax:.05, glmed:.05, add:.1, tib:.35, calf:.05};
     for (const key in lo) r[key][S] = r[key][S]*(1-w) + lo[key]*w;
     const O = S === 'R' ? 'L' : 'R';
@@ -723,8 +765,8 @@ function wSplit(p){
 function pressure(p){
   const st = STANCE[cfg.stance];
   const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
-  const kk = clamp(wSplit(p)*3, -1, 1)*st.kk*SHARE[cfg.level];
-  let fa = .1 + .35*init - .35*comp;
+  const kk = LV[cfg.level].oneski ? 1 : clamp(wSplit(p)*3, -1, 1)*st.kk*SHARE[cfg.level];
+  let fa = p.faDyn !== undefined ? .1 + p.faDyn : .1 + .35*init - .35*comp;
   if (C.mogul) fa += .25*(1 - p.cmp)*init - .15*p.cmp;
   fa = clamp(fa + st.fa, -.95, .95);
   const out = {};
@@ -808,6 +850,91 @@ const PH = {
     up:['Garland: re-edge and climb','Add uphill edge again: the skis bite and turn back uphill, slowing you down.'],
     trans:['',''], init:['',''], apex:['',''], comp:['','']
   },
+  javelin: {
+    trans:["Edge change: both skis down", "As soon as the new outside ski touches the snow, it takes all the weight."],
+    init:["Lift the inside ski, tip across in front of the outside ski", "Lift the inside ski and swing its tip across in front of the outside ski (like a javelin), forcing you to stand fully on the outside ski."],
+    apex:["Turning on the outside ski alone", "Inside ski crossed in front, only the outside ski holds you; any stem, A-frame or leaning on the inside ski and you lose balance at once."],
+    comp:["Finish: bring the inside ski back", "At the finish, bring the inside ski back parallel and set it down, ready to become the new outside ski."],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    fwd:['',''],
+    bwd:['',''],
+    switch:['',''],
+    rfwd:['',''],
+    lfwd:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
+  oneski: {
+    trans:["Changing sides: same foot changes edges", "The left ski stays on the snow and rolls from the big-toe (inside) edge to the little-toe (outside) edge."],
+    init:["Initiation", "The right ski stays lifted; the left foot steers the ski into the turn on its own."],
+    apex:["One-ski turn", "Right turns on the left ski’s inside edge, left turns on its outside edge; stay steady both ways."],
+    comp:["Completion", "If you can’t, you normally rely on the other ski for balance."],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    fwd:['',''],
+    bwd:['',''],
+    switch:['',''],
+    rfwd:['',''],
+    lfwd:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
+  rail: {
+    trans:["Flatten", "Skis flat, stand tall, don’t twist the feet."],
+    init:["Ankles gently roll the skis onto edge", "Use only the ankles (and a little knee) to tip the skis onto edge; no twisting, no pushing the tails."],
+    apex:["Let the sidecut draw the line", "The skis turn along their sidecut; you should leave just two thin lines in the snow."],
+    comp:["Completion", "If the lines get wide or smeared, you are still skidding."],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    fwd:['',''],
+    bwd:['',''],
+    switch:['',''],
+    rfwd:['',''],
+    lfwd:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
+  leaf: {
+    fwd:["Drift forward", "Pressure forward (shins into the tongues), tips drop slightly downhill and the skis drift diagonally forward."],
+    bwd:["Drift backward", "Pressure back (heels), tails drop downhill and the skis drift diagonally backward."],
+    switch:["Change direction", "Return to centre, add a little edge to pause, then move the pressure the other way."],
+    trans:['',''],
+    init:['',''],
+    apex:['',''],
+    comp:['',''],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    rfwd:['',''],
+    lfwd:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
+  shuffle: {
+    rfwd:["Right foot slides forward", "While gliding, slide the right foot forward and the left back in small steps, both skis on the snow."],
+    lfwd:["Left foot slides forward", "Switch: left foot forward, right back. Sitting back makes it impossible; try the “Sitting back” button."],
+    trans:['',''],
+    init:['',''],
+    apex:['',''],
+    comp:['',''],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    fwd:['',''],
+    bwd:['',''],
+    switch:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
   lift: {
     trans:['Edge change: both skis down','Both skis stay on the snow through the edge change; then hand all the weight straight to the new outside ski.'],
     init:['Lift the inside ski','Lift the inside ski (tail off the snow, tip lightly touching) to prove all your weight is really on the outside ski.'],
@@ -824,6 +951,8 @@ const PH = {
 function phaseOf(p){
   const kind = LV[cfg.level].kind;
   if (kind === 'lslip') return p.lph;
+  if (kind === 'leaf') return p.leafC > .35 ? 'fwd' : p.leafC < -.35 ? 'bwd' : 'switch';
+  if (kind === 'shuffle') return p.shuf >= 0 ? 'rfwd' : 'lfwd';
   if (kind === 'slip') return p.pulse > .62 ? 'brake' : p.pulse < .38 ? 'slide' : 'ctrl';
   if (kind === 'pivot') return Math.abs(p.psi) > 60*D ? 'slip' : 'pivot';
   if (kind === 'trav') return p.down > .35 ? 'down' : p.up > .35 ? 'up' : 'trav';
@@ -857,6 +986,31 @@ const WATCH = {
     {w:'Straight CoM line', v:'top', s:0, t:'The yellow CoM line runs almost straight down the hill while the feet swing side to side underneath.'},
     {w:'Quick load, quick release', v:'back', s:.25, t:'Edge and pressure are brief — don’t linger in the middle of the turn.'},
     {w:'Thigh rotation', v:'top', s:.11, t:'Skis turn, pelvis and upper body don’t: the adductors and glute med rotate the thighs.'}
+  ],
+  javelin: [
+    {w: "Tips crossed", v: "front", s: 0.25, t: "Inside ski lifted, its tip across in front of the outside ski; clearest from the front."},
+    {w: "All weight on the outside ski", v: "back", s: 0.25, t: "Foot map: inside 0%, outside 100%."},
+    {w: "Upper body faces downhill", v: "top", s: 0.25, t: "Crossing the inside ski forces the upper body to face downhill, giving natural separation."}
+  ],
+  oneski: [
+    {w: "Same foot", v: "back", s: 0.0, t: "The right ski stays lifted; the left ski turns both ways."},
+    {w: "Inside and outside edge", v: "back", s: 0.25, t: "Right turns on the big-toe edge, left turns on the little-toe edge; watch the edge from behind."},
+    {w: "Foot pressure", v: "side", s: 0.25, t: "Foot map: right foot 0%."}
+  ],
+  rail: [
+    {w: "Two thin lines", v: "top", s: 0.25, t: "Look at the tracks: two clean thin lines = a real carve; wide or smeared = still skidding."},
+    {w: "Ankles only", v: "front", s: 0.25, t: "Small edge angle (about 10°), body almost upright, no big lean needed."},
+    {w: "Don’t twist", v: "top", s: 0.11, t: "Upper body faces the same way as the skis, no twisting; the sidecut steers."}
+  ],
+  leaf: [
+    {w: "Zig-zag track", v: "top", s: 0.25, t: "Top-down map: back and forth, slowly descending; the same uphill edge throughout."},
+    {w: "Fore-aft pressure", v: "side", s: 0, t: "Going forward: shins into the tongues; going back: heels. Watch the red dot move on the foot map."},
+    {w: "Upper body still", v: "front", s: 0.5, t: "Move fore and aft with the ankles, not by swinging the upper body."}
+  ],
+  shuffle: [
+    {w: "Alternate feet", v: "side", s: 0.125, t: "The feet slide fore and aft alternately, about 15 cm each way."},
+    {w: "Try sitting back", v: "side", s: 0.125, t: "Tap the “Sitting back” stance: the feet barely move, which is the proof you are in the back seat."},
+    {w: "Weight mid-foot", v: "back", s: 0.375, t: "Foot map: pressure under the middle of the foot, not the heel."}
   ],
   lslip: [
     {w:'Three steps per cycle', v:'top', s:.24, t:'Release flat → steer across the hill → grip to stop, then the same to the other side. The top-down map shows a stepped zig-zag.'},
@@ -1131,7 +1285,7 @@ function applyPose(p){
       sk.strip.visible = sk.mk.visible = show.bp && d.share > .02;
       sk.strip.position.x = x;
       paintStrip(sk.strip, z => d.share*1.15*Math.exp(-(((z - c)/sig)**2)));
-      const carveF = {carve:1, lift:1, mid:.5, short:.5, mogul:.5, trav:.5, beg:.25, pivot:.15, slip:.1, lslip:.15, lslipT:.3}[cfg.level] ?? 0;
+      const carveF = {javelin:.8, oneski:.6, rail:1, leaf:.1, shuffle:.2, carve:1, lift:1, mid:.5, short:.5, mogul:.5, trav:.5, beg:.25, pivot:.15, slip:.1, lslip:.15, lslipT:.3}[cfg.level] ?? 0;
       const kap = bendMul*carveF*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1)*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
       bendGeo(sk.ski.geometry, kap, L); bendGeo(sk.edge.geometry, kap, L); bendGeo(sk.strip.geometry, kap, L);
       sk.kap = kap;
@@ -1210,6 +1364,8 @@ scrub.oninput = () => jump(scrub.value/1000);
 document.getElementById('speedMul').onchange = e => mul = +e.target.value;
 const JUMPS = {
   def: [['Edge change',0],['Initiation',.11],['Max lean',.25],['Completion',.39]],
+  leaf: [['Drift forward',0],['Change direction',.25],['Drift backward',.5]],
+  shuffle: [['Right foot forward',.125],['Left foot forward',.375]],
   lslip: [['Release',.07],['Steer',.24],['Grip',.43]],
   lslipT: [['Release',.055],['Steer',.21],['Grip',.41]],
   slip: [['Slide',.25],['Steady',0],['Stop',1/12]],
@@ -1299,7 +1455,7 @@ function renderSpec(){
     ['Ski R', cfg.R+' m', `${r.R[0]}–${r.R[1]} m`, st(cfg.R, r.R[0], r.R[1])],
     ['Slope', cfg.slope+'°', `${r.slope[0]}–${r.slope[1]}°`, st(cfg.slope, r.slope[0], r.slope[1])],
     ['Speed', cfg.v+' km/h', `${r.v[0]}–${r.v[1]} km/h`, st(cfg.v, r.v[0], r.v[1])],
-    ...(LV[cfg.level].kind === 'pivot' || LV[cfg.level].kind === 'trav' || LV[cfg.level].kind === 'slip' || LV[cfg.level].kind === 'lslip' ? [] : [['→ Turn radius', C.Rt.toFixed(1)+' m', cfg.level === 'carve' ? 'R × cos(edge)' : 'set by speed and achievable lean', ''],
+    ...(['pivot','trav','slip','lslip','leaf','shuffle'].includes(LV[cfg.level].kind) ? [] : [['→ Turn radius', C.Rt.toFixed(1)+' m', cfg.level === 'carve' ? 'R × cos(edge)' : 'set by speed and achievable lean', ''],
     ['→ Max lean', (C.phiApex/D).toFixed(0)+'°', 'tan θ = v²/(g·r)', ''],
     ['→ Max edge', (C.edgeApex/D).toFixed(0)+'°', cfg.level === 'beg' ? 'outside ski’s inside edge' : 'lean + angulation', ''],
     ['→ Outside-ski GRF', '≈ '+(1/Math.cos(C.phiApex)).toFixed(2)+'× body weight', '1 / cos θ', '']]),
@@ -1378,7 +1534,11 @@ function updateUI(p, act, md, now){
   const outer = p.nsh < .05 ? '—' : (p.sg > 0 ? 'left foot' : 'right foot');
   const skiY = (p.yawR + p.yawL)/2, pelY = p.psi*lv.pyaw, torY = p.psi*lv.tyaw;
   const sep = `Hip rotation ${Math.abs((skiY-pelY)/D).toFixed(0)}°・Trunk rotation ${Math.abs((pelY-torY)/D).toFixed(0)}°`;
-  if (lv.kind === 'lslip'){
+  if (lv.kind === 'leaf'){
+    hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>Slope ${cfg.slope}° · Uphill edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>Pressure ${p.faDyn > .2 ? 'forward (shins / tongues)' : p.faDyn < -.2 ? 'back (heels)' : 'centre'}<br>${sep}`;
+  } else if (lv.kind === 'shuffle'){
+    hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>${cfg.v} km/h · slope ${cfg.slope}°<br>Fore-aft gap ${(Math.abs(p.shuf)*200/C.k).toFixed(0)} cm${cfg.stance === 'back' ? ' · ⚠️ Sitting back: the feet can’t move' : ''}<br>${sep}`;
+  } else if (lv.kind === 'lslip'){
     const need = cfg.slope;
     hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>Slope ${cfg.slope}° · Edge ${Math.abs(p.edgeOuter/D).toFixed(0)}° (≈ ${need}° to stop)<br>Speed ${(p.vel*3.6).toFixed(0)} km/h · ski direction ${Math.abs(p.psi/D).toFixed(0)}° (0° = fall line)<br>${sep}`;
   } else if (lv.kind === 'slip'){
@@ -1419,10 +1579,10 @@ function updateUI(p, act, md, now){
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
-const GUIDE = {"slip": {"q": [["To stop, do you increase or decrease the uphill edge?", "Increase it. Push knees and ankles toward the hill; when the edge nears the slope angle you stop."], ["Which way should the upper body face?", "Downhill, not across with the skis."]], "sum": "Skis across, slide straight down, control speed with the edges: more to stop, less to slide.", "snow": "Pick a smooth 10–20° run, skis across: slide 2 m, stop, slide 2 m again. Then move on to pivot slips and hockey stops."}, "beg": {"q": [["To turn right, which foot should take more weight?", "The left foot (the one on the outside of the turn). Pressure on the outside foot is what turns the ski."], ["What happens if both feet push equally?", "You can’t turn, or turn very slowly. Standing evenly on both feet is the most common beginner mistake."]], "sum": "Whichever way you want to turn, move your weight onto the outside foot early, keep the A shape, balance mid-foot.", "snow": "On a gentle slope, make 5–8 slow turns, saying “left foot” or “right foot” out loud each time; feel the pressure mid-foot, not in the heel.", "feel": "Clear pressure under the middle of the outside foot while turning; if your thighs burn fast and the tips feel light, you are sitting back."}, "mid": {"q": [["When changing edges, do you wait until the turn is finished to move your weight, or move it early?", "Early. Start moving your weight to the new outside foot at the top of the turn, right as it begins."], ["How do you control speed with turn shape instead of braking hard?", "Finish each turn far enough across the hill; complete the whole turn and speed drops naturally."]], "sum": "Move your weight to the new outside foot at the start of every turn, keep the upper body roughly facing downhill, and control speed with turn shape rather than braking.", "snow": "On an easy-to-moderate slope, count in your head “shift weight → turn → finish”, deliberately carry each turn further across the hill, and feel the speed drop by itself.", "feel": "The new outside foot already has pressure as the turn begins; if you keep needing a wedge to slow down, your turns are not finishing across the hill or your weight moves too late."}, "carve": {"q": [["At initiation, which foot should carry the most pressure?", "The outside ski, about 80–90%."], ["Should the edge angle be greater than, equal to, or less than the body lean?", "Greater. The difference comes from knee and hip angulation."]], "sum": "Tip in early, hold with the outside ski, keep the upper body level and let the skis do the turning.", "snow": "On a gentle slope do ’railroad tracks’: no skidding, just two thin lines in the snow; feel constant pressure on the outside boot tongue."}, "mogul": {"q": [["When you hit the face of a mogul, should your legs straighten or flex?", "Flex to absorb, like suspension."], ["Should your head move up and down with the moguls?", "No. Keep the head and upper body on as smooth a line as possible."]], "sum": "Absorb when you hit the bump, extend into the trough, keep the upper body smooth.", "snow": "Start at the edge of the mogul field with single bumps — ’hit, absorb, extend’; then practise planting the pole on the top of the bump."}, "short": {"q": [["In short turns, which way should the upper body face?", "Always straight down the fall line."], ["When do you plant the pole?", "Just before each edge change, drawing the body forward into the next turn."]], "sum": "Upper body faces down the hill, legs swing underneath, pole plants set the rhythm.", "snow": "Pick a narrow run and imagine walls on both sides; count ’plant, turn, plant, turn’ in your head."}, "pivot": {"q": [["When pivoting, which part of the body should turn?", "The thighs rotate in the hip sockets; the upper body stays still."], ["Before turning, should you increase the edge angle or flatten it?", "Flatten first, then the skis turn smoothly."]], "sum": "Flatten the edges, rotate the thighs, keep the upper body still, slide straight down the fall line.", "snow": "Do it on a medium slope, lining up start and finish on one straight line (e.g. a lift tower) to check you’re not drifting sideways."}, "trav": {"q": [["In a traverse, which ski carries more weight?", "The downhill ski."], ["Should knees and hips push toward the hill or down the hill?", "Uphill; the upper body then faces downhill, creating angulation."]], "sum": "Weight on the downhill ski, knees to the hill, upper body faces down; release to drop, re-edge to climb.", "snow": "While crossing the run, try lifting the uphill ski — if you stay balanced you’re doing it right; in the garland feel the difference between ’release’ and ’bite’."}, "lift": {"q": [["With the inside ski lifted, where on the outside foot should your weight be?", "Mid-foot, slightly forward — not on the heel."], ["Which muscles lift the inside ski?", "The hamstrings bend the knee to lift it, not the waist."]], "sum": "Hand all your weight to the outside ski; you’re only really standing on it if you can stay balanced.", "snow": "On a gentle slope, start by lifting for 1 second per turn and gradually extend it to the whole turn."}, "lslip": {"q": [["Why do the skis turn down the hill by themselves on the release?", "Once flat, the edges no longer hold; gravity slides the skis downhill and the tips fall toward the fall line."], ["How much edge do you need to stop?", "About the slope angle: on a 20° slope the uphill edge needs about 20°."]], "sum": "Release flat → steer across the hill → grip with the edges to stop, over and over. Speed control comes from the edges, not hard braking.", "snow": "Start on a blue run: slide flat 2–3 m, turn to the other side, grip to stop; try steeper slopes once it is solid.", "feel": "At the grip the downhill foot and shin press into the boot and the skis stop cleanly; if you can’t stop, the edge angle is usually too small or you are sitting back."}, "lslipT": {"q": [["On a steep slope, where in the turn do you control speed?", "At the bottom, as the skis come across the hill, grip with the edges to scrub speed."], ["Do you brake at the top of the turn?", "No: release flat at the top and let the skis turn down the hill."]], "sum": "Relax at the top, grip at the bottom: scrub the extra speed at the bottom of each turn, then release into the next.", "snow": "Do it on a blue run first, counting “release, steer, grip”; move to black runs once it is steady.", "feel": "At the bottom grip, speed drops and pressure builds under the foot; at the relaxed top the skis feel light and turn by themselves."}};
+const GUIDE = {"slip": {"q": [["To stop, do you increase or decrease the uphill edge?", "Increase it. Push knees and ankles toward the hill; when the edge nears the slope angle you stop."], ["Which way should the upper body face?", "Downhill, not across with the skis."]], "sum": "Skis across, slide straight down, control speed with the edges: more to stop, less to slide.", "snow": "Pick a smooth 10–20° run, skis across: slide 2 m, stop, slide 2 m again. Then move on to pivot slips and hockey stops."}, "beg": {"q": [["To turn right, which foot should take more weight?", "The left foot (the one on the outside of the turn). Pressure on the outside foot is what turns the ski."], ["What happens if both feet push equally?", "You can’t turn, or turn very slowly. Standing evenly on both feet is the most common beginner mistake."]], "sum": "Whichever way you want to turn, move your weight onto the outside foot early, keep the A shape, balance mid-foot.", "snow": "On a gentle slope, make 5–8 slow turns, saying “left foot” or “right foot” out loud each time; feel the pressure mid-foot, not in the heel.", "feel": "Clear pressure under the middle of the outside foot while turning; if your thighs burn fast and the tips feel light, you are sitting back."}, "mid": {"q": [["When changing edges, do you wait until the turn is finished to move your weight, or move it early?", "Early. Start moving your weight to the new outside foot at the top of the turn, right as it begins."], ["How do you control speed with turn shape instead of braking hard?", "Finish each turn far enough across the hill; complete the whole turn and speed drops naturally."]], "sum": "Move your weight to the new outside foot at the start of every turn, keep the upper body roughly facing downhill, and control speed with turn shape rather than braking.", "snow": "On an easy-to-moderate slope, count in your head “shift weight → turn → finish”, deliberately carry each turn further across the hill, and feel the speed drop by itself.", "feel": "The new outside foot already has pressure as the turn begins; if you keep needing a wedge to slow down, your turns are not finishing across the hill or your weight moves too late."}, "carve": {"q": [["At initiation, which foot should carry the most pressure?", "The outside ski, about 80–90%."], ["Should the edge angle be greater than, equal to, or less than the body lean?", "Greater. The difference comes from knee and hip angulation."]], "sum": "Tip in early, hold with the outside ski, keep the upper body level and let the skis do the turning.", "snow": "On a gentle slope do ’railroad tracks’: no skidding, just two thin lines in the snow; feel constant pressure on the outside boot tongue."}, "mogul": {"q": [["When you hit the face of a mogul, should your legs straighten or flex?", "Flex to absorb, like suspension."], ["Should your head move up and down with the moguls?", "No. Keep the head and upper body on as smooth a line as possible."]], "sum": "Absorb when you hit the bump, extend into the trough, keep the upper body smooth.", "snow": "Start at the edge of the mogul field with single bumps — ’hit, absorb, extend’; then practise planting the pole on the top of the bump."}, "short": {"q": [["In short turns, which way should the upper body face?", "Always straight down the fall line."], ["When do you plant the pole?", "Just before each edge change, drawing the body forward into the next turn."]], "sum": "Upper body faces down the hill, legs swing underneath, pole plants set the rhythm.", "snow": "Pick a narrow run and imagine walls on both sides; count ’plant, turn, plant, turn’ in your head."}, "pivot": {"q": [["When pivoting, which part of the body should turn?", "The thighs rotate in the hip sockets; the upper body stays still."], ["Before turning, should you increase the edge angle or flatten it?", "Flatten first, then the skis turn smoothly."]], "sum": "Flatten the edges, rotate the thighs, keep the upper body still, slide straight down the fall line.", "snow": "Do it on a medium slope, lining up start and finish on one straight line (e.g. a lift tower) to check you’re not drifting sideways."}, "trav": {"q": [["In a traverse, which ski carries more weight?", "The downhill ski."], ["Should knees and hips push toward the hill or down the hill?", "Uphill; the upper body then faces downhill, creating angulation."]], "sum": "Weight on the downhill ski, knees to the hill, upper body faces down; release to drop, re-edge to climb.", "snow": "While crossing the run, try lifting the uphill ski — if you stay balanced you’re doing it right; in the garland feel the difference between ’release’ and ’bite’."}, "lift": {"q": [["With the inside ski lifted, where on the outside foot should your weight be?", "Mid-foot, slightly forward — not on the heel."], ["Which muscles lift the inside ski?", "The hamstrings bend the knee to lift it, not the waist."]], "sum": "Hand all your weight to the outside ski; you’re only really standing on it if you can stay balanced.", "snow": "On a gentle slope, start by lifting for 1 second per turn and gradually extend it to the whole turn."}, "lslip": {"q": [["Why do the skis turn down the hill by themselves on the release?", "Once flat, the edges no longer hold; gravity slides the skis downhill and the tips fall toward the fall line."], ["How much edge do you need to stop?", "About the slope angle: on a 20° slope the uphill edge needs about 20°."]], "sum": "Release flat → steer across the hill → grip with the edges to stop, over and over. Speed control comes from the edges, not hard braking.", "snow": "Start on a blue run: slide flat 2–3 m, turn to the other side, grip to stop; try steeper slopes once it is solid.", "feel": "At the grip the downhill foot and shin press into the boot and the skis stop cleanly; if you can’t stop, the edge angle is usually too small or you are sitting back."}, "lslipT": {"q": [["On a steep slope, where in the turn do you control speed?", "At the bottom, as the skis come across the hill, grip with the edges to scrub speed."], ["Do you brake at the top of the turn?", "No: release flat at the top and let the skis turn down the hill."]], "sum": "Relax at the top, grip at the bottom: scrub the extra speed at the bottom of each turn, then release into the next.", "snow": "Do it on a blue run first, counting “release, steer, grip”; move to black runs once it is steady.", "feel": "At the bottom grip, speed drops and pressure builds under the foot; at the relaxed top the skis feel light and turn by themselves."}, "javelin": {"q": [["Why swing the inside ski’s tip across in front of the outside ski?", "It forces all your weight onto the outside ski and turns the upper body downhill; any stem or leaning on the inside ski and you lose balance."], ["If you can’t stay steady, which drill do you go back to?", "The inside-ski lift (stork); if that’s still hard, back to single-leg standing."]], "sum": "Lift the inside ski with its tip across in front of the outside ski and ride the whole turn on the outside ski; the quickest way to expose stemming, A-frame and leaning on the inside ski.", "snow": "Do it slowly on an easy blue run, 3–4 turns each way; add speed once it is steady.", "feel": "You stand completely on the outside ski with solid pressure mid-foot; the upper body naturally faces downhill."}, "oneski": {"q": [["How does one ski turn both ways?", "Right turns on the big-toe (inside) edge, left turns on the little-toe (outside) edge; the same foot changes edges."], ["What does it mean if you can’t?", "You normally use the other ski for balance; your outside ski isn’t really carrying the load."]], "sum": "A whole run on one ski, turning on both its inside and outside edge: the ultimate test of one-leg balance and outside-ski loading.", "snow": "On a very gentle slope, first glide straight on one ski, then add small turns; practise both legs.", "feel": "Stay steady in both directions; the little-toe-edge turn is the hardest, which is normal."}, "rail": {"q": [["How do you know if you are carving or skidding?", "Look at the snow: two thin lines = carving; wide or smeared = skidding."], ["Why do it on a very gentle slope?", "At low speed, tipping with the ankles is enough; no big lean needed, nothing scary."]], "sum": "Tip the skis onto edge with the ankles, no twisting or tail pushing, and let the sidecut draw two thin lines: the bridge from skidding to carving.", "snow": "On the gentlest green or blue run, glide straight, tip gently left and right, then look back at your tracks.", "feel": "The skis turn by themselves and the body just follows; underfoot it feels like running on rails."}, "leaf": {"q": [["To drift forward, where does the pressure go?", "Forward (shins into the tongues); the tips drop downhill."], ["Do you change edges at any point?", "No, the same uphill edge throughout."]], "sum": "While side-slipping, pressure forward to drift forward and back to drift back; learning to move fore and aft is the foundation for fixing the back seat.", "snow": "Side-slip on a blue run: 3 m forward, stop, 3 m back; move with the ankles, don’t swing the upper body.", "feel": "Pressing forward, the shins stay on the tongues; pressing back, the heels feel heavy. Controlling both is real fore-aft balance."}, "shuffle": {"q": [["What does it mean if you can’t shuffle?", "Your weight is on your heels (back seat), pinning the feet so they can’t move."], ["How do you make it work?", "Flex the ankles, shins on the tongues, weight back to mid-foot."]], "sum": "While gliding, slide the feet fore and aft in small alternating steps; if you can’t, you are sitting back.", "snow": "On a gentle slope, gliding straight or in a turn, feet about 15 cm fore and aft, both skis on the snow.", "feel": "The feet slide easily; if they feel heavy and stuck, your weight is on your heels."}};
 const STANCE_SHORT = {"late": "Late weight transfer: skids at the top of the turn, braking to control speed.", "look": "Looking at your feet: upper body folds, hips back, late turns.", "back": "Back seat: no pressure on the tips, thighs tire quickly.", "fwd": "Too far forward: tails skid and you can’t release at the exit.", "even": "Even weight: the outside ski doesn’t grip, easily turning into an A-frame."};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
-const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {beg:'even', mid:'late', slip:'look', trav:'look', lslip:'look', lslipT:'late'};
+const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {beg:'even', mid:'late', slip:'look', trav:'look', lslip:'look', lslipT:'late', shuffle:'back', leaf:'back', javelin:'even', oneski:'back', rail:'back'};
 let cmpOn = false, lastCyc = null;
 const toastDone = {};
 function renderGuide(){
@@ -1487,7 +1647,7 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
-const FEEL1 = {"lslip": "Flat to slide, steer across the hill, edges bite to stop.", "lslipT": "Relax at the top; use the edges to scrub speed only at the bottom.", "beg": "To turn right, stand firmly on your left foot (the one on the outside of the turn).", "slip": "Knees toward the hill to stop, relax a little to slide.", "mid": "Move your weight to the new outside foot at the start of every turn.", "carve": "Load the outside ski and let it carry you round; don’t twist.", "mogul": "Knees are your suspension: pull your feet up over the bump, extend down the back.", "short": "Upper body keeps facing downhill; only the legs turn side to side.", "pivot": "Both skis pivot across together, steered by ankles and thighs, not the upper body.", "trav": "Stand tall, weight on the downhill foot, skis parallel across the slope.", "lift": "Put all your weight on the outside foot; you stay steady even with the inside ski lifted."};
+const FEEL1 = {"javelin": "Stand fully on the outside ski, inside tip across in front.", "oneski": "One ski, both ways: one turn on the inside edge, one on the outside edge.", "rail": "Tip with the ankles only and let the skis draw two thin lines.", "leaf": "Pressure forward to drift forward, back to drift back; ankles, not upper body.", "shuffle": "Only if the feet slide fore and aft freely are you out of the back seat.", "lslip": "Flat to slide, steer across the hill, edges bite to stop.", "lslipT": "Relax at the top; use the edges to scrub speed only at the bottom.", "beg": "To turn right, stand firmly on your left foot (the one on the outside of the turn).", "slip": "Knees toward the hill to stop, relax a little to slide.", "mid": "Move your weight to the new outside foot at the start of every turn.", "carve": "Load the outside ski and let it carry you round; don’t twist.", "mogul": "Knees are your suspension: pull your feet up over the bump, extend down the back.", "short": "Upper body keeps facing downhill; only the legs turn side to side.", "pivot": "Both skis pivot across together, steered by ankles and thighs, not the upper body.", "trav": "Stand tall, weight on the downhill foot, skis parallel across the slope.", "lift": "Put all your weight on the outside foot; you stay steady even with the inside ski lifted."};
 let pathDone = {}; try { pathDone = JSON.parse(localStorage.getItem('pathDone') || '{}'); } catch(e){}
 function renderPath(curK){
   document.querySelectorAll('#path li').forEach(li => { li.classList.toggle('done', !!pathDone[li.dataset.k]); li.classList.toggle('cur', li.dataset.k === curK); });

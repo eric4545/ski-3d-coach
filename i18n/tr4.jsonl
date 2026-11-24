@@ -226,3 +226,111 @@
 {"src": "彎底 grip 嗰下速度跌、腳底壓力大；彎頂放鬆嗰下雙板好輕、自己轉。", "en": "At the bottom grip, speed drops and pressure builds under the foot; at the relaxed top the skis feel light and turn by themselves.", "tw": "彎底立刃時速度下降、腳底壓力大；彎頂放鬆時雙板很輕、自己轉。"}
 {"src": "放平就滑、轉向橫過山坡、edge 咬住就停。", "en": "Flat to slide, steer across the hill, edges bite to stop.", "tw": "放平就滑、轉向橫過山坡、立刃咬住就停。"}
 {"src": "彎頂放鬆，彎底先用 edge 咬住磨走速度。", "en": "Relax at the top; use the edges to scrub speed only at the bottom.", "tw": "彎頂放鬆，彎底才用立刃磨掉速度。"}
+{"src": "單板滑 One-ski", "en": "One-ski skiing", "tw": "單板滑 One-ski"}
+{"src": "Shuffle 前後滑步", "en": "Shuffle", "tw": "Shuffle 前後滑步"}
+{"src": "⚠️ ${cfg.v} km/h 對 Railroad tracks 太快：要傾斜多過 ${(lv.cap/D).toFixed(0)}° 先撐得住，就唔再係淨用腳踝。喺緩坡慢慢做。", "en": "⚠️ ${cfg.v} km/h is too fast for railroad tracks: you would need more than ${(lv.cap/D).toFixed(0)}° of lean, so it is no longer ankles only. Do it slowly on a gentle slope.", "tw": "⚠️ ${cfg.v} km/h 對 Railroad tracks 太快：要傾斜超過 ${(lv.cap/D).toFixed(0)}° 才撐得住，就不再只是用腳踝。在緩坡慢慢做。"}
+{"src": "新外腳一接觸雪就即刻承晒重量。", "en": "As soon as the new outside ski touches the snow, it takes all the weight.", "tw": "新外腳一接觸雪就馬上承受全部重量。"}
+{"src": "提起內腳、板頭橫過外腳前面", "en": "Lift the inside ski, tip across in front of the outside ski", "tw": "抬起內腳、板頭橫過外腳前面"}
+{"src": "內腳提起，板頭向外腳前面打橫（好似擲標槍咁），迫你完全企喺外腳上面。", "en": "Lift the inside ski and swing its tip across in front of the outside ski (like a javelin), forcing you to stand fully on the outside ski.", "tw": "內腳抬起，板頭往外腳前面打橫（像擲標槍），迫你完全站在外腳上。"}
+{"src": "單靠外腳轉", "en": "Turning on the outside ski alone", "tw": "只靠外腳轉"}
+{"src": "內腳交叉喺前面，只得外腳撐住；有 stem、A-frame 或者靠內腳就即刻企唔穩。", "en": "Inside ski crossed in front, only the outside ski holds you; any stem, A-frame or leaning on the inside ski and you lose balance at once.", "tw": "內腳交叉在前面，只有外腳撐住；有 stem、A 字腿或靠內腳就馬上站不穩。"}
+{"src": "出彎：收返內腳", "en": "Finish: bring the inside ski back", "tw": "出彎：收回內腳"}
+{"src": "出彎時將內腳收返平行放低，準備變新外腳。", "en": "At the finish, bring the inside ski back parallel and set it down, ready to become the new outside ski.", "tw": "出彎時把內腳收回平行放下，準備成為新外腳。"}
+{"src": "換邊：同一隻腳換刃", "en": "Changing sides: same foot changes edges", "tw": "換邊：同一隻腳換刃"}
+{"src": "左腳一直喺雪上，由大趾邊（內刃）換去尾趾邊（外刃）。", "en": "The left ski stays on the snow and rolls from the big-toe (inside) edge to the little-toe (outside) edge.", "tw": "左腳一直在雪上，由大拇趾側（內刃）換到小趾側（外刃）。"}
+{"src": "右腳一直提起；左腳自己帶住塊板入彎。", "en": "The right ski stays lifted; the left foot steers the ski into the turn on its own.", "tw": "右腳一直抬起；左腳自己帶著雪板入彎。"}
+{"src": "右彎用左板內刃、左彎用左板外刃；兩邊都要企得穩。", "en": "Right turns on the left ski’s inside edge, left turns on its outside edge; stay steady both ways.", "tw": "右彎用左板內刃、左彎用左板外刃；兩邊都要站得穩。"}
+{"src": "做唔到就代表平時靠緊另一隻腳借力平衡。", "en": "If you can’t, you normally rely on the other ski for balance.", "tw": "做不到就代表平時靠另一隻腳借力平衡。"}
+{"src": "放平", "en": "Flatten", "tw": "放平"}
+{"src": "雙板放平，身體企高，唔好轉腳。", "en": "Skis flat, stand tall, don’t twist the feet.", "tw": "雙板放平，身體站高，不要轉腳。"}
+{"src": "腳踝輕輕推上 edge", "en": "Ankles gently roll the skis onto edge", "tw": "腳踝輕輕推上立刃"}
+{"src": "只用腳踝（同少少膝頭）將雙板 tip 上 edge，唔扭、唔推板尾。", "en": "Use only the ankles (and a little knee) to tip the skis onto edge; no twisting, no pushing the tails.", "tw": "只用腳踝（和一點膝蓋）把雙板推上立刃，不扭、不推板尾。"}
+{"src": "等 sidecut 畫線", "en": "Let the sidecut draw the line", "tw": "讓側切畫線"}
+{"src": "板自己沿 sidecut 轉；雪面應該得兩條幼線。", "en": "The skis turn along their sidecut; you should leave just two thin lines in the snow.", "tw": "雪板自己沿側切轉；雪面應該只有兩條細線。"}
+{"src": "線變闊或者拖尾，就代表你仲係 skid 緊。", "en": "If the lines get wide or smeared, you are still skidding.", "tw": "線變寬或拖尾，就代表你還在打滑。"}
+{"src": "向前斜落", "en": "Drift forward", "tw": "向前斜滑"}
+{"src": "壓前（小腿頂鞋舌），板頭微微跌向山下，雙板向前斜住滑。", "en": "Pressure forward (shins into the tongues), tips drop slightly downhill and the skis drift diagonally forward.", "tw": "壓前（小腿頂鞋舌），板頭微微往山下，雙板向前斜滑。"}
+{"src": "向後斜落", "en": "Drift backward", "tw": "向後斜滑"}
+{"src": "壓後（腳踭），板尾跌向山下，雙板向後斜住滑。", "en": "Pressure back (heels), tails drop downhill and the skis drift diagonally backward.", "tw": "壓後（腳跟），板尾往山下，雙板向後斜滑。"}
+{"src": "換方向", "en": "Change direction", "tw": "換方向"}
+{"src": "返中間、edge 加大少少停一停，再將壓力移去另一邊。", "en": "Return to centre, add a little edge to pause, then move the pressure the other way.", "tw": "回到中間、立刃稍微加大停一下，再把壓力移到另一邊。"}
+{"src": "右腳向前滑", "en": "Right foot slides forward", "tw": "右腳向前滑"}
+{"src": "滑行中右腳向前、左腳向後細步滑動，兩塊板都貼雪。", "en": "While gliding, slide the right foot forward and the left back in small steps, both skis on the snow.", "tw": "滑行中右腳向前、左腳向後小步滑動，兩支板都貼著雪。"}
+{"src": "左腳向前滑", "en": "Left foot slides forward", "tw": "左腳向前滑"}
+{"src": "換邊：左腳向前、右腳向後。坐後就郁唔到，試吓㩒「坐後」。", "en": "Switch: left foot forward, right back. Sitting back makes it impossible; try the “Sitting back” button.", "tw": "換邊：左腳向前、右腳向後。坐後就動不了，試試按「坐後」。"}
+{"src": "板頭交叉", "en": "Tips crossed", "tw": "板頭交叉"}
+{"src": "內腳提起，板頭打橫喺外腳前面；睇正面最清楚。", "en": "Inside ski lifted, its tip across in front of the outside ski; clearest from the front.", "tw": "內腳抬起，板頭橫在外腳前面；從正面看最清楚。"}
+{"src": "全身喺外腳", "en": "All weight on the outside ski", "tw": "全身在外腳"}
+{"src": "腳掌圖：內腳 0%，外腳 100%。", "en": "Foot map: inside 0%, outside 100%.", "tw": "腳掌圖：內腳 0%，外腳 100%。"}
+{"src": "內腳交叉會迫上身面向山下，自然做到分離。", "en": "Crossing the inside ski forces the upper body to face downhill, giving natural separation.", "tw": "內腳交叉會迫上半身面向山下，自然做到分離。"}
+{"src": "同一隻腳", "en": "Same foot", "tw": "同一隻腳"}
+{"src": "右腳一直提起，左腳兩邊都要轉。", "en": "The right ski stays lifted; the left ski turns both ways.", "tw": "右腳一直抬起，左腳兩邊都要轉。"}
+{"src": "內刃同外刃", "en": "Inside and outside edge", "tw": "內刃和外刃"}
+{"src": "右彎用大趾邊、左彎用尾趾邊；睇後面 edge 方向。", "en": "Right turns on the big-toe edge, left turns on the little-toe edge; watch the edge from behind.", "tw": "右彎用大拇趾側、左彎用小趾側；從後面看立刃方向。"}
+{"src": "腳掌壓力", "en": "Foot pressure", "tw": "腳掌壓力"}
+{"src": "腳掌圖：右腳 0%。", "en": "Foot map: right foot 0%.", "tw": "腳掌圖：右腳 0%。"}
+{"src": "兩條幼線", "en": "Two thin lines", "tw": "兩條細線"}
+{"src": "睇雪面軌跡：兩條乾淨幼線＝真 carve；變闊或拖尾＝仲係 skid。", "en": "Look at the tracks: two clean thin lines = a real carve; wide or smeared = still skidding.", "tw": "看雪面軌跡：兩條乾淨細線＝真刻滑；變寬或拖尾＝還在打滑。"}
+{"src": "淨係腳踝", "en": "Ankles only", "tw": "只用腳踝"}
+{"src": "Edge 角度細（約 10°），身體幾乎企直，唔使大傾斜。", "en": "Small edge angle (about 10°), body almost upright, no big lean needed.", "tw": "立刃角度小（約 10°），身體幾乎站直，不需要大傾斜。"}
+{"src": "唔好轉腳", "en": "Don’t twist", "tw": "不要轉腳"}
+{"src": "上身同板一齊向前，冇扭轉；由 sidecut 帶。", "en": "Upper body faces the same way as the skis, no twisting; the sidecut steers.", "tw": "上半身和雪板一起向前，沒有扭轉；由側切帶動。"}
+{"src": "鳥瞰圖：左右來回、慢慢向下；全程同一條 uphill edge。", "en": "Top-down map: back and forth, slowly descending; the same uphill edge throughout.", "tw": "俯視圖：左右來回、慢慢往下；全程同一個上坡刃。"}
+{"src": "前後壓力", "en": "Fore-aft pressure", "tw": "前後壓力"}
+{"src": "向前去：小腿頂鞋舌；向後去：腳踭。睇腳掌圖紅點前後移。", "en": "Going forward: shins into the tongues; going back: heels. Watch the red dot move on the foot map.", "tw": "往前：小腿頂鞋舌；往後：腳跟。看腳掌圖紅點前後移動。"}
+{"src": "前後移重心靠腳踝，唔係上身前後擺。", "en": "Move fore and aft with the ankles, not by swinging the upper body.", "tw": "前後移重心靠腳踝，不是上半身前後擺。"}
+{"src": "雙腳交替", "en": "Alternate feet", "tw": "雙腳交替"}
+{"src": "兩隻腳前後交替滑，大約各 15 cm。", "en": "The feet slide fore and aft alternately, about 15 cm each way.", "tw": "兩腳前後交替滑，大約各 15 cm。"}
+{"src": "坐後試吓", "en": "Try sitting back", "tw": "試試坐後"}
+{"src": "㩒站位「坐後」：雙腳幾乎郁唔到，就係坐後嘅證明。", "en": "Tap the “Sitting back” stance: the feet barely move, which is the proof you are in the back seat.", "tw": "按站姿「坐後」：雙腳幾乎動不了，就是坐後的證明。"}
+{"src": "重量中足", "en": "Weight mid-foot", "tw": "重量在中足"}
+{"src": "腳掌圖：壓力喺腳掌中間，唔係腳踭。", "en": "Foot map: pressure under the middle of the foot, not the heel.", "tw": "腳掌圖：壓力在腳掌中間，不是腳跟。"}
+{"src": "右腳向前", "en": "Right foot forward", "tw": "右腳向前"}
+{"src": "左腳向前", "en": "Left foot forward", "tw": "左腳向前"}
+{"src": "壓力 ${p.faDyn", "en": "Pressure ${p.faDyn", "tw": "壓力 ${p.faDyn"}
+{"src": "前（小腿／鞋舌）", "en": "forward (shins / tongues)", "tw": "前（小腿／鞋舌）"}
+{"src": "後（腳踭）", "en": "back (heels)", "tw": "後（腳跟）"}
+{"src": "中間", "en": "centre", "tw": "中間"}
+{"src": "km/h・坡度 ${cfg.slope}°", "en": "km/h · slope ${cfg.slope}°", "tw": "km/h・坡度 ${cfg.slope}°"}
+{"src": "前後差 ${(Math.abs(p.shuf)*200/C.k).toFixed(0)} cm${cfg.stance ===", "en": "Fore-aft gap ${(Math.abs(p.shuf)*200/C.k).toFixed(0)} cm${cfg.stance ===", "tw": "前後差 ${(Math.abs(p.shuf)*200/C.k).toFixed(0)} cm${cfg.stance ==="}
+{"src": "・⚠️ 坐後：雙腳郁唔到", "en": " · ⚠️ Sitting back: the feet can’t move", "tw": "・⚠️ 坐後：雙腳動不了"}
+{"src": "Javelin 點解要將內板板頭打橫喺外板前面？", "en": "Why swing the inside ski’s tip across in front of the outside ski?", "tw": "Javelin 為什麼要把內板板頭橫在外板前面？"}
+{"src": "迫全身重量去外腳，同時迫上身面向山下；有 stem 或者靠內腳嘅話即刻企唔穩。", "en": "It forces all your weight onto the outside ski and turns the upper body downhill; any stem or leaning on the inside ski and you lose balance.", "tw": "迫全身重量到外腳，同時迫上半身面向山下；有 stem 或靠內腳的話馬上站不穩。"}
+{"src": "做唔到穩定應該返去邊個練習？", "en": "If you can’t stay steady, which drill do you go back to?", "tw": "做不穩應該回到哪個練習？"}
+{"src": "提內腳 drill（stork），再唔得就返去單腳站。", "en": "The inside-ski lift (stork); if that’s still hard, back to single-leg standing.", "tw": "抬內腳練習（stork），還不行就回到單腳站。"}
+{"src": "內腳提起、板頭打橫喺外腳前面，成個彎只靠外腳；最快照出 stem、A-frame 同靠內腳。", "en": "Lift the inside ski with its tip across in front of the outside ski and ride the whole turn on the outside ski; the quickest way to expose stemming, A-frame and leaning on the inside ski.", "tw": "內腳抬起、板頭橫在外腳前面，整個彎只靠外腳；最快照出 stem、A 字腿和靠內腳。"}
+{"src": "喺緩藍線慢慢做，每邊 3–4 個彎；穩定咗先加速度。", "en": "Do it slowly on an easy blue run, 3–4 turns each way; add speed once it is steady.", "tw": "在緩的中級道慢慢做，每邊 3–4 個彎；穩定了再加速度。"}
+{"src": "成個人企喺外腳上面，外腳腳掌中間壓力好實；上身自然面向山下。", "en": "You stand completely on the outside ski with solid pressure mid-foot; the upper body naturally faces downhill.", "tw": "整個人站在外腳上，外腳腳掌中間壓力很實；上半身自然面向山下。"}
+{"src": "一隻板點樣轉兩邊？", "en": "How does one ski turn both ways?", "tw": "一支板怎麼轉兩邊？"}
+{"src": "右彎用大趾邊（內刃），左彎用尾趾邊（外刃）；同一隻腳換刃。", "en": "Right turns on the big-toe (inside) edge, left turns on the little-toe (outside) edge; the same foot changes edges.", "tw": "右彎用大拇趾側（內刃），左彎用小趾側（外刃）；同一隻腳換刃。"}
+{"src": "做唔到代表咩？", "en": "What does it mean if you can’t?", "tw": "做不到代表什麼？"}
+{"src": "平時轉彎係靠另一隻腳借力平衡，外腳未真正承重。", "en": "You normally use the other ski for balance; your outside ski isn’t really carrying the load.", "tw": "平時轉彎靠另一隻腳借力平衡，外腳沒有真正承重。"}
+{"src": "成個 run 只用一隻板，內刃外刃都要轉到；係單腳平衡同外腳承重嘅終極測試。", "en": "A whole run on one ski, turning on both its inside and outside edge: the ultimate test of one-leg balance and outside-ski loading.", "tw": "整段只用一支板，內刃外刃都要轉到；是單腳平衡和外腳承重的終極測試。"}
+{"src": "喺好緩嘅坡，先直滑單腳，再加細彎；兩隻腳都要練。", "en": "On a very gentle slope, first glide straight on one ski, then add small turns; practise both legs.", "tw": "在很緩的坡，先單腳直滑，再加小彎；兩隻腳都要練。"}
+{"src": "兩邊轉彎都要企得穩；尾趾邊嗰個彎最難，係正常。", "en": "Stay steady in both directions; the little-toe-edge turn is the hardest, which is normal.", "tw": "兩邊轉彎都要站得穩；小趾側那個彎最難，是正常的。"}
+{"src": "點知自己係 carve 定 skid？", "en": "How do you know if you are carving or skidding?", "tw": "怎麼知道自己是刻滑還是打滑？"}
+{"src": "睇雪面：兩條幼線＝carve；變闊或者拖尾＝skid。", "en": "Look at the snow: two thin lines = carving; wide or smeared = skidding.", "tw": "看雪面：兩條細線＝刻滑；變寬或拖尾＝打滑。"}
+{"src": "點解要喺好緩嘅坡做？", "en": "Why do it on a very gentle slope?", "tw": "為什麼要在很緩的坡做？"}
+{"src": "速度慢，淨係用腳踝推 edge 就夠；唔使大傾斜，唔會驚。", "en": "At low speed, tipping with the ankles is enough; no big lean needed, nothing scary.", "tw": "速度慢，只用腳踝推立刃就夠；不需要大傾斜，不會怕。"}
+{"src": "用腳踝將雙板 tip 上 edge，唔轉腳、唔推尾，等 sidecut 自己畫出兩條幼線；係 skid 去 carve 嘅橋。", "en": "Tip the skis onto edge with the ankles, no twisting or tail pushing, and let the sidecut draw two thin lines: the bridge from skidding to carving.", "tw": "用腳踝把雙板推上立刃，不轉腳、不推板尾，讓側切自己畫出兩條細線；是打滑到刻滑的橋。"}
+{"src": "喺最緩嘅綠／藍線，直滑之後輕輕 tip 左右，回頭睇條線。", "en": "On the gentlest green or blue run, glide straight, tip gently left and right, then look back at your tracks.", "tw": "在最緩的初級或中級道，直滑之後輕輕左右推刃，回頭看軌跡。"}
+{"src": "板自己轉，身體只係跟住；腳底感覺到板好似喺路軌上面行。", "en": "The skis turn by themselves and the body just follows; underfoot it feels like running on rails.", "tw": "雪板自己轉，身體只是跟著；腳底感覺雪板像在軌道上走。"}
+{"src": "想向前斜落，壓力放邊？", "en": "To drift forward, where does the pressure go?", "tw": "想向前斜滑，壓力放哪裡？"}
+{"src": "前（小腿頂鞋舌），板頭會跌向山下。", "en": "Forward (shins into the tongues); the tips drop downhill.", "tw": "前（小腿頂鞋舌），板頭會往山下。"}
+{"src": "全程要唔要換刃？", "en": "Do you change edges at any point?", "tw": "全程要不要換刃？"}
+{"src": "唔使，全程同一條 uphill edge。", "en": "No, the same uphill edge throughout.", "tw": "不用，全程同一個上坡刃。"}
+{"src": "橫滑時壓前就向前斜落、壓後就向後斜落；學識前後壓力點郁，係改坐後嘅基本功。", "en": "While side-slipping, pressure forward to drift forward and back to drift back; learning to move fore and aft is the foundation for fixing the back seat.", "tw": "側滑時壓前就向前斜滑、壓後就向後斜滑；學會前後壓力怎麼動，是改坐後的基本功。"}
+{"src": "喺藍線橫滑，向前 3 米、停、向後 3 米；用腳踝郁，唔好用上身擺。", "en": "Side-slip on a blue run: 3 m forward, stop, 3 m back; move with the ankles, don’t swing the upper body.", "tw": "在中級道側滑，向前 3 公尺、停、向後 3 公尺；用腳踝動，不要用上半身擺。"}
+{"src": "壓前時小腿貼實鞋舌；壓後時腳踭重。兩邊都控制到，先算識前後平衡。", "en": "Pressing forward, the shins stay on the tongues; pressing back, the heels feel heavy. Controlling both is real fore-aft balance.", "tw": "壓前時小腿貼實鞋舌；壓後時腳跟重。兩邊都控制得到，才算懂前後平衡。"}
+{"src": "Shuffle 郁唔到代表咩？", "en": "What does it mean if you can’t shuffle?", "tw": "Shuffle 動不了代表什麼？"}
+{"src": "重量喺腳踭（坐後），雙腳被壓住郁唔到。", "en": "Your weight is on your heels (back seat), pinning the feet so they can’t move.", "tw": "重量在腳跟（坐後），雙腳被壓住動不了。"}
+{"src": "點樣先郁得到？", "en": "How do you make it work?", "tw": "怎樣才動得了？"}
+{"src": "腳踝屈、小腿貼鞋舌，重量返中足。", "en": "Flex the ankles, shins on the tongues, weight back to mid-foot.", "tw": "腳踝彎、小腿貼鞋舌，重量回到中足。"}
+{"src": "滑行中雙腳前後交替細步滑動；郁唔到就係坐後。", "en": "While gliding, slide the feet fore and aft in small alternating steps; if you can’t, you are sitting back.", "tw": "滑行中雙腳前後交替小步滑動；動不了就是坐後。"}
+{"src": "喺緩坡直滑或者轉彎中做，雙腳前後各約 15 cm，兩塊板都貼雪。", "en": "On a gentle slope, gliding straight or in a turn, feet about 15 cm fore and aft, both skis on the snow.", "tw": "在緩坡直滑或轉彎中做，雙腳前後各約 15 cm，兩支板都貼著雪。"}
+{"src": "雙腳輕鬆咁前後滑；如果好重、郁唔到，即係重量喺腳踭。", "en": "The feet slide easily; if they feel heavy and stuck, your weight is on your heels.", "tw": "雙腳輕鬆地前後滑；如果很重、動不了，就是重量在腳跟。"}
+{"src": "全身企喺外腳，內板板頭打橫喺前面。", "en": "Stand fully on the outside ski, inside tip across in front.", "tw": "全身站在外腳，內板板頭橫在前面。"}
+{"src": "一隻腳轉兩邊：內刃一個彎、外刃一個彎。", "en": "One ski, both ways: one turn on the inside edge, one on the outside edge.", "tw": "一隻腳轉兩邊：內刃一個彎、外刃一個彎。"}
+{"src": "淨係用腳踝推 edge，等板自己畫兩條幼線。", "en": "Tip with the ankles only and let the skis draw two thin lines.", "tw": "只用腳踝推立刃，讓雪板自己畫兩條細線。"}
+{"src": "壓前向前斜、壓後向後斜，用腳踝唔用上身。", "en": "Pressure forward to drift forward, back to drift back; ankles, not upper body.", "tw": "壓前向前斜、壓後向後斜，用腳踝不用上半身。"}
+{"src": "雙腳前後滑得郁，先代表冇坐後。", "en": "Only if the feet slide fore and aft freely are you out of the back seat.", "tw": "雙腳前後滑得動，才代表沒有坐後。"}

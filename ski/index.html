@@ -139,6 +139,11 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-l="pivot">Pivot slip</button>
     <button data-l="trav">斜滑降＋Garland</button>
     <button data-l="lift">提內腳 drill</button>
+    <button data-l="javelin">Javelin turn</button>
+    <button data-l="oneski">單板滑 One-ski</button>
+    <button data-l="rail">Railroad tracks</button>
+    <button data-l="leaf">落葉飄 Falling leaf</button>
+    <button data-l="shuffle">Shuffle 前後滑步</button>
   </div>
 
   <div class="row">
@@ -298,6 +303,11 @@ const LV = {
   pivot:{name:'Pivot slip', kind:'pivot', v:10, slope:15, skiOff:-12, R:13, cap:20*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.6, tr:.3, tp:0.44, tyaw:.15, pyaw:.6, knee:.3, minDrive:.45, plant:0, lead:0},
   trav: {name:'斜滑降＋Garland', kind:'trav', v:15, slope:15, skiOff:-12, R:13, cap:35*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:0.46, tyaw:.45, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.12},
   lift: {name:'提內腳 drill', kind:'turn', v:25, slope:15, skiOff:-10, R:14, cap:50*D, ang:1.15, skid:0, wedge:0, Rbase:10, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:.3, plant:0, lead:.1, lift:true},
+  javelin:{name:'Javelin turn', kind:'turn', v:20, slope:14, skiOff:-10, R:14, cap:42*D, ang:1.15, skid:0, wedge:0, Rbase:11, psiB:0, h0:.84, stance:.14, pr:.8, tr:.55, tp:0.46, tyaw:.15, pyaw:.65, knee:1, minDrive:.3, plant:0, lead:.1, lift:true, javelin:true},
+  oneski: {name:'單板滑 One-ski', kind:'turn', v:16, slope:12, skiOff:-10, R:14, cap:34*D, ang:1.15, skid:0, wedge:0, Rbase:12, psiB:0, h0:.84, stance:.14, pr:.8, tr:.55, tp:0.46, tyaw:.3, pyaw:.75, knee:.9, minDrive:.3, plant:0, lead:.06, lift:true, oneski:true},
+  rail:   {name:'Railroad tracks', kind:'turn', v:13, slope:8, skiOff:-8, R:14, cap:14*D, ang:2.2, skid:0, wedge:0, Rbase:0, psiB:0, psiFix:24*D, h0:.87, stance:.15, pr:.8, tr:.25, tp:0.42, tyaw:.85, pyaw:.9, knee:.25, minDrive:.3, plant:0, lead:.03, rail:true},
+  leaf:   {name:'落葉飄 Falling leaf', kind:'leaf', v:8, slope:15, skiOff:-12, R:13, cap:25*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:.44, tyaw:.4, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.05},
+  shuffle:{name:'Shuffle 前後滑步', kind:'shuffle', v:12, slope:8, skiOff:-10, R:13, cap:10*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.83, stance:.15, pr:.75, tr:.2, tp:.46, tyaw:.8, pyaw:.9, knee:.6, minDrive:.45, plant:0, lead:0},
   carve:{name:'進階・Carving', v:30, slope:18, skiOff:-6, R:15, cap:65*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1}
 };
 const REC = {
@@ -307,6 +317,11 @@ const REC = {
   short:{ski:[-15,-5],  R:[10,14], slope:[15,25], v:[15,30]},
   slip: {ski:[-15,-5],  R:[10,18], slope:[10,20], v:[0,99]},
   lslip: {ski:[-15,-5], R:[10,18], slope:[12,22], v:[0,99]},
+  javelin:{ski:[-15,-5], R:[10,18], slope:[8,18], v:[12,25]},
+  oneski: {ski:[-15,-5], R:[10,18], slope:[6,15], v:[10,22]},
+  rail:   {ski:[-15,-5], R:[10,18], slope:[5,10], v:[8,18]},
+  leaf:   {ski:[-15,-5], R:[10,18], slope:[10,20], v:[0,99]},
+  shuffle:{ski:[-15,-5], R:[10,18], slope:[5,12], v:[8,18]},
   lslipT:{ski:[-15,-5], R:[10,18], slope:[15,30], v:[0,99]},
   pivot:{ski:[-15,-5],  R:[10,18], slope:[12,20], v:[0,99]},
   trav: {ski:[-15,-5],  R:[10,18], slope:[12,22], v:[8,25]},
@@ -324,16 +339,18 @@ const STANCE = {
   late: {fx:{skid:7, ph:'init', edge:.85, r:1.2, bend:.7}, name:'重量轉得太遲', lag:.12, fa:-.1, dz:-.03, dh:0, kk:1, add:{quad:.1}, txt:'等轉完彎先轉重量：彎頂冇外腳壓力，雙板打滑或者要用犁式煞先轉到；彎形變長變直，速度控制唔到，成日要靠煞。喺彎一開始就將重量移去新嘅外腳。'},
   even: {fx:{skid:5, ph:'all', edge:.8, inner:.3, r:1.15, bend:.7}, name:'雙腳平均', fa:0, dz:0, dh:0, kk:.25, add:{}, txt:'內腳搶咗外腳嘅壓力，外腳 edge 咬唔實、容易滑；內腳容易入錯邊刃，變成 A-frame 或者兩隻板分開（剪刀腳）。'}
 };
-const SHARE = {slip:.5, lslip:.6, lslipT:.7, beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
+const SHARE = {javelin:1, oneski:1, rail:.6, leaf:.5, shuffle:.2, slip:.5, lslip:.6, lslipT:.7, beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
 
 function build(){
   Cok = null;
   const lv = LV[cfg.level], v = cfg.v/3.6;
   let Rt, phiApex, warn = '';
-  if (lv.kind === 'pivot' || lv.kind === 'trav' || lv.kind === 'slip' || lv.kind === 'lslip'){
+  if (lv.kind === 'pivot' || lv.kind === 'trav' || lv.kind === 'slip' || lv.kind === 'lslip' || lv.kind === 'leaf' || lv.kind === 'shuffle'){
     C = {v: Math.max(v, 1), Rt: 0, phiApex: lv.cap, k: cfg.H/175, inten: .3, warn: '', mogul: false, P: 1, Sx: 1, Rb: 1, edgeApex: lv.cap*lv.ang};
     if (lv.kind === 'pivot'){ C.L = 1.6; C.period = 7; }
     else if (lv.kind === 'slip'){ C.L = 3.3; C.period = 9; }
+    else if (lv.kind === 'leaf'){ C.L = 2.4; C.A = 2.2; C.period = 10; }
+    else if (lv.kind === 'shuffle'){ C.period = 4; C.L = Math.max(1, cfg.v/3.6)*C.period; }
     else if (lv.kind === 'lslip'){
       // one cycle = two half-cycles (one to each side): release -> steer across the fall line -> grip
       const N = 400, Th = lv.turn ? 2.2 : 3.4, vpk = Math.max(2, cfg.v/3.6), vlo = lv.turn ? .55*vpk : .08*vpk;
@@ -365,6 +382,10 @@ function build(){
       phiApex = phi; Rt = cfg.R*Math.cos(Math.min(lv.ang*phi, 75*D));
       if (phi < 18*D) warn = `⚠️ 速度太慢：只需要傾斜 ${(phi/D).toFixed(0)}°，GRF 唔夠大，好難撐起 edge 純 carve，容易變返 skid。`;
     }
+  } else if (lv.rail){
+    // ankles tip the skis a little and the sidecut draws the arc: R ≈ sidecut radius × cos(edge)
+    Rt = cfg.R*Math.cos(10*D); phiApex = Math.atan(v*v/(G*Rt));
+    if (Math.tan(lv.cap) < v*v/(G*Rt)) warn = `⚠️ ${cfg.v} km/h 對 Railroad tracks 太快：要傾斜多過 ${(lv.cap/D).toFixed(0)}° 先撐得住，就唔再係淨用腳踝。喺緩坡慢慢做。`;
   } else {
     const need = v*v/(G*Math.tan(lv.cap));
     Rt = Math.max(lv.Rbase, need);
@@ -372,6 +393,7 @@ function build(){
     phiApex = Math.atan(v*v/(G*Rt));
   }
   const psiMax = lv.psiFix || clamp((28 + (cfg.slope-8)*1.4 + lv.psiB)*D, 22*D, 68*D);
+  if (lv.rail) phiApex = Math.min(Math.atan(v*v/(G*Rt)), lv.cap);
   const RtOk = Rt, fxS = turnish() ? STANCE[cfg.stance].fx : null;
   if (fxS) Rt *= fxS.r;
   const tp = Math.tan(psiMax), om = 1/(Rt*tp), A = Rt*tp*tp, L = W/om;
@@ -565,6 +587,17 @@ function pose(s){
     const phi = -e/lv.ang;
     return finish({s, sn: -.6, cs: 0, mid: new V(0, 0, zf*C.L), psi: 88*D, sg: -1, phi, phiMag: Math.abs(phi), nsh: 1, kap: 0, pulse});
   }
+  if (lv.kind === 'leaf'){
+    // skis across the hill; pressure forward -> drift tips-first, pressure back -> drift tails-first, slipping down slowly
+    const c = Math.cos(W*s), psi = (88 - 15*c)*D, e = cfg.slope*D*(.62 + .25*(1 - Math.abs(c)));
+    const mid = new V(C.A*Math.sin(W*s), 0, s*C.L);
+    return finish({s, sn: -.6, cs: 0, mid, psi, sg: -1, phi: -e/lv.ang, phiMag: e/lv.ang, nsh: 1, kap: 0, faDyn: .6*c, leafC: c});
+  }
+  if (lv.kind === 'shuffle'){
+    // straight run, feet slide forward/back alternately; sitting back kills the motion
+    const amp = (cfg.stance === 'back' ? .04 : .15)*C.k, sh = amp*Math.sin(W*2*s);
+    return finish({s, sn: 0, cs: 0, mid: new V(0, 0, s*C.L), psi: 0, sg: 1, phi: 0, phiMag: 0, nsh: 0, kap: 0, shuf: sh, faDyn: .15});
+  }
   if (lv.kind === 'lslip'){
     const cyc = Math.floor(s), u = s - cyc, st = lslipState(u, C.vpk, C.vlo, lv.turn);
     const fi = u*400, i0 = Math.floor(fi), t = fi - i0, a = C.tab[i0], b = C.tab[Math.min(400, i0 + 1)];
@@ -608,6 +641,7 @@ function finish(b){
   const footR = mid.clone().addScaledVector(right, lv.stance*k);
   const footL = mid.clone().addScaledVector(right, -lv.stance*k);
   (sg > 0 ? footR : footL).addScaledVector(f, lv.lead*k*nsh);
+  if (b.shuf){ footR.addScaledVector(f, b.shuf); footL.addScaledVector(f, -b.shuf); }
   footR.y = .1*k + hf(footR.x, footR.z); footL.y = .1*k + hf(footL.x, footL.z);
   let edgeR, edgeL;
   if (cfg.level === 'beg'){
@@ -623,12 +657,20 @@ function finish(b){
   let pitchR = skiPitch(footR, yawR), pitchL = skiPitch(footL, yawL);
   let liftAmt = 0;
   if (lv.lift){
-    liftAmt = clamp((nsh - .12)/.3, 0, 1); liftAmt = liftAmt*liftAmt*(3-2*liftAmt);
-    if (sg > 0){ footR.y += .14*k*liftAmt; edgeR *= 1 - liftAmt; pitchR += .15*liftAmt; }
-    else { footL.y += .14*k*liftAmt; edgeL *= 1 - liftAmt; pitchL += .15*liftAmt; }
+    liftAmt = lv.oneski ? 1 : clamp((nsh - .12)/.3, 0, 1); liftAmt = liftAmt*liftAmt*(3-2*liftAmt);
+    const liftR = lv.oneski ? true : sg > 0;
+    const up = (lv.javelin ? .2 : lv.oneski ? .12 : .14)*k*liftAmt;
+    if (liftR){ footR.y += up; edgeR *= 1 - liftAmt; pitchR += (lv.javelin ? .28 : .15)*liftAmt; }
+    else { footL.y += up; edgeL *= 1 - liftAmt; pitchL += (lv.javelin ? .28 : .15)*liftAmt; }
+    if (lv.javelin){
+      // inside ski lifted, its tip swung across in front of the outside ski
+      const ft = liftR ? footR : footL, out = right.clone().multiplyScalar(-sg);
+      ft.addScaledVector(out, .06*k*liftAmt).addScaledVector(f, .1*k*liftAmt);
+      if (liftR) b.javYawR = sg*28*D*liftAmt; else b.javYawL = sg*28*D*liftAmt;
+    }
   }
-  const edgeOuter = sg > 0 ? edgeL : edgeR;
-  return Object.assign(b, {skidX, f, right, P, com, upLean, footR, footL, edgeR, edgeL, yawR, yawL, pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
+  const edgeOuter = lv.oneski ? edgeL : sg > 0 ? edgeL : edgeR;
+  return Object.assign(b, {skidX, f, right, P, com, upLean, footR, footL, edgeR, edgeL, yawR: yawR + (b.javYawR || 0), yawL: yawL + (b.javYawL || 0), pitchR, pitchL, edgeOuter, inner, liftAmt, cmp: cfg.Hm ? gm/cfg.Hm : 0});
 }
 
 function twoBone(H, T, pole, a, b){
@@ -696,14 +738,14 @@ function activations(p){
     : C.mogul ? {quad:.1+.35*c, glmax:.25*c, ham:.15*c, tib:.2}
     : cfg.level === 'short' ? {obl:.2, add:.08} : cfg.level === 'pivot' ? {obl:.3, add:.15, glmed:.15} : cfg.level === 'trav' ? {obl:.15} : {};
   const st = STANCE[cfg.stance];
-  const kk = clamp(wSplit(p)*3, -1, 1)*st.kk, oR = .5 - .5*kk, oL = .5 + .5*kk;
+  const kk = LV[cfg.level].oneski ? 1 : clamp(wSplit(p)*3, -1, 1)*st.kk, oR = .5 - .5*kk, oL = .5 + .5*kk;
   const r = {};
   for (const key in o){
     const b = (baseAdd[key] || 0) + (st.add[key] || 0);
     r[key] = {R: clamp(oR*o[key] + (1-oR)*i[key] + b, 0, 1), L: clamp(oL*o[key] + (1-oL)*i[key] + b, 0, 1)};
   }
   if (lv.lift && p.liftAmt > 0){
-    const S = p.sg > 0 ? 'R' : 'L', w = p.liftAmt;
+    const S = lv.oneski ? 'R' : p.sg > 0 ? 'R' : 'L', w = p.liftAmt;
     const lo = {quad:.15, ham:.2+.25*drive, glmax:.05, glmed:.05, add:.1, tib:.35, calf:.05};
     for (const key in lo) r[key][S] = r[key][S]*(1-w) + lo[key]*w;
     const O = S === 'R' ? 'L' : 'R';
@@ -723,8 +765,8 @@ function wSplit(p){
 function pressure(p){
   const st = STANCE[cfg.stance];
   const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
-  const kk = clamp(wSplit(p)*3, -1, 1)*st.kk*SHARE[cfg.level];
-  let fa = .1 + .35*init - .35*comp;
+  const kk = LV[cfg.level].oneski ? 1 : clamp(wSplit(p)*3, -1, 1)*st.kk*SHARE[cfg.level];
+  let fa = p.faDyn !== undefined ? .1 + p.faDyn : .1 + .35*init - .35*comp;
   if (C.mogul) fa += .25*(1 - p.cmp)*init - .15*p.cmp;
   fa = clamp(fa + st.fa, -.95, .95);
   const out = {};
@@ -808,6 +850,91 @@ const PH = {
     up:['Garland：再入刃上','重新加 uphill edge，雙板咬雪轉返上坡，速度慢落嚟。'],
     trans:['',''], init:['',''], apex:['',''], comp:['','']
   },
+  javelin: {
+    trans:["換刃：雙腳落地", "新外腳一接觸雪就即刻承晒重量。"],
+    init:["提起內腳、板頭橫過外腳前面", "內腳提起，板頭向外腳前面打橫（好似擲標槍咁），迫你完全企喺外腳上面。"],
+    apex:["單靠外腳轉", "內腳交叉喺前面，只得外腳撐住；有 stem、A-frame 或者靠內腳就即刻企唔穩。"],
+    comp:["出彎：收返內腳", "出彎時將內腳收返平行放低，準備變新外腳。"],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    fwd:['',''],
+    bwd:['',''],
+    switch:['',''],
+    rfwd:['',''],
+    lfwd:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
+  oneski: {
+    trans:["換邊：同一隻腳換刃", "左腳一直喺雪上，由大趾邊（內刃）換去尾趾邊（外刃）。"],
+    init:["入彎", "右腳一直提起；左腳自己帶住塊板入彎。"],
+    apex:["單腳轉彎", "右彎用左板內刃、左彎用左板外刃；兩邊都要企得穩。"],
+    comp:["出彎", "做唔到就代表平時靠緊另一隻腳借力平衡。"],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    fwd:['',''],
+    bwd:['',''],
+    switch:['',''],
+    rfwd:['',''],
+    lfwd:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
+  rail: {
+    trans:["放平", "雙板放平，身體企高，唔好轉腳。"],
+    init:["腳踝輕輕推上 edge", "只用腳踝（同少少膝頭）將雙板 tip 上 edge，唔扭、唔推板尾。"],
+    apex:["等 sidecut 畫線", "板自己沿 sidecut 轉；雪面應該得兩條幼線。"],
+    comp:["出彎", "線變闊或者拖尾，就代表你仲係 skid 緊。"],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    fwd:['',''],
+    bwd:['',''],
+    switch:['',''],
+    rfwd:['',''],
+    lfwd:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
+  leaf: {
+    fwd:["向前斜落", "壓前（小腿頂鞋舌），板頭微微跌向山下，雙板向前斜住滑。"],
+    bwd:["向後斜落", "壓後（腳踭），板尾跌向山下，雙板向後斜住滑。"],
+    switch:["換方向", "返中間、edge 加大少少停一停，再將壓力移去另一邊。"],
+    trans:['',''],
+    init:['',''],
+    apex:['',''],
+    comp:['',''],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    rfwd:['',''],
+    lfwd:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
+  shuffle: {
+    rfwd:["右腳向前滑", "滑行中右腳向前、左腳向後細步滑動，兩塊板都貼雪。"],
+    lfwd:["左腳向前滑", "換邊：左腳向前、右腳向後。坐後就郁唔到，試吓㩒「坐後」。"],
+    trans:['',''],
+    init:['',''],
+    apex:['',''],
+    comp:['',''],
+    slide:['',''],
+    ctrl:['',''],
+    brake:['',''],
+    fwd:['',''],
+    bwd:['',''],
+    switch:['',''],
+    release:['',''],
+    steer:['',''],
+    grip:['','']
+  },
   lift: {
     trans:['換刃：雙腳落地','換刃時兩隻腳都喺雪上，換完即刻將重量交晒畀新外腳。'],
     init:['提起內腳','內腳提起（板尾離雪、板頭輕掂雪），證明全身重量真係喺外腳上面。'],
@@ -824,6 +951,8 @@ const PH = {
 function phaseOf(p){
   const kind = LV[cfg.level].kind;
   if (kind === 'lslip') return p.lph;
+  if (kind === 'leaf') return p.leafC > .35 ? 'fwd' : p.leafC < -.35 ? 'bwd' : 'switch';
+  if (kind === 'shuffle') return p.shuf >= 0 ? 'rfwd' : 'lfwd';
   if (kind === 'slip') return p.pulse > .62 ? 'brake' : p.pulse < .38 ? 'slide' : 'ctrl';
   if (kind === 'pivot') return Math.abs(p.psi) > 60*D ? 'slip' : 'pivot';
   if (kind === 'trav') return p.down > .35 ? 'down' : p.up > .35 ? 'up' : 'trav';
@@ -857,6 +986,31 @@ const WATCH = {
     {w:'CoM 直線', v:'top', s:0, t:'黃色 CoM 線差唔多係直線落山，雙腳喺下面左右擺。'},
     {w:'快加壓快放', v:'back', s:.25, t:'Edge 同壓力時間短，唔好停喺彎中。'},
     {w:'大腿旋轉', v:'top', s:.11, t:'板轉、盤骨同上身唔轉：內收肌、臀中肌負責大腿旋轉。'}
+  ],
+  javelin: [
+    {w: "板頭交叉", v: "front", s: 0.25, t: "內腳提起，板頭打橫喺外腳前面；睇正面最清楚。"},
+    {w: "全身喺外腳", v: "back", s: 0.25, t: "腳掌圖：內腳 0%，外腳 100%。"},
+    {w: "上身面向下坡", v: "top", s: 0.25, t: "內腳交叉會迫上身面向山下，自然做到分離。"}
+  ],
+  oneski: [
+    {w: "同一隻腳", v: "back", s: 0.0, t: "右腳一直提起，左腳兩邊都要轉。"},
+    {w: "內刃同外刃", v: "back", s: 0.25, t: "右彎用大趾邊、左彎用尾趾邊；睇後面 edge 方向。"},
+    {w: "腳掌壓力", v: "side", s: 0.25, t: "腳掌圖：右腳 0%。"}
+  ],
+  rail: [
+    {w: "兩條幼線", v: "top", s: 0.25, t: "睇雪面軌跡：兩條乾淨幼線＝真 carve；變闊或拖尾＝仲係 skid。"},
+    {w: "淨係腳踝", v: "front", s: 0.25, t: "Edge 角度細（約 10°），身體幾乎企直，唔使大傾斜。"},
+    {w: "唔好轉腳", v: "top", s: 0.11, t: "上身同板一齊向前，冇扭轉；由 sidecut 帶。"}
+  ],
+  leaf: [
+    {w: "Z 字軌跡", v: "top", s: 0.25, t: "鳥瞰圖：左右來回、慢慢向下；全程同一條 uphill edge。"},
+    {w: "前後壓力", v: "side", s: 0, t: "向前去：小腿頂鞋舌；向後去：腳踭。睇腳掌圖紅點前後移。"},
+    {w: "上身唔郁", v: "front", s: 0.5, t: "前後移重心靠腳踝，唔係上身前後擺。"}
+  ],
+  shuffle: [
+    {w: "雙腳交替", v: "side", s: 0.125, t: "兩隻腳前後交替滑，大約各 15 cm。"},
+    {w: "坐後試吓", v: "side", s: 0.125, t: "㩒站位「坐後」：雙腳幾乎郁唔到，就係坐後嘅證明。"},
+    {w: "重量中足", v: "back", s: 0.375, t: "腳掌圖：壓力喺腳掌中間，唔係腳踭。"}
   ],
   lslip: [
     {w:'三步一循環', v:'top', s:.24, t:'Release 放平 → Steer 轉向橫過山 → Grip 咬住停；然後去另一邊再嚟。鳥瞰圖係一級級落嘅鋸齒。'},
@@ -1131,7 +1285,7 @@ function applyPose(p){
       sk.strip.visible = sk.mk.visible = show.bp && d.share > .02;
       sk.strip.position.x = x;
       paintStrip(sk.strip, z => d.share*1.15*Math.exp(-(((z - c)/sig)**2)));
-      const carveF = {carve:1, lift:1, mid:.5, short:.5, mogul:.5, trav:.5, beg:.25, pivot:.15, slip:.1, lslip:.15, lslipT:.3}[cfg.level] ?? 0;
+      const carveF = {javelin:.8, oneski:.6, rail:1, leaf:.1, shuffle:.2, carve:1, lift:1, mid:.5, short:.5, mogul:.5, trav:.5, beg:.25, pivot:.15, slip:.1, lslip:.15, lslipT:.3}[cfg.level] ?? 0;
       const kap = bendMul*carveF*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1)*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
       bendGeo(sk.ski.geometry, kap, L); bendGeo(sk.edge.geometry, kap, L); bendGeo(sk.strip.geometry, kap, L);
       sk.kap = kap;
@@ -1210,6 +1364,8 @@ scrub.oninput = () => jump(scrub.value/1000);
 document.getElementById('speedMul').onchange = e => mul = +e.target.value;
 const JUMPS = {
   def: [['換刃',0],['入彎',.11],['最大傾斜',.25],['出彎',.39]],
+  leaf: [['向前斜落',0],['換方向',.25],['向後斜落',.5]],
+  shuffle: [['右腳向前',.125],['左腳向前',.375]],
   lslip: [['Release',.07],['Steer',.24],['Grip',.43]],
   lslipT: [['Release',.055],['Steer',.21],['Grip',.41]],
   slip: [['滑落',.25],['穩定',0],['刹停',1/12]],
@@ -1299,7 +1455,7 @@ function renderSpec(){
     ['板 R', cfg.R+' m', `${r.R[0]}–${r.R[1]} m`, st(cfg.R, r.R[0], r.R[1])],
     ['坡度', cfg.slope+'°', `${r.slope[0]}–${r.slope[1]}°`, st(cfg.slope, r.slope[0], r.slope[1])],
     ['速度', cfg.v+' km/h', `${r.v[0]}–${r.v[1]} km/h`, st(cfg.v, r.v[0], r.v[1])],
-    ...(LV[cfg.level].kind === 'pivot' || LV[cfg.level].kind === 'trav' || LV[cfg.level].kind === 'slip' || LV[cfg.level].kind === 'lslip' ? [] : [['→ 彎半徑', C.Rt.toFixed(1)+' m', cfg.level === 'carve' ? 'R × cos(edge)' : '由速度同可做到嘅傾斜決定', ''],
+    ...(['pivot','trav','slip','lslip','leaf','shuffle'].includes(LV[cfg.level].kind) ? [] : [['→ 彎半徑', C.Rt.toFixed(1)+' m', cfg.level === 'carve' ? 'R × cos(edge)' : '由速度同可做到嘅傾斜決定', ''],
     ['→ 最大傾斜', (C.phiApex/D).toFixed(0)+'°', 'tan θ = v²/(g·r)', ''],
     ['→ 最大 edge', (C.edgeApex/D).toFixed(0)+'°', cfg.level === 'beg' ? '外腳內刃' : '傾斜＋angulation', ''],
     ['→ 外腳 GRF', '≈ '+(1/Math.cos(C.phiApex)).toFixed(2)+'× 體重', '1 / cos θ', '']]),
@@ -1378,7 +1534,11 @@ function updateUI(p, act, md, now){
   const outer = p.nsh < .05 ? '—' : (p.sg > 0 ? '左腳' : '右腳');
   const skiY = (p.yawR + p.yawL)/2, pelY = p.psi*lv.pyaw, torY = p.psi*lv.tyaw;
   const sep = `髖轉 ${Math.abs((skiY-pelY)/D).toFixed(0)}°・腰轉 ${Math.abs((pelY-torY)/D).toFixed(0)}°`;
-  if (lv.kind === 'lslip'){
+  if (lv.kind === 'leaf'){
+    hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>坡度 ${cfg.slope}°・Uphill edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>壓力 ${p.faDyn > .2 ? '前（小腿／鞋舌）' : p.faDyn < -.2 ? '後（腳踭）' : '中間'}<br>${sep}`;
+  } else if (lv.kind === 'shuffle'){
+    hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>${cfg.v} km/h・坡度 ${cfg.slope}°<br>前後差 ${(Math.abs(p.shuf)*200/C.k).toFixed(0)} cm${cfg.stance === 'back' ? '・⚠️ 坐後：雙腳郁唔到' : ''}<br>${sep}`;
+  } else if (lv.kind === 'lslip'){
     const need = cfg.slope;
     hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>坡度 ${cfg.slope}°・Edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°（停低要 ≈ ${need}°）<br>速度 ${(p.vel*3.6).toFixed(0)} km/h・板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = fall line）<br>${sep}`;
   } else if (lv.kind === 'slip'){
@@ -1419,10 +1579,10 @@ function updateUI(p, act, md, now){
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
-const GUIDE = {"slip": {"q": [["想停，雙板嘅 uphill edge 要加大定放細？", "加大。膝頭同腳踝推向上坡，edge 接近坡度就停。"], ["上身應該面向邊？", "面向下坡，唔好跟住雙板打橫。"]], "sum": "雙板打橫直直滑落，用 edge 控速：加大就停，放細就滑。", "snow": "揀 10–20° 嘅平滑雪道，雙板打橫，滑 2 米、停、再滑 2 米；之後練 pivot slip 同 hockey stop。"}, "beg": {"q": [["想轉右邊嘅時候，應該把多啲重量放喺邊隻腳？", "左腳（彎外面嗰隻）。外腳加壓，板先會轉向。"], ["兩隻腳平均用力會點？", "轉唔到彎，或者轉得好慢。新手最常犯就係雙腳平均踩。"]], "sum": "想轉邊，就早啲把重量踩落外腳（彎外面嗰隻），保持 A 字，重心喺腳掌中間。", "snow": "喺緩坡慢慢做 5–8 個彎，每個彎出聲講「壓左腳」或「壓右腳」，感覺壓力係喺腳掌中間，而唔係腳跟。", "feel": "轉彎時，外腳鞋底中間有明顯壓力；如果大腿好快燒、板頭好輕，就係坐後咗。"}, "mid": {"q": [["換刃嗰陣，應該等轉完彎先轉重量，定係早啲轉？", "早啲轉。要喺 turn 頂部（剛開始轉嗰下）就開始把重量移去新嘅外腳。"], ["點樣用彎嘅形狀控制速度，而唔係靠死命煞停？", "把彎轉到夠橫（橫過山坡），完成成個 turn，速度自然會跌落嚟。"]], "sum": "每個彎一開始就轉重量去新嘅外腳，上身大致面向下坡，用 turn shape 控制速度，而唔係靠煞。", "snow": "喺中緩坡做，心入面數「轉重量 → 轉彎 → 完成」，刻意把彎劃到橫啲，感覺速度自己慢落嚟。", "feel": "新外腳喺彎開始時已經有壓力；如果成日要靠犁式煞停，就係彎轉得唔夠橫，或者重量轉得太遲。"}, "carve": {"q": [["入彎時，最大壓力應該喺邊隻腳？", "外腳，大約 80–90%。"], ["Edge 角度應該大過、等於，定細過身體傾斜？", "大過。差距嚟自膝頭同髖嘅 angulation。"]], "sum": "早啲傾斜入彎，外腳撐住，上身保持水平，畀塊板自己轉。", "snow": "喺緩坡做 railroad track：板唔好打滑，雪上只留兩條幼線；感覺外腳鞋舌一直有壓力。"}, "mogul": {"q": [["撞上蘑菇面嗰陣，腳應該伸直定屈曲？", "屈曲吸收，好似避震咁。"], ["頭嘅高度應該跟住蘑菇上落嗎？", "唔應該。頭同上身盡量保持一條平滑嘅線。"]], "sum": "撞上就收腳，落坑就伸腳，上身保持平穩。", "snow": "先喺蘑菇區邊緣做單粒蘑菇「撞、收、伸」；再練喺蘑菇頂點杖嘅時機。"}, "short": {"q": [["短彎時上身應該面向邊？", "一直面向正下坡（fall line）。"], ["點杖係喺幾時？", "每次換刃之前，帶身體向前落下一個彎。"]], "sum": "上身望落山，腳喺下面左右擺，點杖帶節奏。", "snow": "揀條窄雪道，假設兩邊有牆；心入面數「點、轉、點、轉」。"}, "pivot": {"q": [["轉向嗰陣，邊個部位應該轉？", "大腿喺盤骨入面轉，上身唔郁。"], ["轉之前 edge 應該加大定放平？", "先放平，塊板先轉得順。"]], "sum": "放平 edge，大腿轉，上身唔郁，沿 fall line 直線落。", "snow": "喺中坡做，起點同終點對住同一條直線（例如纜車柱），檢查自己有冇向左右走。"}, "trav": {"q": [["斜滑降時，邊隻腳承受多啲重量？", "下坡腳。"], ["膝頭同髖應該推向上坡定下坡？", "上坡；上身就向下坡，形成 angulation。"]], "sum": "下坡腳承重、膝頭推上坡、上身望下坡；放刃落，入刃上。", "snow": "橫過雪道時試吓提起上坡腳，企得穩先算啱；做 garland 時感受「放」同「咬」嘅分別。"}, "lift": {"q": [["提起內腳之後，重心應該喺外腳嘅邊度？", "腳掌中間偏前，唔係腳跟。"], ["提起內腳靠邊組肌肉？", "膕繩肌屈膝提起，唔係用腰。"]], "sum": "所有重量交畀外腳，企得穩先算真係企喺外腳上面。", "snow": "喺緩坡做，由每個彎提起 1 秒開始，慢慢延長到成個彎。"}, "lslip": {"q": [["Release 嗰下雙板點解會自己轉落山？", "放平之後 edge 唔再咬住，地心吸力令雙板向下滑，板頭自然跌向 fall line。"], ["要停低，edge 要幾大？", "差唔多等於坡度：坡度 20°，uphill edge 就要約 20°。"]], "sum": "Release 放平 → Steer 轉向橫過山坡 → Grip 用 edge 咬住停，一路重複。控速靠 edge，唔係硬煞。", "snow": "先喺藍線：放平滑 2–3 米、轉去另一邊、咬住停；熟咗先試陡啲嘅坡。", "feel": "Grip 嗰下下坡腳同脛骨推實鞋舌，雙板停得乾淨；如果停唔到，多數係 edge 角度未夠或者坐後。"}, "lslipT": {"q": [["喺陡坡，應該喺彎邊個位控速？", "彎底，雙板橫過山坡嗰下用 edge grip 磨走速度。"], ["彎頂要唔要煞？", "唔使，彎頂 release 放平，等雙板自己轉落山。"]], "sum": "彎頂放鬆、彎底 grip：每個彎底磨走多出嚟嘅速度，再 release 去下一個彎。", "snow": "喺藍線先做，數住「放、轉、咬」；穩定咗先去黑線。", "feel": "彎底 grip 嗰下速度跌、腳底壓力大；彎頂放鬆嗰下雙板好輕、自己轉。"}};
+const GUIDE = {"slip": {"q": [["想停，雙板嘅 uphill edge 要加大定放細？", "加大。膝頭同腳踝推向上坡，edge 接近坡度就停。"], ["上身應該面向邊？", "面向下坡，唔好跟住雙板打橫。"]], "sum": "雙板打橫直直滑落，用 edge 控速：加大就停，放細就滑。", "snow": "揀 10–20° 嘅平滑雪道，雙板打橫，滑 2 米、停、再滑 2 米；之後練 pivot slip 同 hockey stop。"}, "beg": {"q": [["想轉右邊嘅時候，應該把多啲重量放喺邊隻腳？", "左腳（彎外面嗰隻）。外腳加壓，板先會轉向。"], ["兩隻腳平均用力會點？", "轉唔到彎，或者轉得好慢。新手最常犯就係雙腳平均踩。"]], "sum": "想轉邊，就早啲把重量踩落外腳（彎外面嗰隻），保持 A 字，重心喺腳掌中間。", "snow": "喺緩坡慢慢做 5–8 個彎，每個彎出聲講「壓左腳」或「壓右腳」，感覺壓力係喺腳掌中間，而唔係腳跟。", "feel": "轉彎時，外腳鞋底中間有明顯壓力；如果大腿好快燒、板頭好輕，就係坐後咗。"}, "mid": {"q": [["換刃嗰陣，應該等轉完彎先轉重量，定係早啲轉？", "早啲轉。要喺 turn 頂部（剛開始轉嗰下）就開始把重量移去新嘅外腳。"], ["點樣用彎嘅形狀控制速度，而唔係靠死命煞停？", "把彎轉到夠橫（橫過山坡），完成成個 turn，速度自然會跌落嚟。"]], "sum": "每個彎一開始就轉重量去新嘅外腳，上身大致面向下坡，用 turn shape 控制速度，而唔係靠煞。", "snow": "喺中緩坡做，心入面數「轉重量 → 轉彎 → 完成」，刻意把彎劃到橫啲，感覺速度自己慢落嚟。", "feel": "新外腳喺彎開始時已經有壓力；如果成日要靠犁式煞停，就係彎轉得唔夠橫，或者重量轉得太遲。"}, "carve": {"q": [["入彎時，最大壓力應該喺邊隻腳？", "外腳，大約 80–90%。"], ["Edge 角度應該大過、等於，定細過身體傾斜？", "大過。差距嚟自膝頭同髖嘅 angulation。"]], "sum": "早啲傾斜入彎，外腳撐住，上身保持水平，畀塊板自己轉。", "snow": "喺緩坡做 railroad track：板唔好打滑，雪上只留兩條幼線；感覺外腳鞋舌一直有壓力。"}, "mogul": {"q": [["撞上蘑菇面嗰陣，腳應該伸直定屈曲？", "屈曲吸收，好似避震咁。"], ["頭嘅高度應該跟住蘑菇上落嗎？", "唔應該。頭同上身盡量保持一條平滑嘅線。"]], "sum": "撞上就收腳，落坑就伸腳，上身保持平穩。", "snow": "先喺蘑菇區邊緣做單粒蘑菇「撞、收、伸」；再練喺蘑菇頂點杖嘅時機。"}, "short": {"q": [["短彎時上身應該面向邊？", "一直面向正下坡（fall line）。"], ["點杖係喺幾時？", "每次換刃之前，帶身體向前落下一個彎。"]], "sum": "上身望落山，腳喺下面左右擺，點杖帶節奏。", "snow": "揀條窄雪道，假設兩邊有牆；心入面數「點、轉、點、轉」。"}, "pivot": {"q": [["轉向嗰陣，邊個部位應該轉？", "大腿喺盤骨入面轉，上身唔郁。"], ["轉之前 edge 應該加大定放平？", "先放平，塊板先轉得順。"]], "sum": "放平 edge，大腿轉，上身唔郁，沿 fall line 直線落。", "snow": "喺中坡做，起點同終點對住同一條直線（例如纜車柱），檢查自己有冇向左右走。"}, "trav": {"q": [["斜滑降時，邊隻腳承受多啲重量？", "下坡腳。"], ["膝頭同髖應該推向上坡定下坡？", "上坡；上身就向下坡，形成 angulation。"]], "sum": "下坡腳承重、膝頭推上坡、上身望下坡；放刃落，入刃上。", "snow": "橫過雪道時試吓提起上坡腳，企得穩先算啱；做 garland 時感受「放」同「咬」嘅分別。"}, "lift": {"q": [["提起內腳之後，重心應該喺外腳嘅邊度？", "腳掌中間偏前，唔係腳跟。"], ["提起內腳靠邊組肌肉？", "膕繩肌屈膝提起，唔係用腰。"]], "sum": "所有重量交畀外腳，企得穩先算真係企喺外腳上面。", "snow": "喺緩坡做，由每個彎提起 1 秒開始，慢慢延長到成個彎。"}, "lslip": {"q": [["Release 嗰下雙板點解會自己轉落山？", "放平之後 edge 唔再咬住，地心吸力令雙板向下滑，板頭自然跌向 fall line。"], ["要停低，edge 要幾大？", "差唔多等於坡度：坡度 20°，uphill edge 就要約 20°。"]], "sum": "Release 放平 → Steer 轉向橫過山坡 → Grip 用 edge 咬住停，一路重複。控速靠 edge，唔係硬煞。", "snow": "先喺藍線：放平滑 2–3 米、轉去另一邊、咬住停；熟咗先試陡啲嘅坡。", "feel": "Grip 嗰下下坡腳同脛骨推實鞋舌，雙板停得乾淨；如果停唔到，多數係 edge 角度未夠或者坐後。"}, "lslipT": {"q": [["喺陡坡，應該喺彎邊個位控速？", "彎底，雙板橫過山坡嗰下用 edge grip 磨走速度。"], ["彎頂要唔要煞？", "唔使，彎頂 release 放平，等雙板自己轉落山。"]], "sum": "彎頂放鬆、彎底 grip：每個彎底磨走多出嚟嘅速度，再 release 去下一個彎。", "snow": "喺藍線先做，數住「放、轉、咬」；穩定咗先去黑線。", "feel": "彎底 grip 嗰下速度跌、腳底壓力大；彎頂放鬆嗰下雙板好輕、自己轉。"}, "javelin": {"q": [["Javelin 點解要將內板板頭打橫喺外板前面？", "迫全身重量去外腳，同時迫上身面向山下；有 stem 或者靠內腳嘅話即刻企唔穩。"], ["做唔到穩定應該返去邊個練習？", "提內腳 drill（stork），再唔得就返去單腳站。"]], "sum": "內腳提起、板頭打橫喺外腳前面，成個彎只靠外腳；最快照出 stem、A-frame 同靠內腳。", "snow": "喺緩藍線慢慢做，每邊 3–4 個彎；穩定咗先加速度。", "feel": "成個人企喺外腳上面，外腳腳掌中間壓力好實；上身自然面向山下。"}, "oneski": {"q": [["一隻板點樣轉兩邊？", "右彎用大趾邊（內刃），左彎用尾趾邊（外刃）；同一隻腳換刃。"], ["做唔到代表咩？", "平時轉彎係靠另一隻腳借力平衡，外腳未真正承重。"]], "sum": "成個 run 只用一隻板，內刃外刃都要轉到；係單腳平衡同外腳承重嘅終極測試。", "snow": "喺好緩嘅坡，先直滑單腳，再加細彎；兩隻腳都要練。", "feel": "兩邊轉彎都要企得穩；尾趾邊嗰個彎最難，係正常。"}, "rail": {"q": [["點知自己係 carve 定 skid？", "睇雪面：兩條幼線＝carve；變闊或者拖尾＝skid。"], ["點解要喺好緩嘅坡做？", "速度慢，淨係用腳踝推 edge 就夠；唔使大傾斜，唔會驚。"]], "sum": "用腳踝將雙板 tip 上 edge，唔轉腳、唔推尾，等 sidecut 自己畫出兩條幼線；係 skid 去 carve 嘅橋。", "snow": "喺最緩嘅綠／藍線，直滑之後輕輕 tip 左右，回頭睇條線。", "feel": "板自己轉，身體只係跟住；腳底感覺到板好似喺路軌上面行。"}, "leaf": {"q": [["想向前斜落，壓力放邊？", "前（小腿頂鞋舌），板頭會跌向山下。"], ["全程要唔要換刃？", "唔使，全程同一條 uphill edge。"]], "sum": "橫滑時壓前就向前斜落、壓後就向後斜落；學識前後壓力點郁，係改坐後嘅基本功。", "snow": "喺藍線橫滑，向前 3 米、停、向後 3 米；用腳踝郁，唔好用上身擺。", "feel": "壓前時小腿貼實鞋舌；壓後時腳踭重。兩邊都控制到，先算識前後平衡。"}, "shuffle": {"q": [["Shuffle 郁唔到代表咩？", "重量喺腳踭（坐後），雙腳被壓住郁唔到。"], ["點樣先郁得到？", "腳踝屈、小腿貼鞋舌，重量返中足。"]], "sum": "滑行中雙腳前後交替細步滑動；郁唔到就係坐後。", "snow": "喺緩坡直滑或者轉彎中做，雙腳前後各約 15 cm，兩塊板都貼雪。", "feel": "雙腳輕鬆咁前後滑；如果好重、郁唔到，即係重量喺腳踭。"}};
 const STANCE_SHORT = {"late": "重量轉得太遲：彎頂打滑，要靠煞控速。", "look": "望住對腳：上身彎、屁股向後，入彎遲。", "back": "重心偏後：板頭冇壓力，大腿好快攰。", "fwd": "重心太前：板尾打滑，出彎放唔到。", "even": "雙腳平均：外腳咬唔實，容易變 A-frame。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
-const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {beg:'even', mid:'late', slip:'look', trav:'look', lslip:'look', lslipT:'late'};
+const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {beg:'even', mid:'late', slip:'look', trav:'look', lslip:'look', lslipT:'late', shuffle:'back', leaf:'back', javelin:'even', oneski:'back', rail:'back'};
 let cmpOn = false, lastCyc = null;
 const toastDone = {};
 function renderGuide(){
@@ -1487,7 +1647,7 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
-const FEEL1 = {"lslip": "放平就滑、轉向橫過山坡、edge 咬住就停。", "lslipT": "彎頂放鬆，彎底先用 edge 咬住磨走速度。", "beg": "想轉右，就踩實左腳（彎外面嗰隻腳）。", "slip": "膝頭推向山就停，放鬆少少就滑。", "mid": "每個彎一開始就將重量轉去新嘅外腳。", "carve": "壓實彎外面嗰塊板，等塊板自己帶你轉，唔好扭。", "mogul": "膝頭當避震：上包收腳，落包伸腳。", "short": "上身一直面向下坡唔郁，淨係下半身左右轉。", "pivot": "雙板一齊打橫，用腳踝同大腿扭，唔係用上身。", "trav": "上身企高，下坡腳承重，兩塊板平行斜住行。", "lift": "全身重量放落彎外面嗰隻腳，內腳提起都企得穩。"};
+const FEEL1 = {"javelin": "全身企喺外腳，內板板頭打橫喺前面。", "oneski": "一隻腳轉兩邊：內刃一個彎、外刃一個彎。", "rail": "淨係用腳踝推 edge，等板自己畫兩條幼線。", "leaf": "壓前向前斜、壓後向後斜，用腳踝唔用上身。", "shuffle": "雙腳前後滑得郁，先代表冇坐後。", "lslip": "放平就滑、轉向橫過山坡、edge 咬住就停。", "lslipT": "彎頂放鬆，彎底先用 edge 咬住磨走速度。", "beg": "想轉右，就踩實左腳（彎外面嗰隻腳）。", "slip": "膝頭推向山就停，放鬆少少就滑。", "mid": "每個彎一開始就將重量轉去新嘅外腳。", "carve": "壓實彎外面嗰塊板，等塊板自己帶你轉，唔好扭。", "mogul": "膝頭當避震：上包收腳，落包伸腳。", "short": "上身一直面向下坡唔郁，淨係下半身左右轉。", "pivot": "雙板一齊打橫，用腳踝同大腿扭，唔係用上身。", "trav": "上身企高，下坡腳承重，兩塊板平行斜住行。", "lift": "全身重量放落彎外面嗰隻腳，內腳提起都企得穩。"};
 let pathDone = {}; try { pathDone = JSON.parse(localStorage.getItem('pathDone') || '{}'); } catch(e){}
 function renderPath(curK){
   document.querySelectorAll('#path li').forEach(li => { li.classList.toggle('done', !!pathDone[li.dataset.k]); li.classList.toggle('cur', li.dataset.k === curK); });
