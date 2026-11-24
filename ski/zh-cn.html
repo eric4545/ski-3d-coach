@@ -116,6 +116,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-l="carve" class="on">刻滑</button>
     <button data-l="mogul">猫跳 Mogul</button>
     <button data-l="short">小回转</button>
+    <button data-l="slip">侧滑 Side slip</button>
     <button data-l="pivot">侧滑转向</button>
     <button data-l="trav">斜滑降＋Garland</button>
     <button data-l="lift">提内脚练习</button>
@@ -259,6 +260,7 @@ const LV = {
   mid:  {name:'中级・平行式转弯', v:25, slope:15, skiOff:-12, R:13, cap:42*D, ang:1.1, skid:10*D, wedge:0, Rbase:9, psiB:6, h0:.82, stance:.14, pr:.75, tr:.7, tp:0.46, tyaw:.25, pyaw:.65, knee:.6, minDrive:.45, plant:1, lead:.06},
   mogul:{name:'猫跳 Mogul', v:15, slope:25, skiOff:-12, R:13, cap:40*D, ang:1.0, skid:15*D, wedge:0, Rbase:3, psiB:0, psiFix:30*D, h0:.82, stance:.12, pr:.6, tr:.5, tp:0.51, tyaw:.1, pyaw:.6, knee:.4, minDrive:.45, plant:1, lead:.04},
   short:{name:'小回转', kind:'turn', v:22, slope:18, skiOff:-12, R:12, cap:45*D, ang:1.1, skid:8*D, wedge:0, Rbase:5, psiB:0, psiFix:26*D, h0:.8, stance:.13, pr:.7, tr:.55, tp:0.46, tyaw:.05, pyaw:.75, knee:.7, minDrive:.5, plant:1, lead:.05},
+  slip: {name:'侧滑 Side slip', kind:'slip', v:8, slope:15, skiOff:-12, R:13, cap:25*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:.44, tyaw:.4, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.1},
   pivot:{name:'Pivot slip', kind:'pivot', v:10, slope:15, skiOff:-12, R:13, cap:20*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.6, tr:.3, tp:0.44, tyaw:.15, pyaw:.6, knee:.3, minDrive:.45, plant:0, lead:0},
   trav: {name:'斜滑降＋Garland', kind:'trav', v:15, slope:15, skiOff:-12, R:13, cap:35*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:0.46, tyaw:.45, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.12},
   lift: {name:'提内脚练习', kind:'turn', v:25, slope:15, skiOff:-10, R:14, cap:50*D, ang:1.15, skid:0, wedge:0, Rbase:10, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:.3, plant:0, lead:.1, lift:true},
@@ -269,6 +271,7 @@ const REC = {
   mid:  {ski:[-15,-5],  R:[12,16], slope:[12,20], v:[18,35]},
   mogul:{ski:[-15,-5],  R:[11,20], slope:[18,30], v:[10,25]},
   short:{ski:[-15,-5],  R:[10,14], slope:[15,25], v:[15,30]},
+  slip: {ski:[-15,-5],  R:[10,18], slope:[10,20], v:[0,99]},
   pivot:{ski:[-15,-5],  R:[10,18], slope:[12,20], v:[0,99]},
   trav: {ski:[-15,-5],  R:[10,18], slope:[12,22], v:[8,25]},
   lift: {ski:[-12,0],   R:[12,18], slope:[10,18], v:[15,35]},
@@ -283,15 +286,16 @@ const STANCE = {
   fwd:  {fx:{skid:8, ph:'comp', edge:.9, r:.9, bend:.6}, name:'太前（压脚尖）', fa:.8, dz:.1, dh:0, kk:1, add:{calf:.25, erec:.15, quad:-.05}, txt:'板头压力太大、板尾没有压力，板尾会打滑（搓雪甩出），刻不出干净的弧线；出弯放不掉，换刃时容易被板头绊住。'},
   even: {fx:{skid:5, ph:'all', edge:.8, inner:.3, r:1.15, bend:.7}, name:'双脚平均', fa:0, dz:0, dh:0, kk:.25, add:{}, txt:'内脚抢了外脚的压力，外脚的刃咬不牢、容易滑；内脚容易入错刃，变成 A 字腿或两支板分开（剪刀脚）。'}
 };
-const SHARE = {beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
+const SHARE = {slip:.5, beg:.4, mid:.6, carve:.8, mogul:.5, short:.6, pivot:.2, trav:.5, lift:1};
 
 function build(){
   Cok = null;
   const lv = LV[cfg.level], v = cfg.v/3.6;
   let Rt, phiApex, warn = '';
-  if (lv.kind === 'pivot' || lv.kind === 'trav'){
+  if (lv.kind === 'pivot' || lv.kind === 'trav' || lv.kind === 'slip'){
     C = {v: Math.max(v, 1), Rt: 0, phiApex: lv.cap, k: cfg.H/175, inten: .3, warn: '', mogul: false, P: 1, Sx: 1, Rb: 1, edgeApex: lv.cap*lv.ang};
     if (lv.kind === 'pivot'){ C.L = 1.6; C.period = 7; }
+    else if (lv.kind === 'slip'){ C.L = 3.3; C.period = 9; }
     else {
       const Lc = 12, tab = []; let x = 0, z = 0;
       for (let i = 0; i <= 400; i++){ tab.push([x, z]); const ps = (65 - 40*(1-Math.cos(W*i/400))/2)*D; x += Math.sin(ps)*Lc/400; z += Math.cos(ps)*Lc/400; }
@@ -486,6 +490,13 @@ function ankleAngles(ankle, knee, q, inside){
 /* ---------- pose ---------- */
 function pose(s){
   const lv = LV[cfg.level];
+  if (lv.kind === 'slip'){
+    // skis across the hill, sliding straight down the fall line; edge high = stop, edge low = slide
+    const pulse = (Math.sin(W*3*s) + 1)/2, e = cfg.slope*D*(.5 + .45*pulse);
+    const zf = (s*(1 - .475) + .475*(Math.cos(W*3*s) - 1)/(W*3))/(1 - .475);
+    const phi = -e/lv.ang;
+    return finish({s, sn: -.6, cs: 0, mid: new V(0, 0, zf*C.L), psi: 88*D, sg: -1, phi, phiMag: Math.abs(phi), nsh: 1, kap: 0, pulse});
+  }
   if (lv.kind === 'pivot'){
     const c = Math.cos(W*s), yaw = 80*D*Math.sign(c)*Math.pow(Math.abs(c), .35);
     const r = Math.abs(yaw)/(80*D), sg = yaw >= 0 ? -1 : 1, phiMag = (3 + 9*r*r*r)*D;
@@ -685,6 +696,12 @@ const PH = {
     apex:['弯中：短促加压','外脚快速加压，板尾稍微搓雪控速；节奏要快，不要停在弯中。'],
     comp:['出弯：准备下一次点杖','压力立刻释放，手已经往前伸准备下一次点杖。']
   },
+  slip: {
+    slide:['侧滑：减少立刃','双板横在坡上，上坡刃稍微放平（膝盖和脚踝轻轻往下坡放），双板就会笔直往下滑。上半身面向下坡。'],
+    ctrl:['侧滑：保持立刃','维持同一个立刃角度就会稳定下滑；用脚踝和膝盖微调，不要用上半身。'],
+    brake:['侧滑：加大立刃停下','膝盖和脚踝推向上坡，上坡刃加大到接近坡度，双板就会停。重心在下坡脚。'],
+    trans:['',''], init:['',''], apex:['',''], comp:['','']
+  },
   pivot: {
     slip:['横滑 Side slip','双板打横，上坡侧的刃轻轻咬雪控速；上半身面向下坡，膝盖微弯。'],
     pivot:['Pivot：原地转向','双板放平，大腿在骨盆里旋转，让双板经过滚落线转到另一边；上半身完全不动。'],
@@ -711,6 +728,7 @@ const PH = {
 };
 function phaseOf(p){
   const kind = LV[cfg.level].kind;
+  if (kind === 'slip') return p.pulse > .62 ? 'brake' : p.pulse < .38 ? 'slide' : 'ctrl';
   if (kind === 'pivot') return Math.abs(p.psi) > 60*D ? 'slip' : 'pivot';
   if (kind === 'trav') return p.down > .35 ? 'down' : p.up > .35 ? 'up' : 'trav';
   const s = p.s, u = ((s*2)%1+1)%1; return (u < .1 || u > .9) ? 'trans' : u < .38 ? 'init' : u < .62 ? 'apex' : 'comp'; }
@@ -743,6 +761,13 @@ const WATCH = {
     {w:'重心直线', v:'top', s:0, t:'黄色重心线几乎是直线下山，双脚在下面左右摆。'},
     {w:'快加压快释放', v:'back', s:.25, t:'立刃和压力时间短，不要停在弯中。'},
     {w:'大腿旋转', v:'top', s:.11, t:'雪板转、骨盆和上半身不转：内收肌、臀中肌负责大腿旋转。'}
+  ],
+  slip: [
+    {w:'直线下滑', v:'top', s:.25, t:'双板横向，沿着滚落线笔直滑下；俯视图应该是一条直线，没有左右移动。'},
+    {w:'用立刃控速', v:'front', s:1/12, t:'立刃加大（膝盖脚踝推向上坡）就停，放小就滑；看 HUD 的状态。'},
+    {w:'上半身方向', v:'front', s:0, t:'上半身面向下坡，双板横向：上下半身分离。'},
+    {w:'下坡脚承重', v:'back', s:.25, t:'下坡脚承受较多重量，看脚掌图。'},
+    {w:'不要后坐', v:'side', s:.25, t:'重心在脚掌中间；坐后会让板尾先滑，变成斜着下去。'}
   ],
   pivot: [
     {w:'上半身不动', v:'front', s:.25, t:'双板从一边转到另一边，上半身一直面向下坡。'},
@@ -993,7 +1018,7 @@ function applyPose(p){
       sk.strip.visible = sk.mk.visible = show.bp && d.share > .02;
       sk.strip.position.x = x;
       paintStrip(sk.strip, z => d.share*1.15*Math.exp(-(((z - c)/sig)**2)));
-      const carveF = {carve:1, lift:1, mid:.5, short:.5, mogul:.5, trav:.5, beg:.25, pivot:.15}[cfg.level] ?? 0;
+      const carveF = {carve:1, lift:1, mid:.5, short:.5, mogul:.5, trav:.5, beg:.25, pivot:.15, slip:.1}[cfg.level] ?? 0;
       const kap = bendMul*carveF*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1)*Math.tan(Math.min(Math.abs(e), 80*D))/cfg.R*Math.min(1, d.share*1.25);
       bendGeo(sk.ski.geometry, kap, L); bendGeo(sk.edge.geometry, kap, L); bendGeo(sk.strip.geometry, kap, L);
       sk.kap = kap;
@@ -1069,6 +1094,7 @@ scrub.oninput = () => jump(scrub.value/1000);
 document.getElementById('speedMul').onchange = e => mul = +e.target.value;
 const JUMPS = {
   def: [['换刃',0],['入弯',.11],['最大倾倒',.25],['出弯',.39]],
+  slip: [['下滑',.25],['稳定',0],['刹停',1/12]],
   pivot: [['横滑',0],['开始转',.2],['转向中',.25],['另一边侧滑',.5]],
   trav: [['斜滑降',0],['放刃下滑',.25],['入刃回升',.75]]
 };
@@ -1123,7 +1149,7 @@ function renderSpec(){
     ['雪板 R', cfg.R+' m', `${r.R[0]}–${r.R[1]} m`, st(cfg.R, r.R[0], r.R[1])],
     ['坡度', cfg.slope+'°', `${r.slope[0]}–${r.slope[1]}°`, st(cfg.slope, r.slope[0], r.slope[1])],
     ['速度', cfg.v+' km/h', `${r.v[0]}–${r.v[1]} km/h`, st(cfg.v, r.v[0], r.v[1])],
-    ...(LV[cfg.level].kind === 'pivot' || LV[cfg.level].kind === 'trav' ? [] : [['→ 转弯半径', C.Rt.toFixed(1)+' m', cfg.level === 'carve' ? 'R × cos(edge)' : '由速度和做得到的倾倒决定', ''],
+    ...(LV[cfg.level].kind === 'pivot' || LV[cfg.level].kind === 'trav' || LV[cfg.level].kind === 'slip' ? [] : [['→ 转弯半径', C.Rt.toFixed(1)+' m', cfg.level === 'carve' ? 'R × cos(edge)' : '由速度和做得到的倾倒决定', ''],
     ['→ 最大倾倒', (C.phiApex/D).toFixed(0)+'°', 'tan θ = v²/(g·r)', ''],
     ['→ 最大立刃', (C.edgeApex/D).toFixed(0)+'°', cfg.level === 'beg' ? '外脚内刃' : '倾倒＋反弓', ''],
     ['→ 外脚地面反作用力', '≈ '+(1/Math.cos(C.phiApex)).toFixed(2)+'× 体重', '1 / cos θ', '']]),
@@ -1202,7 +1228,9 @@ function updateUI(p, act, md, now){
   const outer = p.nsh < .05 ? '—' : (p.sg > 0 ? '左脚' : '右脚');
   const skiY = (p.yawR + p.yawL)/2, pelY = p.psi*lv.pyaw, torY = p.psi*lv.tyaw;
   const sep = `髋转 ${Math.abs((skiY-pelY)/D).toFixed(0)}°・腰转 ${Math.abs((pelY-torY)/D).toFixed(0)}°`;
-  if (lv.kind === 'pivot' || lv.kind === 'trav'){
+  if (lv.kind === 'slip'){
+    hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>坡度 ${cfg.slope}°・上坡刃 ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>${p.pulse > .62 ? '🛑 接近停止' : p.pulse < .38 ? '⬇️ 下滑中' : '➡️ 稳定滑行'}<br>${sep}`;
+  } else if (lv.kind === 'pivot' || lv.kind === 'trav'){
     hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b><br>坡度 ${cfg.slope}°・雪板方向 ${Math.abs(p.psi/D).toFixed(0)}°（0° = 滚落线）<br>Uphill edge ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>${sep}`;
   } else
   hud.innerHTML = `<b>${PH[cfg.level][ph][0]}</b> ${turn}<br>${cfg.v} km/h・转弯半径 ${C.Rt.toFixed(1)} m<br>倾倒 ${(p.phiMag/D).toFixed(0)}°・外脚立刃 ${Math.abs(p.edgeOuter/D).toFixed(0)}°<br>外脚 ${outer}・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× 体重<br>${sep}`;
@@ -1238,7 +1266,7 @@ function updateUI(p, act, md, now){
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
-const GUIDE = {"beg": {"q": [["转右弯时，哪只脚要多出点力？", "左脚（弯外那只）。外脚加压，雪板就会转。"], ["重心应该在脚跟还是脚掌中间？", "脚掌中间。后坐会让大腿很快酸，又控制不了雪板。"]], "sum": "保持 A 字，重心在脚掌中间，想往哪边转就压另一边的脚。", "snow": "在缓坡慢慢做 4–5 个弯，每个弯说出「压左脚」／「压右脚」，感觉压力在脚掌中间，不是脚跟。"}, "mid": {"q": [["换刃时，身体应该往上伸还是往下压？", "先轻轻伸展减压，双板容易换刃；入弯后再屈曲加压。"], ["上半身应该跟着雪板转吗？", "不应该。上半身大致面向下坡，转弯靠下半身。"]], "sum": "伸展换刃、屈曲加压、上半身面向下坡。", "snow": "每个弯心里喊「起、压」的节奏；看着远方一点，注意肩膀不要跟着雪板转。"}, "carve": {"q": [["入弯时，最大压力应该在哪只脚？", "外脚，大约 80–90%。"], ["立刃角度应该大于、等于，还是小于身体倾倒？", "大于。差距来自膝盖和髋部的反弓。"]], "sum": "早点倾倒入弯，外脚撑住，上半身保持水平，让雪板自己转。", "snow": "在缓坡做 railroad track：雪板不要打滑，雪上只留两条细线；感觉外脚鞋舌一直有压力。"}, "mogul": {"q": [["撞上猫跳面时，脚应该伸直还是屈曲？", "屈曲吸收，像避震器一样。"], ["头的高度应该跟着猫跳上下吗？", "不应该。头和上半身尽量保持一条平顺的线。"]], "sum": "撞上就收脚，进雪沟就伸脚，上半身保持平稳。", "snow": "先在猫跳区边缘做单颗猫跳「撞、收、伸」；再练在猫跳顶点杖的时机。"}, "short": {"q": [["小回转时上半身应该面向哪里？", "一直面向正下坡（滚落线）。"], ["什么时候点杖？", "每次换刃之前，带身体往前进入下一个弯。"]], "sum": "上半身面向山下，脚在下面左右摆，点杖带节奏。", "snow": "选一条窄雪道，假设两边有墙；心里数「点、转、点、转」。"}, "pivot": {"q": [["转向时，身体哪个部位应该转？", "大腿在骨盆里转，上半身不动。"], ["转之前立刃应该加大还是放平？", "先放平，雪板才转得顺。"]], "sum": "立刃放平，大腿转，上半身不动，沿滚落线直线下滑。", "snow": "在中级坡做，起点和终点对准同一条直线（例如缆车柱），检查自己有没有往左右偏。"}, "trav": {"q": [["斜滑降时，哪只脚承受比较多重量？", "下坡脚。"], ["膝盖和髋部应该推向上坡还是下坡？", "上坡；上半身就朝下坡，形成反弓。"]], "sum": "下坡脚承重、膝盖推向上坡、上半身朝下坡；放刃下滑，入刃回升。", "snow": "横越雪道时试着提起上坡脚，站得稳才对；做 garland 时感受「放」和「咬」的差别。"}, "lift": {"q": [["提起内脚之后，重心应该在外脚的哪里？", "脚掌中间偏前，不是脚跟。"], ["提起内脚靠哪些肌肉？", "腘绳肌屈膝提起，不是用腰。"]], "sum": "所有重量交给外脚，站得稳才算真的站在外脚上。", "snow": "在缓坡做，从每个弯提起 1 秒开始，慢慢延长到整个弯。"}};
+const GUIDE = {"slip": {"q": [["想停下，上坡刃要加大还是放小？", "加大。膝盖和脚踝推向上坡，立刃接近坡度就停。"], ["上半身应该面向哪里？", "面向下坡，不要跟着双板转成横向。"]], "sum": "双板横向笔直下滑，用立刃控速：加大就停，放小就滑。", "snow": "选 10–20° 的平整雪道，双板横向，滑 2 公尺、停、再滑 2 公尺；之后练侧滑转向和急停。"}, "beg": {"q": [["转右弯时，哪只脚要多出点力？", "左脚（弯外那只）。外脚加压，雪板就会转。"], ["重心应该在脚跟还是脚掌中间？", "脚掌中间。后坐会让大腿很快酸，又控制不了雪板。"]], "sum": "保持 A 字，重心在脚掌中间，想往哪边转就压另一边的脚。", "snow": "在缓坡慢慢做 4–5 个弯，每个弯说出「压左脚」／「压右脚」，感觉压力在脚掌中间，不是脚跟。"}, "mid": {"q": [["换刃时，身体应该往上伸还是往下压？", "先轻轻伸展减压，双板容易换刃；入弯后再屈曲加压。"], ["上半身应该跟着雪板转吗？", "不应该。上半身大致面向下坡，转弯靠下半身。"]], "sum": "伸展换刃、屈曲加压、上半身面向下坡。", "snow": "每个弯心里喊「起、压」的节奏；看着远方一点，注意肩膀不要跟着雪板转。"}, "carve": {"q": [["入弯时，最大压力应该在哪只脚？", "外脚，大约 80–90%。"], ["立刃角度应该大于、等于，还是小于身体倾倒？", "大于。差距来自膝盖和髋部的反弓。"]], "sum": "早点倾倒入弯，外脚撑住，上半身保持水平，让雪板自己转。", "snow": "在缓坡做 railroad track：雪板不要打滑，雪上只留两条细线；感觉外脚鞋舌一直有压力。"}, "mogul": {"q": [["撞上猫跳面时，脚应该伸直还是屈曲？", "屈曲吸收，像避震器一样。"], ["头的高度应该跟着猫跳上下吗？", "不应该。头和上半身尽量保持一条平顺的线。"]], "sum": "撞上就收脚，进雪沟就伸脚，上半身保持平稳。", "snow": "先在猫跳区边缘做单颗猫跳「撞、收、伸」；再练在猫跳顶点杖的时机。"}, "short": {"q": [["小回转时上半身应该面向哪里？", "一直面向正下坡（滚落线）。"], ["什么时候点杖？", "每次换刃之前，带身体往前进入下一个弯。"]], "sum": "上半身面向山下，脚在下面左右摆，点杖带节奏。", "snow": "选一条窄雪道，假设两边有墙；心里数「点、转、点、转」。"}, "pivot": {"q": [["转向时，身体哪个部位应该转？", "大腿在骨盆里转，上半身不动。"], ["转之前立刃应该加大还是放平？", "先放平，雪板才转得顺。"]], "sum": "立刃放平，大腿转，上半身不动，沿滚落线直线下滑。", "snow": "在中级坡做，起点和终点对准同一条直线（例如缆车柱），检查自己有没有往左右偏。"}, "trav": {"q": [["斜滑降时，哪只脚承受比较多重量？", "下坡脚。"], ["膝盖和髋部应该推向上坡还是下坡？", "上坡；上半身就朝下坡，形成反弓。"]], "sum": "下坡脚承重、膝盖推向上坡、上半身朝下坡；放刃下滑，入刃回升。", "snow": "横越雪道时试着提起上坡脚，站得稳才对；做 garland 时感受「放」和「咬」的差别。"}, "lift": {"q": [["提起内脚之后，重心应该在外脚的哪里？", "脚掌中间偏前，不是脚跟。"], ["提起内脚靠哪些肌肉？", "腘绳肌屈膝提起，不是用腰。"]], "sum": "所有重量交给外脚，站得稳才算真的站在外脚上。", "snow": "在缓坡做，从每个弯提起 1 秒开始，慢慢延长到整个弯。"}};
 const STANCE_SHORT = {"back": "重心偏后：板头没有压力，大腿很快就累。", "fwd": "重心太前：板尾打滑，出弯放不掉。", "even": "双脚平均：外脚咬不牢，容易变成 A 字腿。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
 const CMP_DEFAULT = 'back';

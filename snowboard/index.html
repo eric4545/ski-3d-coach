@@ -79,14 +79,19 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
   <div class="hud" id="hud"></div>
   <svg id="gauge" viewBox="0 0 110 124">
     <text x="55" y="14" fill="#8b98a5" font-size="10" text-anchor="middle">由板尾睇</text>
-    <line x1="8" y1="94" x2="102" y2="94" stroke="#5b6b7a" stroke-width="2"/>
+    <g id="gAll">
+    <line x1="-4" y1="94" x2="114" y2="94" stroke="#5b6b7a" stroke-width="2"/>
     <g id="gLean" transform="translate(55,94)">
       <line x1="0" y1="0" x2="0" y2="-68" stroke="#ffd23f" stroke-width="2" stroke-dasharray="4 3"/>
       <circle cx="0" cy="-68" r="5" fill="#ffd23f"/>
     </g>
     <g id="gBoard" transform="translate(55,94)">
       <rect x="-26" y="-5" width="52" height="5" rx="2" fill="#7c6cf0"/>
+      <text id="gToe" x="20" y="11" font-size="8" fill="#f59e0b" text-anchor="middle">趾</text>
+      <text id="gHeel" x="-20" y="11" font-size="8" fill="#38bdf8" text-anchor="middle">踭</text>
     </g>
+    </g>
+    <text id="gDown" x="55" y="38" fill="#8b98a5" font-size="8" text-anchor="middle"></text>
     <text id="gTxt" x="55" y="114" fill="#e6edf3" font-size="11" text-anchor="middle"></text>
   </svg>
   <svg id="feet" viewBox="0 0 110 150">
@@ -114,6 +119,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
   </div>
   <div class="row seg">
     <button data-l="slip">Side slip</button>
+    <button data-l="leaf">落葉飄 Falling leaf</button>
     <button data-l="trav">斜滑降＋Garland</button>
     <button data-l="beg">入門・Skid</button>
     <button data-l="mid">中級・動態</button>
@@ -269,7 +275,8 @@ const LV = {
   trav: {name:'斜滑降＋Garland', kind:'trav', v:12, slope:12, boardOff:-20, R:7.5, cap:35*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.45},
   ollie:{name:'Ollie／Nollie', kind:'ollie', v:15, slope:8, boardOff:-20, R:7.5, cap:10*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.3},
   butter:{name:'Butter／Press 360', kind:'butter', v:8, slope:6, boardOff:-22, R:7.5, cap:10*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.3},
-  slip: {kind:'slip', name:'Side slip（落葉）', v:0, slope:12, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.5, slip:true},
+  leaf: {kind:'slip', name:'落葉飄 Falling leaf', leaf:true, v:0, slope:12, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.5, slip:true},
+  slip: {kind:'slip', name:'Side slip', v:0, slope:12, boardOff:-20, R:7.5, cap:30*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:.5, slip:true},
   beg:  {name:'入門・Skid 轉彎', v:15, slope:10, boardOff:-20, R:7.5, cap:25*D, skid:25*D, Rbase:6, psiB:10, h0:.8, minDrive:.5},
   mid:  {name:'中級・動態轉彎', v:25, slope:15, boardOff:-17, R:7.8, cap:45*D, skid:10*D, Rbase:8, psiB:5, h0:.8, minDrive:.4},
   carve:{name:'Carving', v:25, slope:18, boardOff:-14, R:8, cap:65*D, skid:0, Rbase:0, psiB:0, h0:.8, minDrive:0, carve:true},
@@ -280,6 +287,7 @@ const REC = {
   ollie:{b:[-25,-15], R:[6.5,8],  slope:[4,12],  v:[8,25]},
   butter:{b:[-28,-18], R:[6.5,8], slope:[3,10],  v:[3,15]},
   slip: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[0,99]},
+  leaf: {b:[-25,-15], R:[6.5,8],  slope:[8,15],  v:[0,99]},
   beg:  {b:[-25,-15], R:[6.5,8],  slope:[6,12],  v:[8,20]},
   mid:  {b:[-22,-12], R:[7,8.5],  slope:[12,20], v:[15,35]},
   carve:{b:[-20,-8],  R:[7.5,10], slope:[15,28], v:[18,40]},
@@ -313,7 +321,7 @@ function build(){
     return;
   }
   if (lv.slip){
-    C = {v:1, Rt:0, phiApex: cfg.slope*D*.95, om:1, A:1.8, L:3.2, period:9, warn:'', k: cfg.H/175, S: cfg.H*.0031, inten:.35, slip:true};
+    C = {v:1, Rt:0, phiApex: cfg.slope*D*.95, om:1, A: lv.leaf ? 3.5 : 1.8, L: lv.leaf ? 2.6 : 3.2, period: lv.leaf ? 11 : 9, warn:'', k: cfg.H/175, S: cfg.H*.0031, inten:.35, slip:true};
     slopeG.rotation.x = cfg.slope*D;
     buildBoard(); rescale(); placeLegMuscles(); rebuildTrails(Math.floor(sT)); renderSpec(); renderWatch(); renderJumps();
     return;
@@ -552,15 +560,28 @@ function poseButter(s){
 }
 function slipPulse(s){ return (Math.sin(W*3*s) + 1)/2; }
 function poseSlip(s){
-  const dir = DIR(), heel = cfg.slipSide !== 'toe', leaf = cfg.slipSide === 'leaf';
+  const dir = DIR(), heel = cfg.slipSide !== 'toe', leaf = !!LV[cfg.level].leaf;
+  if (leaf) return poseLeaf(s, dir, heel);
   const yawB = (heel ? 90 : -90)*D*dir;
   const pulse = slipPulse(s);
   const e = cfg.slope*D*(.5 + .45*pulse);
   const toeLean = heel ? -e : e, phi = toeLean*dir;
   // downhill progress only while the edge is low (slide); nearly stops when the edge is high
   const zf = (s*(1 - .475) + .475*(Math.cos(W*3*s) - 1)/(W*3))/(1 - .475);
-  const mid = new V(leaf ? C.A*Math.sin(W*s) : 0, 0, zf*C.L);
+  const mid = new V(0, 0, zf*C.L);
   return finish({s, sn: (phi >= 0 ? 1 : -1)*.7, cs: 0, mid, psi: yawB, sg: phi >= 0 ? 1 : -1, phi, phiMag: Math.abs(phi), nsh: .55, yawB, kap: 0, pulse});
+}
+// Falling leaf: one cycle = across the slope nose-first, stop, back tail-first, stop.
+// The leading end dips slightly downhill (yaw toward the fall line), edge stays on, slows/brakes at each end.
+function poseLeaf(s, dir, heel){
+  const vx = Math.cos(W*s);                     // traverse velocity (sign = direction)
+  const pulse = Math.sin(W*s)**2;               // 1 at the ends of each traverse = brake
+  const e = cfg.slope*D*(.55 + .4*pulse);
+  const toeLean = heel ? -e : e, phi = toeLean*dir;
+  const k = .9, zf = (s - k*(s/2 - Math.sin(2*W*s)/(4*W)))/(1 - k/2);
+  const yaw = (heel ? 90 : -90)*D*dir - vx*18*D;  // leading end (nose or tail) points a little downhill
+  const mid = new V(C.A*Math.sin(W*s), 0, zf*C.L);
+  return finish({s, sn: (phi >= 0 ? 1 : -1)*.7, cs: 0, mid, psi: yaw, sg: phi >= 0 ? 1 : -1, phi, phiMag: Math.abs(phi), nsh: .55, yawB: yaw, kap: 0, pulse, vx});
 }
 function finish(b){
   const lv = LV[cfg.level], k = C.k, st = STANCE[cfg.stance], dir = DIR();
@@ -646,7 +667,7 @@ function dLen(key, side, d){
 
 function weightF(p){
   if (p.wF !== undefined) return clamp(p.wF + STANCE[cfg.stance].dw, .1, .9);
-  if (LV[cfg.level].slip) return clamp(.5 + (cfg.slipSide === 'leaf' ? .18*Math.cos(W*p.s)*Math.sign(p.fB.x||1) : 0) + STANCE[cfg.stance].dw, .15, .85);
+  if (LV[cfg.level].slip) return clamp(.5 + (LV[cfg.level].leaf ? .2*Math.cos(W*p.s)*Math.sign(p.fB.x||1) : 0) + STANCE[cfg.stance].dw, .15, .85);
   const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
   return clamp(.52 + .1*init - .14*comp + STANCE[cfg.stance].dw, .15, .85);
 }
@@ -721,6 +742,12 @@ const PH = {
     out:['放返平','完成轉向後兩腳平均放返平，繼續滑。'],
     trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
   },
+  leaf: {
+    nose:['向板頭方向斜落','前腳多啲重量（約 70%），板頭微微指向下坡，塊板就向板頭方向斜住滑；edge 一直保持住。'],
+    tail:['向板尾方向斜落','重心移去後腳，板尾微微指向下坡，塊板就向板尾方向倒返轉頭滑；唔使換刃。'],
+    brake:['停定換方向','兩腳返平均、edge 加大到接近坡度先停定，再將重心移去另一隻腳。'],
+    slide:['',''], ctrl:['',''], trans:['',''], init:['',''], toe:['',''], heel:['',''], comp:['','']
+  },
   slip: {
     slide:['滑落：edge 放細','Edge 細過坡度，板就會向下滑。眼望前面，雙腳平均，膝頭保持微屈。'],
     ctrl:['控制：維持 edge','保持同一個 edge 角度，就會以穩定速度滑落；用腳踝微調，唔係用屁股。'],
@@ -761,6 +788,7 @@ function phaseOf(p){
   if (kind === 'trav') return p.down > .35 ? 'down' : p.up > .35 ? 'up' : 'trav';
   if (kind === 'ollie') return p.u < .3 ? 'ride' : p.u < .44 ? 'pre' : p.u < .52 ? 'pop' : p.u < .73 ? 'air' : p.u < .9 ? 'land' : 'ride';
   if (kind === 'butter') return p.u < .2 ? 'ride' : p.u < .35 ? 'press' : p.u < .8 ? 'spin' : 'out';
+  if (LV[cfg.level].leaf) return p.pulse > .7 ? 'brake' : Math.cos(W*p.s)*Math.sign(p.fB.x||1) > 0 ? 'nose' : 'tail';
   if (LV[cfg.level].slip) return p.pulse > .62 ? 'brake' : p.pulse < .38 ? 'slide' : 'ctrl';
   const u = ((p.s*2)%1+1)%1;
   if (u < .1 || u > .9) return 'trans';
@@ -792,11 +820,18 @@ const WATCH = {
     {w:'放返平', v:'front', j:.85, t:'轉完兩腳平均放返平，唔好坐後。'},
     {w:'Tail butter', v:'top', j:'tail', t:'切換做 Tail butter：後腳壓、板尾做支點。'}
   ],
+  leaf: [
+    {w:'Z 字軌跡', v:'top', j:0, t:'鳥瞰圖：左右來回、慢慢向下，好似樹葉跌落咁；全程都係同一條 edge，唔使換刃。'},
+    {w:'前腳帶', v:'top', j:0, t:'向板頭方向去：前腳多重量，板頭微微指向下坡。睇腳掌圖紅點喺前腳。'},
+    {w:'後腳帶', v:'top', j:.5, t:'向板尾方向去：重心移去後腳，板尾帶頭（即係 switch 方向）。'},
+    {w:'兩端停定', v:'front', j:.25, t:'去到盡頭 edge 加大停定，兩腳平均，先轉方向。'},
+    {w:'Heel／Toe', v:'front', j:'toe', t:'Heelside 做完再揀「Toeside」做一次。'}
+  ],
   slip: [
     {w:'Heel slip', v:'front', j:'heel', t:'面向下坡，用後腳跟嗰邊 edge（heel edge）。㩒「Heelside」掣切換。'},
     {w:'Toe slip', v:'back', j:'toe', t:'背向下坡，用腳趾嗰邊 edge。㩒「Toeside」掣切換；睇唔到下面，所以要轉頭望。'},
     {w:'Edge 對坡度', v:'heelV', j:'trans', t:'右上角 gauge：edge 細過坡度就滑，接近坡度就停。'},
-    {w:'落葉 Falling leaf', v:'top', j:'leaf', t:'學識直落同停之後先做：前腳多啲壓力就向板頭斜落，後腳多啲就向板尾，睇腳掌圖兩粒紅點。'},
+    {w:'落葉 Falling leaf', v:'top', j:.25, t:'學識直落同停之後，揀上面「落葉飄」嗰個掣練：塊板會左右移。'},
     {w:'上身唔郁', v:'front', j:'init', t:'控制係靠腳踝同膝頭，上身同手保持穩定。'}
   ],
   beg: [
@@ -1046,7 +1081,7 @@ function applyPose(p){
     bStrip.position.x = x;
     paintStrip(bStrip, z => fn(z*Lb));
     const press = Math.max(p.press || 0, Math.min(1, Math.abs(pit)/(12*D)));
-    const carveF = ({euro:1, carve:1, mid:.6, beg:.3, trav:.4, slip:.1}[cfg.level] ?? 0)*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1);
+    const carveF = ({euro:1, carve:1, mid:.6, beg:.3, trav:.4, slip:.1, leaf:.1}[cfg.level] ?? 0)*(turnish() && STANCE[cfg.stance].fx ? STANCE[cfg.stance].fx.bend : 1);
     const kRaw = lift > .02 ? 0 : carveF*Math.tan(Math.min(Math.abs(p.edge), 80*D))/cfg.R + press/3;
     const kap = bendMul*kRaw;
     if (bParts){
@@ -1161,7 +1196,7 @@ const JUMPS = {
   butter:[['Press',() => .3],['開始轉',() => .45],['轉一半',() => .575],['完成',() => .85]]
 };
 const SUBS = {
-  slip: ['slipSide', [['heel','Heelside'],['toe','Toeside'],['leaf','落葉飄（左右移）']]],
+  slip: ['slipSide', [['heel','Heelside'],['toe','Toeside']]],
   trav: ['slipSide', [['heel','Heelside'],['toe','Toeside']]],
   ollie:['trick', [['ollie','Ollie（板尾彈）'],['nollie','Nollie（板頭彈）']]],
   butter:['butter', [['nose','Nose butter'],['tail','Tail butter']]]
@@ -1179,7 +1214,7 @@ function renderJumps(){
 }
 function goWatch(j){
   const sub = SUBS[kindOf()];
-  if (sub && (j === 'toe' || j === 'heel' || j === 'leaf' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail')){ setSub(sub[0], j); return; }
+  if (sub && (j === 'toe' || j === 'heel' || j === 'ollie' || j === 'nollie' || j === 'nose' || j === 'tail')){ setSub(sub[0], j); return; }
   if (typeof j === 'number') return jump(j);
   if (kindOf() === 'slip') return jump(j === 'trans' ? 1/12 : .25);
   jump(JUMP[j]());
@@ -1343,13 +1378,19 @@ function updateUI(p, act, md, now){
       : `已轉 ${Math.round(((p.yawB/W*360)%360+360)%360)}°・板角度 ${Math.abs((p.pitch||0)/D).toFixed(0)}°`;
     hud.innerHTML = `<b>${subName}・${P[0]}</b><br>${extra}<br>前腳 ${Math.round(weightF(p)*100)}%・後腳 ${Math.round((1-weightF(p))*100)}%<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
   } else if (LV[cfg.level].slip){
-    hud.innerHTML = `<b>${cfg.slipSide === 'toe' ? 'Toe slip' : cfg.slipSide === 'leaf' ? '落葉飄' : 'Heel slip'}・${P[0]}</b><br>坡度 ${cfg.slope}°・Edge ${Math.abs(p.edge/D).toFixed(0)}°<br>${p.pulse > .62 ? '🛑 接近停' : p.pulse < .38 ? '⬇️ 滑落中' : '➡️ 穩定滑'}<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
+    hud.innerHTML = `<b>${(LV[cfg.level].leaf ? '落葉飄・' : '') + (cfg.slipSide === 'toe' ? 'Toe slip' : 'Heel slip')}・${P[0]}</b><br>坡度 ${cfg.slope}°・Edge ${Math.abs(p.edge/D).toFixed(0)}°<br>${p.pulse > .62 ? '🛑 接近停' : p.pulse < .38 ? '⬇️ 滑落中' : '➡️ 穩定滑'}<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}`;
   } else
   hud.innerHTML = `<b>${P[0]}</b> ${ph==='toe'||ph==='heel' ? '' : tt}<br>${cfg.v} km/h・彎半徑 ${C.Rt.toFixed(1)} m<br>傾斜 ${(p.phiMag/D).toFixed(0)}°・Edge ${Math.abs(p.edge/D).toFixed(0)}°<br>${cfg.dir > 0 ? 'Regular' : 'Goofy'}${cfg.sw ? '・Switch' : ''}・GRF ≈ ${(1/Math.cos(p.phiMag)).toFixed(2)}× 體重`;
-  // gauge from tail: toe side to the right on screen for regular → show toe-lean positive as right
-  const gl = p.toeLean/D;
-  gLean.setAttribute('transform', `translate(55,94) rotate(${gl.toFixed(1)})`);
-  gBoard.setAttribute('transform', `translate(55,94) rotate(${(p.edge*DIR()/D).toFixed(1)})`);
+  // gauge seen from the tail (rear end in the direction the lead foot points):
+  // toe edge is on the right for regular, on the left for goofy (switch flips it)
+  const ts = DIR(), gl = p.toeLean*ts/D, gb = p.edge*DIR()*ts/D;
+  gBoard.setAttribute('transform', `translate(55,94) rotate(${gb.toFixed(1)})`);
+  document.getElementById('gToe').setAttribute('x', 20*ts); document.getElementById('gHeel').setAttribute('x', -20*ts);
+  // side slip: draw the real slope (snow falls away toward the downhill side) so gravity stays vertical
+  const slipV = LV[cfg.level].slip, dn = slipV ? (cfg.slipSide === 'toe' ? -ts : ts) : 0;
+  document.getElementById('gAll').setAttribute('transform', slipV ? `rotate(${(dn*cfg.slope).toFixed(1)} 55 94)` : '');
+  gLean.setAttribute('transform', `translate(55,94) rotate(${(slipV ? -dn*cfg.slope : gl).toFixed(1)})`);  // slip: gravity line stays vertical
+  document.getElementById('gDown').textContent = slipV ? (dn > 0 ? '下坡 →' : '← 下坡') : '';
   gTxt.textContent = `${tt || '平板'} ${Math.abs(p.edge/D).toFixed(0)}°`;
   if (ph !== lastPhase){ phTitle.textContent = P[0]; phCue.textContent = P[1]; lastPhase = ph; }
 
@@ -1382,7 +1423,7 @@ function updateUI(p, act, md, now){
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
-const GUIDE = {"slip": {"q": [["想停，edge 要加大定放細？", "加大，接近坡度就會停。"], ["眼應該望邊？", "望前面（下坡方向），唔好望塊板。"]], "sum": "用腳踝控制 edge 角度：大就停，細就滑。", "snow": "Heel slip：拉起腳趾停、放低腳趾滑，重複 5 次；之後再試 toe slip。"}, "trav": {"q": [["想由斜滑降轉向 fall line，要點做？", "放平少少 edge，前腳輕輕加壓。"], ["轉返上坡靠乜？", "重新加 edge：heel 拉腳趾，toe 推膝頭。"]], "sum": "放刃落、入刃上，係連續轉彎之前嘅一步。", "snow": "一條雪道做 3–4 個 garland 先停，heel 同 toe 兩邊都要練。"}, "beg": {"q": [["入彎時重心應該放前腳定後腳？", "前腳多少少（大約 55–60%）。"], ["眼應該望邊？", "望住要去嘅方向，頭同肩膀帶身體。"]], "sum": "望去邊，前腳帶，後腳跟住。", "snow": "每個彎之前先轉頭望去下一個方向，再輕輕壓前腳。"}, "mid": {"q": [["Heelside 主要靠邊組肌肉？", "脛前肌拉起腳趾，股四頭肌同腹肌撐住。"], ["上身應該帶轉塊板嗎？", "唔應該，靠腳踝同膝頭控制。"]], "sum": "伸展換刃、屈曲加壓、上身穩定。", "snow": "每個彎講「起、壓」；試吓手放喺膝頭上面做幾個彎，感覺下半身帶轉。"}, "carve": {"q": [["單板 edge 角度同身體傾斜比較係點？", "差唔多一樣。"], ["Toeside 時髖應該向後頂嗎？", "唔應該，身體成條直線向彎內傾。"]], "sum": "早啲傾斜，畀塊板自己轉，雪上只留一條幼線。", "snow": "喺緩坡做 carve traverse：只用一邊 edge 橫過雪道，再回頭睇雪上係咪一條幼線。"}, "euro": {"q": [["手掃雪係用嚟撐住身體嗎？", "唔係。重心仍然喺 edge 上面，手只係輕輕掂。"], ["想倒得低，最需要乜？", "夠速度同埋 edge 咬實；太慢就倒唔落。"]], "sum": "靠速度同 edge 撐住身體，唔係靠隻手。", "snow": "揀壓雪好嘅闊雪道，先練 heelside，逐步加大傾斜；記得保護膝頭同手腕。"}, "ollie": {"q": [["Pop 之前身體要做乜？", "蹲低，重心移去板尾，好似壓彈弓。"], ["喺空中點樣令塊板跟住起？", "膝頭向胸口收，前腳拉平塊板。"]], "sum": "壓尾、彈起、收腳、屈膝著地。", "snow": "先喺平地原地練，再喺緩坡慢速做；著地時雙腳要同時落。"}, "butter": {"q": [["Nose butter 重心放邊？", "前腳，大約 80–90%。"], ["轉嘅力量由邊度嚟？", "上身先預扭，再帶頭轉，下半身跟住。"]], "sum": "壓板頭、預扭、上身帶轉。", "snow": "先喺平地練 nose press 企定 3 秒，再加 180，最後先試 360。"}};
+const GUIDE = {"leaf": {"q": [["想向板頭方向去，重心放邊隻腳？", "前腳。板頭微微指向下坡就會向板頭斜落。"], ["轉方向要唔要換刃？", "唔使，全程同一條 edge，只係前後腳轉重心。"]], "sum": "同一條 edge 左右來回：前腳帶就向板頭、後腳帶就向板尾，兩端 edge 加大停定。", "snow": "先 heelside：向板頭斜落 3–5 米，停，再向板尾返轉頭；之後 toeside 再做。熟咗就係學 J-turn 同 S 彎嘅前一步。"}, "slip": {"q": [["想停，edge 要加大定放細？", "加大，接近坡度就會停。"], ["眼應該望邊？", "望前面（下坡方向），唔好望塊板。"]], "sum": "用腳踝控制 edge 角度：大就停，細就滑。", "snow": "Heel slip：拉起腳趾停、放低腳趾滑，重複 5 次；之後再試 toe slip。"}, "trav": {"q": [["想由斜滑降轉向 fall line，要點做？", "放平少少 edge，前腳輕輕加壓。"], ["轉返上坡靠乜？", "重新加 edge：heel 拉腳趾，toe 推膝頭。"]], "sum": "放刃落、入刃上，係連續轉彎之前嘅一步。", "snow": "一條雪道做 3–4 個 garland 先停，heel 同 toe 兩邊都要練。"}, "beg": {"q": [["入彎時重心應該放前腳定後腳？", "前腳多少少（大約 55–60%）。"], ["眼應該望邊？", "望住要去嘅方向，頭同肩膀帶身體。"]], "sum": "望去邊，前腳帶，後腳跟住。", "snow": "每個彎之前先轉頭望去下一個方向，再輕輕壓前腳。"}, "mid": {"q": [["Heelside 主要靠邊組肌肉？", "脛前肌拉起腳趾，股四頭肌同腹肌撐住。"], ["上身應該帶轉塊板嗎？", "唔應該，靠腳踝同膝頭控制。"]], "sum": "伸展換刃、屈曲加壓、上身穩定。", "snow": "每個彎講「起、壓」；試吓手放喺膝頭上面做幾個彎，感覺下半身帶轉。"}, "carve": {"q": [["單板 edge 角度同身體傾斜比較係點？", "差唔多一樣。"], ["Toeside 時髖應該向後頂嗎？", "唔應該，身體成條直線向彎內傾。"]], "sum": "早啲傾斜，畀塊板自己轉，雪上只留一條幼線。", "snow": "喺緩坡做 carve traverse：只用一邊 edge 橫過雪道，再回頭睇雪上係咪一條幼線。"}, "euro": {"q": [["手掃雪係用嚟撐住身體嗎？", "唔係。重心仍然喺 edge 上面，手只係輕輕掂。"], ["想倒得低，最需要乜？", "夠速度同埋 edge 咬實；太慢就倒唔落。"]], "sum": "靠速度同 edge 撐住身體，唔係靠隻手。", "snow": "揀壓雪好嘅闊雪道，先練 heelside，逐步加大傾斜；記得保護膝頭同手腕。"}, "ollie": {"q": [["Pop 之前身體要做乜？", "蹲低，重心移去板尾，好似壓彈弓。"], ["喺空中點樣令塊板跟住起？", "膝頭向胸口收，前腳拉平塊板。"]], "sum": "壓尾、彈起、收腳、屈膝著地。", "snow": "先喺平地原地練，再喺緩坡慢速做；著地時雙腳要同時落。"}, "butter": {"q": [["Nose butter 重心放邊？", "前腳，大約 80–90%。"], ["轉嘅力量由邊度嚟？", "上身先預扭，再帶頭轉，下半身跟住。"]], "sum": "壓板頭、預扭、上身帶轉。", "snow": "先喺平地練 nose press 企定 3 秒，再加 180，最後先試 360。"}};
 const STANCE_SHORT = {"back": "後腳太重：板頭飄，要靠上身扭先轉到。", "waist": "屈腰／坐馬桶：重心離開 edge，容易跌。", "rot": "上身帶轉：板尾甩出，上下身唔同步。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
 const CMP_DEFAULT = 'back';
