@@ -123,15 +123,15 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <p class="note">📖 CoM＝身體重心・Edge＝板邊咬住雪・外腳＝彎外面嗰隻腳（負責轉彎嗰隻）・內腳＝彎裏面嗰隻</p>
   </div>
   <div class="card" id="orgCard">
-    <details><summary>🇯🇵 SAJ 日本スキー教程：級別測驗對照</summary>
-      <p class="note">SAJ（全日本スキー連盟）教程 2024 年版。轉彎三要素：荷重・角づけ・回旋。指導順序：初歩動作 → プルークボーゲン → ベーシックパラレル → ダイナミックパラレル。</p>
+    <details><summary>🇯🇵 SAJ 日本滑雪教程：級別測驗對照</summary>
+      <p class="note">SAJ（全日本滑雪聯盟）教程 2024 年版。轉彎三要素：加壓・立刃・旋轉。指導順序：入門動作 → 犁式轉彎 → 基礎平行 → 動態平行。</p>
       <table><tr><th>級</th><th>考咩</th><th>呢頁睇</th></tr>
-      <tr><td>5 級</td><td>プルークボーゲン（緩斜面）</td><td><button data-l2="beg">入門・犁式</button></td></tr>
-      <tr><td>4 級</td><td>プルークボーゲンでリズム変化</td><td><button data-l2="beg">入門・犁式</button></td></tr>
-      <tr><td>3 級</td><td>ベーシックパラレルターン、シュテムボーゲン</td><td><button data-l2="bpt">ベーシック</button> <button data-l2="stem">シュテム</button></td></tr>
-      <tr><td>2 級</td><td>ベーシックパラレル大回り・小回り、シュテムターン</td><td><button data-l2="bpt">大回り</button> <button data-l2="short">小回り</button> <button data-l2="stem">シュテム</button></td></tr>
-      <tr><td>1 級</td><td>パラレル大回り（急斜面）、ベーシック小回り、不整地小回り、総合滑降</td><td><button data-l2="dpt">ダイナミック</button> <button data-l2="short">小回り</button> <button data-l2="mogul">不整地</button></td></tr></table>
-      <p class="note">上下運動嘅分別：ベーシック = 換刃伸高、彎中屈低；ダイナミック = 換刃收腳、入彎伸腳。兩級切嚟切去，睇黃色 CoM 線。</p>
+      <tr><td>5 級</td><td>犁式轉彎（緩坡）</td><td><button data-l2="beg">入門・犁式</button></td></tr>
+      <tr><td>4 級</td><td>犁式轉彎（節奏變化）</td><td><button data-l2="beg">入門・犁式</button></td></tr>
+      <tr><td>3 級</td><td>基礎平行轉彎、半犁式轉彎</td><td><button data-l2="bpt">基礎</button> <button data-l2="stem">半犁式</button></td></tr>
+      <tr><td>2 級</td><td>基礎平行大彎・小彎、半犁式轉彎</td><td><button data-l2="bpt">大彎</button> <button data-l2="short">小彎</button> <button data-l2="stem">半犁式</button></td></tr>
+      <tr><td>1 級</td><td>平行大彎（陡坡）、基礎小彎、蘑菇小彎、綜合滑行</td><td><button data-l2="dpt">動態</button> <button data-l2="short">小彎</button> <button data-l2="mogul">蘑菇</button></td></tr></table>
+      <p class="note">上下運動嘅分別：基礎 = 換刃伸高、彎中屈低；動態 = 換刃收腳、入彎伸腳。兩級切嚟切去，睇黃色 CoM 線。</p>
     </details>
   </div>
   <div class="row">
@@ -141,13 +141,13 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
   </div>
   <div class="row seg" id="levels">
     <button data-l="beg">入門・犁式</button>
-    <button data-l="stem">シュテムターン</button>
+    <button data-l="stem">半犁式轉彎</button>
     <button data-l="mid">中級・平行</button>
-    <button data-l="bpt">SAJ ベーシックパラレル</button>
-    <button data-l="dpt">SAJ ダイナミックパラレル</button>
+    <button data-l="bpt">SAJ 基礎平行</button>
+    <button data-l="dpt">SAJ 動態平行</button>
     <button data-l="carve" class="on">Carving</button>
     <button data-l="mogul">蘑菇 Mogul</button>
-    <button data-l="short">短彎 小回り</button>
+    <button data-l="short">短彎</button>
     <button data-l="slip">Side slip 橫滑</button>
     <button data-l="lslip">連續側滑</button>
     <button data-l="lslipT">底部 grip 轉彎</button>
@@ -317,7 +317,7 @@ const LV = {
   beg:  {name:'入門・犁式 Wedge', v:12, slope:10, skiOff:-18, R:11, cap:22*D, ang:1.0, skid:0, wedge:14*D, Rbase:6, psiB:12, h0:.8, stance:.2, pr:.7, tr:.85, tp:0.41, tyaw:.45, pyaw:.85, knee:0, minDrive:.55, plant:0, lead:0},
   mid:  {name:'中級・平行轉彎', v:25, slope:15, skiOff:-12, R:13, cap:42*D, ang:1.1, skid:10*D, wedge:0, Rbase:9, psiB:6, h0:.82, stance:.14, pr:.75, tr:.7, tp:0.46, tyaw:.25, pyaw:.65, knee:.6, minDrive:.45, plant:1, lead:.06},
   mogul:{name:'蘑菇 Mogul', v:15, slope:25, skiOff:-12, R:13, cap:40*D, ang:1.0, skid:15*D, wedge:0, Rbase:3, psiB:0, psiFix:30*D, h0:.82, stance:.12, pr:.6, tr:.5, tp:0.51, tyaw:.1, pyaw:.6, knee:.4, minDrive:.45, plant:1, lead:.04},
-  short:{name:'短彎 小回り', kind:'turn', v:22, slope:18, skiOff:-12, R:12, cap:45*D, ang:1.1, skid:8*D, wedge:0, Rbase:5, psiB:0, psiFix:26*D, h0:.8, stance:.13, pr:.7, tr:.55, tp:0.46, tyaw:.05, pyaw:.75, knee:.7, minDrive:.5, plant:1, lead:.05},
+  short:{name:'短彎', kind:'turn', v:22, slope:18, skiOff:-12, R:12, cap:45*D, ang:1.1, skid:8*D, wedge:0, Rbase:5, psiB:0, psiFix:26*D, h0:.8, stance:.13, pr:.7, tr:.55, tp:0.46, tyaw:.05, pyaw:.75, knee:.7, minDrive:.5, plant:1, lead:.05},
   slip: {name:'Side slip 橫滑', kind:'slip', v:8, slope:15, skiOff:-12, R:13, cap:25*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:.44, tyaw:.4, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.1},
   lslip: {name:'連續側滑 Linked side slip', kind:'lslip', v:10, slope:18, skiOff:-12, R:13, cap:30*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:.44, tyaw:.35, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.08},
   lslipT:{name:'底部 grip 轉彎', kind:'lslip', turn:true, v:18, slope:22, skiOff:-12, R:13, cap:35*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.4, tp:.45, tyaw:.25, pyaw:.65, knee:.8, minDrive:.45, plant:1, lead:.08},
@@ -329,9 +329,9 @@ const LV = {
   rail:   {name:'Railroad tracks', kind:'turn', v:13, slope:8, skiOff:-8, R:14, cap:14*D, ang:2.2, skid:0, wedge:0, Rbase:0, psiB:0, psiFix:24*D, h0:.87, stance:.15, pr:.8, tr:.25, tp:0.42, tyaw:.85, pyaw:.9, knee:.25, minDrive:.3, plant:0, lead:.03, rail:true},
   leaf:   {name:'落葉飄 Falling leaf', kind:'leaf', v:8, slope:15, skiOff:-12, R:13, cap:25*D, ang:1.2, skid:0, wedge:0, Rbase:0, psiB:0, h0:.82, stance:.13, pr:.75, tr:.3, tp:.44, tyaw:.4, pyaw:.7, knee:.8, minDrive:.45, plant:0, lead:.05},
   shuffle:{name:'Shuffle 前後滑步', kind:'shuffle', v:12, slope:8, skiOff:-10, R:13, cap:10*D, ang:1.1, skid:0, wedge:0, Rbase:0, psiB:0, h0:.83, stance:.15, pr:.75, tr:.2, tp:.46, tyaw:.8, pyaw:.9, knee:.6, minDrive:.45, plant:0, lead:0},
-  stem: {name:'シュテムターン Stem turn', v:15, slope:12, skiOff:-15, R:12, cap:30*D, ang:1.05, skid:14*D, wedge:0, stem:16*D, Rbase:7, psiB:10, h0:.81, stance:.16, pr:.72, tr:.8, tp:0.43, tyaw:.35, pyaw:.75, knee:.4, minDrive:.5, plant:0, lead:.03},
-  bpt:  {name:'SAJ ベーシックパラレルターン', v:24, slope:15, skiOff:-12, R:13, cap:42*D, ang:1.1, skid:7*D, wedge:0, Rbase:9, psiB:6, h0:.82, stance:.14, pr:.75, tr:.7, tp:0.46, tyaw:.25, pyaw:.65, knee:.6, minDrive:.45, plant:1, lead:.06, ud:'ext'},
-  dpt:  {name:'SAJ ダイナミックパラレルターン', v:30, slope:18, skiOff:-6, R:15, cap:62*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1, ud:'ret'},
+  stem: {name:'半犁式轉彎 Stem turn', v:15, slope:12, skiOff:-15, R:12, cap:30*D, ang:1.05, skid:14*D, wedge:0, stem:16*D, Rbase:7, psiB:10, h0:.81, stance:.16, pr:.72, tr:.8, tp:0.43, tyaw:.35, pyaw:.75, knee:.4, minDrive:.5, plant:0, lead:.03},
+  bpt:  {name:'SAJ 基礎平行轉彎', v:24, slope:15, skiOff:-12, R:13, cap:42*D, ang:1.1, skid:7*D, wedge:0, Rbase:9, psiB:6, h0:.82, stance:.14, pr:.75, tr:.7, tp:0.46, tyaw:.25, pyaw:.65, knee:.6, minDrive:.45, plant:1, lead:.06, ud:'ext'},
+  dpt:  {name:'SAJ 動態平行轉彎', v:30, slope:18, skiOff:-6, R:15, cap:62*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1, ud:'ret'},
   carve:{name:'進階・Carving', v:30, slope:18, skiOff:-6, R:15, cap:65*D, ang:1.15, skid:0, wedge:0, Rbase:0, psiB:0, h0:.84, stance:.14, pr:.8, tr:.6, tp:0.48, tyaw:.35, pyaw:.75, knee:1, minDrive:0, plant:.6, lead:.1}
 };
 const REC = {
@@ -842,14 +842,14 @@ const PH = {
     comp:['平行出彎、橫滑控速','兩板平行、稍為打橫控速，準備下一次開山側板。']
   },
   bpt: {
-    trans:['立ち上がり：伸高換刃','換刃時伸高身體、減輕壓力（抜重），兩板一齊平放再換刃；落雪杖幫個節奏。'],
-    init:['沈み込み開始','換刃之後慢慢屈低，壓力由少到多，板開始轉。'],
-    apex:['沈み込み：最低、外腳受力','彎中身體最低、外腳受力最多；板尾少少 skid 控速。'],
+    trans:['換刃：伸高減壓','換刃時伸高身體、減輕壓力，兩板一齊平放再換刃；落雪杖幫個節奏。'],
+    init:['開始屈低','換刃之後慢慢屈低，壓力由少到多，板開始轉。'],
+    apex:['彎中最低、外腳受力','彎中身體最低、外腳受力最多；板尾少少 skid 控速。'],
     comp:['出彎：準備再伸高','用 skid 控速，之後伸高身體去下一個換刃。']
   },
   dpt: {
-    trans:['抱え込み：縮腳換刃','換刃時唔係伸高，而係屈曲收腳（retraction），板由身體下面穿過去；CoM 高度變化細，速度唔會失。'],
-    init:['伸ばし：伸腳入彎','換刃後伸長雙腳將板推出去，edge 好早咬雪，彎上半已經開始受力。'],
+    trans:['換刃：收腳','換刃時唔係伸高，而係屈曲收腳（retraction），板由身體下面穿過去；CoM 高度變化細，速度唔會失。'],
+    init:['入彎：伸腳','換刃後伸長雙腳將板推出去，edge 好早咬雪，彎上半已經開始受力。'],
     apex:['最大傾斜、外腳伸','雙腳伸到最長，傾斜同 edge 最大；外腳頂住雪力。'],
     comp:['出彎：讓雪力收短雙腳','雪力將雙腳壓短，順勢收腳，直接帶去下一個換刃。']
   },
@@ -1018,19 +1018,19 @@ const WATCH = {
   stem: [
     {w:'Stem 開板', v:'top', s:.45, t:'上一個彎尾，山側板（下一個彎嘅外板）板尾推開成半個 A 字。'},
     {w:'外板帶入彎', v:'back', s:.05, t:'重量去開咗嗰隻板，佢帶你入 fall line；之後另一隻慢慢收返平行。'},
-    {w:'平行出彎', v:'top', s:.25, t:'過咗 fall line 兩板已經平行。SAJ 3 級同 2 級都考シュテム。'}
+    {w:'平行出彎', v:'top', s:.25, t:'過咗 fall line 兩板已經平行。SAJ 3 級同 2 級都考半犁式。'}
   ],
   bpt: [
-    {w:'立ち上がり／沈み込み', v:'side', s:0, t:'換刃時身體最高（伸高減壓），彎中最低。睇黃色 CoM 線上落。'},
+    {w:'伸高／屈低', v:'side', s:0, t:'換刃時身體最高（伸高減壓），彎中最低。睇黃色 CoM 線上落。'},
     {w:'外腳受力', v:'back', s:.25, t:'彎中外腳受力最多，腳掌圖外腳紅點大。'},
-    {w:'少少 skid', v:'top', s:.25, t:'板嘅方向比路線入彎少少：ベーシック容許少量橫滑控速。'},
-    {w:'對比 Dynamic', v:null, s:null, t:'切去「SAJ ダイナミックパラレル」：換刃時身體反而最低（抱え込み）。'}
+    {w:'少少 skid', v:'top', s:.25, t:'板嘅方向比路線入彎少少：基礎容許少量橫滑控速。'},
+    {w:'對比 Dynamic', v:null, s:null, t:'切去「SAJ 動態平行」：換刃時身體反而最低。'}
   ],
   dpt: [
-    {w:'抱え込み', v:'side', s:0, t:'換刃時屈曲收腳，身體高度幾乎唔變，板由身體下面過。'},
-    {w:'伸ばし', v:'back', s:.2, t:'入彎即刻伸腳推板出去，edge 早咬雪。'},
+    {w:'收腳換刃', v:'side', s:0, t:'換刃時屈曲收腳，身體高度幾乎唔變，板由身體下面過。'},
+    {w:'伸腳入彎', v:'back', s:.2, t:'入彎即刻伸腳推板出去，edge 早咬雪。'},
     {w:'最大傾斜', v:'back', s:.25, t:'彎中傾斜最大，同外腳伸到最長。'},
-    {w:'SAJ 1 級／指導員', v:null, s:null, t:'SAJ 1 級考パラレルターン大回り、小回り、不整地、総合滑降；ダイナミック系滑法係高分關鍵。'}
+    {w:'SAJ 1 級／指導員', v:null, s:null, t:'SAJ 1 級考平行大彎、小彎、蘑菇、綜合滑行；動態滑法係高分關鍵。'}
   ],
   beg: [
     {w:'前後重心', v:'side', s:.25, t:'CoM（黃波）喺腳掌正上方；脛骨同上身大致平行。坐後會令大腿好快燒，亦控唔到板。'},
@@ -1714,7 +1714,7 @@ function updateUI(p, act, md, now){
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
-const GUIDE = {"stem": {"q": [["Stem 係開邊隻板？", "山側板，即係下一個彎嘅外板。板尾向外推開。"], ["點解要開板？", "開咗嘅板已經指向新彎方向，重量一過去佢就會帶你轉，唔使扭身。"]], "sum": "彎尾開山側板 → 重量過去帶入彎 → 收埋平行。係由犁式去平行嘅橋。", "snow": "緩坡：每個彎尾開山側板、停一停、再重心過去；慢慢將開板時間縮短，最後變成平行。"}, "bpt": {"q": [["換刃嗰下身體係高定低？", "高。伸高減壓（立ち上がり），板輕咗先換刃。"], ["彎中邊隻腳受力最多？", "外腳；身體最低（沈み込み）。"]], "sum": "換刃伸高、彎中屈低；外腳受力，少量 skid 控速。", "snow": "中斜面大回り：喊住「起—落—落—起」做節奏，配合雪杖。"}, "dpt": {"q": [["換刃嗰下身體係高定低？", "低。屈曲收腳（抱え込み），板喺身體下面穿過。"], ["點解唔伸高？", "伸高會令 CoM 上落大、失速；收腳換刃快啲，edge 可以早啲咬雪。"]], "sum": "換刃收腳、入彎伸腳；身體高度變化細，彎上半已經受力。", "snow": "先喺緩坡做「收腳換刃」：換刃時大腿貼近胸口，再伸腳入彎。熟咗先上中急斜面。"}, "slip": {"q": [["想停，雙板嘅 uphill edge 要加大定放細？", "加大。膝頭同腳踝推向上坡，edge 接近坡度就停。"], ["上身應該面向邊？", "面向下坡，唔好跟住雙板打橫。"]], "sum": "雙板打橫直直滑落，用 edge 控速：加大就停，放細就滑。", "snow": "揀 10–20° 嘅平滑雪道，雙板打橫，滑 2 米、停、再滑 2 米；之後練 pivot slip 同 hockey stop。"}, "beg": {"q": [["想轉右邊嘅時候，應該把多啲重量放喺邊隻腳？", "左腳（彎外面嗰隻）。外腳加壓，板先會轉向。"], ["兩隻腳平均用力會點？", "轉唔到彎，或者轉得好慢。新手最常犯就係雙腳平均踩。"]], "sum": "想轉邊，就早啲把重量踩落外腳（彎外面嗰隻），保持 A 字，重心喺腳掌中間。", "snow": "喺緩坡慢慢做 5–8 個彎，每個彎出聲講「壓左腳」或「壓右腳」，感覺壓力係喺腳掌中間，而唔係腳跟。", "feel": "轉彎時，外腳鞋底中間有明顯壓力；如果大腿好快燒、板頭好輕，就係坐後咗。"}, "mid": {"q": [["換刃嗰陣，應該等轉完彎先轉重量，定係早啲轉？", "早啲轉。要喺 turn 頂部（剛開始轉嗰下）就開始把重量移去新嘅外腳。"], ["點樣用彎嘅形狀控制速度，而唔係靠死命煞停？", "把彎轉到夠橫（橫過山坡），完成成個 turn，速度自然會跌落嚟。"]], "sum": "每個彎一開始就轉重量去新嘅外腳，上身大致面向下坡，用 turn shape 控制速度，而唔係靠煞。", "snow": "喺中緩坡做，心入面數「轉重量 → 轉彎 → 完成」，刻意把彎劃到橫啲，感覺速度自己慢落嚟。", "feel": "新外腳喺彎開始時已經有壓力；如果成日要靠犁式煞停，就係彎轉得唔夠橫，或者重量轉得太遲。"}, "carve": {"q": [["入彎時，最大壓力應該喺邊隻腳？", "外腳，大約 80–90%。"], ["Edge 角度應該大過、等於，定細過身體傾斜？", "大過。差距嚟自膝頭同髖嘅 angulation。"]], "sum": "早啲傾斜入彎，外腳撐住，上身保持水平，畀塊板自己轉。", "snow": "喺緩坡做 railroad track：板唔好打滑，雪上只留兩條幼線；感覺外腳鞋舌一直有壓力。"}, "mogul": {"q": [["撞上蘑菇面嗰陣，腳應該伸直定屈曲？", "屈曲吸收，好似避震咁。"], ["頭嘅高度應該跟住蘑菇上落嗎？", "唔應該。頭同上身盡量保持一條平滑嘅線。"]], "sum": "撞上就收腳，落坑就伸腳，上身保持平穩。", "snow": "先喺蘑菇區邊緣做單粒蘑菇「撞、收、伸」；再練喺蘑菇頂點杖嘅時機。"}, "short": {"q": [["短彎時上身應該面向邊？", "一直面向正下坡（fall line）。"], ["點杖係喺幾時？", "每次換刃之前，帶身體向前落下一個彎。"]], "sum": "上身望落山，腳喺下面左右擺，點杖帶節奏。", "snow": "揀條窄雪道，假設兩邊有牆；心入面數「點、轉、點、轉」。"}, "pivot": {"q": [["轉向嗰陣，邊個部位應該轉？", "大腿喺盤骨入面轉，上身唔郁。"], ["轉之前 edge 應該加大定放平？", "先放平，塊板先轉得順。"]], "sum": "放平 edge，大腿轉，上身唔郁，沿 fall line 直線落。", "snow": "喺中坡做，起點同終點對住同一條直線（例如纜車柱），檢查自己有冇向左右走。"}, "trav": {"q": [["斜滑降時，邊隻腳承受多啲重量？", "下坡腳。"], ["膝頭同髖應該推向上坡定下坡？", "上坡；上身就向下坡，形成 angulation。"]], "sum": "下坡腳承重、膝頭推上坡、上身望下坡；放刃落，入刃上。", "snow": "橫過雪道時試吓提起上坡腳，企得穩先算啱；做 garland 時感受「放」同「咬」嘅分別。"}, "lift": {"q": [["提起內腳之後，重心應該喺外腳嘅邊度？", "腳掌中間偏前，唔係腳跟。"], ["提起內腳靠邊組肌肉？", "膕繩肌屈膝提起，唔係用腰。"]], "sum": "所有重量交畀外腳，企得穩先算真係企喺外腳上面。", "snow": "喺緩坡做，由每個彎提起 1 秒開始，慢慢延長到成個彎。"}, "lslip": {"q": [["Release 嗰下雙板點解會自己轉落山？", "放平之後 edge 唔再咬住，地心吸力令雙板向下滑，板頭自然跌向 fall line。"], ["要停低，edge 要幾大？", "差唔多等於坡度：坡度 20°，uphill edge 就要約 20°。"]], "sum": "Release 放平 → Steer 轉向橫過山坡 → Grip 用 edge 咬住停，一路重複。控速靠 edge，唔係硬煞。", "snow": "先喺藍線：放平滑 2–3 米、轉去另一邊、咬住停；熟咗先試陡啲嘅坡。", "feel": "Grip 嗰下下坡腳同脛骨推實鞋舌，雙板停得乾淨；如果停唔到，多數係 edge 角度未夠或者坐後。"}, "lslipT": {"q": [["喺陡坡，應該喺彎邊個位控速？", "彎底，雙板橫過山坡嗰下用 edge grip 磨走速度。"], ["彎頂要唔要煞？", "唔使，彎頂 release 放平，等雙板自己轉落山。"]], "sum": "彎頂放鬆、彎底 grip：每個彎底磨走多出嚟嘅速度，再 release 去下一個彎。", "snow": "喺藍線先做，數住「放、轉、咬」；穩定咗先去黑線。", "feel": "彎底 grip 嗰下速度跌、腳底壓力大；彎頂放鬆嗰下雙板好輕、自己轉。"}, "javelin": {"q": [["Javelin 點解要將內板板頭打橫喺外板前面？", "迫全身重量去外腳，同時迫上身面向山下；有 stem 或者靠內腳嘅話即刻企唔穩。"], ["做唔到穩定應該返去邊個練習？", "提內腳 drill（stork），再唔得就返去單腳站。"]], "sum": "內腳提起、板頭打橫喺外腳前面，成個彎只靠外腳；最快照出 stem、A-frame 同靠內腳。", "snow": "喺緩藍線慢慢做，每邊 3–4 個彎；穩定咗先加速度。", "feel": "成個人企喺外腳上面，外腳腳掌中間壓力好實；上身自然面向山下。"}, "oneski": {"q": [["一隻板點樣轉兩邊？", "右彎用大趾邊（內刃），左彎用尾趾邊（外刃）；同一隻腳換刃。"], ["做唔到代表咩？", "平時轉彎係靠另一隻腳借力平衡，外腳未真正承重。"]], "sum": "成個 run 只用一隻板，內刃外刃都要轉到；係單腳平衡同外腳承重嘅終極測試。", "snow": "喺好緩嘅坡，先直滑單腳，再加細彎；兩隻腳都要練。", "feel": "兩邊轉彎都要企得穩；尾趾邊嗰個彎最難，係正常。"}, "rail": {"q": [["點知自己係 carve 定 skid？", "睇雪面：兩條幼線＝carve；變闊或者拖尾＝skid。"], ["點解要喺好緩嘅坡做？", "速度慢，淨係用腳踝推 edge 就夠；唔使大傾斜，唔會驚。"]], "sum": "用腳踝將雙板 tip 上 edge，唔轉腳、唔推尾，等 sidecut 自己畫出兩條幼線；係 skid 去 carve 嘅橋。", "snow": "喺最緩嘅綠／藍線，直滑之後輕輕 tip 左右，回頭睇條線。", "feel": "板自己轉，身體只係跟住；腳底感覺到板好似喺路軌上面行。"}, "leaf": {"q": [["想向前斜落，壓力放邊？", "前（小腿頂鞋舌），板頭會跌向山下。"], ["全程要唔要換刃？", "唔使，全程同一條 uphill edge。"]], "sum": "橫滑時壓前就向前斜落、壓後就向後斜落；學識前後壓力點郁，係改坐後嘅基本功。", "snow": "喺藍線橫滑，向前 3 米、停、向後 3 米；用腳踝郁，唔好用上身擺。", "feel": "壓前時小腿貼實鞋舌；壓後時腳踭重。兩邊都控制到，先算識前後平衡。"}, "shuffle": {"q": [["Shuffle 郁唔到代表咩？", "重量喺腳踭（坐後），雙腳被壓住郁唔到。"], ["點樣先郁得到？", "腳踝屈、小腿貼鞋舌，重量返中足。"]], "sum": "滑行中雙腳前後交替細步滑動；郁唔到就係坐後。", "snow": "喺緩坡直滑或者轉彎中做，雙腳前後各約 15 cm，兩塊板都貼雪。", "feel": "雙腳輕鬆咁前後滑；如果好重、郁唔到，即係重量喺腳踭。"}};
+const GUIDE = {"stem": {"q": [["Stem 係開邊隻板？", "山側板，即係下一個彎嘅外板。板尾向外推開。"], ["點解要開板？", "開咗嘅板已經指向新彎方向，重量一過去佢就會帶你轉，唔使扭身。"]], "sum": "彎尾開山側板 → 重量過去帶入彎 → 收埋平行。係由犁式去平行嘅橋。", "snow": "緩坡：每個彎尾開山側板、停一停、再重心過去；慢慢將開板時間縮短，最後變成平行。"}, "bpt": {"q": [["換刃嗰下身體係高定低？", "高。伸高減壓，板輕咗先換刃。"], ["彎中邊隻腳受力最多？", "外腳；身體最低。"]], "sum": "換刃伸高、彎中屈低；外腳受力，少量 skid 控速。", "snow": "中斜面大彎：喊住「起—落—落—起」做節奏，配合雪杖。"}, "dpt": {"q": [["換刃嗰下身體係高定低？", "低。屈曲收腳，板喺身體下面穿過。"], ["點解唔伸高？", "伸高會令 CoM 上落大、失速；收腳換刃快啲，edge 可以早啲咬雪。"]], "sum": "換刃收腳、入彎伸腳；身體高度變化細，彎上半已經受力。", "snow": "先喺緩坡做「收腳換刃」：換刃時大腿貼近胸口，再伸腳入彎。熟咗先上中急斜面。"}, "slip": {"q": [["想停，雙板嘅 uphill edge 要加大定放細？", "加大。膝頭同腳踝推向上坡，edge 接近坡度就停。"], ["上身應該面向邊？", "面向下坡，唔好跟住雙板打橫。"]], "sum": "雙板打橫直直滑落，用 edge 控速：加大就停，放細就滑。", "snow": "揀 10–20° 嘅平滑雪道，雙板打橫，滑 2 米、停、再滑 2 米；之後練 pivot slip 同 hockey stop。"}, "beg": {"q": [["想轉右邊嘅時候，應該把多啲重量放喺邊隻腳？", "左腳（彎外面嗰隻）。外腳加壓，板先會轉向。"], ["兩隻腳平均用力會點？", "轉唔到彎，或者轉得好慢。新手最常犯就係雙腳平均踩。"]], "sum": "想轉邊，就早啲把重量踩落外腳（彎外面嗰隻），保持 A 字，重心喺腳掌中間。", "snow": "喺緩坡慢慢做 5–8 個彎，每個彎出聲講「壓左腳」或「壓右腳」，感覺壓力係喺腳掌中間，而唔係腳跟。", "feel": "轉彎時，外腳鞋底中間有明顯壓力；如果大腿好快燒、板頭好輕，就係坐後咗。"}, "mid": {"q": [["換刃嗰陣，應該等轉完彎先轉重量，定係早啲轉？", "早啲轉。要喺 turn 頂部（剛開始轉嗰下）就開始把重量移去新嘅外腳。"], ["點樣用彎嘅形狀控制速度，而唔係靠死命煞停？", "把彎轉到夠橫（橫過山坡），完成成個 turn，速度自然會跌落嚟。"]], "sum": "每個彎一開始就轉重量去新嘅外腳，上身大致面向下坡，用 turn shape 控制速度，而唔係靠煞。", "snow": "喺中緩坡做，心入面數「轉重量 → 轉彎 → 完成」，刻意把彎劃到橫啲，感覺速度自己慢落嚟。", "feel": "新外腳喺彎開始時已經有壓力；如果成日要靠犁式煞停，就係彎轉得唔夠橫，或者重量轉得太遲。"}, "carve": {"q": [["入彎時，最大壓力應該喺邊隻腳？", "外腳，大約 80–90%。"], ["Edge 角度應該大過、等於，定細過身體傾斜？", "大過。差距嚟自膝頭同髖嘅 angulation。"]], "sum": "早啲傾斜入彎，外腳撐住，上身保持水平，畀塊板自己轉。", "snow": "喺緩坡做 railroad track：板唔好打滑，雪上只留兩條幼線；感覺外腳鞋舌一直有壓力。"}, "mogul": {"q": [["撞上蘑菇面嗰陣，腳應該伸直定屈曲？", "屈曲吸收，好似避震咁。"], ["頭嘅高度應該跟住蘑菇上落嗎？", "唔應該。頭同上身盡量保持一條平滑嘅線。"]], "sum": "撞上就收腳，落坑就伸腳，上身保持平穩。", "snow": "先喺蘑菇區邊緣做單粒蘑菇「撞、收、伸」；再練喺蘑菇頂點杖嘅時機。"}, "short": {"q": [["短彎時上身應該面向邊？", "一直面向正下坡（fall line）。"], ["點杖係喺幾時？", "每次換刃之前，帶身體向前落下一個彎。"]], "sum": "上身望落山，腳喺下面左右擺，點杖帶節奏。", "snow": "揀條窄雪道，假設兩邊有牆；心入面數「點、轉、點、轉」。"}, "pivot": {"q": [["轉向嗰陣，邊個部位應該轉？", "大腿喺盤骨入面轉，上身唔郁。"], ["轉之前 edge 應該加大定放平？", "先放平，塊板先轉得順。"]], "sum": "放平 edge，大腿轉，上身唔郁，沿 fall line 直線落。", "snow": "喺中坡做，起點同終點對住同一條直線（例如纜車柱），檢查自己有冇向左右走。"}, "trav": {"q": [["斜滑降時，邊隻腳承受多啲重量？", "下坡腳。"], ["膝頭同髖應該推向上坡定下坡？", "上坡；上身就向下坡，形成 angulation。"]], "sum": "下坡腳承重、膝頭推上坡、上身望下坡；放刃落，入刃上。", "snow": "橫過雪道時試吓提起上坡腳，企得穩先算啱；做 garland 時感受「放」同「咬」嘅分別。"}, "lift": {"q": [["提起內腳之後，重心應該喺外腳嘅邊度？", "腳掌中間偏前，唔係腳跟。"], ["提起內腳靠邊組肌肉？", "膕繩肌屈膝提起，唔係用腰。"]], "sum": "所有重量交畀外腳，企得穩先算真係企喺外腳上面。", "snow": "喺緩坡做，由每個彎提起 1 秒開始，慢慢延長到成個彎。"}, "lslip": {"q": [["Release 嗰下雙板點解會自己轉落山？", "放平之後 edge 唔再咬住，地心吸力令雙板向下滑，板頭自然跌向 fall line。"], ["要停低，edge 要幾大？", "差唔多等於坡度：坡度 20°，uphill edge 就要約 20°。"]], "sum": "Release 放平 → Steer 轉向橫過山坡 → Grip 用 edge 咬住停，一路重複。控速靠 edge，唔係硬煞。", "snow": "先喺藍線：放平滑 2–3 米、轉去另一邊、咬住停；熟咗先試陡啲嘅坡。", "feel": "Grip 嗰下下坡腳同脛骨推實鞋舌，雙板停得乾淨；如果停唔到，多數係 edge 角度未夠或者坐後。"}, "lslipT": {"q": [["喺陡坡，應該喺彎邊個位控速？", "彎底，雙板橫過山坡嗰下用 edge grip 磨走速度。"], ["彎頂要唔要煞？", "唔使，彎頂 release 放平，等雙板自己轉落山。"]], "sum": "彎頂放鬆、彎底 grip：每個彎底磨走多出嚟嘅速度，再 release 去下一個彎。", "snow": "喺藍線先做，數住「放、轉、咬」；穩定咗先去黑線。", "feel": "彎底 grip 嗰下速度跌、腳底壓力大；彎頂放鬆嗰下雙板好輕、自己轉。"}, "javelin": {"q": [["Javelin 點解要將內板板頭打橫喺外板前面？", "迫全身重量去外腳，同時迫上身面向山下；有 stem 或者靠內腳嘅話即刻企唔穩。"], ["做唔到穩定應該返去邊個練習？", "提內腳 drill（stork），再唔得就返去單腳站。"]], "sum": "內腳提起、板頭打橫喺外腳前面，成個彎只靠外腳；最快照出 stem、A-frame 同靠內腳。", "snow": "喺緩藍線慢慢做，每邊 3–4 個彎；穩定咗先加速度。", "feel": "成個人企喺外腳上面，外腳腳掌中間壓力好實；上身自然面向山下。"}, "oneski": {"q": [["一隻板點樣轉兩邊？", "右彎用大趾邊（內刃），左彎用尾趾邊（外刃）；同一隻腳換刃。"], ["做唔到代表咩？", "平時轉彎係靠另一隻腳借力平衡，外腳未真正承重。"]], "sum": "成個 run 只用一隻板，內刃外刃都要轉到；係單腳平衡同外腳承重嘅終極測試。", "snow": "喺好緩嘅坡，先直滑單腳，再加細彎；兩隻腳都要練。", "feel": "兩邊轉彎都要企得穩；尾趾邊嗰個彎最難，係正常。"}, "rail": {"q": [["點知自己係 carve 定 skid？", "睇雪面：兩條幼線＝carve；變闊或者拖尾＝skid。"], ["點解要喺好緩嘅坡做？", "速度慢，淨係用腳踝推 edge 就夠；唔使大傾斜，唔會驚。"]], "sum": "用腳踝將雙板 tip 上 edge，唔轉腳、唔推尾，等 sidecut 自己畫出兩條幼線；係 skid 去 carve 嘅橋。", "snow": "喺最緩嘅綠／藍線，直滑之後輕輕 tip 左右，回頭睇條線。", "feel": "板自己轉，身體只係跟住；腳底感覺到板好似喺路軌上面行。"}, "leaf": {"q": [["想向前斜落，壓力放邊？", "前（小腿頂鞋舌），板頭會跌向山下。"], ["全程要唔要換刃？", "唔使，全程同一條 uphill edge。"]], "sum": "橫滑時壓前就向前斜落、壓後就向後斜落；學識前後壓力點郁，係改坐後嘅基本功。", "snow": "喺藍線橫滑，向前 3 米、停、向後 3 米；用腳踝郁，唔好用上身擺。", "feel": "壓前時小腿貼實鞋舌；壓後時腳踭重。兩邊都控制到，先算識前後平衡。"}, "shuffle": {"q": [["Shuffle 郁唔到代表咩？", "重量喺腳踭（坐後），雙腳被壓住郁唔到。"], ["點樣先郁得到？", "腳踝屈、小腿貼鞋舌，重量返中足。"]], "sum": "滑行中雙腳前後交替細步滑動；郁唔到就係坐後。", "snow": "喺緩坡直滑或者轉彎中做，雙腳前後各約 15 cm，兩塊板都貼雪。", "feel": "雙腳輕鬆咁前後滑；如果好重、郁唔到，即係重量喺腳踭。"}};
 const STANCE_SHORT = {"late": "重量轉得太遲：彎頂打滑，要靠煞控速。", "look": "望住對腳：上身彎、屁股向後，入彎遲。", "back": "重心偏後：板頭冇壓力，大腿好快攰。", "fwd": "重心太前：板尾打滑，出彎放唔到。", "even": "雙腳平均：外腳咬唔實，容易變 A-frame。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
 const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {stem:'even', bpt:'late', dpt:'late', beg:'even', mid:'late', slip:'look', trav:'look', lslip:'look', lslipT:'late', shuffle:'back', leaf:'back', javelin:'even', oneski:'back', rail:'back'};
