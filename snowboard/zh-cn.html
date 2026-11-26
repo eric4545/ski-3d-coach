@@ -203,13 +203,14 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button class="on" id="bendBtn">雪板弯曲：真实</button>
   </div>
   <div class="card" id="c4Card">
-    <h3 style="margin:0 0 6px">🎚 Carving 四个量：倾斜、关节角度、Edge、压力</h3>
+    <h3 style="margin:0 0 6px">🎚 单板 Carving：刃边、前后脚、倾斜、Edge、压力</h3>
+    <p class="note" style="margin:0 0 6px;color:#ffb020!important">⚠️ 示意模型：参数之间没有动态耦合。改关节角度只会改姿势和 edge；板弯、压力、重心路线和 3D 路线都不会重新计算。</p>
     <div class="row" style="align-items:center;gap:8px;font-size:13px"><span>关节角度（angulation）</span>
       <select id="anguSel"><option value="">模型默认</option><option value="0">0°：只靠整个人倾斜</option><option value="10">10°</option><option value="20">20°</option><option value="30">30°</option></select></div>
     <table id="c4Tbl" style="margin-top:6px"></table>
-    <p class="note">倾斜由速度和弯半径决定（物理要求，不是你选的）；关节角度是髋和膝盖在身体倾斜之外再加出来的 edge。同一个倾斜，关节角度越大，edge 越大、弯越小，上身也越直。选「0°」看只靠整个人倾斜的样子：edge 小，容易滑走。只影响连续转弯的等级；3D 路线不会跟着变，看下面「板几何」那行就知道弯会收小多少。</p>
+    <p class="note">倾斜由速度和弯半径决定（物理要求，不是你选的）。单板 toeside 主要靠脚踝和膝盖向前屈立刃，heelside 靠脚踝背屈和髋保持在板上方；同一个倾斜，这些关节做得越多，edge 越大、弯越小。选「0°」看只靠整个人倾斜的样子：edge 小，容易滑走。只影响连续转弯的等级；3D 路线不会跟着变，看下面「理论 sidecut 半径」那行就知道弯会收小多少。</p>
     <table id="c4R" style="margin-top:6px"></table>
-    <p class="note">三个半径来源不同：「平衡要求」用 tan(倾斜) = v²/gR 反算；「板几何」用 sidecut 半径 × cos(edge)，假设板完全弯贴雪面、雪够硬；「模型路线」是 3D 实际走的路线。真实雪上还受雪况、板弯、滑移影响，数字仅供示意。</p>
+    <p class="note">三个半径来源不同，模型没有把三者耦合，所以不一致是正常的：「理想平衡半径」用 tan(倾斜) = v²/gR 反算；「理论 sidecut 半径」假设板完全弯贴雪面、雪够硬、没有 skid，初中级通常做不到；「仿真路线半径」是量度 3D 动画路线。三个都不是真实转弯半径的预测，真实雪上还受雪况、板弯、滑移影响。</p>
   </div>
   <div class="card" id="loopCard">
     <h3 style="margin:0 0 6px">🔁 第一原理：一个闭环，没有主动被动</h3>
@@ -899,9 +900,9 @@ const PH = {
   },
   ffs: {
     trans:['换刃（雪板放平）','双脚平均、板放平；准备用前脚发动。'],
-    init:['前脚扭板入弯','前脚先转：toeside 前膝推向弯内、heelside 前脚趾擡起；板头先入弯。后脚完全不要踢。'],
-    toe:['Toeside：后脚只是跟','板头带着整块板转，后脚跟着同一条弧线，不要把板尾踢出去。'],
-    heel:['Heelside：后脚只是跟','前脚脚趾擡起带板头，后脚放松跟着；弯形是由前脚画出来的。'],
+    init:['前脚扭板入弯','前脚先创建方向：toeside 前膝推向弯内、heelside 前脚趾擡起；板头先入弯。后脚协调跟着，不要突然踢板尾。'],
+    toe:['Toeside：后脚协调跟着','板头带着整块板转，后脚跟着同一条弧线，不要把板尾踢出去。'],
+    heel:['Heelside：后脚协调跟着','前脚脚趾擡起带板头，后脚跟着同一条弧线控制 edge 和压力。'],
     comp:['出弯：控速','用 edge 角度和弯形控速，不是用后脚刮雪。']
   },
   swb: {
@@ -1022,6 +1023,7 @@ const WATCH = {
     {w:'之后', v:null, j:null, t:'两边都画到细线，才把 heel 和 toe 连起来，变成 carved turn（Carving 那级）。'}
   ],
   ffs: [
+    {w:'适用范围', v:null, j:null, t:'这是新手练习，用来改掉后脚扫尾。中级以上，两只脚一起控制转向、edge 和压力；Carving 时两只脚一起创建立刃和板弯。'},
     {w:'前脚发动', v:'top', j:'init', t:'入弯时前脚重量多一点（脚掌图前脚红点大），板头先转。'},
     {w:'后脚扫尾比较', v:'top', j:'toe', t:'按「⇆ 正确 vs 错误」：后脚扫尾那个，板尾甩出、雪痕很宽、弯变大。'},
     {w:'雪痕', v:'top', j:'comp', t:'正确：出弯雪痕不会突然变宽。变宽 = 后脚在踢板尾。'},
@@ -1486,15 +1488,18 @@ function updatePhys(p){
   const rBal = incl > 2 ? vv*vv/(gg*Math.tan(incl*D)) : Infinity, rGeo = eDeg > 2 ? cfg.R*Math.cos(eDeg*D) : Infinity;
   const fm = r => Number.isFinite(r) && r < 200 ? r.toFixed(1) + ' m' : '直行';
   const r4 = (a, b, c) => `<tr><td>${a}</td><td><b>${b}</b></td><td class="note">${c}</td></tr>`;
+  const wf = weightF(p), side = p.toeLean > 2*D ? 'Toe edge' : p.toeLean < -2*D ? 'Heel edge' : '板平';
   document.getElementById('c4Tbl').innerHTML = '<tr><th>量</th><th>目前</th><th>是什么</th></tr>' +
+    r4('哪条刃', side, 'Toeside 和 heelside 用不同关节立刃') +
+    r4('前／后脚', Math.round(wf*100) + '% ／ ' + Math.round((1-wf)*100) + '%', '前后脚压力分布') +
     r4('倾斜（inclination）', incl.toFixed(0) + '°', '整个身体向弯内倾') +
-    r4('关节角度（angulation）', (eDeg - incl).toFixed(0) + '°', 'Edge 减倾斜：髋和膝盖额外做出来的') +
+    r4('角差（示意）', (eDeg - incl).toFixed(0) + '°', 'Edge 减身体倾斜的示意差，不是解剖学关节角度') +
     r4('立刃角度', eDeg.toFixed(0) + '°', '板相对雪面立起多少') +
     r4('压力', bw.toFixed(2) + '× 体重', '雪推回的力；创建、维持、放掉');
   document.getElementById('c4R').innerHTML = '<tr><th>弯半径</th><th>数值</th><th>来源</th></tr>' +
-    r4('平衡要求', fm(rBal), '公式：v²／(g·tan 倾斜)') +
-    r4('板几何', fm(rGeo), '公式：sidecut ' + cfg.R + ' m × cos(edge)') +
-    r4('模型路线', fm(R), '3D 实际路线');
+    r4('理想平衡半径', fm(rBal), '公式：v²／(g·tan 倾斜)，假设稳定转弯、理想雪面') +
+    r4('理论 sidecut 半径', fm(rGeo), '公式：sidecut ' + cfg.R + ' m × cos(edge)，假设板完全弯贴、没有 skid') +
+    r4('仿真路线半径', fm(R), '量度 3D 动画路线');
 }
 /* ---------- UI ---------- */
 const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:true};
@@ -1600,7 +1605,7 @@ function setStance(k){
   document.getElementById('stName').textContent = STANCE[k].name;
   const fl = FLOW[k];
   document.getElementById('stTxt').innerHTML = STANCE[k].txt + fxList(STANCE[k].fx) + (fl ? '<table style="margin-top:8px">' +
-    `<tr><td>👀 现象</td><td>${fl.see}</td></tr><tr><td>🔍 原因</td><td>${fl.why}</td></tr><tr><td>💡 身体感觉</td><td>${fl.cue}</td></tr>` +
+    `<tr><td>👀 现象</td><td>${fl.see}</td></tr><tr><td>🔍 可能原因</td><td>${fl.why}</td></tr><tr><td>💡 身体感觉</td><td>${fl.cue}</td></tr>` +
     `<tr><td>🛠 修正练习</td><td>${fl.drill.map(([l, n]) => `<button data-fix="${l}">${n}</button>`).join(' ')}</td></tr><tr><td>✅ 怎么知道改好了</td><td>${fl.check}</td></tr></table>` : '');
   document.querySelectorAll('[data-fix]').forEach(b => b.onclick = () => { setStance('ok'); setLevel(b.dataset.fix); });
   if (typeof cmpOn !== 'undefined') updCmpLbl();
@@ -1817,8 +1822,8 @@ function updateUI(p, act, md, now){
 
 /* ---------- learning: simple mode, compare, guide ---------- */
 const GUIDE = {"basicC": {"q": [["换刃那下身体是高还是低？", "高。伸高减压，板变轻才换刃。"], ["JSBA 1–2 级看什么？", "稳定的整体姿势、适当的上下运动、适当的 positioning、左右均等且 skid 少的弧。"]], "sum": "换刃伸高、弯中屈低；左右均等、skid 少。", "snow": "中斜面 4–5 个长弯：喊着「起—落」做节奏，每个弯回头看雪痕是否左右一样。"}, "dynC": {"q": [["换刃那下身体是高还是低？", "低。屈曲收脚，板从身体下面穿过。"], ["为什么要收脚换刃？", "不用把 CoM 擡高，换刃快、速度不流失，edge 可以更早咬雪。"]], "sum": "换刃收脚、入弯伸脚；身体高度变化小。", "snow": "先在缓坡练「收脚换刃」，熟练后再上中急斜面和短弯。"}, "leaf": {"q": [["想往板头方向去，重心放哪只脚？", "前脚。板头微微指向下坡就会往板头方向斜滑。"], ["换方向要不要换刃？", "不用，全程同一个刃，只是前后脚转移重心。"]], "sum": "同一个刃左右来回：前脚带往板头、后脚带往板尾，两端加大立刃停稳。", "snow": "先用后刃：往板头斜滑 3–5 公尺，停，再往板尾滑回来；之后用前刃再做。熟练后就是学 J 型转弯和 S 弯的前一步。"}, "slip": {"q": [["想停下，立刃要加大还是减小？", "加大，接近坡度就会停。"], ["眼睛应该看哪里？", "看前方（下坡方向），不要看雪板。"]], "sum": "用脚踝控制立刃角度：大就停，小就滑。", "snow": "后刃推坡：勾起脚趾停、放低脚趾滑，重复 5 次；之后再试前刃推坡。"}, "trav": {"q": [["想从斜滑降转向滚落线，要怎么做？", "立刃稍微放平，前脚轻轻加压。"], ["转回上坡靠什么？", "重新加立刃：后刃勾脚趾，前刃推膝盖。"]], "sum": "放刃下滑、入刃回升，是连续转弯前的一步。", "snow": "一条雪道做 3–4 个 garland 再停，后刃和前刃两边都要练。"}, "beg": {"q": [["入弯时重心应该放前脚还是后脚？", "前脚多一点（大约 55–60%）。"], ["眼睛应该看哪里？", "看要去的方向，头和肩膀带动身体。"]], "sum": "看要去哪里，前脚带，后脚跟。", "snow": "每个弯之前先转头看下一个方向，再轻轻压前脚。"}, "mid": {"q": [["后刃主要靠哪些肌肉？", "胫骨前肌勾起脚趾，股四头肌和腹肌撑住。"], ["上半身应该带转雪板吗？", "不应该，靠脚踝和膝盖控制。"]], "sum": "伸展换刃、屈曲加压、上半身稳定。", "snow": "每个弯喊「起、压」；试着把手放在膝盖上做几个弯，感觉下半身带转。"}, "carve": {"q": [["单板的立刃角度和身体倾倒相比是怎样？", "差不多一样。"], ["前刃时髋部应该往后顶吗？", "不应该，身体成一直线往弯内倾。"]], "sum": "早点倾倒，让雪板自己转，雪上只留一条细线。", "snow": "在缓坡做刻滑横越：只用一边刃横过雪道，再回头看雪上是不是一条细线。"}, "euro": {"q": [["手扫雪是用来撑住身体的吗？", "不是。重心仍然在刃上，手只是轻轻碰。"], ["想倒得低，最需要什么？", "速度够、刃咬得牢；太慢就倒不下去。"]], "sum": "靠速度和立刃撑住身体，不是靠手。", "snow": "选压雪好的宽雪道，先练后刃，逐步加大倾倒；记得保护膝盖和手腕。"}, "ollie": {"q": [["Pop 之前身体要做什么？", "蹲低，重心移到板尾，像压弹簧一样。"], ["在空中怎么让雪板跟着起来？", "膝盖往胸口收，前脚把雪板拉平。"]], "sum": "压尾、起跳、收脚、屈膝落地。", "snow": "先在平地原地练，再到缓坡慢速做；落地时双脚要同时着地。"}, "butter": {"q": [["Nose butter 重心放哪里？", "前脚，大约 80–90%。"], ["转动的力量从哪里来？", "上半身先预扭，再带头转，下半身跟着。"]], "sum": "压板头、预扭、上半身带转。", "snow": "先在平地练 nose press 站稳 3 秒，再加 180，最后才试 360。"}};
-Object.assign(GUIDE, {"jturn": {"q": [["想停，弯要转向哪里？", "转上坡。板一打横对着斜坡，速度自然会没了。"], ["哪只脚先动？", "前脚。前脚带板头转，后脚只是跟。"]], "sum": "直滑两秒，前脚带板头转上坡，用一条 edge 停住；heel 和 toe 两边都要做。", "snow": "选有平地可停的缓坡：heel 边做 5 次、toe 边做 5 次。两边都停得稳，才去连续转弯。"}, "eroll": {"q": [["换刃那刻板是怎样？", "平的。两脚平均、膝盖放软，下坡那条 edge 不可以咬住雪。"], ["为什么要练这下？", "单板大部分 catch edge 都是在换刃那刻发生，不是在弯里面。"]], "sum": "Heel → 放平一瞬 → toe，幅度小、慢速；练的是放平那一下。", "snow": "最缓的坡，板头大约朝向 fall line 慢慢滑：heel 一点 → 平 → toe 一点，来回 10 次。不求速度，求流畅。"}, "pencil": {"q": [["怎么知道自己是不是真 carve？", "回头看雪痕：细线 = carve；宽痕 = 板正在打横（skid）。"], ["想 carve 得干净，板要怎样？", "不要打横：板头指的方向和行进方向一样，板尾走回板头那条线。"]], "sum": "一条 edge 横行，留下一条细线；做到才把 heel 和 toe 连起来变 carved turn。", "snow": "在蓝线平整的位置，heel 边横行 20–30 公尺，停下回头看雪痕；再 toe 边。两边都是细线，才试连续 carving。还没控制好一边 edge 就急着练，只会练出 catch edge。"}, "ffs": {"q": [["转弯由哪只脚发动？", "前脚。前脚扭板入弯，后脚只是跟。"], ["怎么知道自己是不是后脚扫尾？", "雪痕在弯的下半段突然变宽、板尾甩出去，就是后脚在踢。"]], "sum": "入弯重量放前、前脚扭板；后脚不要踢板尾（ruddering）。", "snow": "缓坡：只扣前脚、后脚放在板上不扣，做 J-turn；之后扣回两只脚，想着「后脚是乘客」做连续转弯。"}, "swb": {"q": [["Switch 的肌肉和前后脚压力有什么不同？", "没有不同，只是左右镜像：平时的后脚现在做前脚的工作。"], ["应该在哪里练？", "最容易的绿线，从 J-turn 开始，再到连续 skid 转弯。"]], "sum": "用平时的后脚当前脚，所有动作镜像；新前脚带、重量稍微放前。", "snow": "每天留大约两成时间练 switch：先绿线 J-turn，再连续转弯。单板天生不对称，不练就永远有一边弱。"}});
-const FLOW = {"back": {"see": "板头轻、入弯慢，弯尾板尾甩出；后脚大腿很快累。", "why": "重心在后脚上方，前脚没带动板头。", "cue": "入弯时前膝推向弯内，感觉前脚鞋底有压力。", "drill": [["ffs", "前脚带转"], ["jturn", "J-turn"]], "check": "入弯那下板头先转，雪痕不会在弯尾突然变宽。"}, "front": {"see": "板尾没压力，弯尾板尾滑出去；toeside 很容易向前跌。", "why": "重心太前，后脚没有份撑住出弯。", "cue": "出弯时重量回到两脚中间，后脚也有感觉。", "drill": [["eroll", "Edge roll"], ["beg", "入门 Skid"]], "check": "出弯雪痕均匀，板尾不甩。"}, "waist": {"see": "heelside 屁股掉后、上身向前折；大腿和腰很累。", "why": "用弯腰代替屈膝屈踝，髋离开板上方。", "cue": "髋推向前、保持在板上方，像站在高凳前面而不是坐下去。", "drill": [["trav", "斜滑降"], ["basicC", "基础弧线"]], "check": "heelside 上身直、膝盖有弯，不再坐马桶。"}, "look": {"see": "眼看板头或脚下，转弯慢、身体跟着头往下缩。", "why": "头和上身向前低，重心和视线都慢过板。", "cue": "眼看要去的方向，下一个弯的位置。", "drill": [["trav", "斜滑降"], ["jturn", "J-turn"]], "check": "转弯时头先转向新方向，身体跟着，不用看板。"}, "rot": {"see": "肩膀先转、板尾甩出，弯大、搓雪多。", "why": "用上身旋转带动板，没用脚和 edge 转。", "cue": "上身稳定，膝盖和脚踝带板转。", "drill": [["ffs", "前脚带转"], ["eroll", "Edge roll"]], "check": "上身不大幅转也转得到弯，雪痕细一点。"}, "rudder": {"see": "后脚踢板尾，雪痕在弯的下半段变宽。", "why": "前脚没发动，靠后脚刮雪转向。", "cue": "前脚先扭板，后脚是乘客。", "drill": [["ffs", "前脚带转"], ["jturn", "J-turn"]], "check": "雪痕宽度均匀，不用踢尾也转得到。"}};
+Object.assign(GUIDE, {"jturn": {"q": [["想停，弯要转向哪里？", "转上坡。板一打横对着斜坡，速度自然会没了。"], ["哪只脚先动？", "前脚先创建方向，后脚协调跟着完成转弯。"]], "sum": "直滑两秒，前脚带板头转上坡，用一条 edge 停住；heel 和 toe 两边都要做。", "snow": "选有平地可停的缓坡：heel 边做 5 次、toe 边做 5 次。两边都停得稳，才去连续转弯。"}, "eroll": {"q": [["换刃那刻板是怎样？", "平的。两脚平均、膝盖放软，下坡那条 edge 不可以咬住雪。"], ["为什么要练这下？", "单板大部分 catch edge 都是在换刃那刻发生，不是在弯里面。"]], "sum": "Heel → 放平一瞬 → toe，幅度小、慢速；练的是放平那一下。", "snow": "最缓的坡，板头大约朝向 fall line 慢慢滑：heel 一点 → 平 → toe 一点，来回 10 次。不求速度，求流畅。"}, "pencil": {"q": [["怎么知道自己是不是真 carve？", "回头看雪痕：细线 = carve；宽痕 = 板正在打横（skid）。"], ["想 carve 得干净，板要怎样？", "不要打横：板头指的方向和行进方向一样，板尾走回板头那条线。"]], "sum": "一条 edge 横行，留下一条细线；做到才把 heel 和 toe 连起来变 carved turn。", "snow": "在蓝线平整的位置，heel 边横行 20–30 公尺，停下回头看雪痕；再 toe 边。两边都是细线，才试连续 carving。还没控制好一边 edge 就急着练，只会练出 catch edge。"}, "ffs": {"q": [["转弯由哪只脚发动？", "新手：前脚先创建方向，后脚协调跟着。中级以上：两只脚一起控制转向、edge 和压力。"], ["怎么知道自己是不是后脚扫尾？", "雪痕在弯的下半段突然变宽、板尾甩出去，就是后脚在踢。"]], "sum": "新手练习：入弯重量放前、前脚先创建方向，后脚协调跟着，不要突然踢板尾（ruddering）。中级以上两只脚一起控制。", "snow": "缓坡：只扣前脚、后脚放在板上不扣，做 J-turn；之后扣回两只脚做连续转弯，留意后脚不要突然扫尾。"}, "swb": {"q": [["Switch 的肌肉和前后脚压力有什么不同？", "没有不同，只是左右镜像：平时的后脚现在做前脚的工作。"], ["应该在哪里练？", "最容易的绿线，从 J-turn 开始，再到连续 skid 转弯。"]], "sum": "用平时的后脚当前脚，所有动作镜像；新前脚带、重量稍微放前。", "snow": "每天留大约两成时间练 switch：先绿线 J-turn，再连续转弯。单板天生不对称，不练就永远有一边弱。"}});
+const FLOW = {"back": {"see": "板头轻、入弯慢，弯尾板尾甩出；后脚大腿很快累。", "why": "可能原因：① 重心坐在后脚上 ② 入弯时机太晚、edge 还没咬就想转 ③ 害怕、身体向山后缩", "cue": "入弯时前膝推向弯内，感觉前脚鞋底有压力。", "drill": [["ffs", "前脚带转"], ["jturn", "J-turn"]], "check": "入弯那下板头先转，雪痕不会在弯尾突然变宽。"}, "front": {"see": "板尾没压力，弯尾板尾滑出去；toeside 很容易向前跌。", "why": "可能原因：① 重心太前 ② 出弯没放松 edge、板尾没压力 ③ toeside 脚踝太硬", "cue": "出弯时重量回到两脚中间，后脚也有感觉。", "drill": [["eroll", "Edge roll"], ["beg", "入门 Skid"]], "check": "出弯雪痕均匀，板尾不甩。"}, "waist": {"see": "heelside 屁股掉后、上身向前折；大腿和腰很累。", "why": "可能原因：① 用弯腰代替屈膝屈踝 ② 脚踝背屈不够（鞋太硬或活动度差） ③ 怕 heelside、向山后缩", "cue": "髋推向前、保持在板上方，像站在高凳前面而不是坐下去。", "drill": [["trav", "斜滑降"], ["basicC", "基础弧线"]], "check": "heelside 上身直、膝盖有弯，不再坐马桶。"}, "look": {"see": "眼看板头或脚下，转弯慢、身体跟着头往下缩。", "why": "可能原因：① 视线太近 ② 还不信任板、想看着脚 ③ 上身向前低", "cue": "眼看要去的方向，下一个弯的位置。", "drill": [["trav", "斜滑降"], ["jturn", "J-turn"]], "check": "转弯时头先转向新方向，身体跟着，不用看板。"}, "rot": {"see": "肩膀先转、板尾甩出，弯大、搓雪多。", "why": "可能原因：① 用上身旋转代替脚转 ② 立刃不够、要靠扭才转得到 ③ 怕速度、想快点转完", "cue": "上身稳定，膝盖和脚踝带板转。", "drill": [["ffs", "前脚带转"], ["eroll", "Edge roll"]], "check": "上身不大幅转也转得到弯，雪痕细一点。"}, "rudder": {"see": "后脚踢板尾，雪痕在弯的下半段变宽。", "why": "可能原因：① 前脚没先创建方向 ② 重心坐在后脚上 ③ edge 不够、靠刮雪减速", "cue": "前脚先创建方向，后脚协调跟着、不要突然扫尾。", "drill": [["ffs", "前脚带转"], ["jturn", "J-turn"]], "check": "雪痕宽度均匀，不用踢尾也转得到。"}};
 const STANCE_SHORT = {"look": "盯着板看：转不到要去的方向。", "front": "前脚太重：板尾甩出，容易吃刃。", "back": "后脚太重：板头飘，要靠上半身扭才转得过去。", "waist": "弯腰／坐马桶：重心离开刃，容易摔。", "rot": "上半身带转：板尾甩出，上下半身不同步。", "rudder": "后脚扫尾：板头没带到，靠板尾刮雪转。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
 const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {basicC:'back', dynC:'back', slip:'look', leaf:'look', trav:'look', jturn:'look', ffs:'rudder', swb:'back', eroll:'look', pencil:'look'};
@@ -1885,7 +1890,7 @@ new ResizeObserver(resize).observe(stage); resize();
 
 /* ---------- loop ---------- */
 document.getElementById('birdMap').onclick = mapClick;
-const FEEL1 = {"basicC": "换刃伸高，弯中屈低。", "dynC": "换刃收脚，入弯伸脚。", "jturn": "直落两秒，前脚带板头转上坡，自己会停下。", "eroll": "放平那一下两脚平均、膝盖放软。", "pencil": "回头看雪痕：一条细线才是 carve。", "ffs": "前脚扭板，后脚是乘客。", "swb": "全部镜像，新前脚带路。", "slip": "勾起脚趾（后刃推坡）就停，稍微放松就滑。", "leaf": "想往哪边就压那边的脚。", "trav": "眼睛看要去的方向，前脚带路。", "beg": "换边时先把板放平，再慢慢压到新的那边。", "mid": "入弯压低加压，换刃时站高放松。", "carve": "压实板刃，让板自己转，不要扭上半身。", "euro": "身体比板还低也不会倒，是靠速度撑住；速度不够别尝试。", "ollie": "先压板尾蓄力，再弹起收脚。", "butter": "压实板头（或板尾），上半身带转。"};
+const FEEL1 = {"basicC": "换刃伸高，弯中屈低。", "dynC": "换刃收脚，入弯伸脚。", "jturn": "直落两秒，前脚带板头转上坡，自己会停下。", "eroll": "放平那一下两脚平均、膝盖放软。", "pencil": "回头看雪痕：一条细线才是 carve。", "ffs": "前脚先创建方向，后脚协调跟着。", "swb": "全部镜像，新前脚带路。", "slip": "勾起脚趾（后刃推坡）就停，稍微放松就滑。", "leaf": "想往哪边就压那边的脚。", "trav": "眼睛看要去的方向，前脚带路。", "beg": "换边时先把板放平，再慢慢压到新的那边。", "mid": "入弯压低加压，换刃时站高放松。", "carve": "压实板刃，让板自己转，不要扭上半身。", "euro": "身体比板还低也不会倒，是靠速度撑住；速度不够别尝试。", "ollie": "先压板尾蓄力，再弹起收脚。", "butter": "压实板头（或板尾），上半身带转。"};
 let pathDone = {}; try { pathDone = JSON.parse(localStorage.getItem('pathDone') || '{}'); } catch(e){}
 function renderPath(curK){
   document.querySelectorAll('#path li').forEach(li => { li.classList.toggle('done', !!pathDone[li.dataset.k]); li.classList.toggle('cur', li.dataset.k === curK); });
