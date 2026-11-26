@@ -6,6 +6,7 @@
 |---|---|
 | [`ski/`](ski/) | 犁式、平行、Carving、蘑菇、短彎、Pivot slip、斜滑降＋Garland、提內腳 drill |
 | [`snowboard/`](snowboard/) | Side slip、斜滑降＋Garland、Skid、動態、Carving、極限低 Carve、Ollie／Nollie、Butter、Switch |
+| [`resort/`](resort/) | 🧭 雪場實用技能：穿戴（由內到外）、上落吊椅（雙板／單板）、出錯點算、纜車廂／魔毯／拉索、跌倒起身、雪場規則 |
 
 ## 功能
 
@@ -65,3 +66,15 @@ Settings → Pages → Source 揀 **Deploy from a branch** → `main` / `(root)`
 - 每個動作都講埋對雙板同單板有咩用
 
 `gym/rig.js` 喺共用 rig 上面加咗鎖骨控制（聳肩錯誤用）。
+
+## 🧪 測試
+
+用 Node 18+ 或 Bun：
+
+```sh
+npm install && npx playwright install chromium
+npm test                 # 或者：bun tests/smoke.test.mjs
+CHROME=/usr/bin/google-chrome THREE_DIR=/dir/with/three.min.js+GLTFLoader.js npm test   # 離線
+```
+
+檢查全部語言版本：冇 JS 錯誤、每個級數、Carving 關節角度選單、錯誤流程、手機 390 px 唔會闊過畫面；雪場實用技能每個單元、每一步、上一步／下一步、示意圖、完成度、情境題、轉語言；健身頁每個動作；首頁連結。

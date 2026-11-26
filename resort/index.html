@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>雪場實用技能：穿戴・吊椅・跌倒・規則</title>
+<style>
+:root{--bg:#0f1419;--card:#171e26;--line:#2a3440;--text:#e6edf3;--muted:#8b98a5;--accent:#4cc9f0;--ok:#22c55e;--bad:#ef4444;--warn:#ffb020}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"PingFang HK","Noto Sans TC",sans-serif}
+header{max-width:720px;margin:0 auto;padding:16px 16px 0}
+header h1{font-size:20px;margin:0}
+header p{color:var(--muted);margin:4px 0 0;font-size:13px}
+main{max-width:720px;margin:0 auto;padding:12px 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.seg{display:grid;gap:4px}
+.seg button,.wrap button,button{background:#0f1419;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 6px;font-size:13px;cursor:pointer}
+button.on{background:var(--accent);color:#0f1419;font-weight:600;border-color:var(--accent)}
+.wrap{display:flex;flex-wrap:wrap;gap:6px}
+.wrap button{padding:6px 10px}
+h2{font-size:17px;margin:0 0 6px}
+h3{font-size:15px;margin:10px 0 4px}
+.note{color:var(--muted);font-size:12px;margin:6px 0 0}
+.stepHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.dots{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.dots span{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.dots span.done{background:var(--ok)}
+.dots span.cur{outline:2px solid var(--accent)}
+svg.scene{width:100%;height:auto;background:#0b1016;border-radius:10px;display:block}
+ul{margin:4px 0;padding-left:20px}
+li{margin:2px 0}
+.ok h3{color:var(--ok)} .bad h3{color:var(--bad)} .why h3{color:var(--warn)} .chk h3{color:var(--accent)}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.nav button{padding:10px}
+.quiz button{display:block;width:100%;text-align:left;margin:6px 0;padding:10px}
+.quiz button.right{border-color:var(--ok)} .quiz button.wrong{border-color:var(--bad)}
+.banner{border-left:3px solid var(--warn);padding:6px 10px;background:#1d1a12;border-radius:0;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <select id="langSel" aria-label="Language" style="float:right;margin-left:8px;background:#171e26;color:#e6edf3;border:1px solid #2a3440;border-radius:8px;padding:4px 6px;font-size:12px"><option value="index.html" selected>廣東話（香港）</option><option value="zh-tw.html">繁體中文（台灣）</option><option value="zh-cn.html">简体中文（中国大陆）</option><option value="en.html">English</option></select>
+  <h1>🧭 雪場實用技能</h1>
+  <p>出發前就要識：穿戴裝備、上落吊椅、跌倒起身、雪場規則。逐步睇，每步有示意圖、正確做法同常見錯誤。</p>
+</header>
+<main>
+  <div class="banner">每個雪場、每種纜車嘅做法都可能唔同：一定以現場告示同工作人員指示為準。圖係示意，唔係實際比例。</div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="seg" id="mods" style="grid-template-columns:repeat(3,1fr)"></div>
+    <div class="wrap" id="lessons" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card" id="lessonCard">
+    <div class="stepHead"><h2 id="stepTitle"></h2><span class="note" id="stepNo"></span></div>
+    <div class="dots" id="dots"></div>
+    <svg class="scene" id="scene" viewBox="0 0 320 190"></svg>
+    <div class="ok"><h3>✅ 正確做法</h3><ul id="okList"></ul></div>
+    <div class="bad"><h3>❌ 常見錯誤</h3><ul id="badList"></ul></div>
+    <div class="why"><h3>⚠️ 點解重要</h3><p id="why" style="margin:0"></p></div>
+    <div class="chk" id="chkBox"><h3>👌 自己檢查</h3><p id="chk" style="margin:0"></p></div>
+    <div class="nav"><button id="prev">← 上一步</button><button id="next">下一步 →</button></div>
+    <p class="note" id="progress"></p>
+  </div>
+
+  <div class="card" id="quizCard" style="display:none">
+    <h2>🧩 情境題</h2>
+    <p id="quizQ" style="margin:0"></p>
+    <div class="quiz" id="quizA"></div>
+    <p id="quizFb" style="margin:0"></p>
+  </div>
+
+  <p class="note">參考：日本各雪場乘車告示同安全守則、FIS 滑雪者行為守則、滑雪鞋廠方穿鞋指引。內容係俾初學者嘅保守做法，唔取代雪場規定同教練指導。</p>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* ---------- scenes (simple SVG illustrations) ---------- */
+const C = {skin:'#f1c9a5', base:'#60a5fa', mid:'#f59e0b', shell:'#ef4444', pants:'#334155', sock:'#e5e7eb', boot:'#94a3b8', helmet:'#10b981', goggle:'#a78bfa', glove:'#1e293b', neck:'#f472b6', hi:'#fde047', snow:'#dbe7f3', line:'#2a3440', chair:'#64748b', ski:'#4cc9f0', board:'#22d3ee'};
+
+function figDress(upto){
+  const hl = i => i === upto ? `stroke="${C.hi}" stroke-width="3"` : '';
+  let s = `<rect x="0" y="170" width="320" height="20" fill="${C.snow}" opacity=".15"/>`;
+  const x = 160;
+  s += `<circle cx="${x}" cy="38" r="17" fill="${C.skin}"/>`;
+  s += `<rect x="${x-22}" y="58" width="44" height="58" rx="10" fill="${C.skin}"/><rect x="${x-34}" y="60" width="12" height="52" rx="6" fill="${C.skin}"/><rect x="${x+22}" y="60" width="12" height="52" rx="6" fill="${C.skin}"/>`;
+  s += `<rect x="${x-20}" y="112" width="17" height="56" rx="7" fill="${C.skin}"/><rect x="${x+3}" y="112" width="17" height="56" rx="7" fill="${C.skin}"/>`;
+  if (upto >= 0) s += `<g ${hl(0)}><rect x="${x-22}" y="58" width="44" height="58" rx="10" fill="${C.base}"/><rect x="${x-34}" y="60" width="12" height="50" rx="6" fill="${C.base}"/><rect x="${x+22}" y="60" width="12" height="50" rx="6" fill="${C.base}"/><rect x="${x-20}" y="112" width="17" height="54" rx="7" fill="${C.base}"/><rect x="${x+3}" y="112" width="17" height="54" rx="7" fill="${C.base}"/></g>`;
+  if (upto >= 1) s += `<g ${hl(1)}><rect x="${x-23}" y="59" width="46" height="54" rx="10" fill="${C.mid}"/><rect x="${x-35}" y="61" width="12" height="46" rx="6" fill="${C.mid}"/><rect x="${x+23}" y="61" width="12" height="46" rx="6" fill="${C.mid}"/></g>`;
+  if (upto >= 2) s += `<g ${hl(2)}><rect x="${x-21}" y="104" width="42" height="64" rx="8" fill="${C.pants}"/><rect x="${x-25}" y="58" width="50" height="60" rx="11" fill="${C.shell}"/><rect x="${x-37}" y="60" width="13" height="50" rx="6" fill="${C.shell}"/><rect x="${x+24}" y="60" width="13" height="50" rx="6" fill="${C.shell}"/><line x1="${x}" y1="60" x2="${x}" y2="116" stroke="#0f1419" stroke-width="1.5"/></g>`;
+  if (upto >= 3) s += `<g ${hl(3)}><rect x="${x-20}" y="150" width="17" height="18" rx="4" fill="${C.sock}"/><rect x="${x+3}" y="150" width="17" height="18" rx="4" fill="${C.sock}"/></g>`;
+  if (upto >= 4) s += `<g ${hl(4)}><rect x="${x-24}" y="138" width="22" height="34" rx="5" fill="${C.boot}"/><rect x="${x+2}" y="138" width="22" height="34" rx="5" fill="${C.boot}"/>${[144,152,160,166].map(y => `<line x1="${x-24}" y1="${y}" x2="${x-2}" y2="${y}" stroke="#0f1419"/><line x1="${x+2}" y1="${y}" x2="${x+24}" y2="${y}" stroke="#0f1419"/>`).join('')}</g>`;
+  if (upto >= 5) s += `<g ${hl(5)}><path d="M${x-19} 40 a19 20 0 0 1 38 0 z" fill="${C.helmet}"/><line x1="${x-14}" y1="44" x2="${x}" y2="56" stroke="${C.helmet}" stroke-width="2"/><line x1="${x+14}" y1="44" x2="${x}" y2="56" stroke="${C.helmet}" stroke-width="2"/></g>`;
+  if (upto >= 6) s += `<g ${hl(6)}><rect x="${x-18}" y="35" width="36" height="11" rx="5" fill="${C.goggle}"/></g>`;
+  if (upto >= 7) s += `<g ${hl(7)}><rect x="${x-39}" y="104" width="16" height="16" rx="5" fill="${C.glove}"/><rect x="${x+23}" y="104" width="16" height="16" rx="5" fill="${C.glove}"/></g>`;
+  if (upto >= 8) s += `<g ${hl(8)}><rect x="${x-12}" y="50" width="24" height="10" rx="4" fill="${C.neck}"/></g>`;
+  if (upto >= 9) s += `<text x="${x+50}" y="70" fill="${C.hi}" font-size="22">✓</text>`;
+  const legend = ['底層','中層','外層','雪襪','雪鞋','頭盔','雪鏡','手套','護頸','全部檢查'];
+  s += `<text x="12" y="22" fill="${C.hi}" font-size="12">${legend[upto]}</text>`;
+  return s;
+}
+
+function figBoot(){
+  // boot buckles numbered in a common order (makers differ)
+  let s = `<g transform="translate(0,22)"><path d="M110 40 L190 40 L196 120 L230 128 L234 160 L96 160 L100 120 Z" fill="${C.boot}" stroke="#0f1419"/>`;
+  const bk = [[150,62,'1'],[150,82,'2'],[178,118,'3'],[205,140,'4']];
+  bk.forEach(([x, y, n]) => { s += `<rect x="${x-30}" y="${y-5}" width="60" height="10" rx="3" fill="#0f1419"/><circle cx="${x+40}" cy="${y}" r="9" fill="${C.hi}"/><text x="${x+40}" y="${y+4}" fill="#0f1419" font-size="11" text-anchor="middle">${n}</text>`; });
+  s += `<rect x="108" y="30" width="84" height="10" rx="3" fill="${C.neck}"/><text x="200" y="38" fill="${C.neck}" font-size="11">strap</text></g>`;
+  s += `<text x="12" y="18" fill="${C.hi}" font-size="11">常見次序：1 腳踝 → 2 上面</text><text x="12" y="34" fill="${C.hi}" font-size="11">→ 3、4 腳面同腳趾（唔使太緊）→ strap</text>`;
+  return s;
+}
+
+/* person: x = hip position, mode stand/sit/lie, gear ski/board */
+function person(x, y, sit, gear, opt = {}){
+  const col = opt.col || C.shell;
+  let s = '';
+  if (sit > .5){
+    s += `<line x1="${x}" y1="${y-20}" x2="${x-4}" y2="${y-52}" stroke="${col}" stroke-width="9" stroke-linecap="round"/>`;
+    s += `<circle cx="${x-5}" cy="${y-64}" r="9" fill="${C.helmet}"/>`;
+    s += `<line x1="${x}" y1="${y-20}" x2="${x+24}" y2="${y-20}" stroke="${C.pants}" stroke-width="8" stroke-linecap="round"/><line x1="${x+24}" y1="${y-20}" x2="${x+26}" y2="${y+6}" stroke="${C.pants}" stroke-width="7" stroke-linecap="round"/>`;
+    if (gear === 'none') {}
+    else if (gear === 'ski') s += `<line x1="${x+8}" y1="${y+6}" x2="${x+56}" y2="${y+6-(opt.tips?8:0)}" stroke="${C.ski}" stroke-width="3"/>`;
+    else s += `<line x1="${x+4}" y1="${y+8}" x2="${x+52}" y2="${y+8}" stroke="${C.board}" stroke-width="5" stroke-linecap="round"/>`;
+    if (gear === 'ski' && opt.poles) s += `<line x1="${x+4}" y1="${y-34}" x2="${x+30}" y2="${y-36}" stroke="#cbd5e1" stroke-width="2"/>`;
+  } else {
+    const lean = opt.lean || 0;
+    s += `<line x1="${x}" y1="${y-36}" x2="${x+lean}" y2="${y-66}" stroke="${col}" stroke-width="9" stroke-linecap="round"/>`;
+    s += `<circle cx="${x+lean}" cy="${y-78}" r="9" fill="${C.helmet}"/>`;
+    s += `<line x1="${x}" y1="${y-36}" x2="${x+3}" y2="${y-2}" stroke="${C.pants}" stroke-width="8" stroke-linecap="round"/>`;
+    if (gear === 'none') {}
+    else if (gear === 'ski'){ s += `<line x1="${x-22}" y1="${y}" x2="${x+30}" y2="${y-(opt.tips?6:0)}" stroke="${C.ski}" stroke-width="3"/>`; if (opt.poles) s += `<line x1="${x+lean+6}" y1="${y-52}" x2="${x+20}" y2="${y-2}" stroke="#cbd5e1" stroke-width="2"/>`; }
+    else { s += `<line x1="${x-24}" y1="${y+1}" x2="${x+26}" y2="${y+1}" stroke="${C.board}" stroke-width="5" stroke-linecap="round"/>`; if (opt.rear !== 'on') s += `<line x1="${x-2}" y1="${y-30}" x2="${x-14}" y2="${y-2}" stroke="${C.pants}" stroke-width="7" stroke-linecap="round"/>`; }
+  }
+  return s;
+}
+function chair(x, y, bar, empty){
+  let s = `<line x1="${x}" y1="22" x2="${x}" y2="${y-62}" stroke="${C.chair}" stroke-width="3"/>`;
+  s += `<path d="M${x} ${y-62} L${x-8} ${y-62} L${x-8} ${y-20} L${x+26} ${y-20}" fill="none" stroke="${C.chair}" stroke-width="5"/>`;
+  s += bar > .5 ? `<path d="M${x} ${y-62} L${x+30} ${y-50} L${x+30} ${y-12}" fill="none" stroke="${C.hi}" stroke-width="3"/>` : `<path d="M${x} ${y-62} L${x+10} ${y-80}" fill="none" stroke="${C.hi}" stroke-width="3"/>`;
+  return s;
+}
+const lerp = (a, b, t) => a + (b - a)*t;
+function liftScene(sp, t, gear){
+  const g = sp.ground ?? 160;
+  let s = `<line x1="0" y1="22" x2="320" y2="22" stroke="${C.chair}" stroke-width="2"/>`;
+  s += sp.ramp ? `<path d="M0 ${g} L200 ${g} L320 ${g+20} L320 190 L0 190 Z" fill="${C.snow}" opacity=".18"/>` : `<rect x="0" y="${g}" width="320" height="${190-g}" fill="${C.snow}" opacity=".18"/>`;
+  if (sp.marker) s += `<line x1="${sp.marker}" y1="${g}" x2="${sp.marker}" y2="${g-10}" stroke="${C.bad}" stroke-width="3"/><text x="${sp.marker-14}" y="${g+16}" fill="${C.bad}" font-size="10">${sp.markerTxt || '上車位'}</text>`;
+  const cx = sp.chair ? lerp(sp.chair[0], sp.chair[1], t) : null;
+  const bar = sp.bar ? lerp(sp.bar[0], sp.bar[1], t) : 0;
+  let px = sp.p ? lerp(sp.p[0], sp.p[1], t) : null, sit = sp.sit ? (typeof sp.sit === 'number' ? sp.sit : sp.sit(t, cx)) : 0;
+  if (sp.ride && cx != null && sit > .5) px = cx + 8;
+  if (cx != null) s += chair(cx, g, bar, false);
+  if (sp.chair2) s += chair(lerp(sp.chair2[0], sp.chair2[1], t), g, 0, true);
+  if (px != null) s += person(px, sit > .5 ? g - 4 : (sp.py ?? g), sit, gear, {tips: sp.tips, poles: gear === 'ski', lean: sp.lean || 0, rear: sp.rear, col: sp.col});
+  if (sp.down) s += `<g transform="translate(${sp.down[0]},${sp.down[1]})">${lying(gear)}</g>`;
+  if (sp.staff) s += `<text x="${sp.staff}" y="${g-6}" font-size="18">🧑‍🔧</text>`;
+  if (sp.label) s += `<text x="12" y="186" fill="${C.hi}" font-size="11">${sp.label}</text>`;
+  return s;
+}
+function lying(gear){
+  return `<line x1="0" y1="0" x2="34" y2="-4" stroke="${C.shell}" stroke-width="9" stroke-linecap="round"/><circle cx="44" cy="-6" r="9" fill="${C.helmet}"/><line x1="0" y1="0" x2="-26" y2="4" stroke="${C.pants}" stroke-width="8" stroke-linecap="round"/>` +
+    (gear === 'none' ? '' : gear === 'ski' ? `<line x1="-40" y1="10" x2="0" y2="12" stroke="${C.ski}" stroke-width="3"/>` : `<line x1="-44" y1="10" x2="-4" y2="10" stroke="${C.board}" stroke-width="5"/>`);
+}
+function slopeScene(kind, t){
+  // top view of a run: downhill is down the screen
+  let s = `<rect x="40" y="0" width="240" height="190" fill="${C.snow}" opacity=".12"/><line x1="40" y1="0" x2="40" y2="190" stroke="${C.line}" stroke-width="3"/><line x1="280" y1="0" x2="280" y2="190" stroke="${C.line}" stroke-width="3"/><text x="316" y="184" fill="#8b98a5" font-size="10" text-anchor="end">↓ 下坡</text>`;
+  const dot = (x, y, col, lab) => `<circle cx="${x}" cy="${y}" r="9" fill="${col}"/><text x="${x > 180 ? x-12 : x+12}" y="${y+4}" fill="${col}" font-size="11" text-anchor="${x > 180 ? 'end' : 'start'}">${lab}</text>`;
+  if (kind === 'yield'){
+    const ay = lerp(40, 130, t), bx = 150 + 40*Math.sin(t*6), by = lerp(90, 150, t);
+    s += dot(bx, by, C.ok, '前面嘅人優先');
+    s += dot(lerp(160, 230, Math.min(1, t*1.4)), ay, C.accent, '你（後面）：讓開佢');
+    s += `<path d="M160 40 Q230 80 230 130" fill="none" stroke="${C.accent}" stroke-dasharray="4 4"/>`;
+  } else if (kind === 'stop'){
+    s += `<path d="M90 60 Q160 40 230 60" fill="none" stroke="${C.line}" stroke-width="10" opacity=".7"/><text x="120" y="35" fill="#8b98a5" font-size="10">坡頂／彎位（後面嘅人睇唔到你）</text>`;
+    s += dot(160, 72, C.bad, '❌ 停喺盲點');
+    s += dot(266, 120, C.ok, '✅ 停喺邊、睇得到嘅位');
+  } else if (kind === 'fall'){
+    const x = lerp(160, 262, Math.max(0, t*1.3 - .2)), y = lerp(100, 110, t);
+    s += `<text x="${x-14}" y="${y+5}" font-size="20">🧍</text><text x="${x+14}" y="${y+4}" fill="${C.hi}" font-size="11">${t < .25 ? '① 有冇受傷？' : t < .8 ? '② 移去雪道邊' : '③ 安全位置先起身'}</text>`;
+    s += dot(150, lerp(10, 60, t), C.accent, '後面落緊嚟嘅人');
+  } else if (kind === 'start'){
+    s += dot(260, 110, C.ok, '你：起步前');
+    s += `<text x="190" y="90" fill="${C.hi}" font-size="18">👀↑</text>`;
+    s += dot(lerp(110, 200, t), lerp(10, 100, t), C.accent, '上面落緊嚟');
+  }
+  return s;
+}
+function iconScene(kind, t){
+  let s = `<rect x="0" y="160" width="320" height="30" fill="${C.snow}" opacity=".15"/>`;
+  if (kind === 'gondola'){
+    s += `<line x1="0" y1="30" x2="320" y2="30" stroke="${C.chair}" stroke-width="2"/>`;
+    const x = lerp(60, 200, t);
+    s += `<line x1="${x+30}" y1="30" x2="${x+30}" y2="58" stroke="${C.chair}" stroke-width="3"/><rect x="${x}" y="58" width="60" height="70" rx="12" fill="#1e293b" stroke="${C.accent}"/><rect x="${x+8}" y="66" width="44" height="26" rx="4" fill="#0b1016"/>`;
+    s += `<rect x="${x+62}" y="60" width="6" height="60" fill="${C.ski}"/><text x="${x+72}" y="96" fill="${C.ski}" font-size="10">外面板架</text>`;
+  } else if (kind === 'carpet'){
+    s += `<path d="M20 160 L300 110 L300 120 L20 170 Z" fill="#334155"/>`;
+    const x = lerp(40, 260, t), y = lerp(158, 118, t);
+    s += person(x, y, 0, 'ski', {poles:true});
+    s += `<text x="12" y="22" fill="${C.hi}" font-size="12">企定、唔好坐、唔好行</text>`;
+  } else if (kind === 'tbar'){
+    s += `<line x1="0" y1="30" x2="320" y2="20" stroke="${C.chair}" stroke-width="2"/>`;
+    const x = lerp(60, 230, t);
+    s += `<line x1="${x}" y1="28" x2="${x-10}" y2="110" stroke="${C.chair}" stroke-width="3"/><line x1="${x-30}" y1="112" x2="${x+10}" y2="112" stroke="${C.hi}" stroke-width="5"/>`;
+    s += person(x - 8, 160, 0, 'ski', {poles:true, lean:-4});
+    s += `<text x="12" y="22" fill="${C.hi}" font-size="12">T 型拉索：靠住，唔好坐落去</text>`;
+  } else if (kind === 'standski' || kind === 'standboard'){
+    const ski = kind === 'standski';
+    s += `<path d="M0 170 L320 120 L320 190 L0 190 Z" fill="${C.snow}" opacity=".18"/><text x="250" y="110" fill="#8b98a5" font-size="10">↑ 上坡</text>`;
+    const st = t < .34 ? 0 : t < .67 ? 1 : 2;
+    if (ski){
+      s += `<line x1="70" y1="168" x2="170" y2="150" stroke="${C.ski}" stroke-width="3"/><text x="40" y="186" fill="${C.ski}" font-size="10">雙板打橫斜坡、喺下坡嗰邊</text>`;
+      s += st === 0 ? `<g transform="translate(130,140)">${lying('none')}</g>` : st === 1 ? person(120, 152, 1, 'none') : person(120, 152, 0, 'none', {lean:-6});
+    } else {
+      s += `<line x1="70" y1="168" x2="170" y2="150" stroke="${C.board}" stroke-width="5"/><text x="40" y="186" fill="${C.board}" font-size="10">板打橫斜坡、喺下坡嗰邊</text>`;
+      s += st === 0 ? person(115, 152, 1, 'none') : st === 1 ? `<text x="100" y="150" font-size="26">🧎</text>` : person(120, 152, 0, 'none');
+    }
+    s += `<text x="12" y="22" fill="${C.hi}" font-size="12">${['① 坐好、板打橫','② 撐起','③ 企穩'][st]}</text>`;
+  }
+  return s;
+}
+
+/* ---------- lessons ---------- */
+const MODS = [['gear','🧥 穿戴'], ['lift','🚡 吊椅'], ['other','🚠 其他纜車'], ['fall','🩹 跌倒起身'], ['rules','🚦 雪場規則']];
+const sitAt = (contact) => (t, cx) => cx >= contact ? 1 : 0;
+const LESSONS = [
+ {mod:'gear', k:'dress', n:'由內到外著裝', steps:[
+  {t:'底層', sc:{dress:0}, ok:['化纖或者美麗諾羊毛','貼身但唔限制活動','排汗，唔係求厚'], bad:['著棉質 T 恤：濕咗唔乾，好凍','底層太厚，出汗之後凍','衫褲皺摺塞入雪鞋入面'], why:'滑雪會一直出汗；停低、坐吊椅、吹風嗰陣，濕咗嘅底層會令你好快凍。', chk:'貼身、乾爽、郁得自由。'},
+  {t:'中層', sc:{dress:1}, ok:['抓毛、化纖棉或者薄羽絨','按天氣同活動量加減','可以喺雪場脫一件'], bad:['越厚越好：滑幾轉就焗到出汗','冇得調節，一件過'], why:'過熱之後一停低就更凍；中層係用嚟調溫度。', chk:'郁嘅時候唔焗，停低兩分鐘唔凍。'},
+  {t:'外層', sc:{dress:2}, ok:['防水、防風、透氣','外套同雪褲有重疊，雪裙扣好','頭罩唔阻頭盔','拉鏈同吊繩收好'], bad:['外套同褲之間露腰，雪入去','吊繩、長帶鬆住，可能勾到吊椅'], why:'跌倒時雪會由空隙入去；鬆嘅帶可以勾住吊椅或者人。', chk:'蹲低同舉高手，腰同手腕都冇露出嚟。'},
+  {t:'雪襪', sc:{dress:3}, ok:['一對薄身滑雪襪','拉平冇皺摺','褲腳放喺雪鞋外面'], bad:['著兩對襪或者好厚嘅襪','襪口摺成一嚿','將褲腳塞入雪鞋內靴'], why:'皺摺同多餘布料會變成壓痛點；厚襪反而令腳鬆、控制差，血液循環差更凍。', chk:'襪拉平、冇摺、褲腳喺雪鞋外面。'},
+  {t:'雪鞋', sc:{boot:1}, ok:['打開全部扣，舌頭拉前','腳跟先入，屈膝輕輕撞幾下腳跟，等腳跟坐入腳跟窩','拉正舌頭，確認襪冇皺','先扣腳踝嗰粒，再扣上面，最後腳面同腳趾嗰粒（唔使太緊）','扣 strap','企起身屈膝，試吓腳踝屈唔屈到'], bad:['扣到最緊：腳麻、凍','腳背嗰粒過緊壓住','腳跟未入腳跟窩，腳喺鞋入面郁','雪鞋太鬆，控制差'], why:'雪鞋要「夠固定、唔痛、屈得到」，唔係鎖死；唔同廠嘅扣法次序可能唔同。', chk:'向前屈膝時腳跟唔會提起，腳趾輕輕掂到鞋頭但屈膝就離開，冇痛點、冇麻。'},
+  {t:'頭盔', sc:{dress:5}, ok:['水平戴，前面喺眉上大約一隻手指','調鬆緊，搖頭時頭盔唔郁','扣好下巴帶，留一隻手指位'], bad:['向後仰，額頭露出','下巴帶唔扣','太鬆，跌倒時會移位'], why:'頭盔要喺撞擊嗰下停喺正確位置先有保護作用。', chk:'前後左右搖頭，頭盔唔會明顯移位。'},
+  {t:'雪鏡', sc:{dress:6}, ok:['同頭盔夾：額頭冇隙','唔壓住鼻，呼吸順暢','按天氣揀鏡片'], bad:['頭盔同雪鏡之間露出額頭','護頸遮住鼻口，水氣上雪鏡起霧'], why:'露出嘅額頭好易凍傷；起霧會令你睇唔到前面。', chk:'頭盔同雪鏡之間冇隙，戴住呼吸幾下唔起霧。'},
+  {t:'手套', sc:{dress:7}, ok:['防水手套或者連指手套','手套同袖口重疊（套入或者套出，按款式）'], bad:['手腕露出','用普通手套，濕咗即凍'], why:'手好易凍，濕咗更加凍；手腕露出跌倒時雪會入去。', chk:'舉高手，袖口同手套之間冇露出皮膚。'},
+  {t:'護頸同其他', sc:{dress:8}, ok:['護頸蓋住頸，唔好蓋住鼻口','防曬同潤唇膏','手機、纜車票放喺易拎、收得穩嘅袋'], bad:['用長頸巾：可能勾到吊椅','忘記防曬：雪地反光好曬'], why:'長頸巾同鬆嘅帶一樣有勾住嘅風險；高山紫外線強。', chk:'冇長嘅嘢吊住，手機同票收好。'},
+  {t:'出發前檢查', sc:{dress:9}, ok:['底層乾爽','雪鞋入面冇皺摺','雪鞋穩陣、唔痛、屈得到','頭盔扣好、雪鏡夾頭盔','手套防水、袖口重疊','外套同褲重疊','纜車票易拎、手機收好','飲咗水'], bad:['未試屈膝就落場','出發前已經焗到出汗'], why:'喺雪道上先發現問題，要除手套、坐喺雪度執，又凍又阻人。', chk:'全部打勾先出發。'}
+ ]},
+ {mod:'lift', k:'skiUp', n:'雙板：上吊椅', gear:'ski', steps:[
+  {t:'排隊', sc:{lift:{p:[40,90], chair:[180,330], label:'排隊：跟工作人員指示幾多人一張椅'}}, ok:['纜車票準備好','跟隊、唔好打尖','雪杖一隻手拎埋，唔好掃到隔籬','雪板向前'], bad:['雪杖亂揮打到人','踩住前面嘅人雪板尾'], why:'吊椅閘口位好擠，雪杖同雪板最易撞到人。', chk:'雪杖收好喺一隻手，雪板向前。'},
+  {t:'去上車位', sc:{lift:{p:[90,150], chair:[-40,60], marker:150, label:'前一張椅過咗，就行去上車位'}}, ok:['前一張椅經過你之後先行出去','企喺上車位標記','兩塊板平行、向前','轉頭望住後面嘅椅過嚟'], bad:['未到就衝出去','企過咗標記','向後退'], why:'企錯位，椅會撞到你嘅腳後或者坐唔到。', chk:'企喺標記、板向前、望到椅過嚟。'},
+  {t:'坐落去', sc:{lift:{p:[150,150], chair:[70,240], marker:150, sit:sitAt(142), ride:true, label:'椅掂到膝後，順勢坐落去'}}, ok:['椅掂到膝頭後面先坐','順勢向後坐深','雪杖放好，唔好夾喺椅同身體之間'], bad:['太早坐落去（椅未到）','跳上椅','坐唔穩又唔出聲'], why:'坐唔到或者跌低要即刻話俾工作人員知，佢會停機。', chk:'坐到椅背、雪板離地向前。'},
+  {t:'落安全桿', sc:{lift:{chair:[200,240], bar:[0,1], sit:1, ride:true, label:'確認大家坐好，慢慢落安全桿'}}, ok:['確認同坐嘅人坐好先落','慢慢落，提醒隔籬','雪板保持向前、唔好交叉'], bad:['突然落桿打到人','搖椅、踢板、轉身'], why:'搖椅、轉身同搖板都可能令人或者器材跌落去。', chk:'桿落好、坐穩、雪板唔交叉。'}
+ ]},
+ {mod:'lift', k:'skiDown', n:'雙板：落吊椅', gear:'ski', steps:[
+  {t:'準備', sc:{lift:{chair:[60,110], bar:[1,0], sit:1, ride:true, tips:true, label:'見到「準備落車」告示'}}, ok:['見到告示先按指示升起安全桿','雪杖收好喺一隻手','板頭微微提起','檢查衣服、背囊冇勾住'], bad:['太早升桿、身向前移','雪杖穿住手腕亂放'], why:'落車位前準備好，到位就可以順勢企起。', chk:'桿升起、雪杖收好、板頭向前。'},
+  {t:'企起身', sc:{lift:{chair:[120,175], sit:(t, cx) => cx < 160 ? 1 : 0, p:[150,180], ramp:true, ground:150, lean:6, tips:true, label:'到落車位：雙腳踩地，順勢企起'}}, ok:['到指定位置先企','雙板平行向前','身稍為向前，唔好坐後'], bad:['大力跳落去','坐後企唔起'], why:'坐後企起身最易向後跌。', chk:'企起時雙腳平均、身向前少少。'},
+  {t:'直線滑走', sc:{lift:{chair:[180,320], p:[180,270], ramp:true, ground:150, lean:4, label:'直線滑走'}}, ok:['雙板平行直線滑出','唔好一落地即刻急轉','唔好停喺落車區'], bad:['一落就急轉撞到隔籬','停喺椅前面'], why:'後面張椅好快就到，停喺度會被撞。', chk:'直線滑出落車區先轉。'},
+  {t:'離開落車區', sc:{lift:{p:[270,300], ramp:true, ground:150, label:'去旁邊安全位置先停'}}, ok:['即刻離開落車區','去旁邊唔阻人嘅位置先停低等朋友'], bad:['企喺斜坡頂等朋友','喺落車區執裝備'], why:'落車區頂係後面每張椅都要用嘅位。', chk:'停喺唔阻路嘅位置。'}
+ ]},
+ {mod:'lift', k:'boardUp', n:'單板：上吊椅', gear:'board', steps:[
+  {t:'排隊前準備', sc:{lift:{p:[50,90], chair:[180,330], label:'扣前腳、駁流止帶'}}, ok:['駁好流止帶（leash）','前腳扣好，後腳解開','後腳 highback 摺低','板頭向前'], bad:['唔駁流止帶','兩隻腳都扣住排隊','板打橫擋住人'], why:'日本好多雪場規定單板要用流止帶，防止塊板滑落傷人。', chk:'流止帶駁好、只扣前腳、板頭向前。'},
+  {t:'滑入上車位', sc:{lift:{p:[90,150], chair:[-40,60], marker:150, label:'後腳推地滑入去'}}, ok:['後腳喺板旁推地、前腳控制塊板','企喺標記，板保持向前','望住後面嘅椅過嚟'], bad:['推太大力滑過咗標記','板打橫'], why:'板打橫會撞到隔籬或者椅腳。', chk:'企喺標記、板向前。'},
+  {t:'坐落去', sc:{lift:{p:[150,150], chair:[70,240], marker:150, sit:sitAt(142), ride:true, label:'椅掂到膝後，順勢坐'}}, ok:['椅掂到膝後先坐','坐好之後塊板保持穩定、向前','後腳放好，唔好踢到隔籬'], bad:['坐落時塊板突然打橫','用後腳亂撐'], why:'吊住嘅單板好重，一扭就會扯到前腳膝頭同撞到隔籬。', chk:'坐穩、板向前、後腳放好。'},
+  {t:'落安全桿', sc:{lift:{chair:[200,240], bar:[0,1], sit:1, ride:true, label:'坐穩先落桿'}}, ok:['大家坐穩先慢慢落','塊板保持靜止','後腳可以擱喺腳踏或者前腳板上'], bad:['玩板、踢板','轉身'], why:'搖板會扯到膝頭，亦可能撞到同坐嘅人。', chk:'桿落好、板靜止。'}
+ ]},
+ {mod:'lift', k:'boardDown', n:'單板：落吊椅', gear:'board', steps:[
+  {t:'準備', sc:{lift:{chair:[60,110], bar:[1,0], sit:1, ride:true, label:'見到告示：升桿、後腳放上板'}}, ok:['前腳保持扣住','按指示升起安全桿','後腳放返板上，踩住防滑墊旁邊','板頭向前'], bad:['落車前解開前腳','後腳仲吊喺空中'], why:'後腳未放好，企起嗰下冇得平衡。', chk:'後腳喺板上、板頭向前。'},
+  {t:'企起身', sc:{lift:{chair:[120,175], sit:(t, cx) => cx < 160 ? 1 : 0, p:[150,180], ramp:true, ground:150, lean:6, rear:'on', label:'到位：企起、板保持平'}}, ok:['身稍為向前','塊板保持平','唔好一企起就即刻立 toe 或者 heel 刃'], bad:['坐後','一落地即刻立刃轉彎'], why:'立刃嗰下單腳控制好易打滑跌低。', chk:'企起時板平、身向前少少。'},
+  {t:'直線滑出', sc:{lift:{chair:[180,320], p:[180,270], ramp:true, ground:150, lean:4, rear:'on', label:'平板直線滑出'}}, ok:['前腳控制方向','後腳踩住板','平板直線滑，或者用好細嘅角度控制','唔好急煞'], bad:['急煞跌低喺落車區','用後腳拖地'], why:'落車區斜路短，平板直滑最穩。', chk:'直線滑出落車區。'},
+  {t:'離開先扣腳', sc:{lift:{p:[270,300], ramp:true, ground:150, rear:'on', label:'去安全位置先坐低扣後腳'}}, ok:['滑出落車區先停','喺旁邊安全位置坐低扣後腳','檢查裝備'], bad:['喺落車區坐低扣 binding','坐喺斜坡頂中間'], why:'落車區同坡頂中間係最多人經過嘅位。', chk:'喺唔阻路嘅位置先扣腳。'}
+ ]},
+ {mod:'lift', k:'trouble', n:'出錯點算', gear:'ski', steps:[
+  {t:'錯過上車', sc:{lift:{p:[150,200], py:160, chair:[110,260], marker:150, label:'坐唔到：唔好追，行開'}}, ok:['唔好追張椅、唔好硬坐','即刻行開上車位','聽工作人員指示等下一張'], bad:['追住張椅跑','企喺原位等下一張撞埋嚟'], why:'下一張椅好快就到。', chk:'離開咗上車位先等。'},
+  {t:'上車時跌低', sc:{lift:{chair:[120,260], marker:150, down:[150,150], staff:20, label:'跌低：伏低唔好起身，等工作人員'}}, ok:['伏低、唔好突然企起','聽工作人員指示','佢可能會停機或者減速'], bad:['張椅過緊頭頂時企起','捉住張椅'], why:'張椅過緊時企起身會撞到頭。', chk:'張椅過咗、工作人員示意先起身。'},
+  {t:'落唔切車', sc:{lift:{chair:[150,240], sit:1, ride:true, bar:[0,0], label:'落唔切：坐定，唔好跳'}}, ok:['坐定、唔好跳落去','向工作人員揮手示意','跟指示等佢停機或者張椅轉返落去'], bad:['跳落去','坐唔穩亂郁'], why:'吊椅高度同落地位置都唔安全；日本好多雪場明文禁止跳落去，叫你留喺椅上等工作人員處理。', chk:'坐穩，等工作人員指示。'},
+  {t:'落車區跌低', sc:{lift:{chair:[150,300], ramp:true, ground:150, down:[200,148], label:'跌低：即刻爬開'}}, ok:['冇受傷就即刻爬或者滑開落車區','去旁邊先執裝備','受傷就留低示意工作人員'], bad:['坐喺度執雪杖、扣腳'], why:'下一張椅幾秒後就到，坐喺度會被撞。', chk:'人同器材都已經離開落車區。'},
+  {t:'吊椅突然停', sc:{lift:{chair:[180,180], sit:1, ride:true, bar:[1,1], label:'停機：坐定，等廣播'}}, ok:['坐定、安全桿保持落低','唔好搖椅','聽廣播或者工作人員指示'], bad:['搖椅、跳落去','升起安全桿'], why:'停機通常好快恢復；重新開動嗰下會晃。', chk:'坐穩、桿落住、等指示。'}
+ ]},
+ {mod:'other', k:'gondola', n:'纜車廂（Gondola）', steps:[
+  {t:'入廂前', sc:{icon:'gondola'}, ok:['按工作人員指示排隊','雪板放喺指定位置（外面板架或者廂入面）','雪杖拎埋'], bad:['自己亂塞器材','雪板唔放好就入廂'], why:'放錯位嘅雪板可能跌出或者夾到人。', chk:'器材放好先入廂。'},
+  {t:'入廂同坐好', sc:{icon:'gondola'}, ok:['留意車門同車廂邊','坐好、器材扶穩'], bad:['衣服或者雪杖夾喺門度','企喺門邊'], why:'車門關上嗰下好易夾住鬆嘅嘢。', chk:'人同器材都喺門內。'},
+  {t:'出廂', sc:{icon:'gondola'}, ok:['到站前準備好器材','跟站內指示落車、拎返雪板'], bad:['到站先手忙腳亂執嘢','漏咗雪板喺板架'], why:'纜車廂唔會停太耐。', chk:'人、雪板、雪杖、背囊齊晒。'}
+ ]},
+ {mod:'other', k:'carpet', n:'魔毯（輸送帶）', steps:[
+  {t:'上魔毯', sc:{icon:'carpet'}, ok:['雪板向前、平行','前面嘅人行開先上','上咗之後企定'], bad:['同前面嘅人貼得太近','板打橫'], why:'魔毯係慢，但前面嘅人一跌，後面嘅人會撞埋。', chk:'雪板向前、同前面留距離。'},
+  {t:'喺魔毯上', sc:{icon:'carpet'}, ok:['企定，膝頭微屈','雪杖拎喺手，唔好撐地'], bad:['坐低','喺上面行'], why:'坐或者行會失平衡，跌低會阻住後面所有人。', chk:'企定、平衡。'},
+  {t:'落魔毯', sc:{icon:'carpet'}, ok:['到尾順勢滑出','即刻行開'], bad:['停喺出口'], why:'後面嘅人會被送到你身上。', chk:'離開出口先停。'}
+ ]},
+ {mod:'other', k:'tbar', n:'T 型拉索／圓盤拉索', steps:[
+  {t:'雙板：接拉索', sc:{icon:'tbar'}, ok:['雙板平行放喺坑道入面','T 桿或者圓盤放喺大腿後面／雙腿之間','靠住，唔好坐落去'], bad:['坐落去：拉索唔係椅','板走出坑道'], why:'拉索唔會承托體重，一坐就會跌低。', chk:'板喺坑道、身靠住拉索、企定。'},
+  {t:'跌低或者到頂', sc:{icon:'tbar'}, ok:['跌低就即刻放手，行出坑道','到頂按告示放手，即刻行開'], bad:['跌低仲捉住被拖','喺坑道入面起身'], why:'後面嘅人會沿住同一條坑道上嚟。', chk:'放手、離開坑道。'},
+  {t:'單板', sc:{icon:'tbar'}, ok:['前腳扣好、後腳解開放喺板上','跟雪場規定，有啲拉索唔准單板用'], bad:['新手第一次就用拉索'], why:'單板用拉索要側身控制好塊板，新手如果有吊椅可以揀，先用吊椅或者魔毯。', chk:'睇清楚告示同工作人員指示。'}
+ ]},
+ {mod:'fall', k:'fallSafe', n:'安全咁跌', steps:[
+  {t:'雙板：跌嘅時候', sc:{icon:'standski'}, ok:['失平衡就順勢坐去側邊','雙腳併埋、手放前面','唔好硬撐企返起身'], bad:['手向後撐','髖跌到膝頭以下仲企硬'], why:'向後跌硬撐係滑雪前十字韌帶斷裂最常見嘅原因。', chk:'練習時喺平地慢慢坐去側邊。'},
+  {t:'單板：跌嘅時候', sc:{icon:'standboard'}, ok:['手握拳收埋近身','向前跌：膝頭同前臂一齊著地','向後跌：收下巴、屁股同背大面積著地'], bad:['伸直手用手掌撐地','後腦撞地'], why:'單板新手最常見係手腕受傷，同埋向後跌撞頭。', chk:'先喺緩坡慢速練習跌。'}
+ ]},
+ {mod:'fall', k:'getUp', n:'跌低之後起身', steps:[
+  {t:'雙板起身', sc:{icon:'standski'}, ok:['先將雙板打橫斜坡、放喺身體下坡嗰邊','屁股靠近雪板，手或者雪杖喺上坡撐','撐起企穩'], bad:['雪板指住下坡就起身：一起即刻滑走','屁股離雪板太遠，起唔到身'], why:'雪板唔打橫，企起身嗰下就會滑走。', chk:'雪板打橫、喺下坡嗰邊先起身。'},
+  {t:'單板起身', sc:{icon:'standboard'}, ok:['坐低（heelside）：板打橫喺下坡，手撐起企','或者轉身跪低（toeside）再企起，新手通常較易'], bad:['板指住下坡就起身','喺雪道中間慢慢坐住扣腳'], why:'板一指住下坡就會即刻滑。', chk:'板打橫斜坡先起身。'},
+  {t:'移去雪道邊', sc:{slope:'fall'}, ok:['先確認自己有冇受傷','可以郁就盡快移去雪道邊','受傷或者郁唔到：叫人通知巡邏隊'], bad:['坐喺雪道中間休息','坐喺坡頂、彎位、窄位'], why:'後面嘅人可能睇唔到你。', chk:'停喺雪道邊、上面嘅人睇得到嘅位置。'}
+ ]},
+ {mod:'rules', k:'etiquette', n:'雪場規則', quiz:true, steps:[
+  {t:'前面嘅人優先', sc:{slope:'yield'}, ok:['前面（下面）嘅人有優先權','你喺後面，要揀一條唔會危險到佢嘅路線','超越時留足夠距離'], bad:['貼住前面嘅人超越','以為前面嘅人會讓你'], why:'前面嘅人睇唔到後面，佢隨時會轉彎。', chk:'超越時同佢保持幾個身位。'},
+  {t:'停喺邊度', sc:{slope:'stop'}, ok:['停喺雪道邊、上面睇得到嘅位置'], bad:['停喺坡頂後面、彎位、窄位','成班人橫排停喺雪道中間'], why:'喺盲點停低，上面落嚟嘅人睇唔到你。', chk:'由上面望落嚟睇唔睇到你？'},
+  {t:'起步同橫過前', sc:{slope:'start'}, ok:['起步或者橫過雪道前先望上面','確認冇人落緊嚟先出發'], bad:['唔望就起步'], why:'上面落嚟嘅人速度快過你。', chk:'望一望上面先郁。'},
+  {t:'其他規則', sc:{slope:'yield'}, ok:['控制速度同路線，喺睇到嘅範圍內停得低','留意標示同封閉區','行路上落要行雪道邊','見到意外要幫手、留低聯絡資料','單板要用流止帶'], bad:['入封閉區','雪板或者雪杖放喺人流位置'], why:'呢啲係國際滑雪聯會（FIS）行為守則同日本雪場常見規定。', chk:'唔肯定就問工作人員或者巡邏隊。'}
+ ]}
+];
+const QUIZ = {q:'你喺雪道中間跌低咗，下一步應該點？', a:[
+  ['即刻企起身繼續滑', false, '先唔好急：要確認自己有冇受傷，同埋你喺雪道中間，後面嘅人可能睇唔到你。'],
+  ['先確認有冇受傷，可以郁就移去雪道邊，受傷就叫人通知巡邏隊', true, '啱：確認傷勢 → 移去雪道邊安全位置 → 受傷或者郁唔到就通知巡邏隊。'],
+  ['坐喺原位休息一陣先', false, '喺雪道中間坐低，上面落嚟嘅人好易撞到你。'],
+  ['揮手叫後面嘅人停低', false, '後面嘅人未必睇到或者停得切；最安全係自己移去雪道邊。']]};
+
+/* ---------- state ---------- */
+let modKey = 'gear', les = LESSONS[0], step = 0, t0 = performance.now();
+let done = {}; try { done = JSON.parse(localStorage.getItem('resortDone') || '{}'); } catch(e){}
+const save = () => { try { localStorage.setItem('resortDone', JSON.stringify(done)); } catch(e){} };
+
+$('mods').innerHTML = MODS.map(([k, n]) => `<button data-mod="${k}">${n}</button>`).join('');
+document.querySelectorAll('[data-mod]').forEach(b => b.onclick = () => { modKey = b.dataset.mod; setLesson(LESSONS.find(l => l.mod === modKey)); });
+function renderLessons(){
+  document.querySelectorAll('[data-mod]').forEach(b => b.classList.toggle('on', b.dataset.mod === modKey));
+  $('lessons').innerHTML = LESSONS.filter(l => l.mod === modKey).map(l => {
+    const n = l.steps.filter((_, i) => done[l.k + i]).length;
+    return `<button data-les="${l.k}" class="${l === les ? 'on' : ''}">${l.n} <span class="note">${n}/${l.steps.length}</span></button>`;
+  }).join('');
+  document.querySelectorAll('[data-les]').forEach(b => b.onclick = () => setLesson(LESSONS.find(l => l.k === b.dataset.les)));
+}
+function setLesson(l){ les = l; modKey = l.mod; step = 0; renderLessons(); renderStep(); }
+function renderStep(){
+  const s = les.steps[step];
+  done[les.k + step] = 1; save();
+  $('stepTitle').textContent = s.t;
+  $('stepNo').textContent = '第 {n}／{m} 步'.replace('{n}', step + 1).replace('{m}', les.steps.length);
+  $('dots').innerHTML = les.steps.map((_, i) => `<span class="${done[les.k + i] ? 'done' : ''} ${i === step ? 'cur' : ''}"></span>`).join('');
+  $('okList').innerHTML = s.ok.map(x => `<li>${x}</li>`).join('');
+  $('badList').innerHTML = s.bad.map(x => `<li>${x}</li>`).join('');
+  $('why').textContent = s.why;
+  $('chk').textContent = s.chk;
+  $('prev').disabled = false; $('next').disabled = false;
+  $('prev').style.opacity = step === 0 ? .4 : 1; $('next').style.opacity = step === les.steps.length - 1 ? .4 : 1;
+  const total = LESSONS.reduce((a, l) => a + l.steps.length, 0), got = Object.keys(done).length;
+  $('progress').textContent = '全部完成度：{a}／{b} 步（只記錄喺你部機）'.replace('{a}', Math.min(got, total)).replace('{b}', total);
+  $('quizCard').style.display = les.quiz ? '' : 'none';
+  renderLessons(); t0 = performance.now();
+}
+$('prev').onclick = () => { if (step > 0){ step--; renderStep(); } };
+$('next').onclick = () => { if (step < les.steps.length - 1){ step++; renderStep(); } };
+
+$('quizQ').textContent = QUIZ.q;
+$('quizA').innerHTML = QUIZ.a.map(([txt], i) => `<button data-q="${i}">${txt}</button>`).join('');
+document.querySelectorAll('[data-q]').forEach(b => b.onclick = () => {
+  const [, right, fb] = QUIZ.a[+b.dataset.q];
+  document.querySelectorAll('[data-q]').forEach(x => x.classList.remove('right', 'wrong'));
+  b.classList.add(right ? 'right' : 'wrong');
+  $('quizFb').textContent = (right ? '✅ ' : '❌ ') + fb;
+});
+
+function frame(now){
+  const s = les.steps[step], sc = s.sc, t = ((now - t0)/2600) % 1;
+  let svg = '';
+  if (sc.dress !== undefined) svg = figDress(sc.dress);
+  else if (sc.boot) svg = figBoot();
+  else if (sc.lift) svg = liftScene(sc.lift, t, les.gear || 'ski');
+  else if (sc.slope) svg = slopeScene(sc.slope, t);
+  else if (sc.icon) svg = iconScene(sc.icon, t);
+  $('scene').innerHTML = svg;
+  requestAnimationFrame(frame);
+}
+setLesson(LESSONS[0]);
+requestAnimationFrame(frame);
+</script>
+<script>
+(function(){
+  var file = location.pathname.split('/').pop() || 'index.html';
+  var sel = document.getElementById('langSel');
+  if (sel) sel.onchange = function(){ try { localStorage.setItem('lang', sel.value); } catch(e){} location.href = sel.value; };
+  if (file !== 'index.html' && file !== '') return;
+  var saved = null; try { saved = localStorage.getItem('lang'); } catch(e){}
+  var target = saved;
+  if (!target){
+    var l = (navigator.language || '').toLowerCase();
+    if (/^zh-(hk|mo)/.test(l) || /yue/.test(l)) target = 'index.html';
+    else if (/^zh-(tw|hant)/.test(l)) target = 'zh-tw.html';
+    else if (/^zh/.test(l)) target = 'zh-cn.html';
+  }
+  if (target && target !== 'index.html') location.replace(target);
+})();
+</script>
+</body>
+</html>

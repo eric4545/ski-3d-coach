@@ -206,9 +206,9 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <h3 style="margin:0 0 6px">🎚 單板 Carving：刃邊、前後腳、傾斜、Edge、壓力</h3>
     <p class="note" style="margin:0 0 6px;color:#ffb020!important">⚠️ 示意模型：參數之間沒有動態耦合。改關節角度只會改姿勢和 edge；板彎、壓力、重心路線和 3D 路線都不會重新計算。</p>
     <div class="row" style="align-items:center;gap:8px;font-size:13px"><span>關節角度（angulation）</span>
-      <select id="anguSel"><option value="">模型預設</option><option value="0">0°：只靠整個人傾斜</option><option value="10">10°</option><option value="20">20°</option><option value="30">30°</option></select></div>
+      <select id="anguSel"><option value="">模型預設</option><option value="0">0°（動畫示範：不加關節角度）</option><option value="10">10°</option><option value="20">20°</option><option value="30">30°</option></select></div>
     <table id="c4Tbl" style="margin-top:6px"></table>
-    <p class="note">傾斜由速度和彎半徑決定（物理要求，不是你選的）。單板 toeside 主要靠腳踝和膝蓋向前屈立刃，heelside 靠腳踝背屈和髖保持在板上方；同一個傾斜，這些關節做得越多，edge 越大、彎越小。選「0°」看只靠整個人傾斜的樣子：edge 小，容易滑走。只影響連續轉彎的等級；3D 路線不會跟著變，看下面「理論 sidecut 半徑」那行就知道彎會收小多少。</p>
+    <p class="note">傾斜是整個身體相對轉彎的傾側，由速度和轉彎半徑決定（物理要求，不是你選的）。關節角度（angulation）是身體各段之間的相對位置，特別是骨盆、上身和雙腳；單板 toeside 主要是腳踝和膝蓋向前屈，heelside 是腳踝背屈、髖保持在板子上方。關節角度可以幫你控制 edge 和壓力，但不是簡單地在傾斜上再加一個角度。「0°」只是動畫示範，真人不會沒有關節角度。這個選單只改 3D 姿勢和 edge，只影響連續轉彎的級數；3D 路線不會跟著變，看下面「理論 sidecut 半徑」那一行就知道彎會收小多少。</p>
     <table id="c4R" style="margin-top:6px"></table>
     <p class="note">三個半徑來源不同，模型沒有把三者耦合，所以不一致是正常的：「理想平衡半徑」用 tan(傾斜) = v²/gR 反算；「理論 sidecut 半徑」假設板完全彎貼雪面、雪夠硬、沒有 skid，初中級通常做不到；「模擬路線半徑」是量度 3D 動畫路線。三個都不是真實轉彎半徑的預測，真實雪上還受雪況、板彎、滑移影響。</p>
   </div>
@@ -993,7 +993,7 @@ const JUMP = {trans:() => 0, init:() => .11, toe:sToe, heel:sHeel};
 const WATCH = {
   basicC: [
     {w:'上下運動', v:'heelV', j:'trans', t:'換刃最高、彎中最低。看黃色 CoM 線。'},
-    {w:'少 skid 嘅弧線', v:'top', j:'toe', t:'JSBA 1–2 級著眼點：左右均等、skid少的弧。淺藍雪痕要細。'},
+    {w:'少 skid 的弧線', v:'top', j:'toe', t:'JSBA 1–2 級著眼點：左右均等、skid少的弧。淺藍雪痕要細。'},
     {w:'對比 Dynamic', v:null, j:null, t:'切到「JSBA 動態弧線轉彎」：換刃時反而最低。'}
   ],
   dynC: [

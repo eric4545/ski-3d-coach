@@ -1,0 +1,23 @@
+{
+  "name": "ski-3d-coach",
+  "version": "1.0.0",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node tests/smoke.test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eric4545/ski-3d-coach.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eric4545/ski-3d-coach/issues"
+  },
+  "homepage": "https://github.com/eric4545/ski-3d-coach#readme",
+  "devDependencies": {
+    "playwright": "^1.65.1"
+  },
+  "private": true,
+  "type": "module"
+}

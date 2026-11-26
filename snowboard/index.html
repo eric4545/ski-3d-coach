@@ -206,9 +206,9 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <h3 style="margin:0 0 6px">🎚 單板 Carving：刃邊、前後腳、傾斜、Edge、壓力</h3>
     <p class="note" style="margin:0 0 6px;color:#ffb020!important">⚠️ 示意模型：參數之間冇動態耦合。改關節角度只會改姿勢同 edge；板彎、壓力、重心路線同 3D 路線都唔會重新計算。</p>
     <div class="row" style="align-items:center;gap:8px;font-size:13px"><span>關節角度（angulation）</span>
-      <select id="anguSel"><option value="">模型預設</option><option value="0">0°：淨係傾成個人</option><option value="10">10°</option><option value="20">20°</option><option value="30">30°</option></select></div>
+      <select id="anguSel"><option value="">模型預設</option><option value="0">0°（動畫示範：唔加關節角度）</option><option value="10">10°</option><option value="20">20°</option><option value="30">30°</option></select></div>
     <table id="c4Tbl" style="margin-top:6px"></table>
-    <p class="note">傾斜由速度同彎半徑決定（物理要求，唔係你揀）。單板 toeside 主要靠腳踝同膝頭向前屈立刃，heelside 靠腳踝背屈同髖保持喺板上面；同一個傾斜，呢啲關節做得愈多，edge 愈大、彎愈細。揀「0°」睇淨係傾成個人嘅樣：edge 細，容易滑走。只影響連續轉彎嘅級數；3D 路線唔會跟住變，睇下面「理論 sidecut 半徑」嗰行就知彎會收細幾多。</p>
+    <p class="note">傾斜係成個身體相對轉彎嘅傾側，由速度同彎半徑決定（物理要求，唔係你揀）。關節角度（angulation）係身體各段之間嘅相對位置，特別係盆骨、上身同雙腳；單板 toeside 主要係腳踝同膝頭向前屈，heelside 係腳踝背屈、髖保持喺板上面。關節角度可以幫你控制 edge 同壓力，但唔係簡單喺傾斜上面加一個角度。「0°」只係動畫示範，真人唔會冇關節角度。呢個選單只改 3D 姿勢同 edge，只影響連續轉彎嘅級數；3D 路線唔會跟住變，睇下面「理論 sidecut 半徑」嗰行就知彎會收細幾多。</p>
     <table id="c4R" style="margin-top:6px"></table>
     <p class="note">三個半徑來源唔同，模型冇將三者耦合，所以唔一致係正常：「理想平衡半徑」用 tan(傾斜) = v²/gR 反計；「理論 sidecut 半徑」假設塊板完全彎貼雪面、雪夠硬、冇 skid，初中級通常做唔到；「模擬路線半徑」係量度 3D 動畫路線。三個都唔係真實轉彎半徑嘅預測，真實雪上仲受雪況、板彎、滑移影響。</p>
   </div>

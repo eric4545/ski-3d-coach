@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resort Skills: Gear, Chairlifts, Falls, Rules</title>
+<style>
+:root{--bg:#0f1419;--card:#171e26;--line:#2a3440;--text:#e6edf3;--muted:#8b98a5;--accent:#4cc9f0;--ok:#22c55e;--bad:#ef4444;--warn:#ffb020}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"PingFang HK","Noto Sans TC",sans-serif}
+header{max-width:720px;margin:0 auto;padding:16px 16px 0}
+header h1{font-size:20px;margin:0}
+header p{color:var(--muted);margin:4px 0 0;font-size:13px}
+main{max-width:720px;margin:0 auto;padding:12px 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.seg{display:grid;gap:4px}
+.seg button,.wrap button,button{background:#0f1419;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 6px;font-size:13px;cursor:pointer}
+button.on{background:var(--accent);color:#0f1419;font-weight:600;border-color:var(--accent)}
+.wrap{display:flex;flex-wrap:wrap;gap:6px}
+.wrap button{padding:6px 10px}
+h2{font-size:17px;margin:0 0 6px}
+h3{font-size:15px;margin:10px 0 4px}
+.note{color:var(--muted);font-size:12px;margin:6px 0 0}
+.stepHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.dots{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.dots span{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.dots span.done{background:var(--ok)}
+.dots span.cur{outline:2px solid var(--accent)}
+svg.scene{width:100%;height:auto;background:#0b1016;border-radius:10px;display:block}
+ul{margin:4px 0;padding-left:20px}
+li{margin:2px 0}
+.ok h3{color:var(--ok)} .bad h3{color:var(--bad)} .why h3{color:var(--warn)} .chk h3{color:var(--accent)}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.nav button{padding:10px}
+.quiz button{display:block;width:100%;text-align:left;margin:6px 0;padding:10px}
+.quiz button.right{border-color:var(--ok)} .quiz button.wrong{border-color:var(--bad)}
+.banner{border-left:3px solid var(--warn);padding:6px 10px;background:#1d1a12;border-radius:0;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <select id="langSel" aria-label="Language" style="float:right;margin-left:8px;background:#171e26;color:#e6edf3;border:1px solid #2a3440;border-radius:8px;padding:4px 6px;font-size:12px"><option value="index.html">廣東話（香港）</option><option value="zh-tw.html">繁體中文（台灣）</option><option value="zh-cn.html">简体中文（中国大陆）</option><option value="en.html" selected>English</option></select>
+  <h1>🧭 Resort Skills</h1>
+  <p>Learn before you go: putting on gear, getting on and off chairlifts, falling and getting up, and slope rules. Step by step, each with an illustration, the correct action and common mistakes.</p>
+</header>
+<main>
+  <div class="banner">Procedures differ between resorts and lift types: always follow local signs and lift staff. Illustrations are schematic, not to scale.</div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="seg" id="mods" style="grid-template-columns:repeat(3,1fr)"></div>
+    <div class="wrap" id="lessons" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card" id="lessonCard">
+    <div class="stepHead"><h2 id="stepTitle"></h2><span class="note" id="stepNo"></span></div>
+    <div class="dots" id="dots"></div>
+    <svg class="scene" id="scene" viewBox="0 0 320 190"></svg>
+    <div class="ok"><h3>✅ Correct</h3><ul id="okList"></ul></div>
+    <div class="bad"><h3>❌ Common mistakes</h3><ul id="badList"></ul></div>
+    <div class="why"><h3>⚠️ Why it matters</h3><p id="why" style="margin:0"></p></div>
+    <div class="chk" id="chkBox"><h3>👌 Self-check</h3><p id="chk" style="margin:0"></p></div>
+    <div class="nav"><button id="prev">← Previous</button><button id="next">Next →</button></div>
+    <p class="note" id="progress"></p>
+  </div>
+
+  <div class="card" id="quizCard" style="display:none">
+    <h2>🧩 Scenario</h2>
+    <p id="quizQ" style="margin:0"></p>
+    <div class="quiz" id="quizA"></div>
+    <p id="quizFb" style="margin:0"></p>
+  </div>
+
+  <p class="note">Sources: Japanese resort lift signs and safety rules, the FIS skier code of conduct, ski boot makers’ fitting guides. This is a conservative beginner approach and does not replace resort rules or an instructor.</p>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* ---------- scenes (simple SVG illustrations) ---------- */
+const C = {skin:'#f1c9a5', base:'#60a5fa', mid:'#f59e0b', shell:'#ef4444', pants:'#334155', sock:'#e5e7eb', boot:'#94a3b8', helmet:'#10b981', goggle:'#a78bfa', glove:'#1e293b', neck:'#f472b6', hi:'#fde047', snow:'#dbe7f3', line:'#2a3440', chair:'#64748b', ski:'#4cc9f0', board:'#22d3ee'};
+
+function figDress(upto){
+  const hl = i => i === upto ? `stroke="${C.hi}" stroke-width="3"` : '';
+  let s = `<rect x="0" y="170" width="320" height="20" fill="${C.snow}" opacity=".15"/>`;
+  const x = 160;
+  s += `<circle cx="${x}" cy="38" r="17" fill="${C.skin}"/>`;
+  s += `<rect x="${x-22}" y="58" width="44" height="58" rx="10" fill="${C.skin}"/><rect x="${x-34}" y="60" width="12" height="52" rx="6" fill="${C.skin}"/><rect x="${x+22}" y="60" width="12" height="52" rx="6" fill="${C.skin}"/>`;
+  s += `<rect x="${x-20}" y="112" width="17" height="56" rx="7" fill="${C.skin}"/><rect x="${x+3}" y="112" width="17" height="56" rx="7" fill="${C.skin}"/>`;
+  if (upto >= 0) s += `<g ${hl(0)}><rect x="${x-22}" y="58" width="44" height="58" rx="10" fill="${C.base}"/><rect x="${x-34}" y="60" width="12" height="50" rx="6" fill="${C.base}"/><rect x="${x+22}" y="60" width="12" height="50" rx="6" fill="${C.base}"/><rect x="${x-20}" y="112" width="17" height="54" rx="7" fill="${C.base}"/><rect x="${x+3}" y="112" width="17" height="54" rx="7" fill="${C.base}"/></g>`;
+  if (upto >= 1) s += `<g ${hl(1)}><rect x="${x-23}" y="59" width="46" height="54" rx="10" fill="${C.mid}"/><rect x="${x-35}" y="61" width="12" height="46" rx="6" fill="${C.mid}"/><rect x="${x+23}" y="61" width="12" height="46" rx="6" fill="${C.mid}"/></g>`;
+  if (upto >= 2) s += `<g ${hl(2)}><rect x="${x-21}" y="104" width="42" height="64" rx="8" fill="${C.pants}"/><rect x="${x-25}" y="58" width="50" height="60" rx="11" fill="${C.shell}"/><rect x="${x-37}" y="60" width="13" height="50" rx="6" fill="${C.shell}"/><rect x="${x+24}" y="60" width="13" height="50" rx="6" fill="${C.shell}"/><line x1="${x}" y1="60" x2="${x}" y2="116" stroke="#0f1419" stroke-width="1.5"/></g>`;
+  if (upto >= 3) s += `<g ${hl(3)}><rect x="${x-20}" y="150" width="17" height="18" rx="4" fill="${C.sock}"/><rect x="${x+3}" y="150" width="17" height="18" rx="4" fill="${C.sock}"/></g>`;
+  if (upto >= 4) s += `<g ${hl(4)}><rect x="${x-24}" y="138" width="22" height="34" rx="5" fill="${C.boot}"/><rect x="${x+2}" y="138" width="22" height="34" rx="5" fill="${C.boot}"/>${[144,152,160,166].map(y => `<line x1="${x-24}" y1="${y}" x2="${x-2}" y2="${y}" stroke="#0f1419"/><line x1="${x+2}" y1="${y}" x2="${x+24}" y2="${y}" stroke="#0f1419"/>`).join('')}</g>`;
+  if (upto >= 5) s += `<g ${hl(5)}><path d="M${x-19} 40 a19 20 0 0 1 38 0 z" fill="${C.helmet}"/><line x1="${x-14}" y1="44" x2="${x}" y2="56" stroke="${C.helmet}" stroke-width="2"/><line x1="${x+14}" y1="44" x2="${x}" y2="56" stroke="${C.helmet}" stroke-width="2"/></g>`;
+  if (upto >= 6) s += `<g ${hl(6)}><rect x="${x-18}" y="35" width="36" height="11" rx="5" fill="${C.goggle}"/></g>`;
+  if (upto >= 7) s += `<g ${hl(7)}><rect x="${x-39}" y="104" width="16" height="16" rx="5" fill="${C.glove}"/><rect x="${x+23}" y="104" width="16" height="16" rx="5" fill="${C.glove}"/></g>`;
+  if (upto >= 8) s += `<g ${hl(8)}><rect x="${x-12}" y="50" width="24" height="10" rx="4" fill="${C.neck}"/></g>`;
+  if (upto >= 9) s += `<text x="${x+50}" y="70" fill="${C.hi}" font-size="22">✓</text>`;
+  const legend = ['Base layer','Mid layer','Shell','Ski socks','Ski boots','Helmet','Goggles','Gloves','Neck gaiter','Final check'];
+  s += `<text x="12" y="22" fill="${C.hi}" font-size="12">${legend[upto]}</text>`;
+  return s;
+}
+
+function figBoot(){
+  // boot buckles numbered in a common order (makers differ)
+  let s = `<g transform="translate(0,22)"><path d="M110 40 L190 40 L196 120 L230 128 L234 160 L96 160 L100 120 Z" fill="${C.boot}" stroke="#0f1419"/>`;
+  const bk = [[150,62,'1'],[150,82,'2'],[178,118,'3'],[205,140,'4']];
+  bk.forEach(([x, y, n]) => { s += `<rect x="${x-30}" y="${y-5}" width="60" height="10" rx="3" fill="#0f1419"/><circle cx="${x+40}" cy="${y}" r="9" fill="${C.hi}"/><text x="${x+40}" y="${y+4}" fill="#0f1419" font-size="11" text-anchor="middle">${n}</text>`; });
+  s += `<rect x="108" y="30" width="84" height="10" rx="3" fill="${C.neck}"/><text x="200" y="38" fill="${C.neck}" font-size="11">strap</text></g>`;
+  s += `<text x="12" y="18" fill="${C.hi}" font-size="11">Common order: 1 ankle → 2 top</text><text x="12" y="34" fill="${C.hi}" font-size="11">→ 3, 4 instep and toe (not too tight) → strap</text>`;
+  return s;
+}
+
+/* person: x = hip position, mode stand/sit/lie, gear ski/board */
+function person(x, y, sit, gear, opt = {}){
+  const col = opt.col || C.shell;
+  let s = '';
+  if (sit > .5){
+    s += `<line x1="${x}" y1="${y-20}" x2="${x-4}" y2="${y-52}" stroke="${col}" stroke-width="9" stroke-linecap="round"/>`;
+    s += `<circle cx="${x-5}" cy="${y-64}" r="9" fill="${C.helmet}"/>`;
+    s += `<line x1="${x}" y1="${y-20}" x2="${x+24}" y2="${y-20}" stroke="${C.pants}" stroke-width="8" stroke-linecap="round"/><line x1="${x+24}" y1="${y-20}" x2="${x+26}" y2="${y+6}" stroke="${C.pants}" stroke-width="7" stroke-linecap="round"/>`;
+    if (gear === 'none') {}
+    else if (gear === 'ski') s += `<line x1="${x+8}" y1="${y+6}" x2="${x+56}" y2="${y+6-(opt.tips?8:0)}" stroke="${C.ski}" stroke-width="3"/>`;
+    else s += `<line x1="${x+4}" y1="${y+8}" x2="${x+52}" y2="${y+8}" stroke="${C.board}" stroke-width="5" stroke-linecap="round"/>`;
+    if (gear === 'ski' && opt.poles) s += `<line x1="${x+4}" y1="${y-34}" x2="${x+30}" y2="${y-36}" stroke="#cbd5e1" stroke-width="2"/>`;
+  } else {
+    const lean = opt.lean || 0;
+    s += `<line x1="${x}" y1="${y-36}" x2="${x+lean}" y2="${y-66}" stroke="${col}" stroke-width="9" stroke-linecap="round"/>`;
+    s += `<circle cx="${x+lean}" cy="${y-78}" r="9" fill="${C.helmet}"/>`;
+    s += `<line x1="${x}" y1="${y-36}" x2="${x+3}" y2="${y-2}" stroke="${C.pants}" stroke-width="8" stroke-linecap="round"/>`;
+    if (gear === 'none') {}
+    else if (gear === 'ski'){ s += `<line x1="${x-22}" y1="${y}" x2="${x+30}" y2="${y-(opt.tips?6:0)}" stroke="${C.ski}" stroke-width="3"/>`; if (opt.poles) s += `<line x1="${x+lean+6}" y1="${y-52}" x2="${x+20}" y2="${y-2}" stroke="#cbd5e1" stroke-width="2"/>`; }
+    else { s += `<line x1="${x-24}" y1="${y+1}" x2="${x+26}" y2="${y+1}" stroke="${C.board}" stroke-width="5" stroke-linecap="round"/>`; if (opt.rear !== 'on') s += `<line x1="${x-2}" y1="${y-30}" x2="${x-14}" y2="${y-2}" stroke="${C.pants}" stroke-width="7" stroke-linecap="round"/>`; }
+  }
+  return s;
+}
+function chair(x, y, bar, empty){
+  let s = `<line x1="${x}" y1="22" x2="${x}" y2="${y-62}" stroke="${C.chair}" stroke-width="3"/>`;
+  s += `<path d="M${x} ${y-62} L${x-8} ${y-62} L${x-8} ${y-20} L${x+26} ${y-20}" fill="none" stroke="${C.chair}" stroke-width="5"/>`;
+  s += bar > .5 ? `<path d="M${x} ${y-62} L${x+30} ${y-50} L${x+30} ${y-12}" fill="none" stroke="${C.hi}" stroke-width="3"/>` : `<path d="M${x} ${y-62} L${x+10} ${y-80}" fill="none" stroke="${C.hi}" stroke-width="3"/>`;
+  return s;
+}
+const lerp = (a, b, t) => a + (b - a)*t;
+function liftScene(sp, t, gear){
+  const g = sp.ground ?? 160;
+  let s = `<line x1="0" y1="22" x2="320" y2="22" stroke="${C.chair}" stroke-width="2"/>`;
+  s += sp.ramp ? `<path d="M0 ${g} L200 ${g} L320 ${g+20} L320 190 L0 190 Z" fill="${C.snow}" opacity=".18"/>` : `<rect x="0" y="${g}" width="320" height="${190-g}" fill="${C.snow}" opacity=".18"/>`;
+  if (sp.marker) s += `<line x1="${sp.marker}" y1="${g}" x2="${sp.marker}" y2="${g-10}" stroke="${C.bad}" stroke-width="3"/><text x="${sp.marker-14}" y="${g+16}" fill="${C.bad}" font-size="10">${sp.markerTxt || 'Loading spot'}</text>`;
+  const cx = sp.chair ? lerp(sp.chair[0], sp.chair[1], t) : null;
+  const bar = sp.bar ? lerp(sp.bar[0], sp.bar[1], t) : 0;
+  let px = sp.p ? lerp(sp.p[0], sp.p[1], t) : null, sit = sp.sit ? (typeof sp.sit === 'number' ? sp.sit : sp.sit(t, cx)) : 0;
+  if (sp.ride && cx != null && sit > .5) px = cx + 8;
+  if (cx != null) s += chair(cx, g, bar, false);
+  if (sp.chair2) s += chair(lerp(sp.chair2[0], sp.chair2[1], t), g, 0, true);
+  if (px != null) s += person(px, sit > .5 ? g - 4 : (sp.py ?? g), sit, gear, {tips: sp.tips, poles: gear === 'ski', lean: sp.lean || 0, rear: sp.rear, col: sp.col});
+  if (sp.down) s += `<g transform="translate(${sp.down[0]},${sp.down[1]})">${lying(gear)}</g>`;
+  if (sp.staff) s += `<text x="${sp.staff}" y="${g-6}" font-size="18">🧑‍🔧</text>`;
+  if (sp.label) s += `<text x="12" y="186" fill="${C.hi}" font-size="11">${sp.label}</text>`;
+  return s;
+}
+function lying(gear){
+  return `<line x1="0" y1="0" x2="34" y2="-4" stroke="${C.shell}" stroke-width="9" stroke-linecap="round"/><circle cx="44" cy="-6" r="9" fill="${C.helmet}"/><line x1="0" y1="0" x2="-26" y2="4" stroke="${C.pants}" stroke-width="8" stroke-linecap="round"/>` +
+    (gear === 'none' ? '' : gear === 'ski' ? `<line x1="-40" y1="10" x2="0" y2="12" stroke="${C.ski}" stroke-width="3"/>` : `<line x1="-44" y1="10" x2="-4" y2="10" stroke="${C.board}" stroke-width="5"/>`);
+}
+function slopeScene(kind, t){
+  // top view of a run: downhill is down the screen
+  let s = `<rect x="40" y="0" width="240" height="190" fill="${C.snow}" opacity=".12"/><line x1="40" y1="0" x2="40" y2="190" stroke="${C.line}" stroke-width="3"/><line x1="280" y1="0" x2="280" y2="190" stroke="${C.line}" stroke-width="3"/><text x="316" y="184" fill="#8b98a5" font-size="10" text-anchor="end">↓ Downhill</text>`;
+  const dot = (x, y, col, lab) => `<circle cx="${x}" cy="${y}" r="9" fill="${col}"/><text x="${x > 180 ? x-12 : x+12}" y="${y+4}" fill="${col}" font-size="11" text-anchor="${x > 180 ? 'end' : 'start'}">${lab}</text>`;
+  if (kind === 'yield'){
+    const ay = lerp(40, 130, t), bx = 150 + 40*Math.sin(t*6), by = lerp(90, 150, t);
+    s += dot(bx, by, C.ok, 'The person ahead has priority');
+    s += dot(lerp(160, 230, Math.min(1, t*1.4)), ay, C.accent, 'You (behind): give them room');
+    s += `<path d="M160 40 Q230 80 230 130" fill="none" stroke="${C.accent}" stroke-dasharray="4 4"/>`;
+  } else if (kind === 'stop'){
+    s += `<path d="M90 60 Q160 40 230 60" fill="none" stroke="${C.line}" stroke-width="10" opacity=".7"/><text x="120" y="35" fill="#8b98a5" font-size="10">Crest / bend (people above can’t see you)</text>`;
+    s += dot(160, 72, C.bad, '❌ Stopped in a blind spot');
+    s += dot(266, 120, C.ok, '✅ Stopped at the side, visible');
+  } else if (kind === 'fall'){
+    const x = lerp(160, 262, Math.max(0, t*1.3 - .2)), y = lerp(100, 110, t);
+    s += `<text x="${x-14}" y="${y+5}" font-size="20">🧍</text><text x="${x+14}" y="${y+4}" fill="${C.hi}" font-size="11">${t < .25 ? '① Are you hurt?' : t < .8 ? '② Move to the side' : '③ Get up in a safe spot'}</text>`;
+    s += dot(150, lerp(10, 60, t), C.accent, 'Someone coming down');
+  } else if (kind === 'start'){
+    s += dot(260, 110, C.ok, 'You: before starting');
+    s += `<text x="190" y="90" fill="${C.hi}" font-size="18">👀↑</text>`;
+    s += dot(lerp(110, 200, t), lerp(10, 100, t), C.accent, 'Coming down from above');
+  }
+  return s;
+}
+function iconScene(kind, t){
+  let s = `<rect x="0" y="160" width="320" height="30" fill="${C.snow}" opacity=".15"/>`;
+  if (kind === 'gondola'){
+    s += `<line x1="0" y1="30" x2="320" y2="30" stroke="${C.chair}" stroke-width="2"/>`;
+    const x = lerp(60, 200, t);
+    s += `<line x1="${x+30}" y1="30" x2="${x+30}" y2="58" stroke="${C.chair}" stroke-width="3"/><rect x="${x}" y="58" width="60" height="70" rx="12" fill="#1e293b" stroke="${C.accent}"/><rect x="${x+8}" y="66" width="44" height="26" rx="4" fill="#0b1016"/>`;
+    s += `<rect x="${x+62}" y="60" width="6" height="60" fill="${C.ski}"/><text x="${x+72}" y="96" fill="${C.ski}" font-size="10">Outside rack</text>`;
+  } else if (kind === 'carpet'){
+    s += `<path d="M20 160 L300 110 L300 120 L20 170 Z" fill="#334155"/>`;
+    const x = lerp(40, 260, t), y = lerp(158, 118, t);
+    s += person(x, y, 0, 'ski', {poles:true});
+    s += `<text x="12" y="22" fill="${C.hi}" font-size="12">Stand still, don’t sit, don’t walk</text>`;
+  } else if (kind === 'tbar'){
+    s += `<line x1="0" y1="30" x2="320" y2="20" stroke="${C.chair}" stroke-width="2"/>`;
+    const x = lerp(60, 230, t);
+    s += `<line x1="${x}" y1="28" x2="${x-10}" y2="110" stroke="${C.chair}" stroke-width="3"/><line x1="${x-30}" y1="112" x2="${x+10}" y2="112" stroke="${C.hi}" stroke-width="5"/>`;
+    s += person(x - 8, 160, 0, 'ski', {poles:true, lean:-4});
+    s += `<text x="12" y="22" fill="${C.hi}" font-size="12">T-bar: lean on it, don’t sit down</text>`;
+  } else if (kind === 'standski' || kind === 'standboard'){
+    const ski = kind === 'standski';
+    s += `<path d="M0 170 L320 120 L320 190 L0 190 Z" fill="${C.snow}" opacity=".18"/><text x="250" y="110" fill="#8b98a5" font-size="10">↑ Uphill</text>`;
+    const st = t < .34 ? 0 : t < .67 ? 1 : 2;
+    if (ski){
+      s += `<line x1="70" y1="168" x2="170" y2="150" stroke="${C.ski}" stroke-width="3"/><text x="40" y="186" fill="${C.ski}" font-size="10">Skis across the slope, on the downhill side</text>`;
+      s += st === 0 ? `<g transform="translate(130,140)">${lying('none')}</g>` : st === 1 ? person(120, 152, 1, 'none') : person(120, 152, 0, 'none', {lean:-6});
+    } else {
+      s += `<line x1="70" y1="168" x2="170" y2="150" stroke="${C.board}" stroke-width="5"/><text x="40" y="186" fill="${C.board}" font-size="10">Board across the slope, on the downhill side</text>`;
+      s += st === 0 ? person(115, 152, 1, 'none') : st === 1 ? `<text x="100" y="150" font-size="26">🧎</text>` : person(120, 152, 0, 'none');
+    }
+    s += `<text x="12" y="22" fill="${C.hi}" font-size="12">${['① Sit, board across','② Push up','③ Stand steady'][st]}</text>`;
+  }
+  return s;
+}
+
+/* ---------- lessons ---------- */
+const MODS = [['gear','🧥 Gear'], ['lift','🚡 Chairlift'], ['other','🚠 Other lifts'], ['fall','🩹 Falls'], ['rules','🚦 Rules']];
+const sitAt = (contact) => (t, cx) => cx >= contact ? 1 : 0;
+const LESSONS = [
+ {mod:'gear', k:'dress', n:'Dressing inside out', steps:[
+  {t:'Base layer', sc:{dress:0}, ok:['Synthetic or merino wool','Close-fitting but not restrictive','Wicks sweat; warmth is not the goal'], bad:['Cotton T-shirt: stays wet, very cold','Base layer too thick: sweat, then cold','Wrinkled clothing tucked into the boots'], why:'Skiing makes you sweat; when you stop, ride a lift or face wind, a wet base layer chills you fast.', chk:'Close-fitting, dry, free to move.'},
+  {t:'Mid layer', sc:{dress:1}, ok:['Fleece, synthetic insulation or a light down jacket','Adjust to weather and activity level','You can take one off at the resort'], bad:['Thicker is better: sweaty after a few runs','One layer only, no way to adjust'], why:'Overheating means you get colder as soon as you stop; the mid layer is for regulating temperature.', chk:'Not overheating while moving, not cold after two minutes standing still.'},
+  {t:'Shell', sc:{dress:2}, ok:['Waterproof, windproof, breathable','Jacket and pants overlap, powder skirt fastened','Hood does not interfere with the helmet','Zips and hanging cords tucked away'], bad:['Gap at the waist between jacket and pants, snow gets in','Loose cords or long straps can catch on the chair'], why:'In a fall, snow gets in through gaps; loose straps can catch on a chair or a person.', chk:'Squat and raise your arms: no gap at the waist or wrists.'},
+  {t:'Ski socks', sc:{dress:3}, ok:['One pair of thin ski socks','Pulled smooth, no wrinkles','Pant legs over the boots'], bad:['Two pairs of socks or very thick socks','Sock cuff bunched up','Pant legs tucked into the boot liner'], why:'Wrinkles and extra fabric become pressure points; thick socks make the foot loose with less control, and poor circulation makes it colder.', chk:'Socks smooth, no folds, pant legs outside the boots.'},
+  {t:'Ski boots', sc:{boot:1}, ok:['Open all buckles, pull the tongue forward','Heel in first, flex the knee and tap the heel a few times so it seats in the heel pocket','Straighten the tongue, check the sock has no wrinkles','Ankle buckle first, then the top, then instep and toe (not too tight)','Fasten the strap','Stand and flex your knees: check your ankles can bend'], bad:['Buckled as tight as possible: numb, cold feet','Instep buckle too tight, pressing down','Heel not seated, foot moves inside the boot','Boots too loose, poor control'], why:'A boot should be “secure, pain-free, able to flex”, not locked solid; buckle order varies between makers.', chk:'When you flex forward the heel does not lift; toes lightly touch the front but pull back when you flex; no pressure points, no numbness.'},
+  {t:'Helmet', sc:{dress:5}, ok:['Level, front edge about one finger above the eyebrows','Adjust the fit so it doesn’t move when you shake your head','Chin strap fastened, one finger of space'], bad:['Tilted back, forehead exposed','Chin strap unfastened','Too loose, shifts in a fall'], why:'A helmet only protects if it stays in the right place at impact.', chk:'Shake your head front, back and sideways: the helmet does not shift noticeably.'},
+  {t:'Goggles', sc:{dress:6}, ok:['Fits the helmet: no forehead gap','Not pressing on the nose, easy breathing','Choose the lens for the weather'], bad:['Forehead exposed between helmet and goggles','Gaiter covering nose and mouth, breath fogs the goggles'], why:'An exposed forehead frostbites easily; fogging means you can’t see ahead.', chk:'No gap between helmet and goggles; breathe a few times wearing them, no fog.'},
+  {t:'Gloves', sc:{dress:7}, ok:['Waterproof gloves or mittens','Gloves overlap the cuffs (inside or outside, depending on the design)'], bad:['Wrists exposed','Ordinary gloves: cold as soon as they’re wet'], why:'Hands get cold easily, and colder when wet; exposed wrists let snow in when you fall.', chk:'Raise your arms: no skin showing between cuff and glove.'},
+  {t:'Neck gaiter and more', sc:{dress:8}, ok:['Gaiter covers the neck, not the nose and mouth','Sunscreen and lip balm','Phone and lift pass in an easy-to-reach, secure pocket'], bad:['Long scarf: can catch on the chair','No sunscreen: snow reflection burns'], why:'A long scarf carries the same snag risk as loose straps; UV is strong at altitude.', chk:'Nothing long hanging, phone and pass secured.'},
+  {t:'Pre-run check', sc:{dress:9}, ok:['Base layer dry','No wrinkles inside the boots','Boots secure, pain-free, able to flex','Helmet fastened, goggles fit the helmet','Gloves waterproof, cuffs overlap','Jacket and pants overlap','Lift pass easy to reach, phone secured','Had some water'], bad:['Heading out without testing a knee flex','Already sweating before you start'], why:'Finding a problem on the slope means taking gloves off and sitting in the snow to fix it: cold, and in people’s way.', chk:'Tick everything before you go.'}
+ ]},
+ {mod:'lift', k:'skiUp', n:'Ski: getting on a chairlift', gear:'ski', steps:[
+  {t:'Queueing', sc:{lift:{p:[40,90], chair:[180,330], label:'Queue: follow staff on how many per chair'}}, ok:['Lift pass ready','Stay in line, don’t cut in','Poles together in one hand, not sweeping into others','Skis pointing forward'], bad:['Swinging poles and hitting people','Standing on the tails of the skis ahead'], why:'The lift gate is crowded; poles and skis hit people most easily.', chk:'Poles in one hand, skis forward.'},
+  {t:'Moving to the loading spot', sc:{lift:{p:[90,150], chair:[-40,60], marker:150, label:'After the previous chair passes, move to the loading spot'}}, ok:['Move out only after the previous chair has passed you','Stand on the loading marker','Skis parallel, pointing forward','Look back to watch the chair coming'], bad:['Rushing out too early','Standing past the marker','Backing up'], why:'In the wrong spot, the chair hits the back of your legs or you miss it.', chk:'On the marker, skis forward, watching the chair come.'},
+  {t:'Sitting down', sc:{lift:{p:[150,150], chair:[70,240], marker:150, sit:sitAt(142), ride:true, label:'Chair touches the back of your knees, sit with it'}}, ok:['Sit only when the chair touches the back of your knees','Sit back deep in one motion','Put poles away, not trapped between you and the chair'], bad:['Sitting too early (chair not there yet)','Jumping onto the chair','Not seated properly and saying nothing'], why:'If you miss the seat or fall, tell staff right away; they will stop the lift.', chk:'Seated against the backrest, skis off the ground pointing forward.'},
+  {t:'Lowering the safety bar', sc:{lift:{chair:[200,240], bar:[0,1], sit:1, ride:true, label:'Check everyone is seated, lower the bar slowly'}}, ok:['Lower it only after everyone on the chair is seated','Lower it slowly and warn the others','Keep skis forward, not crossed'], bad:['Dropping the bar suddenly onto someone','Rocking the chair, kicking skis, turning around'], why:'Rocking the chair, turning around or swinging skis can make people or gear fall.', chk:'Bar down, seated securely, skis not crossed.'}
+ ]},
+ {mod:'lift', k:'skiDown', n:'Ski: getting off a chairlift', gear:'ski', steps:[
+  {t:'Get ready', sc:{lift:{chair:[60,110], bar:[1,0], sit:1, ride:true, tips:true, label:'“Prepare to unload” sign'}}, ok:['Raise the bar only when the sign tells you to','Poles together in one hand','Ski tips slightly up','Check clothing and backpack are not caught'], bad:['Raising the bar too early, sliding forward','Poles dangling from wrist straps'], why:'Get ready before the unloading spot, then stand up in one motion when you reach it.', chk:'Bar up, poles in hand, tips forward.'},
+  {t:'Standing up', sc:{lift:{chair:[120,175], sit:(t, cx) => cx < 160 ? 1 : 0, p:[150,180], ramp:true, ground:150, lean:6, tips:true, label:'At the unloading spot: feet on the snow, stand up with the motion'}}, ok:['Stand only at the marked spot','Skis parallel, pointing forward','Body slightly forward, not sitting back'], bad:['Jumping off hard','Sitting back and unable to stand'], why:'Standing up while sitting back is the easiest way to fall backward.', chk:'Weight even on both feet, body slightly forward as you stand.'},
+  {t:'Gliding straight out', sc:{lift:{chair:[180,320], p:[180,270], ramp:true, ground:150, lean:4, label:'Gliding straight out'}}, ok:['Glide straight out with skis parallel','Don’t turn sharply the moment you land','Don’t stop in the unloading area'], bad:['Turning sharply on landing into the person beside you','Stopping in front of the chair'], why:'The next chair arrives quickly; if you stop there you get hit.', chk:'Glide straight out of the unloading area before turning.'},
+  {t:'Leaving the unloading area', sc:{lift:{p:[270,300], ramp:true, ground:150, label:'Move to a safe spot to the side before stopping'}}, ok:['Leave the unloading area right away','Stop to wait for friends somewhere out of the way'], bad:['Waiting for friends at the top of the slope','Sorting gear in the unloading area'], why:'The top of the unloading area is used by every chair behind you.', chk:'Stopped where you’re not blocking anyone.'}
+ ]},
+ {mod:'lift', k:'boardUp', n:'Snowboard: getting on a chairlift', gear:'board', steps:[
+  {t:'Before queueing', sc:{lift:{p:[50,90], chair:[180,330], label:'Front foot strapped in, leash attached'}}, ok:['Leash attached','Front foot strapped in, back foot out','Back highback folded down','Nose pointing forward'], bad:['No leash','Queueing with both feet strapped in','Board sideways, blocking people'], why:'Many Japanese resorts require a leash on snowboards so a loose board can’t slide away and hurt someone.', chk:'Leash on, only the front foot in, nose forward.'},
+  {t:'Gliding to the loading spot', sc:{lift:{p:[90,150], chair:[-40,60], marker:150, label:'Push with the back foot to glide in'}}, ok:['Back foot pushes beside the board, front foot steers','Stand on the marker, board pointing forward','Watch the chair coming from behind'], bad:['Pushing too hard and sliding past the marker','Board sideways'], why:'A sideways board hits the person beside you or the chair leg.', chk:'On the marker, board forward.'},
+  {t:'Sitting down', sc:{lift:{p:[150,150], chair:[70,240], marker:150, sit:sitAt(142), ride:true, label:'Chair touches the back of your knees, sit'}}, ok:['Sit only when the chair touches the back of your knees','Once seated, keep the board steady and pointing forward','Keep the back foot still, don’t kick the person beside you'], bad:['Board swinging sideways as you sit','Pushing around with the back foot'], why:'A hanging snowboard is heavy; any twist pulls on the front knee and can hit the person beside you.', chk:'Seated securely, board forward, back foot in place.'},
+  {t:'Lowering the safety bar', sc:{lift:{chair:[200,240], bar:[0,1], sit:1, ride:true, label:'Sit securely before lowering the bar'}}, ok:['Lower it slowly once everyone is seated','Keep the board still','The back foot can rest on the footrest or on top of the board'], bad:['Playing with or kicking the board','Turning around'], why:'Swinging the board pulls on the knee and can hit the person next to you.', chk:'Bar down, board still.'}
+ ]},
+ {mod:'lift', k:'boardDown', n:'Snowboard: getting off a chairlift', gear:'board', steps:[
+  {t:'Get ready', sc:{lift:{chair:[60,110], bar:[1,0], sit:1, ride:true, label:'At the sign: raise the bar, back foot on the board'}}, ok:['Keep the front foot strapped in','Raise the safety bar when instructed','Put the back foot back on the board, next to the stomp pad','Nose pointing forward'], bad:['Unstrapping the front foot before unloading','Back foot still dangling'], why:'Without the back foot in place you have no balance when you stand.', chk:'Back foot on the board, nose forward.'},
+  {t:'Standing up', sc:{lift:{chair:[120,175], sit:(t, cx) => cx < 160 ? 1 : 0, p:[150,180], ramp:true, ground:150, lean:6, rear:'on', label:'At the spot: stand up, keep the board flat'}}, ok:['Body slightly forward','Keep the board flat','Don’t go straight onto the toe or heel edge as you stand'], bad:['Back seat','Edging into a turn the moment you land'], why:'Edging with one foot strapped in easily slips out.', chk:'Board flat, body slightly forward as you stand.'},
+  {t:'Glide straight out', sc:{lift:{chair:[180,320], p:[180,270], ramp:true, ground:150, lean:4, rear:'on', label:'Glide out flat and straight'}}, ok:['Front foot steers','Back foot pressing on the board','Glide flat and straight, or control with a very small edge angle','No hard stop'], bad:['Stopping hard and falling in the unloading area','Dragging the back foot'], why:'The unloading ramp is short; a flat, straight glide is most stable.', chk:'Glide straight out of the unloading area.'},
+  {t:'Strap in after you leave', sc:{lift:{p:[270,300], ramp:true, ground:150, rear:'on', label:'Sit down to strap in the back foot in a safe spot'}}, ok:['Glide out of the unloading area before stopping','Sit and strap in the back foot in a safe spot to the side','Check your gear'], bad:['Sitting down in the unloading area to do up bindings','Sitting in the middle of the top of the slope'], why:'The unloading area and the middle of the slope top are where most people pass.', chk:'Strap in only where you’re not in the way.'}
+ ]},
+ {mod:'lift', k:'trouble', n:'When things go wrong', gear:'ski', steps:[
+  {t:'Missed the chair', sc:{lift:{p:[150,200], py:160, chair:[110,260], marker:150, label:'Missed it: don’t chase, move away'}}, ok:['Don’t chase the chair or force yourself onto it','Move off the loading spot right away','Wait for the next chair as staff direct'], bad:['Running after the chair','Staying put while the next chair comes into you'], why:'The next chair arrives very soon.', chk:'Wait only after leaving the loading spot.'},
+  {t:'Falling while loading', sc:{lift:{chair:[120,260], marker:150, down:[150,150], staff:20, label:'Fell: stay low, don’t get up, wait for staff'}}, ok:['Stay low, don’t stand up suddenly','Follow staff instructions','They may stop or slow the lift'], bad:['Standing up as the chair passes overhead','Grabbing the chair'], why:'Standing up while a chair is passing can hit your head.', chk:'Get up only after the chair has passed and staff signal.'},
+  {t:'Couldn’t unload in time', sc:{lift:{chair:[150,240], sit:1, ride:true, bar:[0,0], label:'Missed unloading: stay seated, don’t jump'}}, ok:['Stay seated, don’t jump off','Wave to signal the staff','Follow instructions: wait for them to stop the lift or ride the chair back down'], bad:['Jumping off','Moving around while not seated securely'], why:'The chair’s height and the landing are unsafe; many Japanese resorts explicitly forbid jumping off and tell you to stay on the chair until staff deal with it.', chk:'Seated securely, waiting for staff.'},
+  {t:'Falling in the unloading area', sc:{lift:{chair:[150,300], ramp:true, ground:150, down:[200,148], label:'Fell: crawl clear right away'}}, ok:['If not hurt, crawl or slide clear of the unloading area right away','Collect your gear off to the side','If hurt, stay put and signal the staff'], bad:['Sitting there collecting poles or strapping in'], why:'The next chair arrives in seconds; if you stay there you get hit.', chk:'You and your gear are clear of the unloading area.'},
+  {t:'Lift stops suddenly', sc:{lift:{chair:[180,180], sit:1, ride:true, bar:[1,1], label:'Stopped: stay seated, wait for announcements'}}, ok:['Stay seated, keep the safety bar down','Don’t rock the chair','Follow announcements or staff instructions'], bad:['Rocking the chair, jumping off','Raising the safety bar'], why:'Stops usually clear quickly; the chair sways when it restarts.', chk:'Seated securely, bar down, waiting for instructions.'}
+ ]},
+ {mod:'other', k:'gondola', n:'Gondola', steps:[
+  {t:'Before boarding', sc:{icon:'gondola'}, ok:['Queue as staff direct','Put skis or board in the designated place (outside rack or inside the cabin)','Hold your poles'], bad:['Stuffing gear in wherever','Boarding before your skis are stowed'], why:'Misplaced skis can fall out or trap someone.', chk:'Gear stowed before you board.'},
+  {t:'Boarding and sitting', sc:{icon:'gondola'}, ok:['Watch the doors and the cabin edge','Sit down, hold your gear steady'], bad:['Clothing or poles caught in the door','Standing by the door'], why:'Closing doors easily catch anything loose.', chk:'You and your gear are inside the doors.'},
+  {t:'Getting off', sc:{icon:'gondola'}, ok:['Get your gear ready before the station','Exit and collect your skis as the station signs say'], bad:['Scrambling for your things only at the station','Leaving your skis on the rack'], why:'Gondolas don’t stop for long.', chk:'You, skis, poles and backpack all accounted for.'}
+ ]},
+ {mod:'other', k:'carpet', n:'Magic carpet (conveyor)', steps:[
+  {t:'Getting on', sc:{icon:'carpet'}, ok:['Skis forward and parallel','Step on after the person ahead has moved off','Stand still once on'], bad:['Too close to the person ahead','Board sideways'], why:'The carpet is slow, but if the person ahead falls, the one behind runs into them.', chk:'Skis forward, space in front.'},
+  {t:'On the carpet', sc:{icon:'carpet'}, ok:['Stand still, knees slightly bent','Poles in hand, not planted'], bad:['Sitting down','Walking on it'], why:'Sitting or walking costs balance; a fall blocks everyone behind.', chk:'Standing still and balanced.'},
+  {t:'Getting off', sc:{icon:'carpet'}, ok:['Glide off at the end','Move away right away'], bad:['Stopping at the exit'], why:'The people behind get delivered straight into you.', chk:'Clear of the exit before stopping.'}
+ ]},
+ {mod:'other', k:'tbar', n:'T-bar / Poma', steps:[
+  {t:'Ski: taking the tow', sc:{icon:'tbar'}, ok:['Skis parallel in the track','T-bar behind the thighs / Poma disc between the legs','Lean on it, don’t sit down'], bad:['Sitting down: a tow is not a chair','Skis leaving the track'], why:'A tow does not support your weight; sit and you fall.', chk:'Skis in the track, leaning on the tow, standing.'},
+  {t:'Falling or reaching the top', sc:{icon:'tbar'}, ok:['If you fall, let go immediately and move out of the track','At the top, let go where the sign says and move away'], bad:['Holding on after falling and being dragged','Getting up inside the track'], why:'The people behind come up the same track.', chk:'Let go, leave the track.'},
+  {t:'Snowboard', sc:{icon:'tbar'}, ok:['Front foot strapped in, back foot unstrapped on the board','Follow resort rules: some tows don’t allow snowboards'], bad:['A beginner using a tow on their first day'], why:'On a tow a snowboarder stands sideways and must control the board; if a chairlift is available, beginners should use the chair or a magic carpet first.', chk:'Read the signs and follow the staff.'}
+ ]},
+ {mod:'fall', k:'fallSafe', n:'Falling safely', steps:[
+  {t:'Ski: as you fall', sc:{icon:'standski'}, ok:['When you lose balance, sit down to the side','Feet together, hands forward','Don’t fight to stand back up'], bad:['Reaching back with your hands','Hips below the knees and still fighting it'], why:'Fighting a backward fall is the most common cause of ACL tears in skiing.', chk:'Practise slowly sitting down to the side on flat ground.'},
+  {t:'Snowboard: as you fall', sc:{icon:'standboard'}, ok:['Make fists and keep your hands close to the body','Falling forward: knees and forearms land together','Falling backward: tuck your chin, land on bottom and back over a large area'], bad:['Arms straight, landing on your palms','Back of the head hitting the snow'], why:'The most common beginner snowboard injuries are wrists, and hitting the head when falling backward.', chk:'Practise falling slowly on a gentle slope first.'}
+ ]},
+ {mod:'fall', k:'getUp', n:'Getting up after a fall', steps:[
+  {t:'Ski: getting up', sc:{icon:'standski'}, ok:['First put both skis across the slope, on the downhill side of your body','Hips close to the skis, push with a hand or poles on the uphill side','Push up and stand steady'], bad:['Getting up with skis pointing downhill: you slide off at once','Hips too far from the skis, can’t get up'], why:'If the skis aren’t across the slope, you slide away as you stand.', chk:'Skis across and on the downhill side before you stand.'},
+  {t:'Snowboard: getting up', sc:{icon:'standboard'}, ok:['Sitting (heelside): board across the slope below you, push up with your hands','Or turn over onto your knees (toeside) and stand; usually easier for beginners'], bad:['Getting up with the board pointing downhill','Sitting slowly strapping in in the middle of the run'], why:'As soon as the board points downhill it slides.', chk:'Board across the slope before you stand.'},
+  {t:'Moving to the side of the run', sc:{slope:'fall'}, ok:['First check whether you are hurt','If you can move, get to the side of the run quickly','Hurt or can’t move: get someone to call ski patrol'], bad:['Resting in the middle of the run','Sitting at a crest, bend or narrow section'], why:'People coming from above may not see you.', chk:'Stopped at the side of the run, visible from above.'}
+ ]},
+ {mod:'rules', k:'etiquette', n:'Slope rules', quiz:true, steps:[
+  {t:'The person ahead has priority', sc:{slope:'yield'}, ok:['The person ahead (below) has priority','You are behind: choose a line that doesn’t endanger them','Leave plenty of room when overtaking'], bad:['Overtaking close to the person ahead','Assuming the person ahead will move for you'], why:'The person ahead can’t see behind and may turn at any moment.', chk:'Keep several body lengths away when overtaking.'},
+  {t:'Where to stop', sc:{slope:'stop'}, ok:['Stop at the side of the run, visible from above'], bad:['Stopping just below a crest, at a bend or in a narrow section','A group stopping in a line across the middle of the run'], why:'Stopped in a blind spot, people coming down can’t see you.', chk:'Could someone above see you from up there?'},
+  {t:'Starting and crossing', sc:{slope:'start'}, ok:['Look uphill before starting or crossing a run','Set off only when no one is coming down'], bad:['Starting without looking'], why:'People coming from above are faster than you.', chk:'Look uphill before you move.'},
+  {t:'Other rules', sc:{slope:'yield'}, ok:['Control speed and line so you can stop within what you can see','Obey signs and closed areas','When walking up or down, keep to the side of the run','At an accident, help and leave your contact details','Snowboards need a leash'], bad:['Entering closed areas','Leaving skis or poles where people pass'], why:'These are from the FIS (International Ski Federation) code of conduct and common Japanese resort rules.', chk:'If unsure, ask lift staff or ski patrol.'}
+ ]}
+];
+const QUIZ = {q:'You fell in the middle of the run. What next?', a:[
+  ['Get up right away and keep skiing', false, 'Not so fast: check whether you’re hurt, and you’re in the middle of the run where people behind may not see you.'],
+  ['Check for injury first; if you can move, get to the side of the run; if hurt, have someone call ski patrol', true, 'Right: check for injury → move to a safe spot at the side → if hurt or unable to move, alert ski patrol.'],
+  ['Sit where you are and rest for a while', false, 'Sitting down in the middle of the run, you are easy to hit from above.'],
+  ['Wave at people behind to stop', false, 'People behind may not see you or stop in time; safest is to move to the side yourself.']]};
+
+/* ---------- state ---------- */
+let modKey = 'gear', les = LESSONS[0], step = 0, t0 = performance.now();
+let done = {}; try { done = JSON.parse(localStorage.getItem('resortDone') || '{}'); } catch(e){}
+const save = () => { try { localStorage.setItem('resortDone', JSON.stringify(done)); } catch(e){} };
+
+$('mods').innerHTML = MODS.map(([k, n]) => `<button data-mod="${k}">${n}</button>`).join('');
+document.querySelectorAll('[data-mod]').forEach(b => b.onclick = () => { modKey = b.dataset.mod; setLesson(LESSONS.find(l => l.mod === modKey)); });
+function renderLessons(){
+  document.querySelectorAll('[data-mod]').forEach(b => b.classList.toggle('on', b.dataset.mod === modKey));
+  $('lessons').innerHTML = LESSONS.filter(l => l.mod === modKey).map(l => {
+    const n = l.steps.filter((_, i) => done[l.k + i]).length;
+    return `<button data-les="${l.k}" class="${l === les ? 'on' : ''}">${l.n} <span class="note">${n}/${l.steps.length}</span></button>`;
+  }).join('');
+  document.querySelectorAll('[data-les]').forEach(b => b.onclick = () => setLesson(LESSONS.find(l => l.k === b.dataset.les)));
+}
+function setLesson(l){ les = l; modKey = l.mod; step = 0; renderLessons(); renderStep(); }
+function renderStep(){
+  const s = les.steps[step];
+  done[les.k + step] = 1; save();
+  $('stepTitle').textContent = s.t;
+  $('stepNo').textContent = 'Step {n}/{m}'.replace('{n}', step + 1).replace('{m}', les.steps.length);
+  $('dots').innerHTML = les.steps.map((_, i) => `<span class="${done[les.k + i] ? 'done' : ''} ${i === step ? 'cur' : ''}"></span>`).join('');
+  $('okList').innerHTML = s.ok.map(x => `<li>${x}</li>`).join('');
+  $('badList').innerHTML = s.bad.map(x => `<li>${x}</li>`).join('');
+  $('why').textContent = s.why;
+  $('chk').textContent = s.chk;
+  $('prev').disabled = false; $('next').disabled = false;
+  $('prev').style.opacity = step === 0 ? .4 : 1; $('next').style.opacity = step === les.steps.length - 1 ? .4 : 1;
+  const total = LESSONS.reduce((a, l) => a + l.steps.length, 0), got = Object.keys(done).length;
+  $('progress').textContent = 'Completed: {a}/{b} steps (stored only on your device)'.replace('{a}', Math.min(got, total)).replace('{b}', total);
+  $('quizCard').style.display = les.quiz ? '' : 'none';
+  renderLessons(); t0 = performance.now();
+}
+$('prev').onclick = () => { if (step > 0){ step--; renderStep(); } };
+$('next').onclick = () => { if (step < les.steps.length - 1){ step++; renderStep(); } };
+
+$('quizQ').textContent = QUIZ.q;
+$('quizA').innerHTML = QUIZ.a.map(([txt], i) => `<button data-q="${i}">${txt}</button>`).join('');
+document.querySelectorAll('[data-q]').forEach(b => b.onclick = () => {
+  const [, right, fb] = QUIZ.a[+b.dataset.q];
+  document.querySelectorAll('[data-q]').forEach(x => x.classList.remove('right', 'wrong'));
+  b.classList.add(right ? 'right' : 'wrong');
+  $('quizFb').textContent = (right ? '✅ ' : '❌ ') + fb;
+});
+
+function frame(now){
+  const s = les.steps[step], sc = s.sc, t = ((now - t0)/2600) % 1;
+  let svg = '';
+  if (sc.dress !== undefined) svg = figDress(sc.dress);
+  else if (sc.boot) svg = figBoot();
+  else if (sc.lift) svg = liftScene(sc.lift, t, les.gear || 'ski');
+  else if (sc.slope) svg = slopeScene(sc.slope, t);
+  else if (sc.icon) svg = iconScene(sc.icon, t);
+  $('scene').innerHTML = svg;
+  requestAnimationFrame(frame);
+}
+setLesson(LESSONS[0]);
+requestAnimationFrame(frame);
+</script>
+<script>
+(function(){
+  var file = location.pathname.split('/').pop() || 'index.html';
+  var sel = document.getElementById('langSel');
+  if (sel) sel.onchange = function(){ try { localStorage.setItem('lang', sel.value); } catch(e){} location.href = sel.value; };
+  if (file !== 'index.html' && file !== '') return;
+  var saved = null; try { saved = localStorage.getItem('lang'); } catch(e){}
+  var target = saved;
+  if (!target){
+    var l = (navigator.language || '').toLowerCase();
+    if (/^zh-(hk|mo)/.test(l) || /yue/.test(l)) target = 'index.html';
+    else if (/^zh-(tw|hant)/.test(l)) target = 'zh-tw.html';
+    else if (/^zh/.test(l)) target = 'zh-cn.html';
+  }
+  if (target && target !== 'index.html') location.replace(target);
+})();
+</script>
+</body>
+</html>
