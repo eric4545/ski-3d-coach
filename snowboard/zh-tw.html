@@ -202,6 +202,15 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button class="on" data-t="bp">板子壓力</button>
     <button class="on" id="bendBtn">板子彎曲：真實</button>
   </div>
+  <div class="card" id="c4Card">
+    <h3 style="margin:0 0 6px">🎚 Carving 四個量：傾斜、關節角度、Edge、壓力</h3>
+    <div class="row" style="align-items:center;gap:8px;font-size:13px"><span>關節角度（angulation）</span>
+      <select id="anguSel"><option value="">模型預設</option><option value="0">0°：只靠整個人傾斜</option><option value="10">10°</option><option value="20">20°</option><option value="30">30°</option></select></div>
+    <table id="c4Tbl" style="margin-top:6px"></table>
+    <p class="note">傾斜由速度和彎半徑決定（物理要求，不是你選的）；關節角度是髖和膝蓋在身體傾斜之外再加出來的 edge。同一個傾斜，關節角度越大，edge 越大、彎越小，上身也越直。選「0°」看只靠整個人傾斜的樣子：edge 小，容易滑走。只影響連續轉彎的等級；3D 路線不會跟著變，看下面「板幾何」那行就知道彎會收小多少。</p>
+    <table id="c4R" style="margin-top:6px"></table>
+    <p class="note">三個半徑來源不同：「平衡要求」用 tan(傾斜) = v²/gR 反算；「板幾何」用 sidecut 半徑 × cos(edge)，假設板完全彎貼雪面、雪夠硬；「模型路線」是 3D 實際走的路線。真實雪上還受雪況、板彎、滑移影響，數字僅供示意。</p>
+  </div>
   <div class="card" id="loopCard">
     <h3 style="margin:0 0 6px">🔁 第一原理：一個閉環，沒有主動被動</h3>
     <div id="lpRows" style="display:grid;gap:6px;font-size:13px;line-height:1.5"></div>
@@ -386,7 +395,7 @@ const STANCE = {
 };
 const DIR = () => cfg.dir*(cfg.sw ? -1 : 1);
 const ANG = () => cfg.sw ? [6, -15] : [15, -6];
-const cfg = {trick:'ollie', butter:'nose', pen:'hc', sw:false, level:'carve', H:175, board:161, R:8, slope:18, v:25, dir:1, stance:'ok', slipSide:'heel'};
+const cfg = {angu:null, trick:'ollie', butter:'nose', pen:'hc', sw:false, level:'carve', H:175, board:161, R:8, slope:18, v:25, dir:1, stance:'ok', slipSide:'heel'};
 let C = {};
 
 
@@ -723,7 +732,7 @@ function finish(b){
   const fx = turnish() ? st.fx : null;
   b.skidX = stanceSkid(b, fx); b.yawB -= b.sg*b.skidX;
   const fB = yawVec(b.yawB);
-  const edge = clamp(b.phi*(fx ? fx.edge : 1), -85*D, 85*D);
+  const edge = clamp(b.phi*(fx ? fx.edge : 1) + (cfg.angu != null && turnish() ? Math.sign(b.phi)*cfg.angu*D : 0), -85*D, 85*D);
   const qB = qYZX(b.yawB, edge, b.pitch || 0);
   const xEdge = -(BW/2)*Math.sin(clamp(edge/(25*D), -1, 1)*Math.PI/2);
   const gpos = b.mid.clone().sub(new V(xEdge, 0, 0).applyQuaternion(qB));
@@ -1473,6 +1482,19 @@ function updatePhys(p){
       ? `身體傾得比所需少 ${(-dl).toFixed(0)}°：雪力把你推向彎外，CoM 越過板上方到下一個彎。出彎的放鬆、換刃，就是利用這股推力，不用自己出力。`
       : `身體傾得比所需少 ${(-dl).toFixed(0)}°：力線在 CoM 內側，會被拋出彎外。要再往彎內對位，或減 edge 讓彎變大。`;
   document.getElementById('lpWhy').textContent = '為什麼要這樣做：' + why;
+  const incl = Math.abs(tiltBody), eDeg = Math.abs(p.edge)/D, vv = sp, gg = 9.81;
+  const rBal = incl > 2 ? vv*vv/(gg*Math.tan(incl*D)) : Infinity, rGeo = eDeg > 2 ? cfg.R*Math.cos(eDeg*D) : Infinity;
+  const fm = r => Number.isFinite(r) && r < 200 ? r.toFixed(1) + ' m' : '直行';
+  const r4 = (a, b, c) => `<tr><td>${a}</td><td><b>${b}</b></td><td class="note">${c}</td></tr>`;
+  document.getElementById('c4Tbl').innerHTML = '<tr><th>量</th><th>目前</th><th>是什麼</th></tr>' +
+    r4('傾斜（inclination）', incl.toFixed(0) + '°', '整個身體向彎內傾') +
+    r4('關節角度（angulation）', (eDeg - incl).toFixed(0) + '°', 'Edge 減傾斜：髖和膝蓋額外做出來的') +
+    r4('立刃角度', eDeg.toFixed(0) + '°', '板相對雪面立起多少') +
+    r4('壓力', bw.toFixed(2) + '× 體重', '雪推回的力；建立、維持、放掉');
+  document.getElementById('c4R').innerHTML = '<tr><th>彎半徑</th><th>數值</th><th>來源</th></tr>' +
+    r4('平衡要求', fm(rBal), '公式：v²／(g·tan 傾斜)') +
+    r4('板幾何', fm(rGeo), '公式：sidecut ' + cfg.R + ' m × cos(edge)') +
+    r4('模型路線', fm(R), '3D 實際路線');
 }
 /* ---------- UI ---------- */
 const show = {bp:true, muscle:true, com:true, force:true, edge:true, xray:true, follow:true};
@@ -1558,6 +1580,7 @@ function syncTier(t){
   document.querySelectorAll('[data-tier]').forEach(b => b.classList.toggle('on', b.dataset.tier === show));
 }
 document.querySelectorAll('[data-tier]').forEach(b => b.onclick = () => syncTier(b.dataset.tier));
+document.getElementById('anguSel').onchange = e => { cfg.angu = e.target.value === '' ? null : +e.target.value; build(); };
 { const _sl = setLevel; setLevel = (l) => { _sl(l); syncTier(); }; }
 syncTier();
 document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => setLevel(b.dataset.l));
@@ -1575,7 +1598,11 @@ function setStance(k){
   cfg.stance = k;
   document.querySelectorAll('[data-st]').forEach(b => b.classList.toggle('on', b.dataset.st === k));
   document.getElementById('stName').textContent = STANCE[k].name;
-  document.getElementById('stTxt').innerHTML = STANCE[k].txt + fxList(STANCE[k].fx);
+  const fl = FLOW[k];
+  document.getElementById('stTxt').innerHTML = STANCE[k].txt + fxList(STANCE[k].fx) + (fl ? '<table style="margin-top:8px">' +
+    `<tr><td>👀 現象</td><td>${fl.see}</td></tr><tr><td>🔍 原因</td><td>${fl.why}</td></tr><tr><td>💡 身體感覺</td><td>${fl.cue}</td></tr>` +
+    `<tr><td>🛠 修正練習</td><td>${fl.drill.map(([l, n]) => `<button data-fix="${l}">${n}</button>`).join(' ')}</td></tr><tr><td>✅ 怎麼知道改好了</td><td>${fl.check}</td></tr></table>` : '');
+  document.querySelectorAll('[data-fix]').forEach(b => b.onclick = () => { setStance('ok'); setLevel(b.dataset.fix); });
   if (typeof cmpOn !== 'undefined') updCmpLbl();
   if (C.L) build();
 }
@@ -1791,6 +1818,7 @@ function updateUI(p, act, md, now){
 /* ---------- learning: simple mode, compare, guide ---------- */
 const GUIDE = {"basicC": {"q": [["換刃那下身體是高還是低？", "高。伸高減壓，板變輕才換刃。"], ["JSBA 1–2 級看什麼？", "穩定的整體姿勢、適當的上下運動、適當的 positioning、左右均等且 skid 少的弧。"]], "sum": "換刃伸高、彎中屈低；左右均等、skid 少。", "snow": "中斜面 4–5 個長彎：喊著「起—落」做節奏，每個彎回頭看雪痕是否左右一樣。"}, "dynC": {"q": [["換刃那下身體是高還是低？", "低。屈曲收腳，板從身體下面穿過。"], ["為什麼要收腳換刃？", "不用把 CoM 抬高，換刃快、速度不流失，edge 可以更早咬雪。"]], "sum": "換刃收腳、入彎伸腳；身體高度變化小。", "snow": "先在緩坡練「收腳換刃」，熟練後再上中急斜面和短彎。"}, "leaf": {"q": [["想往板頭方向去，重心放哪隻腳？", "前腳。板頭微微指向下坡就會往板頭方向斜滑。"], ["換方向要不要換刃？", "不用，全程同一個刃，只是前後腳轉移重心。"]], "sum": "同一個刃左右來回：前腳帶往板頭、後腳帶往板尾，兩端加大立刃停穩。", "snow": "先用後刃：往板頭斜滑 3–5 公尺，停，再往板尾滑回來；之後用前刃再做。熟練後就是學 J 型轉彎和 S 彎的前一步。"}, "slip": {"q": [["想停下，立刃要加大還是減小？", "加大，接近坡度就會停。"], ["眼睛應該看哪裡？", "看前方（下坡方向），不要看板子。"]], "sum": "用腳踝控制立刃角度：大就停，小就滑。", "snow": "後刃推坡：勾起腳趾停、放低腳趾滑，重複 5 次；之後再試前刃推坡。"}, "trav": {"q": [["想從斜滑降轉向滾落線，要怎麼做？", "立刃稍微放平，前腳輕輕加壓。"], ["轉回上坡靠什麼？", "重新加立刃：後刃勾腳趾，前刃推膝蓋。"]], "sum": "放刃下滑、入刃回升，是連續轉彎前的一步。", "snow": "一條雪道做 3–4 個 garland 再停，後刃和前刃兩邊都要練。"}, "beg": {"q": [["入彎時重心應該放前腳還是後腳？", "前腳多一點（大約 55–60%）。"], ["眼睛應該看哪裡？", "看要去的方向，頭和肩膀帶動身體。"]], "sum": "看要去哪裡，前腳帶，後腳跟。", "snow": "每個彎之前先轉頭看下一個方向，再輕輕壓前腳。"}, "mid": {"q": [["後刃主要靠哪些肌肉？", "脛前肌勾起腳趾，股四頭肌和腹肌撐住。"], ["上半身應該帶轉板子嗎？", "不應該，靠腳踝和膝蓋控制。"]], "sum": "伸展換刃、屈曲加壓、上半身穩定。", "snow": "每個彎喊「起、壓」；試著把手放在膝蓋上做幾個彎，感覺下半身帶轉。"}, "carve": {"q": [["單板的立刃角度和身體傾倒相比是怎樣？", "差不多一樣。"], ["前刃時髖部應該往後頂嗎？", "不應該，身體成一直線往彎內傾。"]], "sum": "早點傾倒，讓板子自己轉，雪上只留一條細線。", "snow": "在緩坡做刻滑橫越：只用一邊刃橫過雪道，再回頭看雪上是不是一條細線。"}, "euro": {"q": [["手掃雪是用來撐住身體的嗎？", "不是。重心仍然在刃上，手只是輕輕碰。"], ["想倒得低，最需要什麼？", "速度夠、刃咬得牢；太慢就倒不下去。"]], "sum": "靠速度和立刃撐住身體，不是靠手。", "snow": "選壓雪好的寬雪道，先練後刃，逐步加大傾倒；記得保護膝蓋和手腕。"}, "ollie": {"q": [["Pop 之前身體要做什麼？", "蹲低，重心移到板尾，像壓彈簧一樣。"], ["在空中怎麼讓板子跟著起來？", "膝蓋往胸口收，前腳把板子拉平。"]], "sum": "壓尾、起跳、收腳、屈膝落地。", "snow": "先在平地原地練，再到緩坡慢速做；落地時雙腳要同時著地。"}, "butter": {"q": [["Nose butter 重心放哪裡？", "前腳，大約 80–90%。"], ["轉動的力量從哪裡來？", "上半身先預扭，再帶頭轉，下半身跟著。"]], "sum": "壓板頭、預扭、上半身帶轉。", "snow": "先在平地練 nose press 站穩 3 秒，再加 180，最後才試 360。"}};
 Object.assign(GUIDE, {"jturn": {"q": [["想停，彎要轉向哪裡？", "轉上坡。板一打橫對著斜坡，速度自然會沒了。"], ["哪隻腳先動？", "前腳。前腳帶板頭轉，後腳只是跟。"]], "sum": "直滑兩秒，前腳帶板頭轉上坡，用一條 edge 停住；heel 和 toe 兩邊都要做。", "snow": "選有平地可停的緩坡：heel 邊做 5 次、toe 邊做 5 次。兩邊都停得穩，才去連續轉彎。"}, "eroll": {"q": [["換刃那刻板是怎樣？", "平的。兩腳平均、膝蓋放軟，下坡那條 edge 不可以咬住雪。"], ["為什麼要練這下？", "單板大部分 catch edge 都是在換刃那刻發生，不是在彎裡面。"]], "sum": "Heel → 放平一瞬 → toe，幅度小、慢速；練的是放平那一下。", "snow": "最緩的坡，板頭大約朝向 fall line 慢慢滑：heel 一點 → 平 → toe 一點，來回 10 次。不求速度，求流暢。"}, "pencil": {"q": [["怎麼知道自己是不是真 carve？", "回頭看雪痕：細線 = carve；寬痕 = 板正在打橫（skid）。"], ["想 carve 得乾淨，板要怎樣？", "不要打橫：板頭指的方向和行進方向一樣，板尾走回板頭那條線。"]], "sum": "一條 edge 橫行，留下一條細線；做到才把 heel 和 toe 連起來變 carved turn。", "snow": "在藍線平整的位置，heel 邊橫行 20–30 公尺，停下回頭看雪痕；再 toe 邊。兩邊都是細線，才試連續 carving。還沒控制好一邊 edge 就急著練，只會練出 catch edge。"}, "ffs": {"q": [["轉彎由哪隻腳發動？", "前腳。前腳扭板入彎，後腳只是跟。"], ["怎麼知道自己是不是後腳掃尾？", "雪痕在彎的下半段突然變寬、板尾甩出去，就是後腳在踢。"]], "sum": "入彎重量放前、前腳扭板；後腳不要踢板尾（ruddering）。", "snow": "緩坡：只扣前腳、後腳放在板上不扣，做 J-turn；之後扣回兩隻腳，想著「後腳是乘客」做連續轉彎。"}, "swb": {"q": [["Switch 的肌肉和前後腳壓力有什麼不同？", "沒有不同，只是左右鏡像：平時的後腳現在做前腳的工作。"], ["應該在哪裡練？", "最容易的綠線，從 J-turn 開始，再到連續 skid 轉彎。"]], "sum": "用平時的後腳當前腳，所有動作鏡像；新前腳帶、重量稍微放前。", "snow": "每天留大約兩成時間練 switch：先綠線 J-turn，再連續轉彎。單板天生不對稱，不練就永遠有一邊弱。"}});
+const FLOW = {"back": {"see": "板頭輕、入彎慢，彎尾板尾甩出；後腳大腿很快累。", "why": "重心在後腳上方，前腳沒帶動板頭。", "cue": "入彎時前膝推向彎內，感覺前腳鞋底有壓力。", "drill": [["ffs", "前腳帶轉"], ["jturn", "J-turn"]], "check": "入彎那下板頭先轉，雪痕不會在彎尾突然變寬。"}, "front": {"see": "板尾沒壓力，彎尾板尾滑出去；toeside 很容易向前跌。", "why": "重心太前，後腳沒有份撐住出彎。", "cue": "出彎時重量回到兩腳中間，後腳也有感覺。", "drill": [["eroll", "Edge roll"], ["beg", "入門 Skid"]], "check": "出彎雪痕均勻，板尾不甩。"}, "waist": {"see": "heelside 屁股掉後、上身向前摺；大腿和腰很累。", "why": "用彎腰代替屈膝屈踝，髖離開板上方。", "cue": "髖推向前、保持在板上方，像站在高凳前面而不是坐下去。", "drill": [["trav", "斜滑降"], ["basicC", "基礎弧線"]], "check": "heelside 上身直、膝蓋有彎，不再坐馬桶。"}, "look": {"see": "眼看板頭或腳下，轉彎慢、身體跟著頭往下縮。", "why": "頭和上身向前低，重心和視線都慢過板。", "cue": "眼看要去的方向，下一個彎的位置。", "drill": [["trav", "斜滑降"], ["jturn", "J-turn"]], "check": "轉彎時頭先轉向新方向，身體跟著，不用看板。"}, "rot": {"see": "肩膀先轉、板尾甩出，彎大、搓雪多。", "why": "用上身旋轉帶動板，沒用腳和 edge 轉。", "cue": "上身穩定，膝蓋和腳踝帶板轉。", "drill": [["ffs", "前腳帶轉"], ["eroll", "Edge roll"]], "check": "上身不大幅轉也轉得到彎，雪痕細一點。"}, "rudder": {"see": "後腳踢板尾，雪痕在彎的下半段變寬。", "why": "前腳沒發動，靠後腳刮雪轉向。", "cue": "前腳先扭板，後腳是乘客。", "drill": [["ffs", "前腳帶轉"], ["jturn", "J-turn"]], "check": "雪痕寬度均勻，不用踢尾也轉得到。"}};
 const STANCE_SHORT = {"look": "盯著板看：轉不到要去的方向。", "front": "前腳太重：板尾甩出，容易吃刃。", "back": "後腳太重：板頭飄，要靠上半身扭才轉得過去。", "waist": "彎腰／坐馬桶：重心離開刃，容易摔。", "rot": "上半身帶轉：板尾甩出，上下半身不同步。", "rudder": "後腳掃尾：板頭沒帶到，靠板尾刮雪轉。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
 const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {basicC:'back', dynC:'back', slip:'look', leaf:'look', trav:'look', jturn:'look', ffs:'rudder', swb:'back', eroll:'look', pencil:'look'};
