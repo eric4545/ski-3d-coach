@@ -1423,7 +1423,9 @@ function physAt(s, sk){
   const d1 = b.clone().sub(a), d2 = c.clone().sub(b), cr = d1.clone().cross(d2).length();
   const kap = (d1.length()*d2.length()*c.clone().sub(a).length()) > 1e-9 ? 2*cr/(d1.length()*d2.length()*c.clone().sub(a).length()) : 0;
   const n = a.clone().add(c).multiplyScalar(.5).sub(b); n.addScaledVector(tn, -n.dot(tn)); if (n.length() > 1e-9) n.normalize();
-  const gAlong = g.dot(tn), aAlong = sk > 12 ? Math.min(0, gAlong) - .6 : gAlong;   // carving: gravity along the line is unresisted; skidding: friction eats it
+  const gAlong = g.dot(tn);
+  // drills: the speed change comes from the path timing itself; linked turns: carving leaves gravity along the line unresisted, skidding eats it
+  const aAlong = LV[cfg.level].kind ? (d2.length() - d1.length())/(dt*dt) : sk > 12 ? Math.min(0, gAlong) - .6 : gAlong;
   const acc = n.clone().multiplyScalar(sp*sp*kap).addScaledVector(tn, aAlong);
   return {v: tn.clone().multiplyScalar(sp), acc, R: kap > 1e-4 ? 1/kap : Infinity};
 }
@@ -1456,6 +1458,7 @@ function updatePhys(p){
           : row('④', '身體對位', `身體線同所需力線差 ${Math.abs(dl).toFixed(0)}°${Math.abs(dl) < 4 ? '（平衡）' : dl > 0 ? '（傾多咗）' : '（傾唔夠）'}`));
   let why;
   if (bw < .25) why = '雪幾乎冇推你（離地或者自由落）：p 只會跟重力變，乜都控制唔到，所以落地前要對位好。';
+  else if (sp < .3) why = '停定咗：p = 0，雪力只係撐住重力（垂直向上），所以身體企直對地心吸力，唔係企直對斜坡。';
   else if (sk > 12) why = `板同 p 方向差 ${sk.toFixed(0)}°：塊板打橫刮雪，雪力有一部分向後，食緊速度（skid）。呢個係用嚟控速嘅工具，唔係轉彎失敗。`;
   else if (slow) why = `呢類練習速度慢，向心力細（所需力線只係傾 ${Math.abs(tiltNeed).toFixed(0)}°），身體大致企喺板上面；edge 係靠腳踝同膝頭（angulation）做出嚟，唔係傾成個人。（3D 為咗睇清楚 edge，身體跟住塊板傾，實際應該企直啲。）`;
   else if (!Number.isFinite(R) || R > 60) why = '冇側向力：p 直行，身體唔使傾。要轉，就要先俾輸入（傾板），等雪生出側向力。';

@@ -1423,7 +1423,9 @@ function physAt(s, sk){
   const d1 = b.clone().sub(a), d2 = c.clone().sub(b), cr = d1.clone().cross(d2).length();
   const kap = (d1.length()*d2.length()*c.clone().sub(a).length()) > 1e-9 ? 2*cr/(d1.length()*d2.length()*c.clone().sub(a).length()) : 0;
   const n = a.clone().add(c).multiplyScalar(.5).sub(b); n.addScaledVector(tn, -n.dot(tn)); if (n.length() > 1e-9) n.normalize();
-  const gAlong = g.dot(tn), aAlong = sk > 12 ? Math.min(0, gAlong) - .6 : gAlong;   // carving: gravity along the line is unresisted; skidding: friction eats it
+  const gAlong = g.dot(tn);
+  // drills: the speed change comes from the path timing itself; linked turns: carving leaves gravity along the line unresisted, skidding eats it
+  const aAlong = LV[cfg.level].kind ? (d2.length() - d1.length())/(dt*dt) : sk > 12 ? Math.min(0, gAlong) - .6 : gAlong;
   const acc = n.clone().multiplyScalar(sp*sp*kap).addScaledVector(tn, aAlong);
   return {v: tn.clone().multiplyScalar(sp), acc, R: kap > 1e-4 ? 1/kap : Infinity};
 }
@@ -1456,6 +1458,7 @@ function updatePhys(p){
           : row('④', 'Body aligns', `Body line vs required force line: ${Math.abs(dl).toFixed(0)}°${Math.abs(dl) < 4 ? ' (balanced)' : dl > 0 ? ' (leaning too much)' : ' (not leaning enough)'}`));
   let why;
   if (bw < .25) why = 'The snow is barely pushing you (airborne or free-falling): p changes only with gravity and you control nothing, so line up before you land.';
+  else if (sp < .3) why = 'Stopped: p = 0 and the snow force only holds up gravity (straight up), so stand plumb to gravity, not perpendicular to the slope.';
   else if (sk > 12) why = `Board and p differ by ${sk.toFixed(0)}°: the board scrapes sideways, part of the snow force points backward and eats speed (skid). It’s a speed-control tool, not a failed turn.`;
   else if (slow) why = `These drills are slow, so the centripetal force is small (the required force line tilts only ${Math.abs(tiltNeed).toFixed(0)}°): the body stays roughly over the board, and the edge comes from ankles and knees (angulation), not from leaning the whole body. (In 3D the body tilts with the board so the edge is easy to see; in reality stand taller.)`;
   else if (!Number.isFinite(R) || R > 60) why = 'No sideways force: p goes straight and the body needn’t lean. To turn, give an input first (tilt the board) so the snow produces a sideways force.';
