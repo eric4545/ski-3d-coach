@@ -29,6 +29,7 @@ main{padding:12px 16px 28px;max-width:900px;margin:0 auto}
 button,select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font:inherit;font-size:13px;cursor:pointer}
 button.on{border-color:var(--accent);color:var(--accent)}
 button.primary{background:var(--accent);color:#0f1419;border-color:var(--accent);font-weight:600;min-width:72px}
+.tierH{font-size:11px;color:var(--muted);margin:8px 2px 4px}
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%}
 .seg button{padding:8px 2px;font-size:12px}
 .seg button.on{background:var(--accent);color:#0f1419;font-weight:600}
@@ -132,10 +133,10 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
   <div class="card">
     <details><summary>🩹 第一课：怎样跌倒才不受伤</summary>
       <table><tr><th>跌倒方向</th><th>做法</th><th>不要</th></tr>
-      <tr><td>向前（toeside）</td><td>膝盖先着地，再用前臂接住，顺势滚</td><td>用手掌撑地（手腕最容易受伤）</td></tr>
-      <tr><td>向后（heelside）</td><td>收下巴、屈膝坐下，屁股先着地，再滚向一边</td><td>伸手向后撑、后脑撞地</td></tr>
+      <tr><td>向前（toeside）</td><td>降低重心、手握拳收在身前，用膝盖和前臂一起着地分散冲击，顺势滚</td><td>伸直手臂、用手掌撑地（手腕最容易受伤）</td></tr>
+      <tr><td>向后（heelside）</td><td>收下巴、手收在身边、屈膝坐下，屁股和背部大面积着地，再滚向一边</td><td>伸手向后撑、后脑撞地</td></tr>
       <tr><td>停下想休息</td><td>直接坐下（heelside 面向下坡）</td><td>站在斜坡中间硬撑</td></tr></table>
-      <p class="note">跌倒时手握拳、收在身边。安全帽和护臀对初学很有用。</p>
+      <p class="note">跌倒时手握拳、收在身边。先在平缓、慢速、没障碍的地方练习跌，不要只靠 3D 学。安全帽、护臀和护腕对初学很有用。</p>
     </details>
   </div>
   <div class="card" id="orgCard">
@@ -156,23 +157,24 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-mode="detail">🔬 详细</button>
     <button id="cmpBtn">⇆ 正确 vs 错误</button>
   </div>
-  <div class="row seg">
-    <button data-l="slip">推坡</button>
-    <button data-l="leaf">落叶飘 Falling leaf</button>
-    <button data-l="trav">斜滑降＋Garland</button>
-    <button data-l="jturn">J-turn</button>
-    <button data-l="eroll">Edge roll 换刃</button>
-    <button data-l="beg">入门・搓雪</button>
-    <button data-l="ffs">前脚带转</button>
-    <button data-l="mid">中级・动态</button>
-    <button data-l="basicC">JSBA 基础弧线转弯</button>
-    <button data-l="dynC">JSBA 动态弧线转弯</button>
-    <button data-l="pencil">Carved traverse 细线</button>
-    <button data-l="carve" class="on">刻滑</button>
-    <button data-l="euro">低姿态刻滑</button>
-    <button data-l="ollie">豚跳 Ollie／Nollie</button>
-    <button data-l="butter">平花 Butter／Press</button>
-    <button data-l="swb">Switch 转弯</button>
+  <div class="seg" id="tierTabs" style="grid-template-columns:repeat(3,1fr)"><button data-tier="beg">🟢 新手</button><button data-tier="mid">🟡 中级</button><button data-tier="adv">🔴 高级</button></div>
+  <div data-tierbox="beg" style="display:none">
+    <div class="tierH">转弯</div>
+    <div class="row seg"><button data-l="beg">入门・搓雪</button></div>
+    <div class="tierH">练习</div>
+    <div class="row seg"><button data-l="slip">推坡</button><button data-l="leaf">落叶飘 Falling leaf</button><button data-l="trav">斜滑降＋Garland</button><button data-l="jturn">J-turn</button><button data-l="eroll">Edge roll 换刃</button></div>
+  </div>
+  <div data-tierbox="mid" style="display:none">
+    <div class="tierH">转弯</div>
+    <div class="row seg"><button data-l="mid">中级・动态</button><button data-l="basicC">JSBA 基础弧线转弯</button><button data-l="swb">Switch 转弯</button></div>
+    <div class="tierH">练习</div>
+    <div class="row seg"><button data-l="ffs">前脚带转</button><button data-l="pencil">Carved traverse 细线</button><button data-l="ollie">豚跳 Ollie／Nollie</button></div>
+  </div>
+  <div data-tierbox="adv" style="display:none">
+    <div class="tierH">转弯</div>
+    <div class="row seg"><button data-l="carve">刻滑</button><button data-l="dynC">JSBA 动态弧线转弯</button><button data-l="euro">低姿态刻滑</button></div>
+    <div class="tierH">练习</div>
+    <div class="row seg"><button data-l="butter">平花 Butter／Press</button></div>
   </div>
 
   <div class="row">
@@ -278,11 +280,12 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
         <tr><td><span class="mode m-iso">等长收缩</span></td><td>等长收缩 Isometric：长度不变，静止撑住姿势</td></tr>
       </tbody>
     </table>
+      <p class="note" style="margin-top:6px">发力类型是按模型关节角度变化估算出来的，不是肌电图量度：肌肉估计变长又在出力 = 拉长对抗，变短 = 缩短发力，差不多没变 = 固定撑住。实际用力会随速度、坡度、雪况改变，关节周围肌肉也会一起收缩。</p>
     <table>
       <thead><tr><th>肌肉／作用（点击一行可单独查看）</th><th style="width:27%">前脚／前侧</th><th style="width:27%">后脚／后侧</th></tr></thead>
       <tbody id="mBody"></tbody>
     </table>
-    <p class="note" style="margin-top:6px"><b>前刃和后刃的差别：</b>前刃主要靠小腿肌压低脚趾、臀大肌让髋部不要往后推；后刃主要靠胫骨前肌勾起脚趾、股四头肌和腹肌撑住「坐」的姿势。所以很多人后刃大腿和腹肌特别累。</p>
+    <p class="note" style="margin-top:6px"><b>前刃和后刃的差别：</b>两边都是脚踝、膝盖、髋一起协调，加上身体相对板的位置去立刃，不是单靠一组肌肉。toeside 脚踝和膝盖向前屈，小腿肌参与较多；heelside 脚踝背屈（胫骨前肌参与），髋保持在板上方、不要坐下去。肌肉用量会随速度、坡度、雪况和弯的大小改变，图中是估计主要参与的肌群。</p>
   </div>
 
   <div class="card">
@@ -301,7 +304,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
       <button data-dir="-1">Goofy（右脚在前）</button>
       <button id="swBtn">反脚 Switch</button>
     </div>
-    <p class="note" id="swNote" style="display:none">反脚（Switch）：用平常的后脚当前脚。肌肉和前后脚压力的模式跟正脚一样，只是镜像：平常后脚的胫骨前肌、小腿肌要做前脚的工作，所以反脚通常会觉得笨拙。八字站姿（+15/−6）反脚时变成 +6/−15，前脚角度变小，所以雪板反应会慢一点。</p>
+    <p class="note" id="swNote" style="display:none">Switch：用平时的后脚当前脚。肌肉和前后脚压力的模式和正常一样，只是镜像：平时后脚的胫骨前肌、小腿肌要做前脚的工作，所以 switch 通常会觉得笨拙。如果两脚角度不对称（例如 +15/−6），switch 时变成 +6/−15，脚踝和膝盖的活动方向会不同，感觉也不一样；反应快慢还受站距、板的软硬和熟练程度影响。</p>
     <div class="slider"><span>身高</span><input type="range" id="H" min="145" max="200" step="1"><output id="oH"></output></div>
     <div class="slider"><span>板长</span><input type="range" id="board" min="135" max="175" step="1"><output id="oboard"></output></div>
     <div class="slider"><span>雪板 R</span><input type="range" id="R" min="6" max="12" step="0.1"><output id="oR"></output></div>
@@ -1546,6 +1549,17 @@ function setLevel(l){
   syncSliders(); build(); lastPhase = '';
   renderGuide();
 }
+
+// level tiers: show the tier that holds the current level
+function syncTier(t){
+  const cur = document.querySelector(`[data-tierbox] [data-l="${cfg.level}"]`), box = cur ? cur.closest('[data-tierbox]').dataset.tierbox : 'beg';
+  const show = t || box;
+  document.querySelectorAll('[data-tierbox]').forEach(d => d.style.display = d.dataset.tierbox === show ? '' : 'none');
+  document.querySelectorAll('[data-tier]').forEach(b => b.classList.toggle('on', b.dataset.tier === show));
+}
+document.querySelectorAll('[data-tier]').forEach(b => b.onclick = () => syncTier(b.dataset.tier));
+{ const _sl = setLevel; setLevel = (l) => { _sl(l); syncTier(); }; }
+syncTier();
 document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => setLevel(b.dataset.l));
 document.querySelectorAll('[data-dir]').forEach(b => b.onclick = () => {
   cfg.dir = +b.dataset.dir;

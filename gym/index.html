@@ -36,6 +36,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
 .card h2{font-size:15px;margin:0 0 6px}
 .card p{margin:4px 0;color:#c9d3dc}
 .note{color:var(--muted)!important;font-size:12px}
+.grpH{font-size:11px;color:var(--muted);margin:10px 2px 5px}
 .key{font-size:14px;padding:8px 10px;border-radius:8px;background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.35)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
@@ -79,10 +80,36 @@ ol.how{margin:4px 0 6px 18px;padding:0}ol.how li{margin:3px 0;color:#c9d3dc}
   </div>
 
   <div class="card">
-    <div class="seg" id="cats" style="grid-template-columns:repeat(5,1fr)"></div>
-    <div class="wrap" id="moves" style="margin-top:10px"></div>
+    <div class="seg" id="cats" style="grid-template-columns:repeat(3,1fr)"></div>
+    <div id="moves" style="margin-top:4px"></div>
   </div>
 
+  <div class="card">
+    <details><summary>📅 出發前 6 週計劃（每週 3 次）</summary>
+      <table><tr><th>週</th><th>重點</th><th>做邊啲</th></tr>
+      <tr><td>1–2</td><td>打底：學識動作，暫時唔跳</td><td>🟢 新手全部，加 🟡 中級嘅肌力動作</td></tr>
+      <tr><td>3–4</td><td>加量：加單腳跳同負重（手拎水樽 0.5–2 kg 或者孭 5–10 kg 背囊）</td><td>🟡 中級全部</td></tr>
+      <tr><td>5</td><td>專項：加側向台階跳（15–20 cm）</td><td>🔴 高級</td></tr>
+      <tr><td>6</td><td>減量：份量減半、停跳，等身體恢復</td><td>🟢 新手＋🟡 中級（輕量）</td></tr></table>
+      <p><b>趕出發版</b></p>
+      <table><tr><th>剩幾耐</th><th>做咩</th></tr>
+      <tr><td>3–4 週</td><td>單腳肌力＋落地控制優先</td></tr>
+      <tr><td>1–2 週</td><td>只做低強度肌力同動作控制</td></tr>
+      <tr><td>唔夠 1 週</td><td>唔好突然開始高強度；瞓夠重要過臨急抱佛腳</td></tr></table>
+      <p class="note">有膝頭或者腳踝舊患、韌帶手術、關節痛或者腰患，先搵專業評估。框架參考台灣運動醫學醫師楊怡強嘅建議。</p>
+    </details>
+  </div>
+  <div class="card">
+    <details><summary>🛡 前十字韌帶（ACL）防護</summary>
+      <p>健身練嘅係「撐得住」：大腿後側（橋式小步走、瑜伽球屈膝、單腳硬拉）同埋臀部撐住膝頭唔向內塌（螃蟹步、側弓步）。落地要安靜，髖、膝、腳踝一齊屈。</p>
+      <p>但滑雪最常見嘅 ACL 斷裂，係向後跌時硬撐：下坡板嘅板尾加埋硬身鞋後跟變成槓桿，將膝頭向內扭（phantom foot）。教識人認出呢個跌法，比練肌肉更有效。</p>
+      <table><tr><th>向後跌嗰陣</th><th>唔好</th></tr>
+      <tr><td>放棄，順勢坐去側邊</td><td>硬撐企返起身</td></tr>
+      <tr><td>手放前面</td><td>手向後撐地</td></tr>
+      <tr><td>雙腳併埋</td><td>髖跌到膝頭以下仲企硬</td></tr></table>
+      <p class="note">雙板 3D 頁「🟢 新手 → 向後跌（ACL 防護）」有正確同錯誤嘅 3D 比較。下晝攰、大腿後側凍嗰陣最易出事。</p>
+    </details>
+  </div>
   <div class="card" id="tempoCard">
     <h2>⏱ 節奏</h2>
     <div class="seg" id="tempos" style="grid-template-columns:repeat(3,1fr)"></div>
@@ -480,6 +507,54 @@ tib_raise: {cat:'str', name:'脛前肌提腳尖 Tibialis Raise', view:'side', pr
        {name:'腳尖彈落', why:'放低嗰下冇控制。慢慢放 1.5 秒。', d:{fast:true}, mark:null}],
   ski:'落陡坡同蘑菇時控制腳踝屈曲、脛骨頂住鞋舌，好大程度靠脛前肌；你從未感覺過小腿同脛骨發力，呢個係起點。',
   sb:'toeside 同 heelside 之間轉換，脛前肌負責拉起腳尖。'},
+
+lying_rot: {cat:'core', name:'躺姿下半身旋轉 Lying Windshield Wipers', view:'top', props:['mat'], tempoTxt:'每邊慢慢落 2 秒、返中間 1.5 秒；3 組 × 左右各 8–10 下。',
+  seq:[{p:P({sup:'floor', psi:90, leg:{th:[90,4], sh:[-90,4], ft:0}, arm:{ar:[0,80], fa:[0,80]}}), d:1, ph:'iso', say:'雙腳提起，髖膝都屈 90 度'},
+       {p:P({sup:'floor', psi:90, hy:45, leg:{th:[90,4], sh:[-90,4], ft:0}, arm:{ar:[0,80], fa:[0,80]}}), d:2, ph:'ecc', say:'雙膝慢慢跌去右邊，膊頭貼地'},
+       {same:0, d:1.5, ph:'con', say:'用腹部拉返中間'},
+       {p:P({sup:'floor', psi:90, hy:-45, leg:{th:[90,4], sh:[-90,4], ft:0}, arm:{ar:[0,80], fa:[0,80]}}), d:2, ph:'ecc', say:'雙膝慢慢跌去左邊'},
+       {same:0, d:1.5, ph:'con', say:'返中間'}],
+  mus:{obliques:[3], core:[2,'iso'], hipflex:[1,'iso'], adductors:[1,'iso']},
+  do:'仰臥，雙手向兩邊打開壓地，雙腳提起、髖同膝屈 90 度。雙膝併埋慢慢跌去一邊，膊頭唔離地，再用腹部拉返中間', dont:'用慣性甩、膊頭離地、腰拱起', stop:'下背痛就縮細幅度', note:'進階：膝頭夾住波或者枕頭；再進階：雙腳伸直做。',
+  mis:[{name:'膊頭離地', why:'上身跟住下身轉，冇分離。雙手壓地，胸口一直向天。', d:{follow:1}, mark:'shoulder', mus:{obliques:-1}},
+       {name:'用慣性甩', why:'跌得太快、靠彈力返嚟，腹部冇控制。落 2 秒、返 1.5 秒。', d:{fast:true}, mark:null}],
+  ski:'躺低做，冇得用上身代償：練嘅係下半身轉、上半身唔郁，即係轉彎時嘅上下身分離。',
+  sb:'換刃時上身穩定、下身扭板，同一種分離。'},
+crab_walk: {cat:'str', name:'彈力帶半蹲螃蟹步 Banded Crab Walk', view:'front', props:['kneeBand'], tempoTxt:'每步 0.6 秒，向左行 2 步再向右行 2 步；3 組 × 每邊 10 步。',
+  seq:[{p:P({sup:'feet', anchor:'both', t:30, leg:{th:[45,10], sh:[-28,10]}, arm:{ar:[40,10], fa:[80,10]}}), d:.6, ph:'iso', say:'半蹲，膝頭頂住條帶'},
+       {p:P({sup:'feet', anchor:'both', off:[0,0,.1], t:30, L:{th:[45,24], sh:[-28,24]}, R:{th:[45,10], sh:[-28,10]}, arm:{ar:[40,10], fa:[80,10]}}), d:.6, ph:'con', say:'左腳向外踏'},
+       {p:P({sup:'feet', anchor:'both', off:[0,0,.2], t:30, leg:{th:[45,10], sh:[-28,10]}, arm:{ar:[40,10], fa:[80,10]}}), d:.6, ph:'ecc', say:'右腳跟埋，條帶唔好鬆'},
+       {p:P({sup:'feet', anchor:'both', off:[0,0,.1], t:30, L:{th:[45,10], sh:[-28,10]}, R:{th:[45,24], sh:[-28,24]}, arm:{ar:[40,10], fa:[80,10]}}), d:.6, ph:'con', say:'右腳向外踏返轉頭'},
+       {same:0, d:.6, ph:'ecc', say:'左腳跟埋'}],
+  mus:{abductors:[3], glutes:[2], quads:[2,'iso'], core:[1,'iso']},
+  do:'彈力帶套喺膝頭上面，半蹲、膝頭向外頂住條帶，橫行；行嘅時候身體高度唔變', dont:'膝頭內塌、企高、腳尖向外撇', stop:'髖外側痛就減細步幅', gear:'用具：迷你彈力帶',
+  mis:[{name:'膝頭內塌', why:'條帶將膝頭拉入去，臀中肌冇撐住。膝頭一直向外頂。', d:{kneeIn:14}, mark:'knee', mus:{abductors:-1}},
+       {name:'企高', why:'行行下企高咗，練唔到滑雪姿勢。保持半蹲。', d:{standUp:1}, mark:'pelvis', mus:{quads:-1}}],
+  ski:'臀中肌撐住膝頭唔向內塌：下晝攰嗰陣膝頭內倒，正係前十字韌帶受傷風險高嘅時候。',
+  sb:'換刃時膝頭穩定，唔會向內跌。'},
+bridge_walk: {cat:'str', name:'橋式小步走 Bridge Walk-Out', view:'side', props:['mat'], tempoTxt:'頂高骨盆，雙腳交替向外行 3 步再行返；3 組 × 6–8 趟。',
+  seq:[{p:P({sup:'floor', psi:90, t:-30, pt:-6, leg:{th:[20,8], sh:[-75,8], ft:0}, arm:{ar:[0,14], fa:[0,14]}}), d:.8, ph:'iso', say:'頂高骨盆，肩膊到膝一直線'},
+       {p:P({sup:'floor', psi:90, t:-28, pt:-6, L:{th:[16,8], sh:[-60,8], ft:0}, R:{th:[20,8], sh:[-75,8], ft:0}, arm:{ar:[0,14], fa:[0,14]}}), d:.6, ph:'ecc', say:'左腳向外行一小步'},
+       {p:P({sup:'floor', psi:90, t:-26, pt:-6, leg:{th:[16,8], sh:[-60,8], ft:0}, arm:{ar:[0,14], fa:[0,14]}}), d:.6, ph:'ecc', say:'右腳跟上'},
+       {p:P({sup:'floor', psi:90, t:-22, pt:-6, L:{th:[10,8], sh:[-44,8], ft:0}, R:{th:[16,8], sh:[-60,8], ft:0}, arm:{ar:[0,14], fa:[0,14]}}), d:.6, ph:'ecc', say:'左腳再行出'},
+       {p:P({sup:'floor', psi:90, t:-20, pt:-6, leg:{th:[10,8], sh:[-44,8], ft:0}, arm:{ar:[0,14], fa:[0,14]}}), d:.8, ph:'iso', say:'最遠：骨盆唔好跌'},
+       {same:2, d:.7, ph:'con', say:'行返入嚟'},
+       {same:0, d:.7, ph:'con', say:'返起點'}],
+  mus:{hams:[3], glutes:[3], erec:[1,'iso'], core:[2,'iso']},
+  do:'做臀橋頂高骨盆，然後雙腳交替向外行 3–4 小步，再行返入嚟；成個過程骨盆高度唔變', dont:'骨盆下沉、用腰拱起代償', stop:'大腿後側抽筋就停，休息再做',
+  mis:[{name:'骨盆下沉', why:'腳一行遠，大腿後側頂唔住，骨盆跌落嚟。行細步啲，骨盆高度唔變。', d:{hipDrop:14}, mark:'pelvis', mus:{hams:-1}},
+       {name:'用腰拱起', why:'下背代替臀部同大腿後側出力。收肚、夾臀。', d:{archBack:14}, mark:'pelvis', mus:{erec:2, glutes:-1}}],
+  ski:'大腿後側將小腿向後拉，同前十字韌帶一齊防止脛骨向前滑：係保護 ACL 嘅重要肌群。',
+  sb:'向後跌、坐後嗰陣，大腿後側幫手穩住膝頭。'},
+ball_curl: {cat:'str', name:'瑜伽球橋式屈膝 Stability Ball Leg Curl', view:'side', props:['ball'], startB:false, tempoD:{up:1, hold:.5, down:2, rest:.5}, tempoTxt:'屈膝拉波 1 秒、停半秒、慢慢伸直 2 秒；3 組 × 8–10 下。',
+  A: P({sup:'floor', psi:108, t:-8, L:{th:[2,4], sh:[0,4], ft:0, raise:.58}, R:{th:[2,4], sh:[0,4], ft:0, raise:.58}, arm:{ar:[0,20], fa:[0,20]}}),
+  B: P({sup:'floor', psi:108, t:-38, L:{th:[55,4], sh:[-95,4], ft:0, raise:.58}, R:{th:[55,4], sh:[-95,4], ft:0, raise:.58}, arm:{ar:[0,20], fa:[0,20]}}),
+  mus:{hams:[3], glutes:[2,'iso'], calves:[1], core:[2,'iso'], erec:[1,'iso']},
+  do:'仰臥，腳跟放喺瑜伽球上面，頂高骨盆；屈膝將波拉向屁股，再慢慢伸直。成個過程骨盆唔落地', dont:'骨盆下沉、用腰代償、波向兩邊走', stop:'大腿後側抽筋就停', gear:'用具：瑜伽球（55–65 cm）',
+  mis:[{name:'骨盆下沉', why:'伸直嗰陣骨盆跌落地，大腿後側冇撐住。夾臀，骨盆保持高。', d:{hipDrop:14}, mark:'pelvis', mus:{hams:-1, glutes:-1}},
+       {name:'伸直太快', why:'伸直嗰下係離心收縮，係最有用嘅部分。慢慢伸 2 秒。', d:{fast:true}, mark:null}],
+  ski:'大腿後側嘅離心力：保護前十字韌帶，研究亦發現凍咗嘅大腿後側爆發力下降，下晝特別要留意。',
+  sb:'向後坐、heelside 長時間受力，大腿後側幫手穩住膝頭。'},
 /* ---------- ski / snowboard specific ---------- */
 bss: {cat:'str', name:'後腳抬高分腿蹲 Bulgarian Split Squat', view:'side', props:['rearBench'], startB:true, tempoD:{up:1.2, hold:.4, down:3, rest:.4}, tempoTxt:'3 秒慢慢落、底部唔彈、起身 1 秒；每腳 6–8 下。',
   A: P({sup:'feet', anchor:'L', t:22, L:{th:[78,5], sh:[-18,5]}, R:{aw:[-.13,.5,-.78]}, arm:{ar:[0,10], fa:[10,10]}}),
@@ -618,7 +693,10 @@ ski_sl_squat: {cat:'ski', name:'單腿蹲落凳 Single-Leg Squat to Bench', view
   ski:'外腳承受大部分負荷時，屈膝位置要食住雪面嘅力。3 秒落，練嘅係控制，唔係彈走。',
   sb:'前腳或後腳單獨承重（例如落葉飄、單腳推行）時控制屈膝。'}
 };
-const CATS = [['mach','🏋️ 器械'], ['str','💪 腿力'], ['warm','🔥 熱身'], ['core','🧱 核心'], ['ski','⛷️🏂 專項']];
+const CATS = [['beg','🟢 新手'], ['mid','🟡 中級'], ['adv','🔴 高級']];
+const GROUPS = {"beg": [["熱身・活動度", ["wu_squat", "wu_bridge", "wu_band", "wu_catcow", "knee_wall", "hip_9090", "wu_hip_circle"]], ["器械", ["leg_press", "leg_curl", "chest_press", "lat_pulldown", "seated_row", "shoulder_press", "hip_abduction", "hip_adduction", "calf_raise"]], ["雙腳肌力", ["soleus_raise", "tib_raise", "crab_walk"]], ["平衡", ["ski_stance", "ski_sl_stand", "ankle_edge"]], ["核心・旋轉", ["plank", "dead_bug", "lying_rot", "pallof_press"]]], "mid": [["雙腳肌力", ["spanish_squat", "lateral_lunge"]], ["單腳肌力", ["bss", "step_down", "sl_rdl", "ski_stance_sl"]], ["大腿後側", ["bridge_walk", "ball_curl"]], ["平衡", ["wall_hip_in", "door_lean", "sb_balance"]], ["核心・旋轉", ["side_plank", "pallof_sl", "ski_counter_rot"]], ["跳躍落地", ["drop_land"]]], "adv": [["單腳肌力", ["ski_sl_squat"]], ["大腿前後", ["reverse_nordic"]], ["核心・旋轉", ["copenhagen"]], ["跳躍落地", ["ski_skater_hop"]]]};
+const ACL = new Set(["crab_walk", "bss", "step_down", "sl_rdl", "lateral_lunge", "bridge_walk", "ball_curl", "leg_curl", "drop_land", "ski_skater_hop", "ski_sl_squat"]);
+const TIER_OF = {}; Object.entries(GROUPS).forEach(([t, gs]) => gs.forEach(([, ks]) => ks.forEach(k => TIER_OF[k] = t)));
 
 /* ================= renderer / scene ================= */
 const cv = $('cv'), stage = $('stage');
@@ -1073,7 +1151,7 @@ function drawMuscles(m, st, o, g, mis){
 
 /* ================= props ================= */
 const PM = c => new THREE.MeshStandardMaterial({color:c, roughness:.7, metalness:.1});
-const M_PAD = PM(0x37414c), M_FRAME = PM(0x8e9aa6), M_METAL = PM(0xc9d1d9), M_MAT = PM(0x3b82f6), M_BAND = PM(0xf59e0b), M_WOOD = PM(0xb08968), M_WALL = new THREE.MeshStandardMaterial({color:0xf3f4f6, roughness:1, transparent:true, opacity:.55, side:THREE.DoubleSide});
+const M_BALL = PM(0x8b5cf6), M_PAD = PM(0x37414c), M_FRAME = PM(0x8e9aa6), M_METAL = PM(0xc9d1d9), M_MAT = PM(0x3b82f6), M_BAND = PM(0xf59e0b), M_WOOD = PM(0xb08968), M_WALL = new THREE.MeshStandardMaterial({color:0xf3f4f6, roughness:1, transparent:true, opacity:.55, side:THREE.DoubleSide});
 const boxG = new THREE.BoxGeometry(1,1,1), cylG = new THREE.CylinderGeometry(1,1,1,16);
 function addBox(mat, cast = true){ const m = new THREE.Mesh(boxG, mat); m.castShadow = cast; m.receiveShadow = true; propG.add(m); return m; }
 function addCyl(mat){ const m = new THREE.Mesh(cylG, mat); m.castShadow = true; propG.add(m); return m; }
@@ -1343,6 +1421,9 @@ function buildProps(m, ref){
     if (k === 'copBench'){ const aL = o.ankleL, kL = o.kneeL; const c = aL.clone().lerp(kL, .3); const top = c.y - .07;
       const pad = addBox(M_PAD); setBox(pad, new V(c.x, top - .03, c.z), UP, FWD, .5, .06, .32);
       const leg1 = addBox(M_FRAME); setBox(leg1, new V(c.x + .22, (top - .06)/2, c.z), UP, FWD, .05, top - .06, .28); }
+    if (k === 'kneeBand'){ const b = addCyl(M_BAND); props.push(({o}) => setCylAB(b, o.kneeL.clone().lerp(o.ankleL, .12), o.kneeR.clone().lerp(o.ankleR, .12), .018)); }
+    if (k === 'ball'){ const ball = new THREE.Mesh(new THREE.SphereGeometry(.3, 28, 20), M_BALL); propG.add(ball);
+      props.push(({o}) => { const c = o.ankleL.clone().lerp(o.ankleR, .5); ball.position.set(c.x, .3, c.z + .06); }); }
     if (k === 'bboard'){ const b = addBox(M_PAD); setBox(b, new V(0, .115, .03), UP, FWD, .85, .03, .3); const r = addCyl(M_METAL); setCylAB(r, new V(0, .05, -.14), new V(0, .05, .2), .05); }
     if (k === 'dropBox'){ const b = addBox(M_FRAME); setBox(b, new V(0, .15, -.02), UP, FWD, .6, .3, .42); }
     if (k === 'marks'){ for (const x of [-.55, .55]){ const mk = addBox(M_BAND, false); setBox(mk, new V(x, .004, 0), UP, FWD, .26, .006, .12); } }
@@ -1393,13 +1474,13 @@ function placeMark(mark, o, g){
 /* ================= UI ================= */
 let playing = true, clock = 0, last = performance.now(), tl = null, showMus = true, ready = false;
 $('cats').innerHTML = CATS.map(([k, n]) => `<button data-c="${k}">${n}</button>`).join('');
-let catKey = 'mach';
+let catKey = 'beg';
 function renderMoves(){
   document.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === catKey));
-  $('moves').innerHTML = Object.entries(MOVES).filter(([, m]) => m.cat === catKey).map(([k, m]) => `<button data-m="${k}" class="${k === curId ? 'on' : ''}">${m.name}</button>`).join('');
+  $('moves').innerHTML = GROUPS[catKey].map(([g, ks]) => `<div class="grpH">${g}</div><div class="wrap">` + ks.map(k => `<button data-m="${k}" class="${k === curId ? 'on' : ''}">${ACL.has(k) ? '🛡 ' : ''}${MOVES[k].name}</button>`).join('') + '</div>').join('') + '<p class="note" style="margin-top:8px">🛡 = 對前十字韌帶（ACL）防護特別有用</p>';
   document.querySelectorAll('[data-m]').forEach(b => b.onclick = () => setMove(b.dataset.m));
 }
-document.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { catKey = b.dataset.c; renderMoves(); const first = Object.keys(MOVES).find(k => MOVES[k].cat === catKey); setMove(first); });
+document.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { catKey = b.dataset.c; renderMoves(); setMove(GROUPS[catKey][0][1][0]); });
 $('tempos').innerHTML = Object.entries(TEMPO).map(([k, t]) => `<button data-t="${k}">${t.name}</button>`).join('');
 document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { tempoKey = b.dataset.t; renderTempo(); tl = buildTimeline(cur); clock = 0; });
 function renderTempo(){
@@ -1454,7 +1535,7 @@ function renderMuscles(s){
   }).join('');
 }
 function setMove(id){
-  curId = id; cur = MOVES[id]; catKey = cur.cat; misIdx = -1; cmpOn = false; pinned = null;
+  curId = id; cur = MOVES[id]; catKey = TIER_OF[id] || catKey; misIdx = -1; cmpOn = false; pinned = null;
   renderMoves(); renderTempo(); renderMis();
   const m = cur;
   $('gear').textContent = m.gear || '';

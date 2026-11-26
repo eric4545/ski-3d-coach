@@ -29,6 +29,7 @@ main{padding:12px 16px 28px;max-width:900px;margin:0 auto}
 button,select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font:inherit;font-size:13px;cursor:pointer}
 button.on{border-color:var(--accent);color:var(--accent)}
 button.primary{background:var(--accent);color:#0f1419;border-color:var(--accent);font-weight:600;min-width:72px}
+.tierH{font-size:11px;color:var(--muted);margin:8px 2px 4px}
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%}
 .seg button{padding:8px 2px;font-size:12px}
 .seg button.on{background:var(--accent);color:#0f1419;font-weight:600}
@@ -132,10 +133,10 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
   <div class="card">
     <details><summary>🩹 Lesson one: how to fall without getting hurt</summary>
       <table><tr><th>Falling</th><th>Do</th><th>Don’t</th></tr>
-      <tr><td>Forward (toeside)</td><td>Knees first, then catch yourself on your forearms and roll with it</td><td>Catch yourself on your palms (wrists break easily)</td></tr>
-      <tr><td>Backward (heelside)</td><td>Tuck your chin, bend your knees and sit down, bottom first, then roll to one side</td><td>Reach back with your hands, or hit the back of your head</td></tr>
+      <tr><td>Forward (toeside)</td><td>Get low, fists tucked in front of you, land on knees and forearms together to spread the impact, and roll with it</td><td>Stiff arms catching yourself on your palms (wrists break easily)</td></tr>
+      <tr><td>Backward (heelside)</td><td>Tuck your chin, keep your arms close, bend your knees and sit down, landing on a broad area of bottom and back, then roll to one side</td><td>Reach back with your hands, or hit the back of your head</td></tr>
       <tr><td>Stopped and want a rest</td><td>Just sit down (heelside facing downhill)</td><td>Stand and struggle in the middle of the slope</td></tr></table>
-      <p class="note">As you fall, make fists and keep your hands by your sides. A helmet and impact shorts help a lot when you’re learning.</p>
+      <p class="note">As you fall, make fists and keep your hands by your sides. Practise falling first on gentle, slow, obstacle-free terrain — don’t learn it from 3D alone. A helmet, impact shorts and wrist guards help a lot when you’re learning.</p>
     </details>
   </div>
   <div class="card" id="orgCard">
@@ -156,23 +157,24 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <button data-mode="detail">🔬 Detailed</button>
     <button id="cmpBtn">⇆ Right vs wrong</button>
   </div>
-  <div class="row seg">
-    <button data-l="slip">Side slip</button>
-    <button data-l="leaf">Falling leaf</button>
-    <button data-l="trav">Traverse + garland</button>
-    <button data-l="jturn">J-turn</button>
-    <button data-l="eroll">Edge roll</button>
-    <button data-l="beg">Beginner · Skid</button>
-    <button data-l="ffs">Front-foot steering</button>
-    <button data-l="mid">Intermediate · Dynamic</button>
-    <button data-l="basicC">JSBA basic curve</button>
-    <button data-l="dynC">JSBA dynamic curve</button>
-    <button data-l="pencil">Carved traverse (pencil line)</button>
-    <button data-l="carve" class="on">Carving</button>
-    <button data-l="euro">Euro carve</button>
-    <button data-l="ollie">Ollie／Nollie</button>
-    <button data-l="butter">Butter／Press</button>
-    <button data-l="swb">Switch turns</button>
+  <div class="seg" id="tierTabs" style="grid-template-columns:repeat(3,1fr)"><button data-tier="beg">🟢 Beginner</button><button data-tier="mid">🟡 Intermediate</button><button data-tier="adv">🔴 Advanced</button></div>
+  <div data-tierbox="beg" style="display:none">
+    <div class="tierH">Turns</div>
+    <div class="row seg"><button data-l="beg">Beginner · Skid</button></div>
+    <div class="tierH">Drills</div>
+    <div class="row seg"><button data-l="slip">Side slip</button><button data-l="leaf">Falling leaf</button><button data-l="trav">Traverse + garland</button><button data-l="jturn">J-turn</button><button data-l="eroll">Edge roll</button></div>
+  </div>
+  <div data-tierbox="mid" style="display:none">
+    <div class="tierH">Turns</div>
+    <div class="row seg"><button data-l="mid">Intermediate · Dynamic</button><button data-l="basicC">JSBA basic curve</button><button data-l="swb">Switch turns</button></div>
+    <div class="tierH">Drills</div>
+    <div class="row seg"><button data-l="ffs">Front-foot steering</button><button data-l="pencil">Carved traverse (pencil line)</button><button data-l="ollie">Ollie／Nollie</button></div>
+  </div>
+  <div data-tierbox="adv" style="display:none">
+    <div class="tierH">Turns</div>
+    <div class="row seg"><button data-l="carve">Carving</button><button data-l="dynC">JSBA dynamic curve</button><button data-l="euro">Euro carve</button></div>
+    <div class="tierH">Drills</div>
+    <div class="row seg"><button data-l="butter">Butter／Press</button></div>
   </div>
 
   <div class="row">
@@ -278,11 +280,12 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
         <tr><td><span class="mode m-iso">Isometric</span></td><td>Isometric: length unchanged, holding a position</td></tr>
       </tbody>
     </table>
+      <p class="note" style="margin-top:6px">Contraction types are estimated from the model’s joint-angle changes, not measured by EMG: a muscle estimated to lengthen while working = eccentric, shorten = concentric, barely change = isometric. Real effort changes with speed, slope and snow, and muscles around a joint also co-contract.</p>
     <table>
       <thead><tr><th>Muscle / role (tap a row to isolate)</th><th style="width:27%">Front foot / side</th><th style="width:27%">Back foot / side</th></tr></thead>
       <tbody id="mBody"></tbody>
     </table>
-    <p class="note" style="margin-top:6px"><b>Toeside vs heelside:</b>Toeside mainly uses the calves to press the toes down and the glutes to keep the hips from pushing back; heelside mainly uses the tibialis anterior to lift the toes, with the quads and abs holding the ’seated’ position. That’s why many people’s thighs and abs tire faster on heelside.</p>
+    <p class="note" style="margin-top:6px"><b>Toeside vs heelside:</b>Both sides edge through coordinated ankles, knees and hips plus where the body sits relative to the board — not one muscle group. Toeside flexes the ankles and knees forward, with more calf involvement; heelside dorsiflexes the ankles (tibialis anterior involved) and keeps the hips over the board instead of sitting down. Muscle use changes with speed, slope, snow and turn size; the diagram shows the muscle groups estimated to be mainly involved.</p>
   </div>
 
   <div class="card">
@@ -301,7 +304,7 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
       <button data-dir="-1">Goofy (right foot forward)</button>
       <button id="swBtn">Switch</button>
     </div>
-    <p class="note" id="swNote" style="display:none">Switch: your usual back foot becomes the front foot. The muscle and fore/aft pressure pattern is the same as normal but mirrored: your usual back foot’s tibialis anterior and calf now do the front-foot job, so switch usually feels clumsy. A duck stance (+15/−6) becomes +6/−15 in switch; the front foot angle is smaller, so the board responds a little slower.</p>
+    <p class="note" id="swNote" style="display:none">Switch: ride with your usual back foot in front. Muscle and fore–aft pressure patterns are the same, just mirrored: your usual back leg’s tibialis anterior and calf now do the front leg’s job, so switch usually feels clumsy. If the binding angles are asymmetric (e.g. +15/−6), switch becomes +6/−15, so the ankles and knees move in different directions and it feels different; how responsive it feels also depends on stance width, board flex and practice.</p>
     <div class="slider"><span>Height</span><input type="range" id="H" min="145" max="200" step="1"><output id="oH"></output></div>
     <div class="slider"><span>Ski length</span><input type="range" id="board" min="135" max="175" step="1"><output id="oboard"></output></div>
     <div class="slider"><span>Ski R</span><input type="range" id="R" min="6" max="12" step="0.1"><output id="oR"></output></div>
@@ -1546,6 +1549,17 @@ function setLevel(l){
   syncSliders(); build(); lastPhase = '';
   renderGuide();
 }
+
+// level tiers: show the tier that holds the current level
+function syncTier(t){
+  const cur = document.querySelector(`[data-tierbox] [data-l="${cfg.level}"]`), box = cur ? cur.closest('[data-tierbox]').dataset.tierbox : 'beg';
+  const show = t || box;
+  document.querySelectorAll('[data-tierbox]').forEach(d => d.style.display = d.dataset.tierbox === show ? '' : 'none');
+  document.querySelectorAll('[data-tier]').forEach(b => b.classList.toggle('on', b.dataset.tier === show));
+}
+document.querySelectorAll('[data-tier]').forEach(b => b.onclick = () => syncTier(b.dataset.tier));
+{ const _sl = setLevel; setLevel = (l) => { _sl(l); syncTier(); }; }
+syncTier();
 document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => setLevel(b.dataset.l));
 document.querySelectorAll('[data-dir]').forEach(b => b.onclick = () => {
   cfg.dir = +b.dataset.dir;
