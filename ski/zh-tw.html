@@ -207,6 +207,28 @@ body.cmp .hud,body.cmp #gauge,body.cmp #feet,body.cmp #top3,body.cmp #badges,bod
     <table id="c4R" style="margin-top:6px"></table>
     <p class="note">三個半徑來源不同，模型沒有把三者耦合，所以不一致是正常的：「理想平衡半徑」用 tan(傾斜) = v²/gR 反算；「理論 sidecut 半徑」假設板完全彎貼雪面、雪夠硬、沒有 skid，初中級通常做不到；「模擬路線半徑」是量度 3D 動畫路線。三個都不是真實轉彎半徑的預測，真實雪上還受雪況、板彎、滑移影響。</p>
   </div>
+  <div class="card" id="flexCard">
+    <h3 style="margin:0 0 6px">🥾 雪鞋 Flex：雪鞋硬度如何影響姿勢</h3>
+    <p class="note" style="margin:0 0 6px;color:#ffb020!important">⚠️ 示意模型：只改 3D 姿勢和壓力分佈，不改路線。真實效果還要看你的腳踝活動度、體重、溫度和扣多緊。</p>
+    <div class="row" style="align-items:center;gap:8px;font-size:13px"><span>雪鞋 flex</span>
+      <select id="flexSel"><option value="">適合你（預設）</option><option value="soft">太軟</option><option value="stiff">太硬</option></select></div>
+    <p class="note" id="flexOut" style="color:#7fd1ff!important;margin:6px 0"></p>
+    <p class="note">Flex 是你向前屈腳踝、脛骨壓向鞋舌時，雪鞋的阻力有多大。雪鞋是腳和雪板之間的傳動：你向前壓，力要經過鞋才到板頭。數字越大越硬，但沒有業界標準，不同品牌的 120 會不同，只能在同一個品牌裡比較。</p>
+    <table>
+      <tr><th></th><th>太軟</th><th>適合</th><th>太硬</th></tr>
+      <tr><td style="white-space:nowrap">往前壓</td><td>一壓就塌，沒有支撐</td><td>壓得下去，有回彈</td><td>壓不下去</td></tr>
+      <tr><td style="white-space:nowrap">腳踝</td><td>屈得太多</td><td>屈得到，又撐得住</td><td>屈不了</td></tr>
+      <tr><td style="white-space:nowrap">結果</td><td>反應慢，高速或硬雪不穩</td><td>板頭壓得到、控制準</td><td>脛骨離開鞋舌、髖向後，也就是坐後；小腿前側容易撞痛</td></tr>
+    </table>
+    <details style="margin-top:6px"><summary>幾件要知道的事</summary><ul style="margin:4px 0;padding-left:18px;font-size:13px">
+      <li>屈不下去不一定是鞋太硬：可能是你自己腳踝活動度不夠。腳踝緊的人換軟鞋未必有幫助，部分 boot fitter 反而建議稍硬的鞋，再加腳跟墊。</li>
+      <li>腳踝測試：赤腳面向牆，大腳趾離牆 10 cm，腳跟貼地，膝蓋向前碰到牆就算合格；碰不到就要先練腳踝活動度，或找 boot fitter。</li>
+      <li>會影響 flex：殼的材質和厚度、扣的數量、頂部 strap、內靴，以及扣多緊（特別是上面兩顆和 strap）。</li>
+      <li>冷會變硬：雪場零下，雪鞋會比在店裡試穿時硬。用久了會變軟。</li>
+      <li>參考（Salomon 自己的範圍）：男 70–90 新手、90–120 有經驗、120–130 高手或體重較重；女 60–90、90–110、110–120。換了品牌就不能直接比較。</li>
+      <li>自我檢查：穿好鞋、扣好，向前屈膝。脛骨壓到鞋舌、鞋會動、腳跟不抬起，就是壓得下去；壓不下去而髖往後跑，就是太硬或扣太緊。</li>
+    </ul></details>
+  </div>
   <div class="card" id="loopCard">
     <h3 style="margin:0 0 6px">🔁 第一原理：一個閉環，沒有主動被動</h3>
     <div id="lpRows" style="display:grid;gap:6px;font-size:13px;line-height:1.5"></div>
@@ -385,7 +407,7 @@ const REC = {
   lift: {ski:[-12,0],   R:[12,18], slope:[10,18], v:[15,35]},
   carve:{ski:[-10,0],   R:[12,20], slope:[15,28], v:[22,45]}
 };
-const cfg = {angu:null, level:'carve', H:175, ski:169, R:15, slope:18, v:30, Hm:.6};
+const cfg = {angu:null, flex:'', level:'carve', H:175, ski:169, R:15, slope:18, v:30, Hm:.6};
 let C = {};
 cfg.stance = 'ok';
 const STANCE = {
@@ -734,12 +756,16 @@ function hockeyAt(u, v0){
   const ph = u < .28 ? 'trav' : u < .5 ? 'brake' : u < .9 ? 'release' : 'trav';
   return {h, yaw, phi, v, ph};
 }
+// boot flex (schematic): a boot too stiff for you stops the ankle flexing, so the hips go back and up and pressure moves to the heel;
+// a boot too soft collapses forward, so you sink and lean on the tongue with little support
+const FLEX = {soft:{fa:.18, dz:.05, dh:-.04}, stiff:{fa:-.35, dz:-.07, dh:.03}};
+function stEff(){ const s = STANCE[cfg.stance], f = FLEX[cfg.flex]; return f ? Object.assign({}, s, {fa: s.fa + f.fa, dz: s.dz + f.dz, dh: s.dh + f.dh}) : s; }
 function finish(b){
   const lv = LV[cfg.level], k = C.k, {mid, psi, sg, phi, phiMag, nsh} = b;
   const f = new V(Math.sin(psi), 0, Math.cos(psi));
   const right = new V(-Math.cos(psi), 0, Math.sin(psi));
   const upLean = UP.clone().applyQuaternion(qYZX(psi, phi, 0));
-  const st = STANCE[cfg.stance];
+  const st = stEff();
   const hP = (lv.h0 - .08*phiMag/(60*D) + st.dh + udH(lv, nsh) + (b.fdh || 0))*k;
   const gm = hf(mid.x, mid.z), lift = new V(0, .35*gm, 0);
   const P = mid.clone().addScaledVector(upLean, hP).addScaledVector(f, (-.12 + st.dz + (b.fdz || 0))*k).add(lift);
@@ -880,7 +906,7 @@ function wSplit(p){
   return Math.sign(sl)*Math.pow(Math.abs(sl), .8);
 }
 function pressure(p){
-  const st = STANCE[cfg.stance];
+  const st = stEff();
   const init = Math.max(0, p.sn*p.cs*2), comp = Math.max(0, -p.sn*p.cs*2);
   const kk = LV[cfg.level].oneski ? 1 : clamp(wSplit(p)*3, -1, 1)*st.kk*SHARE[cfg.level];
   let fa = p.faDyn !== undefined ? .1 + p.faDyn : .1 + .35*init - .35*comp;
@@ -1671,6 +1697,8 @@ function syncTier(t){
   document.querySelectorAll('[data-tier]').forEach(b => b.classList.toggle('on', b.dataset.tier === show));
 }
 document.querySelectorAll('[data-tier]').forEach(b => b.onclick = () => syncTier(b.dataset.tier));
+const flexOut = document.getElementById('flexOut'); let flexT = 0;
+document.getElementById('flexSel').onchange = e => { cfg.flex = e.target.value; build(); };
 document.getElementById('anguSel').onchange = e => { cfg.angu = e.target.value === '' ? null : +e.target.value; build(); };
 { const _sl = setLevel; setLevel = (l) => { _sl(l); syncTier(); }; }
 syncTier();
@@ -1864,13 +1892,14 @@ function updateUI(p, act, md, now){
   if (show.bp && bpText) hud.innerHTML += `<br><span style="color:#ff6b8a">${bpText}</span>`;
   { const fx = STANCE[cfg.stance].fx;
     if (fx && turnish()) hud.innerHTML += `<br><span style="color:#ffb020">⚠️ 打滑 ${Math.round((p.skidX||0)/D)}°・抓地 ${Math.round(fx.edge*100)}%・轉彎半徑 ×${fx.r}</span>`; }
+  if (flexOut && now - flexT > 250){ flexOut.textContent = [ankleText, bpText].filter(Boolean).join('・'); flexT = now; }
   if (ankleText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#7fd1ff">${ankleText}</span>`;
   if (bendText && !document.body.classList.contains('simple')) hud.innerHTML += `<br><span style="color:#b9a7ff">${bendText}</span>`;
 }
 
 /* ---------- learning: simple mode, compare, guide ---------- */
 const GUIDE = {"phantom": {"q": [["向後跌時應不應該硬撐站起來？", "不應該。硬撐會讓髖掉到膝蓋以下、重量全到下坡板尾，板尾變槓桿扭膝蓋。"], ["正確跌法是怎樣？", "雙腳併攏、手放前面、順勢坐到側邊，停住再起身。"]], "sum": "向後跌：不要撐，雙腳併攏、手放前、坐到側邊；硬撐會觸發 phantom foot，扭斷前十字韌帶。", "snow": "出發前在平地練：屈膝慢慢坐到側邊、雙腳併攏、手放前面。滑雪當天下午累了就早點收工。"}, "hockey": {"q": [["急停時哪隻腳受力最多？", "外腳，也就是下坡那隻。"], ["為什麼急停最容易感覺到外腳？", "要在一兩秒內把動量歸零，雪給你的力很大又持續較久，身體一定要站在外腳上方才撐得住。"]], "sum": "直滑 → 兩板一起轉橫 → 立刃煞停，外腳受力；上身面向下坡。", "snow": "緩坡慢速，左右各做 5 次；每次停下後留意外腳腳掌的壓力，再立刻去轉彎找回同一種感覺。"}, "hockeyT": {"q": [["斜滑降中做急停動作會不會停下？", "不會。動量橫著走，動作只會讓路線彎向上坡，之後繼續滑。"], ["那練來做什麼？", "在移動中做到同一個姿勢，以及感覺外腳受力。"]], "sum": "斜滑降中做急停動作：路線彎向上坡、外腳受力，之後放刃繼續。", "snow": "選寬又緩的坡，確認下面沒人；每條斜滑降做 2–3 次，之後去連續轉彎。"}, "stem": {"q": [["Stem 是打開哪隻板？", "山側板，也就是下一個彎的外板。板尾向外推開。"], ["為什麼要打開板？", "打開的板已經指向新彎方向，重量一過去它就會帶你轉，不用扭身。"]], "sum": "彎尾打開山側板 → 重量過去帶入彎 → 收回平行。是從犁式到平行的橋。", "snow": "緩坡：每個彎尾打開山側板、停一下、再把重心移過去；慢慢縮短開板時間，最後變成平行。"}, "bpt": {"q": [["換刃那下身體是高還是低？", "高。伸高減壓，板變輕才換刃。"], ["彎中哪隻腳受力最多？", "外腳；身體最低。"]], "sum": "換刃伸高、彎中屈低；外腳受力，少量 skid 控速。", "snow": "中斜面大彎：喊著「起—落—落—起」做節奏，配合雪杖。"}, "dpt": {"q": [["換刃那下身體是高還是低？", "低。屈曲收腳，板從身體下面穿過。"], ["為什麼不伸高？", "伸高會讓 CoM 上下大、失速；收腳換刃更快，edge 可以更早咬雪。"]], "sum": "換刃收腳、入彎伸腳；身體高度變化小，彎上半已經受力。", "snow": "先在緩坡練「收腳換刃」：換刃時大腿貼近胸口，再伸腳入彎。熟練後再上中急斜面。"}, "slip": {"q": [["想停下，上坡刃要加大還是放小？", "加大。膝蓋和腳踝推向上坡，立刃接近坡度就停。"], ["上半身應該面向哪裡？", "面向下坡，不要跟著雙板轉成橫向。"]], "sum": "雙板橫向筆直下滑，用立刃控速：加大就停，放小就滑。", "snow": "選 10–20° 的平整雪道，雙板橫向，滑 2 公尺、停、再滑 2 公尺；之後練側滑轉向和急停。"}, "beg": {"q": [["想右轉的時候，應該把較多重量放在哪隻腳？", "左腳（彎外側那隻）。外腳加壓，板才會轉向。"], ["兩隻腳平均用力會怎樣？", "轉不了彎，或轉得很慢。新手最常犯的就是雙腳平均踩。"]], "sum": "想往哪邊轉，就早點把重量踩到外腳（彎外側那隻），保持 A 字，重心在腳掌中間。", "snow": "在緩坡慢慢做 5–8 個彎，每個彎說出「壓左腳」或「壓右腳」，感覺壓力在腳掌中間，而不是腳跟。", "feel": "轉彎時，外腳鞋底中間有明顯壓力；如果大腿很快就酸、板頭很輕，就是坐後了。"}, "mid": {"q": [["換刃時，應該等轉完彎才轉移重心，還是早點轉？", "早點轉。要在彎頂（剛開始轉的時候）就開始把重心移到新的外腳。"], ["怎麼用彎的形狀控制速度，而不是拼命煞車？", "把彎轉到夠橫（橫過山坡），完成整個彎，速度自然會降下來。"]], "sum": "每個彎一開始就把重心轉到新的外腳，上半身大致面向下坡，用彎形控制速度，而不是靠煞車。", "snow": "在中緩坡練，心裡數「轉重心 → 轉彎 → 完成」，刻意把彎畫得更橫，感覺速度自己慢下來。", "feel": "新外腳在彎開始時就已經有壓力；如果常常要靠犁式煞車，就是彎轉得不夠橫，或重心轉移太晚。"}, "carve": {"q": [["入彎時，最大壓力應該在哪隻腳？", "外腳，大約 80–90%。"], ["立刃角度應該大於、等於，還是小於身體傾倒？", "大於。差距來自膝蓋和髖部的反弓。"]], "sum": "早點傾倒入彎，外腳撐住，上半身保持水平，讓板子自己轉。", "snow": "在緩坡做 railroad track：板子不要打滑，雪上只留兩條細線；感覺外腳鞋舌一直有壓力。"}, "mogul": {"q": [["撞上蘑菇面時，腳應該伸直還是屈曲？", "屈曲吸收，像避震器一樣。"], ["頭的高度應該跟著蘑菇上下嗎？", "不應該。頭和上半身盡量保持一條平順的線。"]], "sum": "撞上就收腳，進凹槽就伸腳，上半身保持平穩。", "snow": "先在蘑菇區邊緣做單顆蘑菇「撞、收、伸」；再練在蘑菇頂點杖的時機。"}, "short": {"q": [["小迴轉時上半身應該面向哪裡？", "一直面向正下坡（滾落線）。"], ["什麼時候點杖？", "每次換刃之前，帶身體往前進入下一個彎。"]], "sum": "上半身面向山下，腳在下面左右擺，點杖帶節奏。", "snow": "選一條窄雪道，假設兩邊有牆；心裡數「點、轉、點、轉」。"}, "pivot": {"q": [["轉向時，身體哪個部位應該轉？", "大腿在骨盆裡轉，上半身不動。"], ["轉之前立刃應該加大還是放平？", "先放平，板子才轉得順。"]], "sum": "立刃放平，大腿轉，上半身不動，沿滾落線直線下滑。", "snow": "在中級坡做，起點和終點對準同一條直線（例如纜車柱），檢查自己有沒有往左右偏。"}, "trav": {"q": [["斜滑降時，哪隻腳承受比較多重量？", "下坡腳。"], ["膝蓋和髖部應該推向上坡還是下坡？", "上坡；上半身就朝下坡，形成反弓。"]], "sum": "下坡腳承重、膝蓋推向上坡、上半身朝下坡；放刃下滑，入刃回升。", "snow": "橫越雪道時試著提起上坡腳，站得穩才對；做 garland 時感受「放」和「咬」的差別。"}, "lift": {"q": [["提起內腳之後，重心應該在外腳的哪裡？", "腳掌中間偏前，不是腳跟。"], ["提起內腳靠哪些肌肉？", "膕旁肌屈膝提起，不是用腰。"]], "sum": "所有重量交給外腳，站得穩才算真的站在外腳上。", "snow": "在緩坡做，從每個彎提起 1 秒開始，慢慢延長到整個彎。"}, "lslip": {"q": [["放刃時雙板為什麼會自己轉向山下？", "放平後立刃不再咬雪，重力讓雙板往下滑，板頭自然轉向滾落線。"], ["要停下，立刃要多大？", "差不多等於坡度：坡度 20°，上坡刃就要約 20°。"]], "sum": "放刃放平 → 轉向橫過山坡 → 立刃咬住停下，一直重複。控速靠立刃，不是硬煞。", "snow": "先在中級道：放平滑 2–3 公尺、轉到另一邊、咬住停下；熟練了再試陡一點的坡。", "feel": "立刃時下坡腳和脛骨壓實鞋舌，雙板乾淨停下；如果停不下來，多半是立刃角度不夠或坐後。"}, "lslipT": {"q": [["在陡坡，應該在彎的哪個位置控速？", "彎底，雙板橫過山坡時用立刃磨掉速度。"], ["彎頂要不要煞車？", "不用，彎頂放刃放平，讓雙板自己轉向山下。"]], "sum": "彎頂放鬆、彎底立刃：每個彎底磨掉多餘速度，再放刃進入下一個彎。", "snow": "先在中級道做，數著「放、轉、咬」；穩定了再去高級道。", "feel": "彎底立刃時速度下降、腳底壓力大；彎頂放鬆時雙板很輕、自己轉。"}, "javelin": {"q": [["Javelin 為什麼要把內板板頭橫在外板前面？", "迫全身重量到外腳，同時迫上半身面向山下；有 stem 或靠內腳的話馬上站不穩。"], ["做不穩應該回到哪個練習？", "抬內腳練習（stork），還不行就回到單腳站。"]], "sum": "內腳抬起、板頭橫在外腳前面，整個彎只靠外腳；最快照出 stem、A 字腿和靠內腳。", "snow": "在緩的中級道慢慢做，每邊 3–4 個彎；穩定了再加速度。", "feel": "整個人站在外腳上，外腳腳掌中間壓力很實；上半身自然面向山下。"}, "oneski": {"q": [["一支板怎麼轉兩邊？", "右彎用大拇趾側（內刃），左彎用小趾側（外刃）；同一隻腳換刃。"], ["做不到代表什麼？", "平時轉彎靠另一隻腳借力平衡，外腳沒有真正承重。"]], "sum": "整段只用一支板，內刃外刃都要轉到；是單腳平衡和外腳承重的終極測試。", "snow": "在很緩的坡，先單腳直滑，再加小彎；兩隻腳都要練。", "feel": "兩邊轉彎都要站得穩；小趾側那個彎最難，是正常的。"}, "rail": {"q": [["怎麼知道自己是刻滑還是打滑？", "看雪面：兩條細線＝刻滑；變寬或拖尾＝打滑。"], ["為什麼要在很緩的坡做？", "速度慢，只用腳踝推立刃就夠；不需要大傾斜，不會怕。"]], "sum": "用腳踝把雙板推上立刃，不轉腳、不推板尾，讓側切自己畫出兩條細線；是打滑到刻滑的橋。", "snow": "在最緩的初級或中級道，直滑之後輕輕左右推刃，回頭看軌跡。", "feel": "雪板自己轉，身體只是跟著；腳底感覺雪板像在軌道上走。"}, "leaf": {"q": [["想向前斜滑，壓力放哪裡？", "前（小腿頂鞋舌），板頭會往山下。"], ["全程要不要換刃？", "不用，全程同一個上坡刃。"]], "sum": "側滑時壓前就向前斜滑、壓後就向後斜滑；學會前後壓力怎麼動，是改坐後的基本功。", "snow": "在中級道側滑，向前 3 公尺、停、向後 3 公尺；用腳踝動，不要用上半身擺。", "feel": "壓前時小腿貼實鞋舌；壓後時腳跟重。兩邊都控制得到，才算懂前後平衡。"}, "shuffle": {"q": [["Shuffle 動不了代表什麼？", "重量在腳跟（坐後），雙腳被壓住動不了。"], ["怎樣才動得了？", "腳踝彎、小腿貼鞋舌，重量回到中足。"]], "sum": "滑行中雙腳前後交替小步滑動；動不了就是坐後。", "snow": "在緩坡直滑或轉彎中做，雙腳前後各約 15 cm，兩支板都貼著雪。", "feel": "雙腳輕鬆地前後滑；如果很重、動不了，就是重量在腳跟。"}};
-const FLOW = {"back": {"see": "小腿離開鞋舌、手掉到後面、板頭變輕，大腿很快就酸。", "why": "可能原因：① 重心太後、靠腳跟撐 ② 鞋太軟或扣得太鬆 ③ 怕速度、身體向山後縮", "cue": "脛骨輕輕貼著鞋舌，雙手在前面看得到；不是一直死命往前壓。", "drill": [["shuffle", "Shuffle 前後滑步"], ["hockey", "原地急停"]], "check": "板頭一直有控制，不用靠板尾掃也轉得到。"}, "fwd": {"see": "腳趾很壓、小腿累，板尾輕飄飄甩出。", "why": "可能原因：① 重心太前 ② 用彎腰代替屈膝屈踝 ③ 鞋前傾角度太大", "cue": "腳掌踩平，屈膝屈踝而不是彎腰。", "drill": [["shuffle", "Shuffle 前後滑步"], ["trav", "斜滑降"]], "check": "出彎板尾不甩，壓力回到腳掌中間。"}, "look": {"see": "眼看雪板，頭和上身往下縮，轉彎慢。", "why": "可能原因：① 視線太近 ② 還不信任雪板 ③ 上身向前低", "cue": "看下一個彎的位置，雪杖點在前面。", "drill": [["trav", "斜滑降"], ["short", "短彎"]], "check": "頭先看向新方向，身體自然跟上。"}, "late": {"see": "彎頂打滑，要靠彎底大力煞才控得住速度。", "why": "可能原因：① 換刃後太晚把重量交給新外腳 ② 換刃時重心還沒過去 ③ 怕 fall line、想快點過去", "cue": "彎一開始就交給新外腳，不要等過了 fall line。", "drill": [["lift", "提內腳"], ["hockeyT", "斜滑降中急停"]], "check": "彎上半已經有壓力，彎形圓、不用急煞。"}, "even": {"see": "轉得慢，兩塊板分開走、彎很大。", "why": "可能原因：① 沒有主要支撐腳 ② 外腳立刃不夠 ③ 害怕、想雙腳一起撐", "cue": "逐步把重量交給外腳，內腳輕輕跟。", "drill": [["hockey", "原地急停"], ["javelin", "Javelin"]], "check": "外腳腳掌壓力明顯多過內腳，彎形穩定。"}, "rot": {"see": "肩膀先轉、板尾甩出，外腳受不到力。", "why": "可能原因：① 用上身扭身轉板 ② 立刃不夠、要靠扭才轉得到 ③ 沒有上下身分離", "cue": "腳轉，上身面向下坡。", "drill": [["pivot", "Pivot slip"], ["hockey", "原地急停"]], "check": "上身一直面向下坡也轉得到彎。"}, "phantom": {"see": "向後跌時髖掉到膝蓋以下、手向後、想站起來。", "why": "可能原因：① 失平衡後硬撐 ② 疲勞、大腿後側冷 ③ 本能想站起來", "cue": "放棄：雙腳併攏、手放前、坐到側邊。", "drill": [["phantom", "向後跌"]], "check": "跌的時候膝蓋沒受扭力，停住才起身。"}};
+const FLOW = {"back": {"see": "小腿離開鞋舌、手掉到後面、板頭變輕，大腿很快就酸。", "why": "可能原因：① 重心太後、靠腳跟撐 ② 雪鞋屈不下去：太硬、扣太緊，或腳踝活動度不夠（見 🥾 雪鞋 Flex）③ 雪鞋太鬆，沒得靠 ④ 怕速度、身體往山上縮", "cue": "脛骨輕輕貼著鞋舌，雙手在前面看得到；不是一直死命往前壓。", "drill": [["shuffle", "Shuffle 前後滑步"], ["hockey", "原地急停"]], "check": "板頭一直有控制，不用靠板尾掃也轉得到。"}, "fwd": {"see": "腳趾很壓、小腿累，板尾輕飄飄甩出。", "why": "可能原因：① 重心太前 ② 用彎腰代替屈膝屈踝 ③ 鞋的前傾角度太大 ④ 雪鞋太軟，一壓就塌", "cue": "腳掌踩平，屈膝屈踝而不是彎腰。", "drill": [["shuffle", "Shuffle 前後滑步"], ["trav", "斜滑降"]], "check": "出彎板尾不甩，壓力回到腳掌中間。"}, "look": {"see": "眼看雪板，頭和上身往下縮，轉彎慢。", "why": "可能原因：① 視線太近 ② 還不信任雪板 ③ 上身向前低", "cue": "看下一個彎的位置，雪杖點在前面。", "drill": [["trav", "斜滑降"], ["short", "短彎"]], "check": "頭先看向新方向，身體自然跟上。"}, "late": {"see": "彎頂打滑，要靠彎底大力煞才控得住速度。", "why": "可能原因：① 換刃後太晚把重量交給新外腳 ② 換刃時重心還沒過去 ③ 怕 fall line、想快點過去", "cue": "彎一開始就交給新外腳，不要等過了 fall line。", "drill": [["lift", "提內腳"], ["hockeyT", "斜滑降中急停"]], "check": "彎上半已經有壓力，彎形圓、不用急煞。"}, "even": {"see": "轉得慢，兩塊板分開走、彎很大。", "why": "可能原因：① 沒有主要支撐腳 ② 外腳立刃不夠 ③ 害怕、想雙腳一起撐", "cue": "逐步把重量交給外腳，內腳輕輕跟。", "drill": [["hockey", "原地急停"], ["javelin", "Javelin"]], "check": "外腳腳掌壓力明顯多過內腳，彎形穩定。"}, "rot": {"see": "肩膀先轉、板尾甩出，外腳受不到力。", "why": "可能原因：① 用上身扭身轉板 ② 立刃不夠、要靠扭才轉得到 ③ 沒有上下身分離", "cue": "腳轉，上身面向下坡。", "drill": [["pivot", "Pivot slip"], ["hockey", "原地急停"]], "check": "上身一直面向下坡也轉得到彎。"}, "phantom": {"see": "向後跌時髖掉到膝蓋以下、手向後、想站起來。", "why": "可能原因：① 失平衡後硬撐 ② 疲勞、大腿後側冷 ③ 本能想站起來", "cue": "放棄：雙腳併攏、手放前、坐到側邊。", "drill": [["phantom", "向後跌"]], "check": "跌的時候膝蓋沒受扭力，停住才起身。"}};
 const STANCE_SHORT = {"phantom": "向後跌硬撐：下坡板尾變槓桿，膝蓋向內扭。", "rot": "上身扭板：上身跟著板轉，外腳受力變少。", "late": "重心轉移太晚：彎頂打滑，要靠煞車控速。", "look": "盯著腳看：上半身彎、屁股往後，入彎晚。", "back": "重心偏後：板頭沒有壓力，大腿很快就累。", "fwd": "重心太前：板尾打滑，出彎放不掉。", "even": "雙腳平均：外腳咬不牢，容易變成 A 字腿。"};
 for (const k in STANCE_SHORT) if (STANCE[k]) STANCE[k].short = STANCE_SHORT[k];
 const CMP_DEFAULT = 'back', CMP_BY_LEVEL = {phantom:'phantom', hockey:'rot', hockeyT:'rot', stem:'even', bpt:'late', dpt:'late', beg:'even', mid:'late', slip:'look', trav:'look', lslip:'look', lslipT:'late', shuffle:'back', leaf:'back', javelin:'even', oneski:'back', rail:'back'};

@@ -5,7 +5,7 @@
 //   CHROME=/usr/bin/google-chrome THREE_DIR=/dir/with/three.min.js+GLTFLoader.js npm test   # offline
 //
 // Checks every language version of the ski and snowboard pages (no JS errors, every level,
-// carving angulation selector, mistake-flow drill button, no overflow at 390 px), the
+// carving angulation selector, boot flex selector (ski), mistake-flow drill button, no overflow at 390 px), the
 // resort-skills page (every module, lesson and step, Prev/Next, illustration, completion,
 // scenario quiz, language switch), the gym page (every move) and the landing pages.
 import { createServer } from 'node:http';
@@ -68,6 +68,15 @@ async function coachPage(b, url, name) {
   await pg.selectOption('#anguSel', '30'); await pg.waitForTimeout(900); const e30 = await edge();
   check(name + ' angulation', e0 && e30 && e0 !== e30, `${e0} vs ${e30}`);
   await pg.selectOption('#anguSel', '');
+  if (await pg.$('#flexSel')) {   // ski only: boot flex changes the ankle angle
+    const ank = async () => +((await pg.innerText('#flexOut')).match(/(-?\d+)°/) || [])[1];
+    await pg.selectOption('#flexSel', ''); await pg.waitForTimeout(900); const a0 = await ank();
+    await pg.selectOption('#flexSel', 'stiff'); await pg.waitForTimeout(900); const aS = await ank();
+    await pg.selectOption('#flexSel', 'soft'); await pg.waitForTimeout(900); const aF = await ank();
+    check(name + ' boot flex', aS < a0 && a0 < aF, `ankle flex stiff ${aS}° / default ${a0}° / soft ${aF}°`);
+    console.log(`  ankle flex: stiff ${aS}° default ${a0}° soft ${aF}°`);
+    await pg.selectOption('#flexSel', '');
+  }
   const st = await pg.evaluate(() => [...document.querySelectorAll('[data-st]')].map(b => b.dataset.st).find(k => k !== 'ok'));
   await pg.click(`[data-st="${st}"]`); await pg.waitForTimeout(300);
   const fx = pg.locator('[data-fix]').first(), target = await fx.getAttribute('data-fix');
